@@ -148,7 +148,7 @@
 
 // debug
 #ifdef __lx_debug__
-#   define __lx_debug_decl__                    , LX_char_t const* func_, LX_size_t line_, LX_char_t const* file_
+#   define __lx_debug_decl__                    , lx_char_t const* func_, lx_size_t line_, lx_char_t const* file_
 #   define __lx_debug_vals__                    , __lx_func__, __lx_line__, __lx_file__
 #   define __lx_debug_args__                    , func_, line_, file_
 #else
@@ -240,50 +240,6 @@
 #   define __lx_no_sanitize_address__
 #endif
 
-// thread local
-#if __lx_has_feature__(c_thread_local)
-#   define __lx_thread_local__                              _Thread_local
-#elif defined(LX_CONFIG_KEYWORD_HAVE_Thread_local)
-#   define __lx_thread_local__                              _Thread_local
-#elif defined(LX_CONFIG_KEYWORD_HAVE__thread)
-#   define __lx_thread_local__                              __thread
-#elif defined(LX_COMPILER_IS_MSVC) || defined(LX_COMPILER_IS_BORLAND)
-#   define __lx_thread_local__                              __declspec(thread)
-#endif
-
-/* c function overloadable
- *
- * @code
-    static __lx_inline__ LX_void_t test(LX_int_t a) __lx_overloadable__
-    {
-        LX_trace_i("test1: %d", a);
-    }
-    static __lx_inline__ LX_void_t test(LX_int_t a, LX_int_t b) __lx_overloadable__
-    {
-        LX_trace_i("test2: %d %d", a, b);
-    }
- * @endcode
- *
- * If the compiler does not support __lx_overloadable__, we can use the following code to implement function overload.
- *
- * @code
-    #define test_n(a, b, ...) test_impl(a, b)
-    #define test(a, args ...) test_n(a, ##args, 0, 0, 0)
-    static __lx_inline__ LX_void_t test_impl(LX_int_t a, LX_int_t b)
-    {
-        LX_trace_i("test: %d %d", a, b);
-    }
-
-    test(1);
-    test(1, 2);
- * @endcode
- */
-#if defined(LX_COMPILER_IS_GCC) || defined(LX_COMPILER_IS_CLANG)
-#   define __lx_overloadable__                              __attribute__((overloadable))
-#else
-#   define __lx_overloadable__
-#endif
-
 /*! the type reference keyword for defining LX_xxxx_ref_t
  *
  * typedef __lx_typeref__(xxxx);
@@ -293,11 +249,11 @@
  *
  * @code
  *
-   typedef struct{}*    LX_xxxx_ref_t;
+   typedef struct{}*    lx_xxxx_ref_t;
 
    typedef struct __lx_yyyy_t
    {
-       LX_xxxx_ref_t    xxxx;
+       lx_xxxx_ref_t    xxxx;
 
    }__lx_yyyy_t;
 
@@ -306,7 +262,7 @@
  * @endcode
  *
  */
-#define __lx_typeref__(object)                              struct __lx_##object##_dummy_t{LX_int_t dummy;} const* LX_##object##_ref_t
+#define __lx_typeref__(object)                              struct __lx_##object##_dummy_t{lx_int_t dummy;} const* lx_##object##_ref_t
 
 // macros
 #define __lx_mstring__(x)                                   #x

@@ -26,6 +26,7 @@
  */
 #include "config.h"
 #include "cpu.h"
+#include "type.h"
 #include "version.h"
 #include "compiler.h"
 #include "keyword.h"
