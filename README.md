@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://lanox2d.com">
-    <img width="50%" height="50%" src="https://tboox.org/static/img/lanox2d/lanox2d.png">
+    <img width="30%" height="30%" src="https://tboox.org/static/img/lanox2d/lanox2d.png">
   </a>
 
   <div>
