@@ -21,13 +21,14 @@
   <p>A lightweight and fast 2D vector graphics engine</p>
 </div>
 
-## Introduction ([中文](/README_zh.md))
+## 简介
 
-Lanox2D is a lightweight and fast 2D vector graphics engine.
+Lanox2D 是一个轻量快速的 2D 矢量图形引擎。
 
-## Contacts
+## 联系
 
-* Email：[waruqi@gmail.com](mailto:waruqi@gmail.com)
-* Homepage：[lanox2d.com](https://lanox2d.com)
-* Source Code：[Github](https://github.com/lanox2d/lanox2d), [Gitee](https://gitee.com/lanox2d/lanox2d)
-* Wechat Public: tboox-os
+* 邮箱：[waruqi@gmail.com](mailto:waruqi@gmail.com)
+* 主页：[lanox2d.com](https://lanox2d.com)
+* 源码：[Github](https://github.com/lanox2d/lanox2d), [Gitee](https://gitee.com/lanox2d/lanox2d)
+* 微信公众号: tboox-os
+
