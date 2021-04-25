@@ -24,6 +24,6 @@
  */
 #include "lanox2d.h"
 
-
-
-
+void test()
+{
+}

@@ -142,23 +142,6 @@ typedef lx_fixed16_t                lx_fixed_t;
 /// the file ref type
 typedef __lx_typeref__(file);
 
-/// the version type
-typedef struct __lx_version_t
-{
-    /// the major
-    lx_byte_t                       major;
-
-    /// the minor
-    lx_byte_t                       minor;
-
-    /// the alter
-    lx_byte_t                       alter;
-
-    /// the build
-    lx_hize_t                       build;
-
-}lx_version_t;
-
 /// the value type
 typedef union __lx_value_t
 {

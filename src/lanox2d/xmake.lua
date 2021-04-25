@@ -18,3 +18,6 @@ target("lanox2d")
 
     -- add source files
     add_files("*.c")
+
+    -- add options
+    add_options("small", "wchar")

@@ -10,6 +10,7 @@
 
 // defines
 #define LX_CONFIG_OS_${OS} 1
-
+${define LX_CONFIG_SMALL}
+${define LX_CONFIG_TYPE_HAVE_WCHAR}
 
 #endif
