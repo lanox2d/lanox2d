@@ -15,11 +15,11 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        base.h
+ * @file        libc.h
  *
  */
-#ifndef LX_BASE_H
-#define LX_BASE_H
+#ifndef LX_BASE_LIBC_H
+#define LX_BASE_LIBC_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes

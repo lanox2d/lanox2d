@@ -15,21 +15,17 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        lanox2d.h
+ * @file        platform.h
  *
  */
-#ifndef LX_LANOX2D_H
-#define LX_LANOX2D_H
+#ifndef LX_BASE_PLATFORM_H
+#define LX_BASE_PLATFORM_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "base/base.h"
-#include "core/core.h"
-#include "math/math.h"
-#include "platform/platform.h"
+#include "prefix.h"
 
 #endif
-
 
 

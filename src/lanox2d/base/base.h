@@ -24,7 +24,10 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "prefix.h"
+#include "libc/libc.h"
+#include "libm/libm.h"
+#include "utils/utils.h"
+#include "platform/platform.h"
 
 #endif
 
