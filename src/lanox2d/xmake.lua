@@ -2,7 +2,7 @@ target("lanox2d")
 
     -- set basic configuration
     set_kind("$(kind)")
-    add_defines("__lx_prefix__=\"lanox2d\"")
+    add_defines("LX_PREFIX=\"lanox2d\"")
 
     -- set the auto-generated config.h
     set_configdir("$(buildir)/$(plat)/$(arch)/$(mode)")

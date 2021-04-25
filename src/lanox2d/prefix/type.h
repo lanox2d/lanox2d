@@ -140,80 +140,33 @@ typedef lx_int32_t                  lx_fixed30_t;
 typedef lx_fixed16_t                lx_fixed_t;
 
 /// the file ref type
-typedef __lx_typeref__(file);
+typedef lx_typeref(file);
 
 /// the value type
-typedef union __lx_value_t
-{
-    /// uint8
+typedef union lx_value_t_ {
     lx_uint8_t                      u8;
-
-    /// sint8
     lx_sint8_t                      s8;
-
-    /// char
     lx_char_t                       c;
-
-    /// wchar
     lx_wchar_t                      wc;
-
-    /// boolean
     lx_bool_t                       b;
-
-    /// uint16
     lx_uint16_t                     u16;
-
-    /// sint16
     lx_sint16_t                     s16;
-
-    /// uint32
     lx_uint32_t                     u32;
-
-    /// sint32
     lx_sint32_t                     s32;
-
-    /// uint64
     lx_uint64_t                     u64;
-
-    /// sint64
     lx_sint64_t                     s64;
-
-    /// size
     lx_size_t                       ul;
-
-    /// long
     lx_long_t                       l;
-
-    /// pointer
     lx_pointer_t                    ptr;
-
-    /// const pointer
     lx_cpointer_t                   cptr;
-
-    /// file
     lx_file_ref_t                   file;
-
-    /// handle
     lx_handle_t                     handle;
-
-    /// string
     lx_char_t*                      str;
-
-    /// const string
     lx_char_t const*                cstr;
-
-    /// wstring
     lx_wchar_t*                     wstr;
-
-    /// const wstring
     lx_wchar_t const*               wcstr;
-
-    /// float
     lx_float_t                      f;
-
-    /// double
     lx_double_t                     d;
-
 }lx_value_t, *lx_value_ref_t;
 
 #endif

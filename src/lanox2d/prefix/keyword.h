@@ -34,272 +34,264 @@
 
 // the register keyword will be deprecated in C++
 #ifndef __cplusplus
-#   define __lx_register__                      register
+#   define lx_register                      register
 #else
-#   define __lx_register__
+#   define lx_register
 #endif
-#define __lx_volatile__                         volatile
+#define lx_volatile                         volatile
 
 #if defined(LX_COMPILER_IS_MSVC)
 
-#   define __lx_func__                          __FUNCTION__
-#   define __lx_file__                          __FILE__
-#   define __lx_line__                          __LINE__
-#   define __lx_date__                          __DATE__
-#   define __lx_time__                          __TIME__
-#   define __lx_asm__                           __asm
-#   define __lx_inline__                        __inline
-#   define __lx_inline_force__                  __forceinline
-#   define __lx_cdecl__                         __cdecl
-#   define __lx_stdcall__                       __stdcall
-#   define __lx_fastcall__                      __fastcall
-#   define __lx_thiscall__                      __thiscall
-#   define __lx_packed__
-#   define __lx_aligned__(a)                    __declspec(align(a))
+#   define lx_func                          __FUNCTION__
+#   define lx_file                          __FILE__
+#   define lx_line                          __LINE__
+#   define lx_date                          __DATE__
+#   define lx_time                          __TIME__
+#   define lx_asm                           __asm
+#   define lx_inline                        __inline
+#   define lx_inline_force                  __forceinline
+#   define lx_cdecl                         __cdecl
+#   define lx_stdcall                       __stdcall
+#   define lx_fastcall                      __fastcall
+#   define lx_thiscall                      __thiscall
+#   define lx_packed
+#   define lx_aligned(a)                    __declspec(align(a))
 
 #elif defined(LX_COMPILER_IS_GCC)
 
-#   define __lx_func__                          __FUNCTION__
-#   define __lx_file__                          __FILE__
-#   define __lx_line__                          __LINE__
-#   define __lx_date__                          __DATE__
-#   define __lx_time__                          __TIME__
-#   define __lx_asm__                           __asm__
-#   define __lx_inline__                        __inline__
-#   define __lx_inline_force__                  __inline__ __attribute__((always_inline))
-#   define __lx_packed__                        __attribute__((packed, aligned(1)))
-#   define __lx_aligned__(a)                    __attribute__((aligned(a)))
+#   define lx_func                          __FUNCTION__
+#   define lx_file                          __FILE__
+#   define lx_line                          __LINE__
+#   define lx_date                          __DATE__
+#   define lx_time                          __TIME__
+#   define lx_asm                           __asm__
+#   define lx_inline                        __inline__
+#   define lx_inline_force                  __inline__ __attribute__((always_inline))
+#   define lx_packed                        __attribute__((packed, aligned(1)))
+#   define lx_aligned(a)                    __attribute__((aligned(a)))
     // gcc will generate attribute ignored warning
 #   if defined(__x86_64) \
     || defined(__amd64__) \
     || defined(__amd64) \
     || defined(_M_IA64) \
     || defined(_M_X64)
-#       define __lx_cdecl__
-#       define __lx_stdcall__
-#       define __lx_fastcall__
-#       define __lx_thiscall__
+#       define lx_cdecl
+#       define lx_stdcall
+#       define lx_fastcall
+#       define lx_thiscall
 #   else
-#       define __lx_cdecl__                     __attribute__((__cdecl__))
-#       define __lx_stdcall__                   __attribute__((__stdcall__))
-#       define __lx_fastcall__                  __attribute__((__fastcall__))
-#       define __lx_thiscall__                  __attribute__((__thiscall__))
+#       define lx_cdecl                     __attribute__((__cdecl__))
+#       define lx_stdcall                   __attribute__((__stdcall__))
+#       define lx_fastcall                  __attribute__((__fastcall__))
+#       define lx_thiscall                  __attribute__((__thiscall__))
 #   endif
 
 #elif defined(LX_COMPILER_IS_TINYC)
 
-#   define __lx_func__                          __func__
-#   define __lx_file__                          __FILE__
-#   define __lx_line__                          __LINE__
-#   define __lx_date__                          __DATE__
-#   define __lx_time__                          __TIME__
-#   define __lx_asm__                           __asm__
-#   define __lx_inline__                        __inline__
-#   define __lx_inline_force__                  __inline__ __attribute__((always_inline))
-#   define __lx_packed__                        __attribute__((packed, aligned(1)))
-#   define __lx_aligned__(a)                    __attribute__((aligned(a)))
-#   define __lx_cdecl__                         __attribute__((cdecl))
-#   define __lx_stdcall__                       __attribute__((stdcall))
-#   define __lx_fastcall__                      __attribute__((fastcall))
-#   define __lx_thiscall__                      __attribute__((thiscall))
+#   define lx_func                          __func__
+#   define lx_file                          __FILE__
+#   define lx_line                          __LINE__
+#   define lx_date                          __DATE__
+#   define lx_time                          __TIME__
+#   define lx_asm                           __asm__
+#   define lx_inline                        __inline__
+#   define lx_inline_force                  __inline__ __attribute__((always_inline))
+#   define lx_packed                        __attribute__((packed, aligned(1)))
+#   define lx_aligned(a)                    __attribute__((aligned(a)))
+#   define lx_cdecl                         __attribute__((cdecl))
+#   define lx_stdcall                       __attribute__((stdcall))
+#   define lx_fastcall                      __attribute__((fastcall))
+#   define lx_thiscall                      __attribute__((thiscall))
 
 #else
 
-#   define __lx_asm__
-#   define __lx_inline__                        inline
-#   define __lx_inline_force__                  inline
-#   define __lx_func__                          ""
-#   define __lx_file__                          ""
-#   define __lx_date__                          ""
-#   define __lx_time__                          ""
-#   define __lx_line__                          (0)
+#   define lx_asm
+#   define lx_inline                        inline
+#   define lx_inline_force                  inline
+#   define lx_func                          ""
+#   define lx_file                          ""
+#   define lx_date                          ""
+#   define lx_time                          ""
+#   define lx_line                          (0)
 
-#   define __lx_cdecl__
-#   define __lx_stdcall__
-#   define __lx_fastcall__
-#   define __lx_thiscall__
-#   define __lx_packed__
-#   define __lx_aligned__(a)
+#   define lx_cdecl
+#   define lx_stdcall
+#   define lx_fastcall
+#   define lx_thiscall
+#   define lx_packed
+#   define lx_aligned(a)
 
 #endif
 
-/*! @def __lx_cpu_aligned__
+/*! @def lx_cpu_aligned
  *
  * the cpu byte alignment
  */
 #if (LX_CPU_BITBYTE == 8)
-#   define __lx_cpu_aligned__                   __lx_aligned__(8)
+#   define lx_cpu_aligned                   lx_aligned(8)
 #elif (LX_CPU_BITBYTE == 4)
-#   define __lx_cpu_aligned__                   __lx_aligned__(4)
+#   define lx_cpu_aligned                   lx_aligned(4)
 #elif (LX_CPU_BITBYTE == 2)
-#   define __lx_cpu_aligned__                   __lx_aligned__(2)
+#   define lx_cpu_aligned                   lx_aligned(2)
 #else
 #   error unknown cpu bytes
 #endif
 
 // like
 #if defined(LX_COMPILER_IS_GCC) && LX_COMPILER_VERSION_BT(2, 0)
-#   define __lx_likely__(x)                     __builtin_expect((x), 1)
-#   define __lx_unlikely__(x)                   __builtin_expect((x), 0)
+#   define lx_likely(x)                     __builtin_expect((x), 1)
+#   define lx_unlikely(x)                   __builtin_expect((x), 0)
 #else
-#   define __lx_likely__(x)                     (x)
-#   define __lx_unlikely__(x)                   (x)
+#   define lx_likely(x)                     (x)
+#   define lx_unlikely(x)                   (x)
 #endif
 
 // debug
-#ifdef __lx_debug__
-#   define __lx_debug_decl__                    , lx_char_t const* func_, lx_size_t line_, lx_char_t const* file_
-#   define __lx_debug_vals__                    , __lx_func__, __lx_line__, __lx_file__
-#   define __lx_debug_args__                    , func_, line_, file_
+#ifdef LX_DEBUG
+#   define lx_debug_decl                    , lx_char_t const* func_, lx_size_t line_, lx_char_t const* file_
+#   define lx_debug_vals                    , lx_func, lx_line, lx_file
+#   define lx_debug_args                    , func_, line_, file_
 #else
-#   define __lx_debug_decl__
-#   define __lx_debug_vals__
-#   define __lx_debug_args__
-#endif
-
-// small
-#undef __lx_small__
-#ifdef LX_CONFIG_SMALL
-#   define __lx_small__
+#   define lx_debug_decl
+#   define lx_debug_vals
+#   define lx_debug_args
 #endif
 
 // newline
 #ifdef LX_CONFIG_OS_WINDOWS
-#   define __lx_newline__                       "\r\n"
+#   define lx_newline                       "\r\n"
 #else
-#   define __lx_newline__                       "\n"
+#   define lx_newline                       "\n"
 #endif
 
 // the string only for the large mode
-#ifdef __lx_small__
-#   define __lx_lstring__(x)                    lx_null
+#ifdef LX_CONFIG_SMALL
+#   define lx_lstring(x)                    lx_null
 #else
-#   define __lx_lstring__(x)                    x
+#   define lx_lstring(x)                    x
 #endif
 
 // the string only for the debug mode
-#ifdef __lx_debug__
-#   define __lx_dstring__(x)                    x
+#ifdef LX_DEBUG
+#   define lx_dstring(x)                    x
 #else
-#   define __lx_dstring__(x)                    lx_null
+#   define lx_dstring(x)                    lx_null
 #endif
 
 // extern c
 #ifdef __cplusplus
-#   define __lx_extern_c__                      extern "C"
-#   define __lx_extern_c_enter__                extern "C" {
-#   define __lx_extern_c_leave__                }
+#   define lx_extern_c                      extern "C"
+#   define lx_extern_c_enter                extern "C" {
+#   define lx_extern_c_leave                }
 #else
-#   define __lx_extern_c__
-#   define __lx_extern_c_enter__
-#   define __lx_extern_c_leave__
+#   define lx_extern_c
+#   define lx_extern_c_enter
+#   define lx_extern_c_leave
 #endif
 
 // export for the shared library
 #if defined(LX_COMPILER_IS_MSVC)
-#   define __lx_export__                        __declspec(dllexport)
+#   define lx_export                        __declspec(dllexport)
 #elif defined(LX_COMPILER_IS_GCC) && ((__GNUC__ >= 4) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 3))
-#   define __lx_export__                        __attribute__((visibility("default")))
+#   define lx_export                        __attribute__((visibility("default")))
 #else
-#   define __lx_export__
+#   define lx_export
 #endif
 
 #if defined(LX_COMPILER_IS_GCC) && LX_COMPILER_VERSION_BE(3, 0)
-#   define __lx_deprecated__                    __attribute__((deprecated))
+#   define lx_deprecated                    __attribute__((deprecated))
 #elif defined(LX_COMPILER_IS_MSVC) && defined(_MSC_VER) && _MSC_VER >= 1300
-#   define __lx_deprecated__                    __declspec(deprecated)
+#   define lx_deprecated                    __declspec(deprecated)
 #else
-#   define __lx_deprecated__
+#   define lx_deprecated
 #endif
 
 // has feature
 #ifdef __has_feature
-#   define __lx_has_feature__(x)                            __has_feature(x)
+#   define lx_has_feature(x)                            __has_feature(x)
 #else
-#   define __lx_has_feature__(x)                            0
+#   define lx_has_feature(x)                            0
 #endif
 
 // has include
 #ifdef __has_include
-#   define __lx_has_include__(x)                            __has_include(x)
+#   define lx_has_include(x)                            __has_include(x)
 #else
-#   define __lx_has_include__(x)                            0
+#   define lx_has_include(x)                            0
 #endif
 
 // has builtin
 #ifdef __has_builtin
-#   define __lx_has_builtin__(x)                            __has_builtin(x)
+#   define lx_has_builtin(x)                            __has_builtin(x)
 #else
-#   define __lx_has_builtin__(x)                            0
+#   define lx_has_builtin(x)                            0
 #endif
 
 // no_sanitize_address
-#if __lx_has_feature__(address_sanitizer) || defined(__SANITIZE_ADDRESS__)
-#   define __lx_no_sanitize_address__                       __attribute__((no_sanitize_address))
+#if lx_has_feature(address_sanitizer) || defined(__SANITIZE_ADDRESS__)
+#   define lx_no_sanitize_address                       __attribute__((no_sanitize_address))
 #else
-#   define __lx_no_sanitize_address__
+#   define lx_no_sanitize_address
 #endif
 
 /*! the type reference keyword for defining LX_xxxx_ref_t
  *
- * typedef __lx_typeref__(xxxx);
+ * typedef lx_typeref(xxxx);
  *
  *
- * suppress gcc 4.9 on c++ codes warning: '__lx_yyyy_t' has a field '__lx_yyyy_t::xxxx' whose type uses the anonymous namespace
+ * suppress gcc 4.9 on c++ codes warning: 'lx_yyyy_t_' has a field 'lx_yyyy_t_::xxxx' whose type uses the anonymous namespace
  *
  * @code
  *
    typedef struct{}*    lx_xxxx_ref_t;
 
-   typedef struct __lx_yyyy_t
-   {
+   typedef struct lx_yyyy_t_ {
        lx_xxxx_ref_t    xxxx;
-
-   }__lx_yyyy_t;
+   }lx_yyyy_t;
 
  *
  *
  * @endcode
  *
  */
-#define __lx_typeref__(object)                              struct __lx_##object##_dummy_t{lx_int_t dummy;} const* lx_##object##_ref_t
+#define lx_typeref(object)                              struct lx_##object##_dummy_t_{lx_int_t dummy;} const* lx_##object##_ref_t
 
 // macros
-#define __lx_mstring__(x)                                   #x
-#define __lx_mstring_ex__(x)                                __lx_mstring__(x)
+#define lx_mstring(x)                                   #x
+#define lx_mstring_ex(x)                                lx_mstring(x)
 
-#define __lx_mconcat__(a, b)                                a##b
-#define __lx_mconcat_ex__(a, b)                             __lx_mconcat__(a, b)
+#define lx_mconcat(a, b)                                a##b
+#define lx_mconcat_ex(a, b)                             lx_mconcat(a, b)
 
-#define __lx_mconcat3__(a, b, c)                            a##b##c
-#define __lx_mconcat3_ex__(a, b, c)                         __lx_mconcat3__(a, b, c)
+#define lx_mconcat3(a, b, c)                            a##b##c
+#define lx_mconcat3_ex(a, b, c)                         lx_mconcat3(a, b, c)
 
-#define __lx_mconcat4__(a, b, c, d)                         a##b##c##d
-#define __lx_mconcat4_ex__(a, b, c, d)                      __lx_mconcat4__(a, b, c, d)
+#define lx_mconcat4(a, b, c, d)                         a##b##c##d
+#define lx_mconcat4_ex(a, b, c, d)                      lx_mconcat4(a, b, c, d)
 
-#define __lx_mconcat5__(a, b, c, d, e)                      a##b##c##d##e
-#define __lx_mconcat5_ex__(a, b, c, d, e)                   __lx_mconcat5__(a, b, c, d, e)
+#define lx_mconcat5(a, b, c, d, e)                      a##b##c##d##e
+#define lx_mconcat5_ex(a, b, c, d, e)                   lx_mconcat5(a, b, c, d, e)
 
-#define __lx_mconcat6__(a, b, c, d, e, f)                   a##b##c##d##e##f
-#define __lx_mconcat6_ex__(a, b, c, d, e, f)                __lx_mconcat6__(a, b, c, d, e, f)
+#define lx_mconcat6(a, b, c, d, e, f)                   a##b##c##d##e##f
+#define lx_mconcat6_ex(a, b, c, d, e, f)                lx_mconcat6(a, b, c, d, e, f)
 
-#define __lx_mconcat7__(a, b, c, d, e, f, g)                a##b##c##d##e##f##g
-#define __lx_mconcat7_ex__(a, b, c, d, e, f, g)             __lx_mconcat7__(a, b, c, d, e, f, g)
+#define lx_mconcat7(a, b, c, d, e, f, g)                a##b##c##d##e##f##g
+#define lx_mconcat7_ex(a, b, c, d, e, f, g)             lx_mconcat7(a, b, c, d, e, f, g)
 
-#define __lx_mconcat8__(a, b, c, d, e, f, g, h)             a##b##c##d##e##f##g##h
-#define __lx_mconcat8_ex__(a, b, c, d, e, f, g, h)          __lx_mconcat8__(a, b, c, d, e, f, g, h)
+#define lx_mconcat8(a, b, c, d, e, f, g, h)             a##b##c##d##e##f##g##h
+#define lx_mconcat8_ex(a, b, c, d, e, f, g, h)          lx_mconcat8(a, b, c, d, e, f, g, h)
 
-#define __lx_mconcat9__(a, b, c, d, e, f, g, h, i)          a##b##c##d##e##f##g##h##i
-#define __lx_mconcat9_ex__(a, b, c, d, e, f, g, h, i)       __lx_mconcat9__(a, b, c, d, e, f, g, h, i)
+#define lx_mconcat9(a, b, c, d, e, f, g, h, i)          a##b##c##d##e##f##g##h##i
+#define lx_mconcat9_ex(a, b, c, d, e, f, g, h, i)       lx_mconcat9(a, b, c, d, e, f, g, h, i)
 
-#define __lx_mstrcat__(a, b)                                a b
-#define __lx_mstrcat3__(a, b, c)                            a b c
-#define __lx_mstrcat4__(a, b, c, d)                         a b c d
-#define __lx_mstrcat5__(a, b, c, d, e)                      a b c d e
-#define __lx_mstrcat6__(a, b, c, d, e, f)                   a b c d e f
-#define __lx_mstrcat7__(a, b, c, d, e, f, g)                a b c d e f g
-#define __lx_mstrcat8__(a, b, c, d, e, f, g, h)             a b c d e f g h
-#define __lx_mstrcat9__(a, b, c, d, e, f, g, h, i)          a b c d e f g h i
+#define lx_mstrcat(a, b)                                a b
+#define lx_mstrcat3(a, b, c)                            a b c
+#define lx_mstrcat4(a, b, c, d)                         a b c d
+#define lx_mstrcat5(a, b, c, d, e)                      a b c d e
+#define lx_mstrcat6(a, b, c, d, e, f)                   a b c d e f
+#define lx_mstrcat7(a, b, c, d, e, f, g)                a b c d e f g
+#define lx_mstrcat8(a, b, c, d, e, f, g, h)             a b c d e f g h
+#define lx_mstrcat9(a, b, c, d, e, f, g, h, i)          a b c d e f g h i
 
 
 #endif
