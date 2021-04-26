@@ -28,7 +28,6 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-
 lx_void_t lx_trace(lx_char_t const* filepath, lx_char_t const* fmt, ...) {
     lx_int_t         ret = 0;
     lx_char_t        line[8192] = {0};
