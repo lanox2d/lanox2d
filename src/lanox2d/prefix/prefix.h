@@ -32,6 +32,7 @@
 #include "version.h"
 #include "compiler.h"
 #include "keyword.h"
+#include "trace.h"
 
 #endif
 

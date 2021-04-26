@@ -27,6 +27,19 @@
 #include "prefix.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
+ * macros
+ */
+
+/// print string with newline
+#if defined(LX_COMPILER_IS_GCC) || defined(LX_COMPILER_IS_TINYC)
+#   define lx_print(fmt, arg ...)           do { lx_printf(fmt lx_newline, ## arg); } while (0)
+#elif defined(LX_COMPILER_IS_MSVC) && LX_COMPILER_VERSION_BE(13, 0)
+#   define lx_print(fmt, ...)               do { lx_printf(fmt lx_newline, __VA_ARGS__); } while (0)
+#else
+#   define lx_print
+#endif
+
+/* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */
 lx_extern_c_enter
