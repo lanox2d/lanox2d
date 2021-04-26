@@ -15,46 +15,38 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        printf.c
+ * @file        trace.h
  *
  */
+#ifndef LX_BASE_UTILS_TRACE_H
+#define LX_BASE_UTILS_TRACE_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "libc.h"
-#include <stdio.h>
+#include "prefix.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * implementation
+ * extern
+ */
+lx_extern_c_enter
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * interfaces
  */
 
-lx_int_t lx_puts(lx_char_t const* s) {
-    return puts(s);
-}
+/*! trace
+ *
+ * @param filepath  the source file path, e.g. lx_file or lx_null
+ * @param fmt       the format string
+ */
+lx_void_t           lx_trace(lx_char_t const* filepath, lx_char_t const* fmt, ...);
 
-lx_int_t lx_printf(lx_char_t const* fmt, ...) {
-    lx_int_t  ret = 0;
-    lx_char_t line[8192] = {0};
-    lx_vsnprintf_fmt(line, sizeof(line) - 1, fmt, &ret);
-    lx_puts(line);
-    return ret;
-}
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * extern
+ */
+lx_extern_c_leave
 
-lx_int_t lx_sprintf(lx_char_t* s, lx_char_t const* fmt, ...) {
-    lx_int_t ret = 0;
-    lx_vsnprintf_fmt(s, LX_MAXU16, fmt, &ret);
-    return ret;
-}
-
-lx_int_t lx_snprintf(lx_char_t* s, lx_size_t n, lx_char_t const* fmt, ...) {
-    lx_int_t ret = 0;
-    lx_vsnprintf_fmt(s, n, fmt, &ret);
-    return ret;
-}
-
-lx_int_t lx_vsnprintf(lx_char_t* s, lx_size_t n, lx_char_t const* fmt, va_list args) {
-    return vsnprintf(s, n, fmt, args);
-}
+#endif
 
 

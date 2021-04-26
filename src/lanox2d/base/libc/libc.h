@@ -30,6 +30,19 @@
  * macros
  */
 
+// vsnprintf fmt
+#define lx_vsnprintf_fmt(s, n, fmt, r) \
+do { \
+    lx_int_t __lx_ret = 0; \
+    va_list __varg_list; \
+    va_start(__varg_list, fmt); \
+    __lx_ret = lx_vsnprintf(s, (n), fmt, __varg_list); \
+    va_end(__varg_list); \
+    if (__lx_ret >= 0) s[__lx_ret] = '\0'; \
+    *r = __lx_ret > 0? __lx_ret : 0; \
+ \
+} while (0)
+
 /// print string with newline
 #if defined(LX_COMPILER_IS_GCC) || defined(LX_COMPILER_IS_TINYC)
 #   define lx_print(fmt, arg ...)           do { lx_printf(fmt lx_newline, ## arg); } while (0)
