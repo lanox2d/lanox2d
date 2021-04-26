@@ -35,6 +35,11 @@ lx_void_t lx_trace(lx_char_t const* filepath, lx_char_t const* fmt, ...) {
     lx_char_t*       p = line;
     lx_char_t const* e = line + sizeof(line);
     if (filepath) {
+        lx_char_t const* sep = filepath;
+        while (*sep) {
+            if (*sep == '/' || *sep == '\\') filepath = sep + 1;
+            sep++;
+        }
         p += lx_snprintf(p, e - p - 1, "[lanox2d/%s]: ", filepath);
     } else {
         p += lx_snprintf(p, e - p - 1, "[lanox2d]: ");
