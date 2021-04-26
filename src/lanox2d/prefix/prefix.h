@@ -28,6 +28,7 @@
 #include "cpu.h"
 #include "arch.h"
 #include "type.h"
+#include "limits.h"
 #include "version.h"
 #include "compiler.h"
 #include "keyword.h"

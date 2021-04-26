@@ -35,43 +35,51 @@ lx_extern_c_enter
  * interfaces
  */
 
-/*! printf
+/*! puts
  *
- * @param format    the format string
+ * @param s         the c-string
  *
  * @return          the real size
  */
-lx_int_t            lx_printf(lx_char_t const* format, ...);
+lx_int_t            lx_puts(lx_char_t const* s);
+
+/*! printf
+ *
+ * @param fmt       the format string
+ *
+ * @return          the real size
+ */
+lx_int_t            lx_printf(lx_char_t const* fmt, ...);
 
 /*! sprintf
  *
  * @param s         the string data
- * @param format    the format string
+ * @param fmt       the format string
  *
  * @return          the real size
  */
-lx_int_t            lx_sprintf(lx_char_t* s, lx_char_t const* format, ...);
+lx_int_t            lx_sprintf(lx_char_t* s, lx_char_t const* fmt, ...);
 
 /*! snprintf
  *
  * @param s         the string data
  * @param n         the string size
- * @param format    the format string
+ * @param fmt       the format string
  *
  * @return          the real size
  */
-lx_int_t            lx_snprintf(lx_char_t* s, lx_size_t n, lx_char_t const* format, ...);
+lx_int_t            lx_snprintf(lx_char_t* s, lx_size_t n, lx_char_t const* fmt, ...);
 
 /*! vsnprintf
  *
  * @param s         the string data
  * @param n         the string size
- * @param format    the format string
+ * @param fmt       the format string
  * @param args      the arguments
  *
  * @return          the real size
  */
-lx_int_t            lx_vsnprintf(lx_char_t* s, lx_size_t n, lx_char_t const* format, va_list args);
+lx_int_t            lx_vsnprintf(lx_char_t* s, lx_size_t n, lx_char_t const* fmt, va_list args);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
