@@ -40,20 +40,14 @@
 /// the alter version
 #define LX_VERSION_ALTER            LX_CONFIG_VERSION_ALTER
 
+/// the version string
+#define LX_VERSION_STRING           LX_CONFIG_VERSION
+
 /// the build version
 #ifndef LX_CONFIG_VERSION_BUILD
 #   define LX_CONFIG_VERSION_BUILD  0
 #endif
 #define LX_VERSION_BUILD            LX_CONFIG_VERSION_BUILD
-
-/// the build version string
-#define LX_VERSION_BUILD_STRING     lx_mstring_ex(LX_CONFIG_VERSION_BUILD)
-
-/// the version string
-#define LX_VERSION_STRING           lx_mstrcat6("tbox_", lx_mstring_ex(lx_mconcat8_ex(v, LX_VERSION_MAJOR, _, LX_VERSION_MINOR, _, LX_VERSION_ALTER, _, LX_CONFIG_VERSION_BUILD)), "_", LX_ARCH_VERSION_STRING, " by ", LX_COMPILER_VERSION_STRING)
-
-/// the short version string
-#define LX_VERSION_SHORT_STRING     lx_mstrcat("tbox_", lx_mstring_ex(lx_mconcat8_ex(v, LX_VERSION_MAJOR, _, LX_VERSION_MINOR, _, LX_VERSION_ALTER, _, LX_CONFIG_VERSION_BUILD)))
 
 #endif
 

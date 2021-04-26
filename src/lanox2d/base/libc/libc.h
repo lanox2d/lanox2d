@@ -26,6 +26,58 @@
  */
 #include "prefix.h"
 
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * extern
+ */
+lx_extern_c_enter
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * interfaces
+ */
+
+/*! printf
+ *
+ * @param format    the format string
+ *
+ * @return          the real size
+ */
+lx_int_t            lx_printf(lx_char_t const* format, ...);
+
+/*! sprintf
+ *
+ * @param s         the string data
+ * @param format    the format string
+ *
+ * @return          the real size
+ */
+lx_int_t            lx_sprintf(lx_char_t* s, lx_char_t const* format, ...);
+
+/*! snprintf
+ *
+ * @param s         the string data
+ * @param n         the string size
+ * @param format    the format string
+ *
+ * @return          the real size
+ */
+lx_int_t            lx_snprintf(lx_char_t* s, lx_size_t n, lx_char_t const* format, ...);
+
+/*! vsnprintf
+ *
+ * @param s         the string data
+ * @param n         the string size
+ * @param format    the format string
+ * @param args      the arguments
+ *
+ * @return          the real size
+ */
+lx_int_t            lx_vsnprintf(lx_char_t* s, lx_size_t n, lx_char_t const* format, va_list args);
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * extern
+ */
+lx_extern_c_leave
+
 #endif
 
 

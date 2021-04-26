@@ -15,18 +15,34 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        lanox2d.c
+ * @file        printf.c
  *
  */
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "lanox2d.h"
+#include "libc.h"
+#include <stdio.h>
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_char_t const* lx_version(lx_noarg_t) {
-    return LX_VERSION_STRING;
+
+lx_int_t lx_printf(lx_char_t const* format, ...) {
+    return 0;
 }
+
+lx_int_t lx_sprintf(lx_char_t* s, lx_char_t const* format, ...) {
+    return 0;
+}
+
+lx_int_t lx_snprintf(lx_char_t* s, lx_size_t n, lx_char_t const* format, ...) {
+    return 0;
+}
+
+lx_int_t lx_vsnprintf(lx_char_t* s, lx_size_t n, lx_char_t const* format, va_list args) {
+    return vsnprintf(s, n, format, args);
+}
+
+

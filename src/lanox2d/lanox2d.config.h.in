@@ -1,5 +1,5 @@
-#ifndef LX_CONFIG_H
-#define LX_CONFIG_H
+#ifndef LX_LANOX2D_CONFIG_H
+#define LX_LANOX2D_CONFIG_H
 
 // version
 #define LX_CONFIG_VERSION "${VERSION}-${GIT_COMMIT}"

@@ -17,7 +17,7 @@ target("lanox2d")
     add_headerfiles("$(buildir)/$(plat)/$(arch)/$(mode)/lanox2d.config.h", {prefixdir = "lanox2d"})
 
     -- add source files
-    add_files("*.c")
+    add_files("**.c|impl/**.c")
 
     -- add options
     add_options("small", "wchar")
