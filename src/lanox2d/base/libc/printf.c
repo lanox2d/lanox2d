@@ -30,7 +30,7 @@
  */
 
 lx_int_t lx_puts(lx_char_t const* s) {
-    return puts(s);
+    return fputs(s, stdout);
 }
 
 lx_int_t lx_printf(lx_char_t const* fmt, ...) {
