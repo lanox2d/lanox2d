@@ -15,28 +15,29 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        prefix.h
+ * @file        assembler.h
  *
  */
-#ifndef LX_PREFIX_PREFIX_H
-#define LX_PREFIX_PREFIX_H
+#ifndef LX_PREFIX_ASSEMBLER_H
+#define LX_PREFIX_ASSEMBLER_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
 #include "config.h"
-#include "cpu.h"
-#include "arch.h"
-#include "type.h"
-#include "limits.h"
-#include "version.h"
-#include "compiler.h"
-#include "assembler.h"
 #include "keyword.h"
-#include "trace.h"
-#include "abort.h"
-#include "check.h"
-#include "assert.h"
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * macros
+ */
+
+#if defined(LX_COMPILER_IS_MSVC)
+#   define LX_ASSEMBLER_IS_MASM
+#elif defined(LX_COMPILER_IS_GCC) \
+    || defined(LX_COMPILER_IS_CLANG) \
+    || defined(LX_COMPILER_IS_INTEL)
+#   define LX_ASSEMBLER_IS_GAS
+#endif
 
 #endif
 
