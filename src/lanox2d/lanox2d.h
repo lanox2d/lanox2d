@@ -40,7 +40,7 @@
  * |   mesh    |      svg             |       path        |                          | glut, x11, sdl, ios, android, mac, windows, fbdev, ...     |
  * |           |      fonts           |       paint       |                          |------------------------------------------------------------|
  * |           |      effects         |       shader      | skia, opengl, bitmap, ...|               window                 |                     |
- * |           |      animation       |       bitmap      |                          |          ----------------------------|                     |
+ * |           |      animation       |       bitmap      | cario, vulkan, metal     |          ----------------------------|                     |
  * |           |                      |       clipper     |                          |  window  |   mouse, keyboard, touch  |         audio       |
  * |           |                      |                   |-------------------------------------|---------------------------|                     |
  * |           |                      |                   |               device                |           events          |                     |
