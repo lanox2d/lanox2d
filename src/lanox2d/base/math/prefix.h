@@ -15,16 +15,16 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        math.h
+ * @file        prefix.h
  *
  */
-#ifndef LX_MATH_H
-#define LX_MATH_H
+#ifndef LX_BASE_MATH_PREFIX_H
+#define LX_BASE_MATH_PREFIX_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "prefix.h"
+#include "../prefix.h"
 
 #endif
 

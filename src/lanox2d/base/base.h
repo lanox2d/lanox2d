@@ -26,6 +26,7 @@
  */
 #include "libc/libc.h"
 #include "libm/libm.h"
+#include "math/math.h"
 #include "utils/utils.h"
 #include "platform/platform.h"
 
