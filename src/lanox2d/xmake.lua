@@ -20,3 +20,8 @@ target("lanox2d")
 
     -- add options
     add_options("small", "wchar")
+
+    -- export all symbols for windows/dll
+    if is_plat("windows") and is_kind("shared") then
+        add_rules("utils.symbols.export_all")
+    end
