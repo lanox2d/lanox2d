@@ -1,6 +1,6 @@
 for _, filepath in ipairs(os.files(path.join(os.scriptdir(), "*.c"))) do
     local name = path.basename(filepath)
-    target(name)
+    target("example_" .. name)
         if not has_config("examples") then
             set_default(false)
         end

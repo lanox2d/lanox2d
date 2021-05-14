@@ -1,6 +1,6 @@
 for _, filepath in ipairs(os.files(path.join(os.scriptdir(), "*.c"))) do
     local name = path.basename(filepath)
-    target(name)
+    target("test_" .. name)
         if not has_config("tests") then
             set_default(false)
         end
@@ -8,3 +8,4 @@ for _, filepath in ipairs(os.files(path.join(os.scriptdir(), "*.c"))) do
         add_deps("lanox2d")
         add_files(name .. ".c")
 end
+
