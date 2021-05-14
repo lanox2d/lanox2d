@@ -3,6 +3,11 @@ target("lanox2d")
     -- set basic configuration
     set_kind("$(kind)")
 
+    -- export all symbols for windows/dll
+    if is_plat("windows") and is_kind("shared") then
+        add_rules("utils.symbols.export_all")
+    end
+
     -- set the auto-generated config.h
     set_configdir("$(buildir)/$(plat)/$(arch)/$(mode)")
     add_configfiles("lanox2d.config.h.in")
@@ -19,9 +24,10 @@ target("lanox2d")
     add_files("**.c|impl/**.c")
 
     -- add options
-    add_options("small", "wchar")
+    add_options("small", "wchar", "window")
 
-    -- export all symbols for windows/dll
-    if is_plat("windows") and is_kind("shared") then
-        add_rules("utils.symbols.export_all")
+    -- add packages
+    if is_config("window", "sdl") then
+        add_packages("libsdl")
     end
+

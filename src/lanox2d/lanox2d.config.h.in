@@ -13,4 +13,7 @@
 ${define LX_CONFIG_SMALL}
 ${define LX_CONFIG_TYPE_HAVE_WCHAR}
 
+// windows
+${define LX_CONFIG_WINDOW_HAVE_SDL}
+
 #endif

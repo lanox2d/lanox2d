@@ -24,5 +24,9 @@
  */
 #include "window.h"
 
-
-
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * implementation
+ */
+lx_window_ref_t gb_window_init() {
+    return lx_null;
+}
