@@ -1,0 +1,36 @@
+name: FreeBSD
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  build:
+
+    strategy:
+      matrix:
+        os: [macOS-latest]
+        kind: [static, shared]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Tests
+        uses: vmactions/freebsd-vm@v0.1.4
+        with:
+          usesh: true
+          mem: 4096
+          prepare: pkg install -y git curl unzip gmake llvm gsed bash perl5 openssl
+          run: |
+            git clone --recurse-submodules https://github.com/xmake-io/xmake.git /tmp/xmake -b dev
+            cd /tmp/xmake
+            gmake -j4
+            gmake install
+            export XMAKE_ROOT=y
+            cd -
+            xmake f -k ${{ matrix.kind }} -y -vD
+            xmake -vD
+
+
