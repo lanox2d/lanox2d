@@ -23,6 +23,40 @@
  * includes
  */
 #include "window.h"
+#include "impl/impl.h"
 #if defined(LX_CONFIG_WINDOW_HAVE_SDL)
 #   include "impl/windows/sdl.c"
 #endif
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * implementation
+ */
+lx_window_ref_t lx_window_init(lx_size_t width, lx_size_t height, lx_char_t const* title) {
+#if defined(LX_CONFIG_WINDOW_HAVE_SDL)
+    return lx_window_init_sdl(width, height, title);
+#else
+    return lx_null;
+#endif
+}
+
+lx_size_t lx_window_width(lx_window_ref_t self) {
+    lx_window_t* window = (lx_window_t*)self;
+    return window? window->width : 0;
+}
+
+lx_size_t lx_window_height(lx_window_ref_t self) {
+    lx_window_t* window = (lx_window_t*)self;
+    return window? window->height : 0;
+}
+
+lx_bool_t lx_window_is_closed(lx_window_ref_t self) {
+    lx_window_t* window = (lx_window_t*)self;
+    return window? window->is_closed(window) : lx_true;
+}
+
+lx_void_t lx_window_exit(lx_window_ref_t self) {
+    lx_window_t* window = (lx_window_t*)self;
+    if (window) {
+        window->exit(window);
+    }
+}

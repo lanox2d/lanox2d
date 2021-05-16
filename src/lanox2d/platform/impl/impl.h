@@ -15,18 +15,17 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        sdl.c
+ * @file        impl.h
  *
  */
+#ifndef LX_PLATFORM_IMPL_H
+#define LX_PLATFORM_IMPL_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "prefix.h"
+#include "window.h"
 
-/* //////////////////////////////////////////////////////////////////////////////////////
- * implementation
- */
-lx_window_ref_t lx_window_init_sdl(lx_size_t width, lx_size_t height, lx_char_t const* title) {
-    return lx_null;
-}
+#endif
+
+

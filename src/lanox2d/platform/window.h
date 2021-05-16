@@ -44,9 +44,37 @@ typedef lx_typeref(window);
 
 /*! init window
  *
+ * @param width         the window width
+ * @param height        the window height
+ * @param title         the window title
+ *
  * @return              the window
  */
-lx_window_ref_t         lx_window_init(lx_noarg_t);
+lx_window_ref_t         lx_window_init(lx_size_t width, lx_size_t height, lx_char_t const* title);
+
+/*! get window width
+ *
+ * @param window        the window
+ *
+ * @return              the window width
+ */
+lx_size_t               lx_window_width(lx_window_ref_t window);
+
+/*! get window height
+ *
+ * @param window        the window
+ *
+ * @return              the window height
+ */
+lx_size_t               lx_window_height(lx_window_ref_t window);
+
+/*! is window closed?
+ *
+ * @param window        the window
+ *
+ * @return              lx_true or lx_false
+ */
+lx_bool_t               lx_window_is_closed(lx_window_ref_t window);
 
 /*! exit window
  *

@@ -15,18 +15,30 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        sdl.c
+ * @file        window.h
  *
  */
+#ifndef LX_PLATFORM_IMPL_WINDOW_H
+#define LX_PLATFORM_IMPL_WINDOW_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "prefix.h"
+#include "../prefix.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * implementation
+ * types
  */
-lx_window_ref_t lx_window_init_sdl(lx_size_t width, lx_size_t height, lx_char_t const* title) {
-    return lx_null;
-}
+
+// the window type
+typedef struct lx_window_t_ {
+    lx_size_t           width;
+    lx_size_t           height;
+    lx_char_t const*    title;
+    lx_bool_t           (*is_closed)(struct lx_window_t_* window);
+    lx_void_t           (*exit)(struct lx_window_t_* window);
+}lx_window_t;
+
+#endif
+
+
