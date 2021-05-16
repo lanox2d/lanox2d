@@ -25,10 +25,19 @@
 #include "window.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
+ * types
+ */
+
+// the window type
+typedef struct lx_window_t_ {
+    lx_int_t dummy;
+}lx_window_t;
+
+/* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
 lx_window_ref_t lx_window_init() {
-    return lx_null;
+    return (lx_window_ref_t)lx_malloc0_type(lx_window_t);
 }
 
 lx_void_t lx_window_exit(lx_window_ref_t window) {

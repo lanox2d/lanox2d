@@ -37,6 +37,7 @@
 #include "abort.h"
 #include "check.h"
 #include "assert.h"
+#include "malloc.h"
 
 #endif
 

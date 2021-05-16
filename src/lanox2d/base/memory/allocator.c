@@ -44,7 +44,6 @@ static lx_void_t lx_malloc_allocator_free(lx_allocator_ref_t allocator, lx_point
     free(data);
 }
 
-
 /* //////////////////////////////////////////////////////////////////////////////////////
  * globals
  */

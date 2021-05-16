@@ -36,7 +36,7 @@ lx_extern_c_enter
  */
 
 /// the allocator type
-typedef struct __lx_allocator_t {
+typedef struct lx_allocator_t_ {
 
     /*! malloc data
      *
@@ -45,7 +45,7 @@ typedef struct __lx_allocator_t {
      *
      * @return              the data address
      */
-    lx_pointer_t            (*malloc)(struct __lx_allocator_t* allocator, lx_size_t size);
+    lx_pointer_t            (*malloc)(struct lx_allocator_t_* allocator, lx_size_t size);
 
     /*! malloc data and fill zero
      *
@@ -54,7 +54,7 @@ typedef struct __lx_allocator_t {
      *
      * @return              the data address
      */
-    lx_pointer_t            (*malloc0)(struct __lx_allocator_t* allocator, lx_size_t size);
+    lx_pointer_t            (*malloc0)(struct lx_allocator_t_* allocator, lx_size_t size);
 
     /*! realloc data
      *
@@ -64,14 +64,14 @@ typedef struct __lx_allocator_t {
      *
      * @return              the new data address
      */
-    lx_pointer_t            (*ralloc)(struct __lx_allocator_t* allocator, lx_pointer_t data, lx_size_t size);
+    lx_pointer_t            (*ralloc)(struct lx_allocator_t_* allocator, lx_pointer_t data, lx_size_t size);
 
     /*! free data
      *
      * @param allocator     the allocator
      * @param data          the data address
      */
-    lx_void_t               (*free)(struct __lx_allocator_t* allocator, lx_pointer_t data);
+    lx_void_t               (*free)(struct lx_allocator_t_* allocator, lx_pointer_t data);
 
 }lx_allocator_t, *lx_allocator_ref_t;
 
