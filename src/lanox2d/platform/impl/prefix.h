@@ -15,14 +15,17 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        window.c
+ * @file        prefix.h
  *
  */
+#ifndef LX_PLATFORM_IMPL_PREFIX_H
+#define LX_PLATFORM_IMPL_PREFIX_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "window.h"
-#if defined(LX_CONFIG_WINDOW_HAVE_SDL)
-#   include "impl/windows/sdl.c"
+#include "../prefix.h"
+
 #endif
+
+
