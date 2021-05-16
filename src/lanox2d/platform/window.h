@@ -46,8 +46,13 @@ typedef lx_typeref(window);
  *
  * @return              the window
  */
-lx_window_ref_t         gb_window_init(lx_noarg_t);
+lx_window_ref_t         lx_window_init(lx_noarg_t);
 
+/*! exit window
+ *
+ * @param window        the window
+ */
+lx_void_t               lx_window_exit(lx_window_ref_t window);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

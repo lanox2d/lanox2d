@@ -27,6 +27,9 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_window_ref_t gb_window_init() {
+lx_window_ref_t lx_window_init() {
     return lx_null;
+}
+
+lx_void_t lx_window_exit(lx_window_ref_t window) {
 }

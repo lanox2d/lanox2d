@@ -15,17 +15,18 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        platform.h
+ * @file        allocator_malloc.c
  *
  */
-#ifndef LX_PLATFORM_H
-#define LX_PLATFORM_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "window.h"
+#include "allocator.h"
 
-#endif
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * implementation
+ */
+
 
 

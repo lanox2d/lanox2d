@@ -28,6 +28,7 @@
 #include "libm/libm.h"
 #include "math/math.h"
 #include "utils/utils.h"
+#include "memory/memory.h"
 #include "platform/platform.h"
 
 #endif
