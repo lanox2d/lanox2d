@@ -107,6 +107,26 @@ lx_int_t            lx_snprintf(lx_char_t* s, lx_size_t n, lx_char_t const* fmt,
  */
 lx_int_t            lx_vsnprintf(lx_char_t* s, lx_size_t n, lx_char_t const* fmt, va_list args);
 
+/*! memset
+ *
+ * @param s         the memory data
+ * @param c         the filled byte
+ * @param n         the data size
+ *
+ * @return          the memory data
+ */
+lx_pointer_t        lx_memset(lx_pointer_t s, lx_byte_t c, lx_size_t n);
+
+/*! memcpy
+ *
+ * @param s1        the destinate data
+ * @param s1        the source data
+ * @param n         the data size
+ *
+ * @return          the destinate data
+ */
+lx_pointer_t        lx_memcpy(lx_pointer_t s1, lx_cpointer_t s2, lx_size_t n);
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */
