@@ -24,7 +24,7 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "../prefix.h"
+#include "../window.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * types
@@ -37,6 +37,7 @@ typedef struct lx_window_t_ {
     lx_size_t           width;
     lx_size_t           height;
     lx_char_t const*    title;
+    lx_uint16_t         flags;
     lx_cpointer_t       udata;
 
     // notification functions
@@ -44,8 +45,8 @@ typedef struct lx_window_t_ {
     lx_void_t           (*on_resize)(lx_window_ref_t window, lx_canvas_ref_t canvas);
 
     // inner functions
-    lx_void_t           (*runloop)(struct lx_window_t_* window);
-    lx_void_t           (*exit)(struct lx_window_t_* window);
+    lx_void_t           (*runloop)(lx_window_ref_t window);
+    lx_void_t           (*exit)(lx_window_ref_t window);
 }lx_window_t;
 
 #endif

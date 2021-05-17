@@ -25,7 +25,7 @@
  * includes
  */
 #include "../prefix.h"
-#include "../../window.h"
+#include "../window.h"
 
 #endif
 

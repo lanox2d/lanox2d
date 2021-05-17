@@ -49,6 +49,25 @@ lx_size_t lx_window_height(lx_window_ref_t self) {
     return window? window->height : 0;
 }
 
+lx_cpointer_t lx_window_udata(lx_window_ref_t self) {
+    lx_window_t* window = (lx_window_t*)self;
+    return window? window->udata : lx_null;
+}
+
+lx_void_t lx_window_udata_set(lx_window_ref_t self, lx_cpointer_t udata) {
+    lx_window_t* window = (lx_window_t*)self;
+    if (window) {
+        window->udata = udata;
+    }
+}
+
+lx_void_t lx_window_flags_set(lx_window_ref_t self, lx_uint16_t flags) {
+    lx_window_t* window = (lx_window_t*)self;
+    if (window) {
+        window->flags = flags;
+    }
+}
+
 lx_void_t lx_window_on_draw(lx_window_ref_t self, lx_window_on_draw_t on_draw) {
     lx_window_t* window = (lx_window_t*)self;
     if (window) {
@@ -66,12 +85,12 @@ lx_void_t lx_window_on_resize(lx_window_ref_t self, lx_window_on_resize_t on_res
 lx_void_t lx_window_runloop(lx_window_ref_t self) {
     lx_window_t* window = (lx_window_t*)self;
     lx_assert_and_check_return(window && window->runloop);
-    window->runloop(window);
+    window->runloop(self);
 }
 
 lx_void_t lx_window_exit(lx_window_ref_t self) {
     lx_window_t* window = (lx_window_t*)self;
     if (window) {
-        window->exit(window);
+        window->exit(self);
     }
 }

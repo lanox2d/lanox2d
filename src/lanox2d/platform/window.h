@@ -38,6 +38,15 @@ lx_extern_c_enter
 /// the window ref type
 typedef lx_typeref(window);
 
+/// the window flag enum
+typedef enum lx_window_flag_e_ {
+    LX_WINDOW_FLAG_NONE             = 0
+,   LX_WINDOW_FLAG_FULLSCREEN       = 1
+,   LX_WINDOW_FLAG_HIHE_TITLEBAR    = 2
+,   LX_WINDOW_FLAG_HIHE_CURSOR      = 4
+,   LX_WINDOW_FLAG_NOT_REISZE       = 8
+}lx_window_flag_e;
+
 /*! the on_draw function type
  *
  * @param window            the window
@@ -81,6 +90,28 @@ lx_size_t               lx_window_width(lx_window_ref_t window);
  * @return              the window height
  */
 lx_size_t               lx_window_height(lx_window_ref_t window);
+
+/*! get window user data
+ *
+ * @param window        the window
+ *
+ * @return              the user data
+ */
+lx_cpointer_t           lx_window_udata(lx_window_ref_t window);
+
+/*! set window user data
+ *
+ * @param window        the window
+ * @param udata         the user data
+ */
+lx_void_t               lx_window_udata_set(lx_window_ref_t window, lx_cpointer_t udata);
+
+/*! set window flags
+ *
+ * @param window        the window
+ * @param flags         the window flags
+ */
+lx_void_t               lx_window_flags_set(lx_window_ref_t window, lx_uint16_t flags);
 
 /*! register on_draw function
  *

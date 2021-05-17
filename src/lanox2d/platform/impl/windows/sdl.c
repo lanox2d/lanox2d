@@ -23,10 +23,128 @@
  * includes
  */
 #include "prefix.h"
+#include <SDL.h>
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * types
+ */
+
+// the sdl window type
+typedef struct lx_window_sdl_t_ {
+    lx_window_t     base;
+    SDL_Surface*    surface;
+    SDL_Window*     window;
+    SDL_Renderer*   renderer;
+} lx_window_sdl_t;
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * private implementation
+ */
+
+static lx_bool_t lx_window_sdl_start(lx_window_sdl_t* window) {
+    lx_bool_t ok = lx_false;
+    do {
+
+        // init sdl
+        if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+            break;
+        }
+
+        // create sdl window
+        window->window = SDL_CreateWindow(window->base.title? window->base.title : "lanox2d (SDL)",
+            SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, window->base.width, window->base.height, SDL_WINDOW_SHOWN);
+        lx_assert_and_check_break(window->window);
+
+        // create sdl renderer
+        window->renderer = SDL_CreateRenderer(window->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+        lx_assert_and_check_break(window->renderer);
+
+        // ok
+        ok = lx_true;
+    } while (0);
+    return ok;
+}
+
+static lx_void_t lx_window_sdl_runloop(lx_window_ref_t self) {
+
+    // check
+    lx_window_sdl_t* window = (lx_window_sdl_t*)self;
+    lx_assert_and_check_return(window);
+
+    // start sdl window
+    if (!lx_window_sdl_start(window)) {
+        lx_trace_e("start sdl window failed!");
+    }
+
+    // do loop
+    lx_bool_t stop = lx_false;
+    SDL_Event event;
+    SDL_Renderer* renderer = window->renderer;
+    while (!stop) {
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        SDL_RenderClear(renderer);
+        SDL_RenderPresent(renderer);
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_QUIT:
+                    stop = lx_true;
+                    break;
+                default:
+                    break;
+            }
+        }
+        SDL_Delay(100);
+    }
+}
+
+static lx_void_t lx_window_sdl_exit(lx_window_ref_t self) {
+    lx_window_sdl_t* window = (lx_window_sdl_t*)self;
+    if (window) {
+        if (window->surface) {
+            SDL_FreeSurface(window->surface);
+            window->surface = lx_null;
+        }
+        if (window->renderer) {
+            SDL_DestroyRenderer(window->renderer);
+            window->renderer = lx_null;
+        }
+        if (window->window) {
+            SDL_DestroyWindow(window->window);
+            window->window = lx_null;
+        }
+        lx_free(window);
+    }
+    SDL_Quit();
+}
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
 lx_window_ref_t lx_window_init_sdl(lx_size_t width, lx_size_t height, lx_char_t const* title) {
-    return lx_null;
+    lx_bool_t        ok = lx_false;
+    lx_window_sdl_t* window = lx_null;
+    do {
+
+        // check
+        lx_assert_and_check_break(width && height);
+
+        // init window
+        window = lx_malloc0_type(lx_window_sdl_t);
+        lx_assert_and_check_break(window);
+
+        window->base.width   = width;
+        window->base.height  = height;
+        window->base.title   = title;
+        window->base.runloop = lx_window_sdl_runloop;
+        window->base.exit    = lx_window_sdl_exit;
+
+        ok = lx_true;
+
+    } while (0);
+
+    if (!ok && window) {
+        lx_window_exit((lx_window_ref_t)window);
+        window = lx_null;
+    }
+    return (lx_window_ref_t)window;
 }
