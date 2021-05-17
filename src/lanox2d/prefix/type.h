@@ -142,6 +142,9 @@ typedef lx_fixed16_t                lx_fixed_t;
 /// the file ref type
 typedef lx_typeref(file);
 
+/// the canvas ref type
+typedef lx_typeref(canvas);
+
 /// the value type
 typedef union lx_value_t_ {
     lx_uint8_t                      u8;

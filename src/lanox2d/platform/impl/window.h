@@ -32,10 +32,19 @@
 
 // the window type
 typedef struct lx_window_t_ {
+
+    // the basic information
     lx_size_t           width;
     lx_size_t           height;
     lx_char_t const*    title;
-    lx_bool_t           (*is_closed)(struct lx_window_t_* window);
+    lx_cpointer_t       udata;
+
+    // notification functions
+    lx_void_t           (*on_draw)(lx_window_ref_t window, lx_canvas_ref_t canvas);
+    lx_void_t           (*on_resize)(lx_window_ref_t window, lx_canvas_ref_t canvas);
+
+    // inner functions
+    lx_void_t           (*runloop)(struct lx_window_t_* window);
     lx_void_t           (*exit)(struct lx_window_t_* window);
 }lx_window_t;
 

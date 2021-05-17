@@ -38,6 +38,20 @@ lx_extern_c_enter
 /// the window ref type
 typedef lx_typeref(window);
 
+/*! the on_draw function type
+ *
+ * @param window            the window
+ * @param canvas            the canvas
+ */
+typedef lx_void_t           (*lx_window_on_draw_t)(lx_window_ref_t window, lx_canvas_ref_t canvas);
+
+/*! the on_resize function type
+ *
+ * @param window            the window
+ * @param canvas            the canvas
+ */
+typedef lx_void_t           (*lx_window_on_resize_t)(lx_window_ref_t window, lx_canvas_ref_t canvas);
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * interfaces
  */
@@ -68,13 +82,27 @@ lx_size_t               lx_window_width(lx_window_ref_t window);
  */
 lx_size_t               lx_window_height(lx_window_ref_t window);
 
-/*! is window closed?
+/*! register on_draw function
  *
  * @param window        the window
+ * @param on_draw       the on_draw function
  *
- * @return              lx_true or lx_false
  */
-lx_bool_t               lx_window_is_closed(lx_window_ref_t window);
+lx_void_t               lx_window_on_draw(lx_window_ref_t window, lx_window_on_draw_t on_draw);
+
+/*! register on_resize function
+ *
+ * @param window        the window
+ * @param on_resize     the on_resize function
+ *
+ */
+lx_void_t               lx_window_on_resize(lx_window_ref_t window, lx_window_on_resize_t on_resize);
+
+/*! run window loop
+ *
+ * @param window        the window
+ */
+lx_void_t               lx_window_runloop(lx_window_ref_t window);
 
 /*! exit window
  *

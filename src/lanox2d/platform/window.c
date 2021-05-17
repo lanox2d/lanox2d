@@ -49,9 +49,24 @@ lx_size_t lx_window_height(lx_window_ref_t self) {
     return window? window->height : 0;
 }
 
-lx_bool_t lx_window_is_closed(lx_window_ref_t self) {
+lx_void_t lx_window_on_draw(lx_window_ref_t self, lx_window_on_draw_t on_draw) {
     lx_window_t* window = (lx_window_t*)self;
-    return window? window->is_closed(window) : lx_true;
+    if (window) {
+        window->on_draw = on_draw;
+    }
+}
+
+lx_void_t lx_window_on_resize(lx_window_ref_t self, lx_window_on_resize_t on_resize) {
+    lx_window_t* window = (lx_window_t*)self;
+    if (window) {
+        window->on_resize = on_resize;
+    }
+}
+
+lx_void_t lx_window_runloop(lx_window_ref_t self) {
+    lx_window_t* window = (lx_window_t*)self;
+    lx_assert_and_check_return(window && window->runloop);
+    window->runloop(window);
 }
 
 lx_void_t lx_window_exit(lx_window_ref_t self) {
