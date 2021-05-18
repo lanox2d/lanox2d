@@ -1,5 +1,5 @@
 -- tests and examples options
-option("tests",    {showmenu = true, default = true, description = "Enable tests"})
+option("tests",    {showmenu = true, default = false, description = "Enable tests"})
 option("examples", {showmenu = true, default = true, description = "Enable exmaples"})
 
 -- enable small compilation mode, it will disable all optional packages and modules
