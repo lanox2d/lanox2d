@@ -32,9 +32,9 @@
 // the sdl window type
 typedef struct lx_window_sdl_t_ {
     lx_window_t     base;
-    SDL_Surface*    surface;
     SDL_Window*     window;
     SDL_Renderer*   renderer;
+    SDL_Texture*    texture;
 } lx_window_sdl_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -59,6 +59,10 @@ static lx_bool_t lx_window_sdl_start(lx_window_sdl_t* window) {
         window->renderer = SDL_CreateRenderer(window->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
         lx_assert_and_check_break(window->renderer);
 
+        // create sdl texture, TODO pixmap
+	    window->texture = SDL_CreateTexture(window->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, window->base.width, window->base.height);
+        lx_assert_and_check_break(window->texture);
+
         // ok
         ok = lx_true;
     } while (0);
@@ -77,13 +81,24 @@ static lx_void_t lx_window_sdl_runloop(lx_window_ref_t self) {
     }
 
     // do loop
-    lx_bool_t stop = lx_false;
-    SDL_Event event;
+    lx_bool_t     stop = lx_false;
+    SDL_Event     event;
+    SDL_Texture*  texture = window->texture;
     SDL_Renderer* renderer = window->renderer;
     while (!stop) {
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-        SDL_RenderClear(renderer);
+
+        // render texture
+        lx_int_t      pitch = 0;
+        lx_pointer_t  pixels = lx_null;
+        if (0 == SDL_LockTexture(texture, lx_null, &pixels, &pitch)) {
+            SDL_UnlockTexture(texture);
+        }
+
+        // flush window
+        SDL_RenderCopyEx(renderer, texture, lx_null, lx_null, 0, lx_null, SDL_FLIP_VERTICAL);
         SDL_RenderPresent(renderer);
+
+        // poll event
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_QUIT:
@@ -93,6 +108,8 @@ static lx_void_t lx_window_sdl_runloop(lx_window_ref_t self) {
                     break;
             }
         }
+
+        // TODO timer/fps60
         SDL_Delay(100);
     }
 }
@@ -100,9 +117,9 @@ static lx_void_t lx_window_sdl_runloop(lx_window_ref_t self) {
 static lx_void_t lx_window_sdl_exit(lx_window_ref_t self) {
     lx_window_sdl_t* window = (lx_window_sdl_t*)self;
     if (window) {
-        if (window->surface) {
-            SDL_FreeSurface(window->surface);
-            window->surface = lx_null;
+        if (window->texture) {
+            SDL_DestroyTexture(window->texture);
+            window->texture = lx_null;
         }
         if (window->renderer) {
             SDL_DestroyRenderer(window->renderer);
