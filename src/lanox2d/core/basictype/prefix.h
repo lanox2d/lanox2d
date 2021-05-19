@@ -26,6 +26,46 @@
  */
 #include "../../prefix.h"
 
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * types
+ */
+
+/// the pixel type
+typedef lx_uint32_t                 lx_pixel_t;
+
+/// the canvas ref type
+typedef lx_typeref(canvas);
+
+/*! @def the color type
+ *
+ * the color type
+ *
+ * @code
+ * union lx_c2p_t_ {
+ *      lx_color_t c;
+ *      lx_pixel_t p;
+ * }c2p;
+ * c2p.c = c;
+ * return c2p.p;
+ * @endcode
+ *
+ */
+#ifdef LX_WORDS_BIGENDIAN
+typedef struct lx_color_t_ {
+    lx_byte_t           a;
+    lx_byte_t           r;
+    lx_byte_t           g;
+    lx_byte_t           b;
+}lx_color_t, *lx_color_ref_t;
+#else
+typedef struct lx_color_t_ {
+    lx_byte_t           b;
+    lx_byte_t           g;
+    lx_byte_t           r;
+    lx_byte_t           a;
+}lx_color_t, *lx_color_ref_t;
+#endif
+
 #endif
 
 
