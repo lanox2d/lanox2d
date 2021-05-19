@@ -15,31 +15,37 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        prefix.h
+ * @file        endian.h
  *
  */
-#ifndef LX_PREFIX_PREFIX_H
-#define LX_PREFIX_PREFIX_H
+#ifndef LX_PREFIX_ENDIAN_H
+#define LX_PREFIX_ENDIAN_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
 #include "config.h"
-#include "cpu.h"
-#include "arch.h"
-#include "endian.h"
-#include "type.h"
-#include "limits.h"
-#include "version.h"
-#include "compiler.h"
-#include "assembler.h"
-#include "keyword.h"
-#include "trace.h"
-#include "abort.h"
-#include "check.h"
-#include "assert.h"
-#include "malloc.h"
-#include "color.h"
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * macros
+ */
+
+// words endian
+#ifdef __BYTE_ORDER__
+#   if __BYTE_ORDER__ != __ORDER_LITTLE_ENDIAN__
+#       define LX_WORDS_BIGENDIAN
+#   endif
+#endif
+#if defined(MIPSEB) || defined(_MIPSEB) || defined(__MIPSEB__)
+#   define LX_WORDS_BIGENDIAN
+#endif
+
+// float endian
+#ifdef __FLOAT_WORD_ORDER__
+#   if __FLOAT_WORD_ORDER__ != __ORDER_LITTLE_ENDIAN__
+#       define LX_FLOAT_BIGENDIAN
+#   endif
+#endif
 
 #endif
 
