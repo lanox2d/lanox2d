@@ -15,17 +15,18 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        prefix.h
+ * @file        basictype.h
  *
  */
-#ifndef LX_CORE_PREFIX_H
-#define LX_CORE_PREFIX_H
+#ifndef LX_CORE_BASICTYPE_H
+#define LX_CORE_BASICTYPE_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "../prefix.h"
-#include "basictype/basictype.h"
+#include "prefix.h"
+#include "color.h"
+#include "pixmap.h"
 
 #endif
 

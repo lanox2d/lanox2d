@@ -18,16 +18,14 @@
  * @file        color.h
  *
  */
-#ifndef LX_PREFIX_COLOR_H
-#define LX_PREFIX_COLOR_H
+#ifndef LX_CORE_BASICTYPE_COLOR_H
+#define LX_CORE_BASICTYPE_COLOR_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "type.h"
-#include "keyword.h"
+#include "prefix.h"
 
-#if 0
 /* //////////////////////////////////////////////////////////////////////////////////////
  * macros
  */
@@ -76,15 +74,12 @@ lx_extern_c_enter
  *
  * @return                          the color
  */
-static lx_inline lx_color_t     lx_color_make(lx_byte_t a, lx_byte_t r, lx_byte_t g, lx_byte_t b)
-{
+static lx_inline lx_color_t lx_color_make(lx_byte_t a, lx_byte_t r, lx_byte_t g, lx_byte_t b) {
     lx_color_t c;
-
     c.a = a;
     c.r = r;
     c.g = g;
     c.b = b;
-
     return c;
 }
 
@@ -94,13 +89,10 @@ static lx_inline lx_color_t     lx_color_make(lx_byte_t a, lx_byte_t r, lx_byte_
  *
  * @return                          the pixel value
  */
-static lx_inline lx_uint32_t    lx_color_pixel(lx_color_t color)
-{
-    union __lx_c2p_t
-    {
+static lx_inline lx_uint32_t lx_color_pixel(lx_color_t color) {
+    union lx_c2p_t_ {
         lx_color_t c;
         lx_pixel_t p;
-
     }c2p;
     c2p.c = color;
     return c2p.p;
@@ -112,13 +104,10 @@ static lx_inline lx_uint32_t    lx_color_pixel(lx_color_t color)
  *
  * @return                          the color
  */
-static lx_inline lx_color_t     lx_pixel_color(lx_pixel_t pixel)
-{
-    union __lx_p2c_t
-    {
+static lx_inline lx_color_t lx_pixel_color(lx_pixel_t pixel) {
+    union lx_p2c_t_ {
         lx_color_t c;
         lx_pixel_t p;
-
     }p2c;
     p2c.p = pixel;
     return p2c.c;
@@ -127,14 +116,6 @@ static lx_inline lx_color_t     lx_pixel_color(lx_pixel_t pixel)
 /* //////////////////////////////////////////////////////////////////////////////////////
  * interfaces
  */
-
-/*! get color from the name
- *
- * @param name      the color name
- *
- * @return          the color
- */
-lx_color_t const    lx_color_from_name(lx_char_t const* name);
 
 /*! get color from the index
  *
@@ -148,7 +129,6 @@ lx_color_t const    lx_color_from_index(lx_size_t index);
  * extern
  */
 lx_extern_c_leave
-#endif
 #endif
 
 

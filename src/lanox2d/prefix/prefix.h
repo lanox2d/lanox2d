@@ -39,6 +39,7 @@
 #include "check.h"
 #include "assert.h"
 #include "malloc.h"
+#include "utils.h"
 
 #endif
 

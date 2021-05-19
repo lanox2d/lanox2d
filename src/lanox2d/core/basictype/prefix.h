@@ -18,14 +18,13 @@
  * @file        prefix.h
  *
  */
-#ifndef LX_CORE_PREFIX_H
-#define LX_CORE_PREFIX_H
+#ifndef LX_CORE_BASICTYPE_PREFIX_H
+#define LX_CORE_BASICTYPE_PREFIX_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "../prefix.h"
-#include "basictype/basictype.h"
+#include "../../prefix.h"
 
 #endif
 
