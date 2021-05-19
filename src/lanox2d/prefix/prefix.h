@@ -39,8 +39,6 @@
 #include "check.h"
 #include "assert.h"
 #include "malloc.h"
-#include "color.h"
-#include "pixmap.h"
 
 #endif
 
