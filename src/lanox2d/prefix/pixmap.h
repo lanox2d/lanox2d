@@ -15,32 +15,20 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        prefix.h
+ * @file        pixmap.h
  *
  */
-#ifndef LX_PREFIX_PREFIX_H
-#define LX_PREFIX_PREFIX_H
+#ifndef LX_PREFIX_PIXMAP_H
+#define LX_PREFIX_PIXMAP_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
 #include "config.h"
-#include "cpu.h"
-#include "arch.h"
-#include "endian.h"
-#include "type.h"
-#include "limits.h"
-#include "version.h"
-#include "compiler.h"
-#include "assembler.h"
-#include "keyword.h"
-#include "trace.h"
-#include "abort.h"
-#include "check.h"
-#include "assert.h"
-#include "malloc.h"
-#include "color.h"
-#include "pixmap.h"
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * macros
+ */
 
 #endif
 
