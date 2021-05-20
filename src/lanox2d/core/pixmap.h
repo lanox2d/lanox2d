@@ -137,7 +137,10 @@ typedef struct lx_pixmap_t_ {
     /// fill pixels to data
     lx_pixmap_func_pixels_fill_t  pixels_fill;
 
-}lx_pixmap_t, *lx_pixmap_ref_t;
+}lx_pixmap_t;
+
+/// the pixmap reference type
+typedef lx_pixmap_t const*  lx_pixmap_ref_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * interfaces

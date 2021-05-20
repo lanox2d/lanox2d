@@ -23,6 +23,7 @@
  * includes
  */
 #include "pixmap.h"
+#include "quality.h"
 #include "private/pixmap/pal8.c"
 #include "private/pixmap/rgb565.c"
 #include "private/pixmap/rgb888.c"
@@ -39,7 +40,6 @@
 #include "private/pixmap/rgba8888.c"
 #include "private/pixmap/rgbx8888.c"
 
-#if 0
 /* //////////////////////////////////////////////////////////////////////////////////////
  * globals
  */
@@ -202,4 +202,3 @@ lx_pixmap_ref_t lx_pixmap(lx_size_t pixfmt, lx_byte_t alpha) {
     // transparent
     return lx_null;
 }
-#endif
