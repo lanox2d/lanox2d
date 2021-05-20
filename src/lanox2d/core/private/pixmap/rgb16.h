@@ -51,11 +51,11 @@ static lx_inline lx_void_t lx_pixmap_rgb16_pixel_copy_o(lx_pointer_t data, lx_cp
 }
 
 static lx_inline lx_void_t lx_pixmap_rgb16_pixels_fill_lo(lx_pointer_t data, lx_pixel_t pixel, lx_size_t count, lx_byte_t alpha) {
-    lx_memset_u16(data, lx_bits_ne_to_le_u16(pixel), count);
+    lx_memset16(data, lx_bits_ne_to_le_u16(pixel), count);
 }
 
 static lx_inline lx_void_t lx_pixmap_rgb16_pixels_fill_bo(lx_pointer_t data, lx_pixel_t pixel, lx_size_t count, lx_byte_t alpha) {
-    lx_memset_u16(data, lx_bits_ne_to_be_u16(pixel), count);
+    lx_memset16(data, lx_bits_ne_to_be_u16(pixel), count);
 }
 
 

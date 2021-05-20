@@ -117,6 +117,36 @@ lx_int_t            lx_vsnprintf(lx_char_t* s, lx_size_t n, lx_char_t const* fmt
  */
 lx_pointer_t        lx_memset(lx_pointer_t s, lx_byte_t c, lx_size_t n);
 
+/*! memset16
+ *
+ * @param s         the memory data
+ * @param c         the filled byte
+ * @param n         the data size
+ *
+ * @return          the memory data
+ */
+lx_pointer_t        lx_memset16(lx_pointer_t s, lx_uint16_t c, lx_size_t n);
+
+/*! memset24
+ *
+ * @param s         the memory data
+ * @param c         the filled byte
+ * @param n         the data size
+ *
+ * @return          the memory data
+ */
+lx_pointer_t        lx_memset24(lx_pointer_t s, lx_uint32_t c, lx_size_t n);
+
+/*! memset32
+ *
+ * @param s         the memory data
+ * @param c         the filled byte
+ * @param n         the data size
+ *
+ * @return          the memory data
+ */
+lx_pointer_t        lx_memset32(lx_pointer_t s, lx_uint32_t c, lx_size_t n);
+
 /*! memcpy
  *
  * @param s1        the destinate data
