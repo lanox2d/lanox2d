@@ -35,9 +35,6 @@ lx_extern_c_enter
  * types
  */
 
-/// the window ref type
-typedef lx_typeref(window);
-
 /// the window flag enum
 typedef enum lx_window_flag_e_ {
     LX_WINDOW_FLAG_NONE             = 0

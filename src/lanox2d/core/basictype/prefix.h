@@ -27,14 +27,30 @@
 #include "../../prefix.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
+ * macros
+ */
+
+/// the max width
+#define LX_WIDTH_MAX           (8192)
+
+/// the max height
+#define LX_HEIGHT_MAX          (8192)
+
+/* //////////////////////////////////////////////////////////////////////////////////////
  * types
  */
 
 /// the pixel type
 typedef lx_uint32_t                 lx_pixel_t;
 
+/// the bitmap ref type
+typedef lx_typeref(bitmap);
+
 /// the canvas ref type
 typedef lx_typeref(canvas);
+
+/// the window ref type
+typedef lx_typeref(window);
 
 /*! @def the color type
  *
