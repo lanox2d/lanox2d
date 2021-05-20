@@ -34,12 +34,12 @@
 #include "private/pixmap/xrgb8888.c"
 #include "private/pixmap/rgba5551.c"
 #include "private/pixmap/rgbx5551.c"
-#if 0
-#include "pixmap/rgba4444.h"
-#include "pixmap/rgbx4444.h"
-#include "pixmap/rgba8888.h"
-#include "pixmap/rgbx8888.h"
+#include "private/pixmap/rgba4444.c"
+#include "private/pixmap/rgbx4444.c"
+#include "private/pixmap/rgba8888.c"
+#include "private/pixmap/rgbx8888.c"
 
+#if 0
 /* //////////////////////////////////////////////////////////////////////////////////////
  * globals
  */
