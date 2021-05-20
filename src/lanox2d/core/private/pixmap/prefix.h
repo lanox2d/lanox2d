@@ -18,14 +18,13 @@
  * @file        prefix.h
  *
  */
-#ifndef LX_PLATFORM_IMPL_WINDOWS_PREFIX_H
-#define LX_PLATFORM_IMPL_WINDOWS_PREFIX_H
+#ifndef LX_CORE_PRIVATE_PIXMAP_PREFIX_H
+#define LX_CORE_PRIVATE_PIXMAP_PREFIX_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
 #include "../prefix.h"
-#include "../window.h"
 
 #endif
 

@@ -15,11 +15,11 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        impl.h
+ * @file        private.h
  *
  */
-#ifndef LX_PLATFORM_IMPL_H
-#define LX_PLATFORM_IMPL_H
+#ifndef LX_PLATFORM_PRIVATE_H
+#define LX_PLATFORM_PRIVATE_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes

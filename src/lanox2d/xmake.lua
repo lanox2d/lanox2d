@@ -17,11 +17,11 @@ target("lanox2d")
     add_includedirs("$(buildir)/$(plat)/$(arch)/$(mode)", {public = true})
 
     -- add the header files for installing
-    add_headerfiles("../(lanox2d/**.h)|**/impl/**.h")
+    add_headerfiles("../(lanox2d/**.h)|**/private/**.h")
     add_headerfiles("$(buildir)/$(plat)/$(arch)/$(mode)/lanox2d.config.h", {prefixdir = "lanox2d"})
 
     -- add source files
-    add_files("**.c|impl/**.c")
+    add_files("**.c|**/private/**.c")
 
     -- add options
     add_options("small", "wchar", "window")

@@ -19,12 +19,12 @@
  *
  */
 
-#if 0
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
 #include "pixmap.h"
-#include "pixmap/pal8.h"
+#include "private/pixmap/pal8.c"
+#if 0
 #include "pixmap/rgb565.h"
 #include "pixmap/rgb888.h"
 #include "pixmap/argb1555.h"
@@ -184,7 +184,7 @@ lx_pixmap_ref_t lx_pixmap(lx_size_t pixfmt, lx_byte_t alpha) {
     // big endian?
     lx_size_t is_endian = LX_PIXFMT_BE(pixfmt);
 
-    // the pixfmt
+    // get pixfmt
     pixfmt = LX_PIXFMT(pixfmt);
     lx_assert(pixfmt);
 
