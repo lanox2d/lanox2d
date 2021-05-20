@@ -32,6 +32,24 @@
 lx_extern_c_enter
 
 /* //////////////////////////////////////////////////////////////////////////////////////
+ * macros
+ */
+
+/*! the min-alpha for quality
+ *
+ * is_transparent = alpha < LX_QUALITY_ALPHA_MIN? lx_true : lx_false
+ */
+#define LX_QUALITY_ALPHA_MIN           ((lx_byte_t)((LX_QUALITY_TOP - lx_quality()) << 3))
+
+/*! the max-alpha for quality
+ *
+ * @code
+ * has_alpha = alpha <= LX_QUALITY_ALPHA_MAX? lx_true : lx_false
+ * @endcode
+ */
+#define LX_QUALITY_ALPHA_MAX           ((lx_byte_t)(0xff - ((LX_QUALITY_TOP - lx_quality()) << 3)))
+
+/* //////////////////////////////////////////////////////////////////////////////////////
  * types
  */
 

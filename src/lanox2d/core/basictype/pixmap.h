@@ -31,17 +31,17 @@
  */
 
 // argb => pixel
-#define LX_RLX_565(r, g, b)         ((((r) << 8) & 0xf800) | (((g) << 3) & 0x7e0) | (((b) >> 3)))
-#define LX_RLX_888(r, g, b)         ((b) | ((g) << 8) | ((r) << 16))
+#define LX_RGB_565(r, g, b)         ((((r) << 8) & 0xf800) | (((g) << 3) & 0x7e0) | (((b) >> 3)))
+#define LX_RGB_888(r, g, b)         ((b) | ((g) << 8) | ((r) << 16))
 
-#define LX_ARLX_1555(a, r, g, b)    ((((a) << 8) & 0x8000) | (((r) << 7) & 0x7c00) | (((g) << 2) & 0x3e0) | (((b) >> 3)))
-#define LX_XRLX_1555(r, g, b)       ((0x8000) | (((r) << 7) & 0x7c00) | (((g) << 2) & 0x3e0) | (((b) >> 3)))
+#define LX_ARGB_1555(a, r, g, b)    ((((a) << 8) & 0x8000) | (((r) << 7) & 0x7c00) | (((g) << 2) & 0x3e0) | (((b) >> 3)))
+#define LX_XRGB_1555(r, g, b)       ((0x8000) | (((r) << 7) & 0x7c00) | (((g) << 2) & 0x3e0) | (((b) >> 3)))
 
-#define LX_ARLX_4444(a, r, g, b)    ((((a) << 8) & 0xf000) | (((r) << 4) & 0x0f00) | ((g) & 0x00f0) | (((b) >> 4)))
-#define LX_XRLX_4444(r, g, b)       ((0xf000) | (((r) << 4) & 0x0f00) | ((g) & 0x00f0) | (((b) >> 4)))
+#define LX_ARGB_4444(a, r, g, b)    ((((a) << 8) & 0xf000) | (((r) << 4) & 0x0f00) | ((g) & 0x00f0) | (((b) >> 4)))
+#define LX_XRGB_4444(r, g, b)       ((0xf000) | (((r) << 4) & 0x0f00) | ((g) & 0x00f0) | (((b) >> 4)))
 
-#define LX_ARLX_8888(a, r, g, b)    ((b) | ((g) << 8) | ((r) << 16) | ((a) << 24))
-#define LX_XRLX_8888(r, g, b)       ((b) | ((g) << 8) | ((r) << 16) | ((0xff) << 24))
+#define LX_ARGB_8888(a, r, g, b)    ((b) | ((g) << 8) | ((r) << 16) | ((a) << 24))
+#define LX_XRGB_8888(r, g, b)       ((b) | ((g) << 8) | ((r) << 16) | ((0xff) << 24))
 
 #define LX_RGBA_5551(r, g, b, a)    ((((r) << 8) & 0xf800) | (((g) << 3) & 0x07c0) | (((b) >> 2) & 0x03e) | (((a) >> 7)))
 #define LX_RGBX_5551(r, g, b)       ((((r) << 8) & 0xf800) | (((g) << 3) & 0x07c0) | (((b) >> 2) & 0x03e) | (0x0001))
@@ -53,40 +53,40 @@
 #define LX_RGBX_8888(r, g, b)       (0xff | ((b) << 8) | ((g) << 16) | ((r) << 24))
 
 // pixel => argb
-#define LX_RLX_565_R(c)             (((c) >> 8) & 0x00f8)   //!< 1111 1000
-#define LX_RLX_565_G(c)             (((c) >> 3) & 0x00fc)   //!< 1111 1100
-#define LX_RLX_565_B(c)             (((c) << 3) & 0x00f8)   //!< 1111 1000
+#define LX_RGB_565_R(c)             (((c) >> 8) & 0x00f8)   //!< 1111 1000
+#define LX_RGB_565_G(c)             (((c) >> 3) & 0x00fc)   //!< 1111 1100
+#define LX_RGB_565_B(c)             (((c) << 3) & 0x00f8)   //!< 1111 1000
 
-#define LX_RLX_888_R(c)             (((c) >> 16) & 0x0000ff)
-#define LX_RLX_888_G(c)             (((c) >> 8) & 0x0000ff)
-#define LX_RLX_888_B(c)             ((c) & 0x0000ff)
+#define LX_RGB_888_R(c)             (((c) >> 16) & 0x0000ff)
+#define LX_RGB_888_G(c)             (((c) >> 8) & 0x0000ff)
+#define LX_RGB_888_B(c)             ((c) & 0x0000ff)
 
-#define LX_ARLX_1555_A(c)           (((c) >> 8) & 0x0080)   //!< 1000 0000
-#define LX_ARLX_1555_R(c)           (((c) >> 7) & 0x00f8)   //!< 1111 1000
-#define LX_ARLX_1555_G(c)           (((c) >> 2) & 0x00f8)   //!< 1111 1000
-#define LX_ARLX_1555_B(c)           (((c) << 3) & 0x00f8)   //!< 1111 1000
+#define LX_ARGB_1555_A(c)           (((c) >> 8) & 0x0080)   //!< 1000 0000
+#define LX_ARGB_1555_R(c)           (((c) >> 7) & 0x00f8)   //!< 1111 1000
+#define LX_ARGB_1555_G(c)           (((c) >> 2) & 0x00f8)   //!< 1111 1000
+#define LX_ARGB_1555_B(c)           (((c) << 3) & 0x00f8)   //!< 1111 1000
 
-#define LX_XRLX_1555_R(c)           (((c) >> 7) & 0x00f8)   //!< 1111 1000
-#define LX_XRLX_1555_G(c)           (((c) >> 2) & 0x00f8)   //!< 1111 1000
-#define LX_XRLX_1555_B(c)           (((c) << 3) & 0x00f8)   //!< 1111 1000
+#define LX_XRGB_1555_R(c)           (((c) >> 7) & 0x00f8)   //!< 1111 1000
+#define LX_XRGB_1555_G(c)           (((c) >> 2) & 0x00f8)   //!< 1111 1000
+#define LX_XRGB_1555_B(c)           (((c) << 3) & 0x00f8)   //!< 1111 1000
 
-#define LX_ARLX_4444_A(c)           (((c) >> 8) & 0x00f0)   //!< 1111 0000
-#define LX_ARLX_4444_R(c)           (((c) >> 4) & 0x00f0)   //!< 1111 0000
-#define LX_ARLX_4444_G(c)           ((c) & 0x00f0)          //!< 1111 0000
-#define LX_ARLX_4444_B(c)           (((c) << 4) & 0x00f0)   //!< 1111 0000
+#define LX_ARGB_4444_A(c)           (((c) >> 8) & 0x00f0)   //!< 1111 0000
+#define LX_ARGB_4444_R(c)           (((c) >> 4) & 0x00f0)   //!< 1111 0000
+#define LX_ARGB_4444_G(c)           ((c) & 0x00f0)          //!< 1111 0000
+#define LX_ARGB_4444_B(c)           (((c) << 4) & 0x00f0)   //!< 1111 0000
 
-#define LX_XRLX_4444_R(c)           (((c) >> 4) & 0x00f0)   //!< 1111 0000
-#define LX_XRLX_4444_G(c)           ((c) & 0x00f0)          //!< 1111 0000
-#define LX_XRLX_4444_B(c)           (((c) << 4) & 0x00f0)   //!< 1111 0000
+#define LX_XRGB_4444_R(c)           (((c) >> 4) & 0x00f0)   //!< 1111 0000
+#define LX_XRGB_4444_G(c)           ((c) & 0x00f0)          //!< 1111 0000
+#define LX_XRGB_4444_B(c)           (((c) << 4) & 0x00f0)   //!< 1111 0000
 
-#define LX_ARLX_8888_A(c)           (((c) >> 24) & 0x000000ff)
-#define LX_ARLX_8888_R(c)           (((c) >> 16) & 0x000000ff)
-#define LX_ARLX_8888_G(c)           (((c) >> 8) & 0x000000ff)
-#define LX_ARLX_8888_B(c)           ((c) & 0x000000ff)
+#define LX_ARGB_8888_A(c)           (((c) >> 24) & 0x000000ff)
+#define LX_ARGB_8888_R(c)           (((c) >> 16) & 0x000000ff)
+#define LX_ARGB_8888_G(c)           (((c) >> 8) & 0x000000ff)
+#define LX_ARGB_8888_B(c)           ((c) & 0x000000ff)
 
-#define LX_XRLX_8888_R(c)           (((c) >> 16) & 0x000000ff)
-#define LX_XRLX_8888_G(c)           (((c) >> 8) & 0x000000ff)
-#define LX_XRLX_8888_B(c)           ((c) & 0x000000ff)
+#define LX_XRGB_8888_R(c)           (((c) >> 16) & 0x000000ff)
+#define LX_XRGB_8888_G(c)           (((c) >> 8) & 0x000000ff)
+#define LX_XRGB_8888_B(c)           ((c) & 0x000000ff)
 
 #define LX_RGBA_5551_R(c)           (((c) >> 8) & 0x00f8)   //!< 1111 1000
 #define LX_RGBA_5551_G(c)           (((c) >> 3) & 0x00f8)   //!< 1111 1000

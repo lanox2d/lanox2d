@@ -146,7 +146,7 @@ typedef struct lx_pixmap_t_ {
 /*! get the pixmap from the pixel format
  *
  * @param pixfmt        the pixfmt with endian
- * @param alpha         the alpha value, do blend-alpha operation if (alpha >= GB_ALPHA_MINN && alpha <= GB_ALPHA_MAXN)
+ * @param alpha         the alpha value, do blend-alpha operation if (alpha >= LX_QUALITY_ALPHA_MIN && alpha <= LX_QUALITY_ALPHA_MAX)
  *
  * @return              the pixmap
  */

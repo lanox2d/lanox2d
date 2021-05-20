@@ -189,12 +189,12 @@ lx_pixmap_ref_t lx_pixmap(lx_size_t pixfmt, lx_byte_t alpha) {
     lx_assert(pixfmt);
 
     // opaque?
-    if (alpha > LX_ALPHA_MAXN) {
+    if (alpha > LX_QUALITY_ALPHA_MAX) {
         lx_assert(pixfmt && (pixfmt - 1) < lx_arrayn(g_pixmaps_lo));
         return is_endian? g_pixmaps_bo[pixfmt - 1] : g_pixmaps_lo[pixfmt - 1];
     }
     // alpha?
-    else if (alpha >= LX_ALPHA_MINN) {
+    else if (alpha >= LX_QUALITY_ALPHA_MIN) {
         lx_assert(pixfmt && (pixfmt - 1) < lx_arrayn(g_pixmaps_la));
         return is_endian? g_pixmaps_ba[pixfmt - 1] : g_pixmaps_la[pixfmt - 1];
     }
