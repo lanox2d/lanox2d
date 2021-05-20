@@ -32,9 +32,9 @@
 #include "private/pixmap/xrgb4444.c"
 #include "private/pixmap/argb8888.c"
 #include "private/pixmap/xrgb8888.c"
+#include "private/pixmap/rgba5551.c"
+#include "private/pixmap/rgbx5551.c"
 #if 0
-#include "pixmap/rgba5551.h"
-#include "pixmap/rgbx5551.h"
 #include "pixmap/rgba4444.h"
 #include "pixmap/rgbx4444.h"
 #include "pixmap/rgba8888.h"
