@@ -50,11 +50,11 @@ static lx_void_t lx_pixmap_pal8_pixel_set_a(lx_pointer_t data, lx_pixel_t pixel,
     ((lx_byte_t*)data)[0] = (lx_byte_t)(pixel & 0xff);
 }
 
-static lx_void_t lx_pixmap_pal8_pixel_cpy_o(lx_pointer_t data, lx_cpointer_t source, lx_byte_t alpha) {
+static lx_void_t lx_pixmap_pal8_pixel_copy_o(lx_pointer_t data, lx_cpointer_t source, lx_byte_t alpha) {
     ((lx_byte_t*)data)[0] = ((lx_byte_t*)source)[0];
 }
 
-static lx_void_t lx_pixmap_pal8_pixel_cpy_a(lx_pointer_t data, lx_cpointer_t source, lx_byte_t alpha) {
+static lx_void_t lx_pixmap_pal8_pixel_copy_a(lx_pointer_t data, lx_cpointer_t source, lx_byte_t alpha) {
     ((lx_byte_t*)data)[0] = ((lx_byte_t*)source)[0];
 }
 
@@ -92,7 +92,7 @@ static lx_pixmap_t const g_pixmap_o_pal8 = {
 ,   lx_pixmap_pal8_color
 ,   lx_pixmap_pal8_pixel_get
 ,   lx_pixmap_pal8_pixel_set_o
-,   lx_pixmap_pal8_pixel_cpy_o
+,   lx_pixmap_pal8_pixel_copy_o
 ,   lx_pixmap_pal8_color_get
 ,   lx_pixmap_pal8_color_set_o
 ,   lx_pixmap_pal8_pixels_fill_o
@@ -107,7 +107,7 @@ static lx_pixmap_t const g_pixmap_a_pal8 = {
 ,   lx_pixmap_pal8_color
 ,   lx_pixmap_pal8_pixel_get
 ,   lx_pixmap_pal8_pixel_set_a
-,   lx_pixmap_pal8_pixel_cpy_a
+,   lx_pixmap_pal8_pixel_copy_a
 ,   lx_pixmap_pal8_color_get
 ,   lx_pixmap_pal8_color_set_a
 ,   lx_pixmap_pal8_pixels_fill_a

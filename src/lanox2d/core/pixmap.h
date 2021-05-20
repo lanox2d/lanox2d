@@ -73,7 +73,7 @@ typedef lx_void_t       (*lx_pixmap_func_pixel_set_t)(lx_pointer_t data, lx_pixe
  * @param source        the source data
  * @param alpha         the alpha
  */
-typedef lx_void_t       (*lx_pixmap_func_pixel_cpy_t)(lx_pointer_t data, lx_cpointer_t source, lx_byte_t alpha);
+typedef lx_void_t       (*lx_pixmap_func_pixel_copy_t)(lx_pointer_t data, lx_cpointer_t source, lx_byte_t alpha);
 
 /*! get color from data
  *
@@ -126,7 +126,7 @@ typedef struct lx_pixmap_t_ {
     lx_pixmap_func_pixel_set_t    pixel_set;
 
     /// copy pixel to data from the source data
-    lx_pixmap_func_pixel_cpy_t    pixel_cpy;
+    lx_pixmap_func_pixel_copy_t   pixel_copy;
 
     /// get color from data
     lx_pixmap_func_color_get_t    color_get;

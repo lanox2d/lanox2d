@@ -24,8 +24,8 @@
  */
 #include "pixmap.h"
 #include "private/pixmap/pal8.c"
+#include "private/pixmap/rgb565.c"
 #if 0
-#include "pixmap/rgb565.h"
 #include "pixmap/rgb888.h"
 #include "pixmap/argb1555.h"
 #include "pixmap/xrgb1555.h"
