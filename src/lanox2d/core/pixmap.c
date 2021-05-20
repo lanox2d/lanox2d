@@ -30,9 +30,9 @@
 #include "private/pixmap/xrgb1555.c"
 #include "private/pixmap/argb4444.c"
 #include "private/pixmap/xrgb4444.c"
+#include "private/pixmap/argb8888.c"
+#include "private/pixmap/xrgb8888.c"
 #if 0
-#include "pixmap/argb8888.h"
-#include "pixmap/xrgb8888.h"
 #include "pixmap/rgba5551.h"
 #include "pixmap/rgbx5551.h"
 #include "pixmap/rgba4444.h"
