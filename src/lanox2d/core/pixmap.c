@@ -26,9 +26,9 @@
 #include "private/pixmap/pal8.c"
 #include "private/pixmap/rgb565.c"
 #include "private/pixmap/rgb888.c"
+#include "private/pixmap/argb1555.c"
+#include "private/pixmap/xrgb1555.c"
 #if 0
-#include "pixmap/argb1555.h"
-#include "pixmap/xrgb1555.h"
 #include "pixmap/argb4444.h"
 #include "pixmap/xrgb4444.h"
 #include "pixmap/argb8888.h"
