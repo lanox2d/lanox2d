@@ -25,6 +25,8 @@
  * includes
  */
 #include "prefix.h"
+#include "bitmap.h"
+#include "pixmap.h"
 
 #endif
 
