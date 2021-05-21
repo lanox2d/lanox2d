@@ -15,42 +15,19 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        device.c
+ * @file        bitmap.c
  *
  */
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "device.h"
-#include "private/device.h"
+#include "prefix.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * implementation
+ * includes
  */
-
-lx_void_t lx_device_exit(lx_device_ref_t self) {
-}
-
-lx_size_t lx_device_type(lx_device_ref_t self) {
-    return 0;
-}
-
-lx_size_t lx_device_pixfmt(lx_device_ref_t self) {
-    return 0;
-}
-
-lx_size_t lx_device_width(lx_device_ref_t self) {
-    return 0;
-}
-
-lx_size_t lx_device_height(lx_device_ref_t self) {
-    return 0;
-}
-
-lx_void_t lx_device_resize(lx_device_ref_t self, lx_size_t width, lx_size_t height) {
-}
-
-lx_void_t lx_device_draw_clear(lx_device_ref_t self, lx_color_t color) {
+lx_device_ref_t lx_device_init_from_bitmap(lx_bitmap_ref_t bitmap) {
+    return lx_null;
 }
 
