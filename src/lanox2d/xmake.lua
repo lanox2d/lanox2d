@@ -21,7 +21,7 @@ target("lanox2d")
     add_headerfiles("$(buildir)/$(plat)/$(arch)/$(mode)/lanox2d.config.h", {prefixdir = "lanox2d"})
 
     -- add source files
-    add_files("**.c|**/private/**.c|core/device/**.c")
+    add_files("**.c|**/private/**.c|core/pixmap/*.c|core/device/**.c")
 
     -- add options
     add_options("small", "wchar", "window")
@@ -30,6 +30,10 @@ target("lanox2d")
     if has_package("libsdl") then
         add_packages("libsdl")
         set_configvar("LX_CONFIG_WINDOW_HAVE_SDL", 1)
+    end
+
+    -- add bitmap device
+    if has_package("libsdl") then
         set_configvar("LX_CONFIG_DEVICE_HAVE_BITMAP", 1)
         add_files("core/device/bitmap/**.c")
     end

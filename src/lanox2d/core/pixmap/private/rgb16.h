@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef LX_CORE_PRIVATE_PIXMAP_RGB16_H
-#define LX_CORE_PRIVATE_PIXMAP_RGB16_H
+#ifndef LX_CORE_PIXMAP_RGB16_H
+#define LX_CORE_PIXMAP_RGB16_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes

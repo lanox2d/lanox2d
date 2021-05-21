@@ -18,8 +18,8 @@
  * @file        prefix.h
  *
  */
-#ifndef LX_CORE_PRIVATE_PIXMAP_PREFIX_H
-#define LX_CORE_PRIVATE_PIXMAP_PREFIX_H
+#ifndef LX_CORE_PIXMAP_PRIVATE_PREFIX_H
+#define LX_CORE_PIXMAP_PRIVATE_PREFIX_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes

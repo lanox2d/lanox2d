@@ -16,11 +16,10 @@
  *
  * @author      ruki
  * @file        rgb24.h
- *
  */
 
-#ifndef LX_CORE_PRIVATE_PIXMAP_RGB24_H
-#define LX_CORE_PRIVATE_PIXMAP_RGB24_H
+#ifndef LX_CORE_PIXMAP_RGB24_H
+#define LX_CORE_PIXMAP_RGB24_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes

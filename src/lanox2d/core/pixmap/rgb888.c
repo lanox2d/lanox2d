@@ -23,8 +23,8 @@
  * includes
  */
 #include "prefix.h"
-#include "rgb24.h"
-#include "rgb32.h"
+#include "private/rgb24.h"
+#include "private/rgb32.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * inlines
