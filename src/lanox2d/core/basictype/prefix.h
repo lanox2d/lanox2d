@@ -52,6 +52,9 @@ typedef lx_typeref(canvas);
 /// the window ref type
 typedef lx_typeref(window);
 
+/// the device ref type
+typedef lx_typeref(device);
+
 /*! @def the color type
  *
  * the color type

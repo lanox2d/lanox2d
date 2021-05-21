@@ -26,8 +26,10 @@ target("lanox2d")
     -- add options
     add_options("small", "wchar", "window")
 
-    -- add packages
-    if is_config("window", "sdl") then
+    -- add sdl package
+    if has_package("libsdl") then
         add_packages("libsdl")
+        set_configvar("LX_CONFIG_WINDOW_HAVE_SDL", 1)
+        set_configvar("LX_CONFIG_DEVICE_HAVE_BITMAP", 1)
     end
 

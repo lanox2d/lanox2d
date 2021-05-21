@@ -15,22 +15,22 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        core.h
+ * @file        canvas.c
  *
  */
-#ifndef LX_CORE_H
-#define LX_CORE_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "prefix.h"
-#include "bitmap.h"
-#include "pixmap.h"
-#include "device.h"
 #include "canvas.h"
-#include "quality.h"
 
-#endif
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * implementation
+ */
+lx_canvas_ref_t lx_canvas_init(lx_device_ref_t device) {
+    return lx_null;
+}
 
+lx_void_t lx_canvas_exit(lx_canvas_ref_t canvas) {
+}
 

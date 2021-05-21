@@ -15,22 +15,46 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        core.h
+ * @file        device.c
  *
  */
-#ifndef LX_CORE_H
-#define LX_CORE_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "prefix.h"
-#include "bitmap.h"
-#include "pixmap.h"
 #include "device.h"
-#include "canvas.h"
-#include "quality.h"
 
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * implementation
+ */
+#ifdef LX_CONFIG_DEVICE_HAVE_BITMAP
+lx_device_ref_t lx_device_init_from_bitmap(lx_bitmap_ref_t bitmap) {
+    return lx_null;
+}
 #endif
 
+lx_void_t lx_device_exit(lx_device_ref_t self) {
+}
+
+lx_size_t lx_device_type(lx_device_ref_t self) {
+    return 0;
+}
+
+lx_size_t lx_device_pixfmt(lx_device_ref_t self) {
+    return 0;
+}
+
+lx_size_t lx_device_width(lx_device_ref_t self) {
+    return 0;
+}
+
+lx_size_t lx_device_height(lx_device_ref_t self) {
+    return 0;
+}
+
+lx_void_t lx_device_resize(lx_device_ref_t self, lx_size_t width, lx_size_t height) {
+}
+
+lx_void_t lx_device_draw_clear(lx_device_ref_t self, lx_color_t color) {
+}
 

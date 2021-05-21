@@ -49,6 +49,11 @@ lx_size_t lx_window_height(lx_window_ref_t self) {
     return window? window->height : 0;
 }
 
+lx_uint16_t lx_window_pixfmt(lx_window_ref_t self) {
+    lx_window_t* window = (lx_window_t*)self;
+    return window? window->pixfmt : 0;
+}
+
 lx_cpointer_t lx_window_udata(lx_window_ref_t self) {
     lx_window_t* window = (lx_window_t*)self;
     return window? window->udata : lx_null;

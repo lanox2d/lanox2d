@@ -35,11 +35,23 @@ typedef struct lx_window_sdl_t_ {
     SDL_Window*     window;
     SDL_Renderer*   renderer;
     SDL_Texture*    texture;
+    lx_bitmap_ref_t bitmap;
 } lx_window_sdl_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
+
+static lx_int_t lx_window_sdl_pixfmt(lx_uint16_t pixfmt) {
+    switch (pixfmt) {
+    case LX_PIXFMT_RGB565:
+        return SDL_PIXELFORMAT_RGB565;
+    case LX_PIXFMT_ARGB8888:
+    case LX_PIXFMT_XRGB8888:
+        return SDL_PIXELFORMAT_ARGB8888;
+    }
+    return -1;
+}
 
 static lx_bool_t lx_window_sdl_start(lx_window_sdl_t* window) {
     lx_bool_t ok = lx_false;
@@ -59,9 +71,29 @@ static lx_bool_t lx_window_sdl_start(lx_window_sdl_t* window) {
         window->renderer = SDL_CreateRenderer(window->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
         lx_assert_and_check_break(window->renderer);
 
-        // create sdl texture, TODO pixmap
-	    window->texture = SDL_CreateTexture(window->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, window->base.width, window->base.height);
+        // create sdl texture
+        lx_int_t pixfmt = lx_window_sdl_pixfmt(window->base.pixfmt);
+        if (pixfmt != -1) {
+            window->texture = SDL_CreateTexture(window->renderer, pixfmt, SDL_TEXTUREACCESS_TARGET, window->base.width, window->base.height);
+        }
         lx_assert_and_check_break(window->texture);
+
+        // init texture bitmap
+        lx_int_t      pitch = 0;
+        lx_pointer_t  pixels = lx_null;
+        if (0 == SDL_LockTexture(window->texture, lx_null, &pixels, &pitch)) {
+            window->bitmap = lx_bitmap_init(pixels, window->base.pixfmt, window->base.width, window->base.height, pitch, lx_false);
+            SDL_UnlockTexture(window->texture);
+        }
+        lx_assert_and_check_break(window->bitmap);
+
+        // init device
+        window->base.device = lx_device_init_from_bitmap(window->bitmap);
+        lx_assert_and_check_break(window->base.device);
+
+        // init canvas
+        window->base.canvas = lx_canvas_init(window->base.device);
+        lx_assert_and_check_break(window->base.canvas);
 
         // ok
         ok = lx_true;
@@ -87,11 +119,9 @@ static lx_void_t lx_window_sdl_runloop(lx_window_ref_t self) {
     SDL_Renderer* renderer = window->renderer;
     while (!stop) {
 
-        // render texture
-        lx_int_t      pitch = 0;
-        lx_pointer_t  pixels = lx_null;
-        if (0 == SDL_LockTexture(texture, lx_null, &pixels, &pitch)) {
-            SDL_UnlockTexture(texture);
+        // draw window
+        if (window->base.on_draw) {
+            window->base.on_draw(self, window->base.canvas);
         }
 
         // flush window
@@ -117,6 +147,18 @@ static lx_void_t lx_window_sdl_runloop(lx_window_ref_t self) {
 static lx_void_t lx_window_sdl_exit(lx_window_ref_t self) {
     lx_window_sdl_t* window = (lx_window_sdl_t*)self;
     if (window) {
+        if (window->base.canvas) {
+            lx_canvas_exit(window->base.canvas);
+            window->base.canvas = lx_null;
+        }
+        if (window->base.device) {
+            lx_device_exit(window->base.device);
+            window->base.device = lx_null;
+        }
+        if (window->bitmap) {
+            lx_bitmap_exit(window->bitmap);
+            window->bitmap = lx_null;
+        }
         if (window->texture) {
             SDL_DestroyTexture(window->texture);
             window->texture = lx_null;
@@ -154,6 +196,19 @@ lx_window_ref_t lx_window_init_sdl(lx_size_t width, lx_size_t height, lx_char_t 
         window->base.title   = title;
         window->base.runloop = lx_window_sdl_runloop;
         window->base.exit    = lx_window_sdl_exit;
+
+        /* init pixfmt
+         *
+         * supports:
+         * - xrgb8888_le
+         * - xrgb8888_be
+         * - rgb565_le
+         */
+#ifdef LX_CONFIG_OS_MACOSX
+        window->base.pixfmt = lx_quality() < LX_QUALITY_TOP? LX_PIXFMT_RGB565 : (LX_PIXFMT_XRGB8888 | LX_PIXFMT_BENDIAN);
+#else
+        window->base.pixfmt = lx_quality() < LX_QUALITY_TOP? LX_PIXFMT_RGB565 : LX_PIXFMT_XRGB8888;
+#endif
 
         ok = lx_true;
 

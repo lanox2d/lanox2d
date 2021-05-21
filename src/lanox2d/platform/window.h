@@ -110,6 +110,14 @@ lx_void_t               lx_window_udata_set(lx_window_ref_t window, lx_cpointer_
  */
 lx_void_t               lx_window_flags_set(lx_window_ref_t window, lx_uint16_t flags);
 
+/*! get the window pixfmt
+ *
+ * @param window        the window
+ *
+ * @return              the pixfmt
+ */
+lx_uint16_t             lx_window_pixfmt(lx_window_ref_t window);
+
 /*! register on_draw function
  *
  * @param window        the window

@@ -38,7 +38,14 @@ typedef struct lx_window_t_ {
     lx_size_t           height;
     lx_char_t const*    title;
     lx_uint16_t         flags;
+    lx_uint16_t         pixfmt;
     lx_cpointer_t       udata;
+
+    // the device
+    lx_device_ref_t     device;
+
+    // the canvas
+    lx_canvas_ref_t     canvas;
 
     // notification functions
     lx_void_t           (*on_draw)(lx_window_ref_t window, lx_canvas_ref_t canvas);

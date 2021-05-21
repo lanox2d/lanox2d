@@ -26,6 +26,7 @@
  */
 #include "../prefix.h"
 #include "../window.h"
+#include "../../../core/core.h"
 
 #endif
 
