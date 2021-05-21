@@ -155,6 +155,14 @@ typedef lx_pixmap_t const*  lx_pixmap_ref_t;
  */
 lx_pixmap_ref_t         lx_pixmap(lx_size_t pixfmt, lx_byte_t alpha);
 
+/*! get btp from pixel format
+ *
+ * @param pixfmt        the pixfmt with endian
+ *
+ * return               the bytes per-pixel
+ */
+lx_byte_t               lx_pixmap_btp(lx_size_t pixfmt);
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */

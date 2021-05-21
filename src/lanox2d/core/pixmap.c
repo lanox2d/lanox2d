@@ -202,3 +202,8 @@ lx_pixmap_ref_t lx_pixmap(lx_size_t pixfmt, lx_byte_t alpha) {
     // transparent
     return lx_null;
 }
+
+lx_byte_t lx_pixmap_btp(lx_size_t pixfmt) {
+    lx_pixmap_ref_t pixmap = lx_pixmap(pixfmt, 0xff);
+    return pixmap? pixmap->btp : 0;
+}
