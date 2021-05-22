@@ -26,6 +26,21 @@
  */
 #include "../prefix.h"
 
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * types
+ */
+
+// the device type
+typedef struct lx_device_t_ {
+    lx_uint8_t  type;
+    lx_uint16_t pixfmt;
+    lx_uint16_t width;
+    lx_uint16_t height;
+    lx_void_t   (*resize)(struct lx_device_t_* device, lx_size_t width, lx_size_t height);
+    lx_void_t   (*draw_clear)(struct lx_device_t_* device, lx_color_t color);
+    lx_void_t   (*exit)(struct lx_device_t_* device);
+}lx_device_t;
+
 #endif
 
 

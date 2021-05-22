@@ -42,6 +42,6 @@ target("lanox2d")
     -- add bitmap device
     if has_package("libsdl") then
         set_configvar("LX_CONFIG_DEVICE_HAVE_BITMAP", 1)
-        add_files("core/devices/bitmap/**.c")
+        add_files("core/device/bitmap/**.c")
     end
 
