@@ -15,11 +15,11 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        bits_arm.h
+ * @file        arm.h
  *
  */
-#ifndef LX_BASE_UTILS_PRIVATE_BITS_ARM_H
-#define LX_BASE_UTILS_PRIVATE_BITS_ARM_H
+#ifndef LX_BASE_UTILS_BITS_ARM_H
+#define LX_BASE_UTILS_BITS_ARM_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes

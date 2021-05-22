@@ -15,16 +15,18 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        window.h
+ * @file        prefix.h
  *
  */
-#ifndef LX_PLATFORM_IMPL_WINDOW_H
-#define LX_PLATFORM_IMPL_WINDOW_H
+#ifndef LX_PLATFORM_WINDOWS_PREFIX_H
+#define LX_PLATFORM_WINDOWS_PREFIX_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
+#include "../prefix.h"
 #include "../window.h"
+#include "../../core/core.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * types

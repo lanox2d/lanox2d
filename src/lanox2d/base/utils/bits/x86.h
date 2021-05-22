@@ -15,11 +15,11 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        bits_x86.h
+ * @file        x86.h
  *
  */
-#ifndef LX_BASE_UTILS_PRIVATE_BITS_x86_H
-#define LX_BASE_UTILS_PRIVATE_BITS_x86_H
+#ifndef LX_BASE_UTILS_BITS_x86_H
+#define LX_BASE_UTILS_BITS_x86_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes

@@ -15,11 +15,11 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        bits_sh4.h
+ * @file        sh4.h
  *
  */
-#ifndef LX_BASE_UTILS_PRIVATE_BITS_SH4_H
-#define LX_BASE_UTILS_PRIVATE_BITS_SH4_H
+#ifndef LX_BASE_UTILS_BITS_SH4_H
+#define LX_BASE_UTILS_BITS_SH4_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes

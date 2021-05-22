@@ -26,14 +26,14 @@
  */
 #include "prefix.h"
 #if defined(LX_COMPILER_IS_GCC)
-#   include "private/bits_gcc.h"
+#   include "bits/gcc.h"
 #endif
 #if defined(LX_ARCH_x86) || defined(LX_ARCH_x64)
-#   include "private/bits_x86.h"
+#   include "bits/x86.h"
 #elif defined(LX_ARCH_ARM)
-#   include "private/bits_arm.h"
+#   include "bits/arm.h"
 #elif defined(LX_ARCH_SH4)
-#   include "private/bits_sh4.h"
+#   include "bits/sh4.h"
 #endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////

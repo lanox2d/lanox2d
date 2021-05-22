@@ -23,9 +23,8 @@
  * includes
  */
 #include "window.h"
-#include "private/private.h"
 #if defined(LX_CONFIG_WINDOW_HAVE_SDL)
-#   include "private/windows/sdl.c"
+#   include "windows/sdl.c"
 #endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////

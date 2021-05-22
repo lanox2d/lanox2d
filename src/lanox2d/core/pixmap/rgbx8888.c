@@ -23,7 +23,7 @@
  * includes
  */
 #include "prefix.h"
-#include "private/rgb32.h"
+#include "rgb32.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
