@@ -28,7 +28,6 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-#ifndef LX_LIBC_MEMSET24
 lx_pointer_t lx_memset24(lx_pointer_t s, lx_uint32_t c, lx_size_t n) {
     lx_check_return_val(n, s);
 
@@ -48,4 +47,3 @@ lx_pointer_t lx_memset24(lx_pointer_t s, lx_uint32_t c, lx_size_t n) {
     }
     return s;
 }
-#endif
