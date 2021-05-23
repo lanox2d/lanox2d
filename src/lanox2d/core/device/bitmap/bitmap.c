@@ -51,20 +51,27 @@ static lx_void_t lx_device_bitmap_draw_clear(lx_device_ref_t self, lx_color_t co
     lx_bitmap_device_t* device = (lx_bitmap_device_t*)self;
     lx_assert_and_check_return(device && device->bitmap);
 
-    // get the pixels data
-    lx_pointer_t pixels = lx_bitmap_data(device->bitmap);
-    lx_assert(pixels);
+    // get the bitmap data
+    lx_pointer_t data = lx_bitmap_data(device->bitmap);
+    lx_assert(data);
 
     // get pixmap
     lx_pixmap_ref_t pixmap = device->pixmap;
     lx_assert(pixmap && pixmap->pixel && pixmap->pixels_fill);
 
-    // get the pixels count
-    lx_size_t count = lx_bitmap_size(device->bitmap) / pixmap->btp;
-    lx_assert(count);
-
-    // clear it
-    pixmap->pixels_fill(pixels, pixmap->pixel(color), count, 0xff);
+    // clear all pixels
+    lx_size_t  width     = lx_bitmap_width(device->bitmap);
+    lx_size_t  height    = lx_bitmap_height(device->bitmap);
+    lx_size_t  row_bytes = lx_bitmap_row_bytes(device->bitmap);
+    lx_pixel_t pixel     = pixmap->pixel(color);
+    if (width * pixmap->btp == row_bytes) {
+        pixmap->pixels_fill(data, pixel, width * height, 0xff);
+    } else {
+        lx_size_t y;
+        for (y = 0; y < height; y++) {
+            pixmap->pixels_fill(data + y * row_bytes, pixel, width, 0xff);
+        }
+    }
 }
 
 static lx_void_t lx_device_bitmap_exit(lx_device_ref_t self) {

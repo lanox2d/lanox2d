@@ -134,7 +134,7 @@ static lx_void_t lx_window_sdl_runloop(lx_window_ref_t self) {
         }
 
         // flush window
-        SDL_RenderCopyEx(renderer, texture, lx_null, lx_null, 0, lx_null, SDL_FLIP_VERTICAL);
+        SDL_RenderCopyEx(renderer, texture, lx_null, lx_null, 0, lx_null, SDL_FLIP_NONE);
         SDL_RenderPresent(renderer);
 
         // poll event
