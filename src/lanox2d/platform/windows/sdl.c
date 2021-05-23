@@ -48,8 +48,6 @@ static lx_int_t lx_window_sdl_pixfmt(lx_uint16_t pixfmt) {
         return SDL_PIXELFORMAT_RGB565;
     case LX_PIXFMT_ARGB8888:
     case LX_PIXFMT_XRGB8888:
-    case LX_PIXFMT_ARGB8888 | LX_PIXFMT_BENDIAN:
-    case LX_PIXFMT_XRGB8888 | LX_PIXFMT_BENDIAN:
         return SDL_PIXELFORMAT_ARGB8888;
     }
     return -1;
@@ -200,19 +198,10 @@ lx_window_ref_t lx_window_init_sdl(lx_size_t width, lx_size_t height, lx_char_t 
         window->base.runloop = lx_window_sdl_runloop;
         window->base.exit    = lx_window_sdl_exit;
 
-        /* init pixfmt
-         *
-         * supports:
-         * - xrgb8888_le
-         * - xrgb8888_be
-         * - rgb565_le
-         */
-#ifdef LX_CONFIG_OS_MACOSX
-        window->base.pixfmt = lx_quality() < LX_QUALITY_TOP? LX_PIXFMT_RGB565 : (LX_PIXFMT_XRGB8888 | LX_PIXFMT_BENDIAN);
-#else
+        // init pixfmt
         window->base.pixfmt = lx_quality() < LX_QUALITY_TOP? LX_PIXFMT_RGB565 : LX_PIXFMT_XRGB8888;
-#endif
 
+        // ok
         ok = lx_true;
 
     } while (0);
