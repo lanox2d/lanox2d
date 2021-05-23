@@ -68,7 +68,6 @@ static lx_void_t lx_device_bitmap_draw_clear(lx_device_ref_t self, lx_color_t co
 
     // clear it
     pixmap->pixels_fill(pixels, pixmap->pixel(color), count, 0xff);
-    lx_trace_i("xxxx");
 }
 
 static lx_void_t lx_device_bitmap_exit(lx_device_ref_t self) {

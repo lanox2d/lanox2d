@@ -36,11 +36,6 @@ lx_void_t lx_device_exit(lx_device_ref_t self) {
     }
 }
 
-lx_size_t lx_device_pixfmt(lx_device_ref_t self) {
-    lx_device_t* device = (lx_device_t*)self;
-    return device? device->pixfmt : LX_PIXFMT_NONE;
-}
-
 lx_size_t lx_device_width(lx_device_ref_t self) {
     lx_device_t* device = (lx_device_t*)self;
     return device? device->width : 0;

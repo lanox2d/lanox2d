@@ -49,14 +49,6 @@ lx_device_ref_t     lx_device_init_from_bitmap(lx_bitmap_ref_t bitmap);
  */
 lx_void_t           lx_device_exit(lx_device_ref_t device);
 
-/*! get the pixfmt
- *
- * @param device    the device
- *
- * @return          the pixfmt
- */
-lx_size_t           lx_device_pixfmt(lx_device_ref_t device);
-
 /*! get the device width
  *
  * @param device    the device
