@@ -23,11 +23,20 @@
  * includes
  */
 #include "libc.h"
+#if defined(LX_ARCH_x86)
+#    include "arch/x86/memset32.c"
+#elif defined(LX_ARCH_x64)
+#    include "arch/x86/memset32.c"
+#elif defined(LX_ARCH_ARM)
+#    include "arch/arm/memset32.c"
+#elif defined(LX_ARCH_SH4)
+#    include "arch/sh4/memset32.c"
+#endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-#ifndef LX_LIBC_MEMSET32
+#ifndef LX_LIBC_ARCH_MEMSET32
 lx_pointer_t lx_memset32(lx_pointer_t s, lx_uint32_t c, lx_size_t n) {
     lx_check_return_val(n, s);
     lx_assert(!(((lx_size_t)s) & 0x3));
