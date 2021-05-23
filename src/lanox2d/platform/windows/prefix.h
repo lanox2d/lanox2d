@@ -36,11 +36,11 @@
 typedef struct lx_window_t_ {
 
     // the basic information
-    lx_size_t           width;
-    lx_size_t           height;
-    lx_char_t const*    title;
+    lx_uint16_t         width;
+    lx_uint16_t         height;
     lx_uint16_t         flags;
     lx_uint16_t         pixfmt;
+    lx_char_t const*    title;
     lx_cpointer_t       udata;
 
     // the device

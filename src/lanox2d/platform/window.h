@@ -46,17 +46,17 @@ typedef enum lx_window_flag_e_ {
 
 /*! the on_draw function type
  *
- * @param window            the window
- * @param canvas            the canvas
+ * @param window        the window
+ * @param canvas        the canvas
  */
-typedef lx_void_t           (*lx_window_on_draw_t)(lx_window_ref_t window, lx_canvas_ref_t canvas);
+typedef lx_void_t       (*lx_window_on_draw_t)(lx_window_ref_t window, lx_canvas_ref_t canvas);
 
 /*! the on_resize function type
  *
- * @param window            the window
- * @param canvas            the canvas
+ * @param window        the window
+ * @param canvas        the canvas
  */
-typedef lx_void_t           (*lx_window_on_resize_t)(lx_window_ref_t window, lx_canvas_ref_t canvas);
+typedef lx_void_t       (*lx_window_on_resize_t)(lx_window_ref_t window, lx_canvas_ref_t canvas);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * interfaces
@@ -116,7 +116,7 @@ lx_void_t               lx_window_flags_set(lx_window_ref_t window, lx_uint16_t 
  *
  * @return              the pixfmt
  */
-lx_uint16_t             lx_window_pixfmt(lx_window_ref_t window);
+lx_size_t               lx_window_pixfmt(lx_window_ref_t window);
 
 /*! register on_draw function
  *

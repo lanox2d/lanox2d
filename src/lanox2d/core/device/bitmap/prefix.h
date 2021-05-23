@@ -26,6 +26,17 @@
  */
 #include "../prefix.h"
 
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * types
+ */
+
+// the bitmap device type
+typedef struct lx_bitmap_device_t_ {
+    lx_device_t     base;
+    lx_bitmap_ref_t bitmap;
+    lx_pixmap_ref_t pixmap;
+}lx_bitmap_device_t, *lx_bitmap_device_ref_t;
+
 #endif
 
 

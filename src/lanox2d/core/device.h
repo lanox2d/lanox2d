@@ -32,20 +32,9 @@
 lx_extern_c_enter
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * types
- */
-
-/// the device type enum
-typedef enum lx_device_type_e_ {
-    LX_DEVICE_TYPE_NONE     = 0
-,   LX_DEVICE_TYPE_BITMAP   = 1
-}lx_device_type_e;
-
-/* //////////////////////////////////////////////////////////////////////////////////////
  * interfaces
  */
 
-#ifdef LX_CONFIG_DEVICE_HAVE_BITMAP
 /*! init device from bitmap
  *
  * @param bitmap    the bitmap
@@ -53,21 +42,12 @@ typedef enum lx_device_type_e_ {
  * @return          the device
  */
 lx_device_ref_t     lx_device_init_from_bitmap(lx_bitmap_ref_t bitmap);
-#endif
 
 /*! exit device
  *
  * @param device    the device
  */
 lx_void_t           lx_device_exit(lx_device_ref_t device);
-
-/*! the type
- *
- * @param device    the device
- *
- * @return          the type
- */
-lx_size_t           lx_device_type(lx_device_ref_t device);
 
 /*! get the pixfmt
  *

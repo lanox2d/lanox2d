@@ -25,6 +25,7 @@
  * includes
  */
 #include "../prefix.h"
+#include "../pixmap.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * types
@@ -32,7 +33,6 @@
 
 // the device type
 typedef struct lx_device_t_ {
-    lx_uint8_t  type;
     lx_uint16_t pixfmt;
     lx_uint16_t width;
     lx_uint16_t height;

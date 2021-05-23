@@ -30,27 +30,38 @@
  */
 
 lx_void_t lx_device_exit(lx_device_ref_t self) {
-}
-
-lx_size_t lx_device_type(lx_device_ref_t self) {
-    return 0;
+    lx_device_t* device = (lx_device_t*)self;
+    if (device && device->exit) {
+        device->exit(device);
+    }
 }
 
 lx_size_t lx_device_pixfmt(lx_device_ref_t self) {
-    return 0;
+    lx_device_t* device = (lx_device_t*)self;
+    return device? device->pixfmt : LX_PIXFMT_NONE;
 }
 
 lx_size_t lx_device_width(lx_device_ref_t self) {
-    return 0;
+    lx_device_t* device = (lx_device_t*)self;
+    return device? device->width : 0;
 }
 
 lx_size_t lx_device_height(lx_device_ref_t self) {
-    return 0;
+    lx_device_t* device = (lx_device_t*)self;
+    return device? device->height : 0;
 }
 
 lx_void_t lx_device_resize(lx_device_ref_t self, lx_size_t width, lx_size_t height) {
+    lx_device_t* device = (lx_device_t*)self;
+    if (device && device->resize) {
+        device->resize(device, width, height);
+    }
 }
 
 lx_void_t lx_device_draw_clear(lx_device_ref_t self, lx_color_t color) {
+    lx_device_t* device = (lx_device_t*)self;
+    if (device && device->draw_clear) {
+        device->draw_clear(device, color);
+    }
 }
 
