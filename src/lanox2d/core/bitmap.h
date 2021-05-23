@@ -74,19 +74,17 @@ lx_size_t           lx_bitmap_size(lx_bitmap_ref_t bitmap);
  */
 lx_pointer_t        lx_bitmap_data(lx_bitmap_ref_t bitmap);
 
-/*! set the bitmap data
+/*! attach the bitmap data
  *
  * @param bitmap    the bitmap
- * @param data      the bitmap data, cannot be null
- * @param pixfmt    the pixfmt
+ * @param data      the bitmap data
  * @param width     the width
  * @param height    the height
  * @param row_bytes the row bytes, will auto calculate it using width if be zero
- * @param has_alpha has alpha?
  *
  * @return          lx_true or lx_false
  */
-lx_bool_t           lx_bitmap_data_set(lx_bitmap_ref_t bitmap, lx_pointer_t data, lx_size_t pixfmt, lx_size_t width, lx_size_t height, lx_size_t row_bytes, lx_bool_t has_alpha);
+lx_bool_t           lx_bitmap_attach(lx_bitmap_ref_t bitmap, lx_pointer_t data, lx_size_t width, lx_size_t height, lx_size_t row_bytes);
 
 /*! resize the bitmap
  *

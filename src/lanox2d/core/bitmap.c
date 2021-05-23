@@ -105,34 +105,28 @@ lx_pointer_t lx_bitmap_data(lx_bitmap_ref_t self) {
     return bitmap? bitmap->data : lx_null;
 }
 
-lx_bool_t lx_bitmap_data_set(lx_bitmap_ref_t self, lx_pointer_t data, lx_size_t pixfmt, lx_size_t width, lx_size_t height, lx_size_t row_bytes, lx_bool_t has_alpha) {
+lx_bool_t lx_bitmap_attach(lx_bitmap_ref_t self, lx_pointer_t data, lx_size_t width, lx_size_t height, lx_size_t row_bytes) {
 
     // check
     lx_bitmap_t* bitmap = (lx_bitmap_t*)self;
-    lx_assert_and_check_return_val(bitmap && data, lx_false);
+    lx_assert_and_check_return_val(bitmap && !bitmap->is_owner && data, lx_false);
 
     lx_bool_t ok = lx_false;
     do {
-        // check
-        lx_assert_and_check_break(width && width <= LX_WIDTH_MAX && height && height <= LX_HEIGHT_MAX);
 
-        // the row bytes
-        lx_byte_t btp = lx_pixmap_btp(pixfmt);
-        if (!row_bytes) row_bytes = width * btp;
-        lx_assert_and_check_break(row_bytes && row_bytes >= width * btp);
+        // get the row bytes
+        if (!row_bytes) {
+            lx_byte_t btp = lx_pixmap_btp(bitmap->pixfmt);
+            row_bytes = width * btp;
+            lx_assert_and_check_break(row_bytes && row_bytes >= width * btp);
+        }
 
-        // exit it first
-        if (bitmap->data && bitmap->data != data && bitmap->is_owner) lx_free(bitmap->data);
-
-        // update bitmap
-        bitmap->pixfmt        = (lx_uint16_t)pixfmt;
+        // attach bitmap data
         bitmap->width         = (lx_uint16_t)width;
         bitmap->height        = (lx_uint16_t)height;
         bitmap->data          = data;
         bitmap->size          = row_bytes * height;
         bitmap->row_bytes     = (lx_uint16_t)row_bytes;
-        bitmap->is_owner      = 1;
-        bitmap->has_alpha     = !!has_alpha;
 
         // ok
         ok = lx_true;

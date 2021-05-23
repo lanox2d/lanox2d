@@ -124,8 +124,13 @@ static lx_void_t lx_window_sdl_runloop(lx_window_ref_t self) {
     while (!stop) {
 
         // draw window
-        if (window->base.on_draw) {
-            window->base.on_draw(self, window->base.canvas);
+        lx_int_t      pitch = 0;
+        lx_pointer_t  pixels = lx_null;
+        if (window->base.on_draw && 0 == SDL_LockTexture(window->texture, lx_null, &pixels, &pitch)) {
+            if (lx_bitmap_attach(window->bitmap, pixels, window->base.width, window->base.height, pitch)) {
+                window->base.on_draw(self, window->base.canvas);
+            }
+            SDL_UnlockTexture(window->texture);
         }
 
         // flush window
