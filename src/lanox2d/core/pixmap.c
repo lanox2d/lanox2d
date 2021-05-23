@@ -189,7 +189,7 @@ lx_pixmap_ref_t lx_pixmap(lx_size_t pixfmt, lx_byte_t alpha) {
     lx_assert(pixfmt);
 
     // opaque?
-    if (alpha > LX_QUALITY_ALPHA_MAX) {
+    if (alpha >= LX_QUALITY_ALPHA_MAX) {
         lx_assert(pixfmt && (pixfmt - 1) < lx_arrayn(g_pixmaps_lo));
         return is_endian? g_pixmaps_bo[pixfmt - 1] : g_pixmaps_lo[pixfmt - 1];
     }

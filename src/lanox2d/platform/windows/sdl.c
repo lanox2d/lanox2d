@@ -76,7 +76,7 @@ static lx_bool_t lx_window_sdl_start(lx_window_sdl_t* window) {
         // create sdl texture
         lx_int_t pixfmt = lx_window_sdl_pixfmt(window->base.pixfmt);
         if (pixfmt != -1) {
-            window->texture = SDL_CreateTexture(window->renderer, pixfmt, SDL_TEXTUREACCESS_TARGET, window->base.width, window->base.height);
+            window->texture = SDL_CreateTexture(window->renderer, pixfmt, SDL_TEXTUREACCESS_STREAMING, window->base.width, window->base.height);
         }
         lx_assert_and_check_break(window->texture);
 
@@ -112,6 +112,7 @@ static lx_void_t lx_window_sdl_runloop(lx_window_ref_t self) {
     // start sdl window
     if (!lx_window_sdl_start(window)) {
         lx_trace_e("start sdl window failed!");
+        return ;
     }
 
     // do loop
