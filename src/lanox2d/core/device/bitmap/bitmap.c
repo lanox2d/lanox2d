@@ -39,13 +39,10 @@ typedef struct lx_bitmap_device_t_ {
  * implementation
  */
 static lx_void_t lx_device_bitmap_resize(lx_device_ref_t self, lx_size_t width, lx_size_t height) {
-
-    // check
     lx_bitmap_device_t* device = (lx_bitmap_device_t*)self;
-    lx_assert_and_check_return(device && device->bitmap);
-
-    // resize
-    lx_bitmap_resize(device->bitmap, width, height);
+    if (device && device->bitmap) {
+        lx_bitmap_resize(device->bitmap, width, height);
+    }
 }
 
 static lx_void_t lx_device_bitmap_draw_clear(lx_device_ref_t self, lx_color_t color) {
