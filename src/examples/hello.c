@@ -1,7 +1,7 @@
 #include "lanox2d/lanox2d.h"
 
 static lx_void_t on_draw(lx_window_ref_t window, lx_canvas_ref_t canvas) {
-    lx_print("draw");
+    lx_canvas_draw_clear(canvas, LX_COLOR_WHITE);
 }
 
 int main(int argc, char** argv) {

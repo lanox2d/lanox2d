@@ -32,7 +32,7 @@
 lx_void_t lx_device_exit(lx_device_ref_t self) {
     lx_device_t* device = (lx_device_t*)self;
     if (device && device->exit) {
-        device->exit(device);
+        device->exit(self);
     }
 }
 
@@ -54,14 +54,14 @@ lx_size_t lx_device_height(lx_device_ref_t self) {
 lx_void_t lx_device_resize(lx_device_ref_t self, lx_size_t width, lx_size_t height) {
     lx_device_t* device = (lx_device_t*)self;
     if (device && device->resize) {
-        device->resize(device, width, height);
+        device->resize(self, width, height);
     }
 }
 
 lx_void_t lx_device_draw_clear(lx_device_ref_t self, lx_color_t color) {
     lx_device_t* device = (lx_device_t*)self;
     if (device && device->draw_clear) {
-        device->draw_clear(device, color);
+        device->draw_clear(self, color);
     }
 }
 

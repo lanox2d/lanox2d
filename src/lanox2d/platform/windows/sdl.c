@@ -48,6 +48,8 @@ static lx_int_t lx_window_sdl_pixfmt(lx_uint16_t pixfmt) {
         return SDL_PIXELFORMAT_RGB565;
     case LX_PIXFMT_ARGB8888:
     case LX_PIXFMT_XRGB8888:
+    case LX_PIXFMT_ARGB8888 | LX_PIXFMT_BENDIAN:
+    case LX_PIXFMT_XRGB8888 | LX_PIXFMT_BENDIAN:
         return SDL_PIXELFORMAT_ARGB8888;
     }
     return -1;
