@@ -37,6 +37,7 @@ typedef struct lx_window_sdl_t_ {
     SDL_Texture*    texture;
     lx_bitmap_ref_t bitmap;
     lx_size_t       button;
+    lx_bool_t       is_quit;
     lx_hong_t       fps_time;
     lx_hong_t       fps_count;
 } lx_window_sdl_t;
@@ -69,7 +70,7 @@ static lx_bool_t lx_window_sdl_start(lx_window_sdl_t* window) {
         }
 
         // init window flags
-        lx_int_t flags = SDL_WINDOW_SHOWN;
+        lx_int_t flags = window->base.flags & LX_WINDOW_FLAG_HIDDEN? SDL_WINDOW_HIDDEN : SDL_WINDOW_SHOWN;
         if (window->base.flags & LX_WINDOW_FLAG_FULLSCREEN) {
             flags |= SDL_WINDOW_FULLSCREEN;
         }
@@ -81,6 +82,11 @@ static lx_bool_t lx_window_sdl_start(lx_window_sdl_t* window) {
         window->window = SDL_CreateWindow(window->base.title? window->base.title : "lanox2d (SDL)",
             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, window->base.width, window->base.height, flags);
         lx_assert_and_check_break(window->window);
+
+        // hide window cursor
+        if (window->base.flags & LX_WINDOW_FLAG_HIDE_CURSOR) {
+            SDL_ShowCursor(0);
+        }
 
         // create sdl renderer
         window->renderer = SDL_CreateRenderer(window->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
@@ -238,12 +244,11 @@ static lx_void_t lx_window_sdl_runloop(lx_window_ref_t self) {
     }
 
     // do loop
-    lx_bool_t     stop = lx_false;
     SDL_Event     event;
     SDL_Texture*  texture = window->texture;
     SDL_Renderer* renderer = window->renderer;
     lx_int_t      fps_delay = 1000 / window->base.fps;
-    while (!stop) {
+    while (!window->is_quit) {
 
         // draw window
         lx_int_t      pitch = 0;
@@ -263,7 +268,7 @@ static lx_void_t lx_window_sdl_runloop(lx_window_ref_t self) {
         // poll event
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
-                stop = lx_true;
+                window->is_quit = lx_true;
             } else {
                 lx_window_sdl_event(window, &event);
             }
@@ -293,6 +298,30 @@ static lx_void_t lx_window_sdl_runloop(lx_window_ref_t self) {
 
         // delay
         SDL_Delay(delay);
+    }
+}
+
+static lx_void_t lx_window_sdl_fullscreen(lx_window_ref_t self, lx_bool_t is_fullscreen) {
+    lx_window_sdl_t* window = (lx_window_sdl_t*)self;
+    if (window) {
+        if (is_fullscreen) {
+            window->base.flags |= LX_WINDOW_FLAG_FULLSCREEN;
+            SDL_SetWindowFullscreen(window->window, SDL_WINDOW_FULLSCREEN);
+        } else {
+            window->base.flags &= ~LX_WINDOW_FLAG_FULLSCREEN;
+            SDL_SetWindowFullscreen(window->window, 0);
+        }
+    }
+}
+
+static lx_void_t lx_window_sdl_show_cursor(lx_window_ref_t self, lx_bool_t is_show) {
+    SDL_ShowCursor(is_show);
+}
+
+static lx_void_t lx_window_sdl_quit(lx_window_ref_t self) {
+    lx_window_sdl_t* window = (lx_window_sdl_t*)self;
+    if (window) {
+        window->is_quit = lx_true;
     }
 }
 
@@ -343,12 +372,15 @@ lx_window_ref_t lx_window_init_sdl(lx_size_t width, lx_size_t height, lx_char_t 
         window = lx_malloc0_type(lx_window_sdl_t);
         lx_assert_and_check_break(window);
 
-        window->base.fps     = 60;
-        window->base.width   = width;
-        window->base.height  = height;
-        window->base.title   = title;
-        window->base.runloop = lx_window_sdl_runloop;
-        window->base.exit    = lx_window_sdl_exit;
+        window->base.fps         = 60;
+        window->base.width       = width;
+        window->base.height      = height;
+        window->base.title       = title;
+        window->base.runloop     = lx_window_sdl_runloop;
+        window->base.quit        = lx_window_sdl_quit;
+        window->base.fullscreen  = lx_window_sdl_fullscreen;
+        window->base.show_cursor = lx_window_sdl_show_cursor;
+        window->base.exit        = lx_window_sdl_exit;
 
         // init pixfmt
         window->base.pixfmt = lx_quality() < LX_QUALITY_TOP? LX_PIXFMT_RGB565 : LX_PIXFMT_XRGB8888;

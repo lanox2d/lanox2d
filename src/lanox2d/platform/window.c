@@ -53,6 +53,11 @@ lx_size_t lx_window_pixfmt(lx_window_ref_t self) {
     return window? window->pixfmt : LX_PIXFMT_NONE;
 }
 
+lx_bool_t lx_window_is_fullscreen(lx_window_ref_t self) {
+    lx_window_t* window = (lx_window_t*)self;
+    return window? window->flags & LX_WINDOW_FLAG_FULLSCREEN : lx_false;
+}
+
 lx_cpointer_t lx_window_udata(lx_window_ref_t self) {
     lx_window_t* window = (lx_window_t*)self;
     return window? window->udata : lx_null;
@@ -131,6 +136,20 @@ lx_void_t lx_window_show(lx_window_ref_t self, lx_bool_t is_show) {
     lx_window_t* window = (lx_window_t*)self;
     if (window && window->show) {
         window->show(self, is_show);
+    }
+}
+
+lx_void_t lx_window_show_cursor(lx_window_ref_t self, lx_bool_t is_show) {
+    lx_window_t* window = (lx_window_t*)self;
+    if (window && window->show_cursor) {
+        window->show_cursor(self, is_show);
+    }
+}
+
+lx_void_t lx_window_quit(lx_window_ref_t self) {
+    lx_window_t* window = (lx_window_t*)self;
+    if (window && window->quit) {
+        window->quit(self);
     }
 }
 

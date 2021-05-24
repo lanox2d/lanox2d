@@ -62,6 +62,8 @@ typedef struct lx_window_t_ {
     lx_void_t           (*maximum)(lx_window_ref_t window, lx_bool_t is_maximum);
     lx_void_t           (*minimum)(lx_window_ref_t window, lx_bool_t is_minimum);
     lx_void_t           (*show)(lx_window_ref_t window, lx_bool_t is_show);
+    lx_void_t           (*show_cursor)(lx_window_ref_t window, lx_bool_t is_show);
+    lx_void_t           (*quit)(lx_window_ref_t window);
     lx_void_t           (*exit)(lx_window_ref_t window);
 
 }lx_window_t;

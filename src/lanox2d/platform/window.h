@@ -40,10 +40,11 @@ lx_extern_c_enter
 typedef enum lx_window_flag_e_ {
     LX_WINDOW_FLAG_NONE             = 0
 ,   LX_WINDOW_FLAG_FULLSCREEN       = 1
-,   LX_WINDOW_FLAG_HIHE_TITLEBAR    = 2
-,   LX_WINDOW_FLAG_HIHE_CURSOR      = 4
-,   LX_WINDOW_FLAG_NOT_REISZE       = 8
-,   LX_WINDOW_FLAG_SHOW_FPS         = 16
+,   LX_WINDOW_FLAG_HIDDEN           = 2
+,   LX_WINDOW_FLAG_HIDE_TITLEBAR    = 4
+,   LX_WINDOW_FLAG_HIDE_CURSOR      = 8
+,   LX_WINDOW_FLAG_NOT_REISZE       = 16
+,   LX_WINDOW_FLAG_SHOW_FPS         = 32
 }lx_window_flag_e;
 
 /*! the on_draw function type
@@ -134,6 +135,14 @@ lx_void_t               lx_window_fps_set(lx_window_ref_t window, lx_uint16_t fp
  */
 lx_size_t               lx_window_pixfmt(lx_window_ref_t window);
 
+/*! is fullscreen
+ *
+ * @param window        the window
+ *
+ * @return              lx_true or lx_false
+ */
+lx_bool_t               lx_window_is_fullscreen(lx_window_ref_t window);
+
 /*! register on_draw function
  *
  * @param window        the window
@@ -164,33 +173,46 @@ lx_void_t               lx_window_on_resize(lx_window_ref_t window, lx_window_on
  */
 lx_void_t               lx_window_runloop(lx_window_ref_t window);
 
-/*! enter or leave the fullscreen only for the desktop window
+/*! enter or leave the fullscreen (only for the desktop window)
  *
  * @param window        the window
  * @param is_fullscreen is fullscreen?
  */
 lx_void_t               lx_window_fullscreen(lx_window_ref_t window, lx_bool_t is_fullscreen);
 
-/*! enter or leave the maximum window
+/*! enter or leave the maximum window (only for the desktop window)
  *
  * @param window        the window
  * @param is_maximum    is maximum?
  */
 lx_void_t               lx_window_maximum(lx_window_ref_t window, lx_bool_t is_maximum);
 
-/*! enter or leave the minimum window
+/*! enter or leave the minimum window (only for the desktop window)
  *
  * @param window        the window
  * @param is_minimum    is minimum?
  */
 lx_void_t               lx_window_minimum(lx_window_ref_t window, lx_bool_t is_minimum);
 
-/*! show or hide the window
+/*! show or hide the window (only for the desktop window)
  *
  * @param window        the window
  * @param is_show       is show?
  */
 lx_void_t               lx_window_show(lx_window_ref_t window, lx_bool_t is_show);
+
+/*! show or hide the window cursor (only for the desktop window)
+ *
+ * @param window        the window
+ * @param is_show       is show?
+ */
+lx_void_t               lx_window_show_cursor(lx_window_ref_t window, lx_bool_t is_show);
+
+/*! quit window
+ *
+ * @param window        the window
+ */
+lx_void_t               lx_window_quit(lx_window_ref_t window);
 
 /*! exit window
  *
