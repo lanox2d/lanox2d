@@ -106,6 +106,9 @@ static lx_bool_t lx_window_sdl_start(lx_window_sdl_t* window) {
     return ok;
 }
 
+static lx_void_t lx_window_sdl_event(lx_window_sdl_t* window, SDL_Event* event) {
+}
+
 static lx_void_t lx_window_sdl_runloop(lx_window_ref_t self) {
 
     // check
@@ -143,12 +146,10 @@ static lx_void_t lx_window_sdl_runloop(lx_window_ref_t self) {
 
         // poll event
         while (SDL_PollEvent(&event)) {
-            switch (event.type) {
-                case SDL_QUIT:
-                    stop = lx_true;
-                    break;
-                default:
-                    break;
+            if (event.type == SDL_QUIT) {
+                stop = lx_true;
+            } else {
+                lx_window_sdl_event(window, &event);
             }
         }
 
