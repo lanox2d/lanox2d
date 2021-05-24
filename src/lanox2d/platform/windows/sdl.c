@@ -278,7 +278,7 @@ static lx_void_t lx_window_sdl_runloop(lx_window_ref_t self) {
         }
 
         // compute delay for framerate
-        lx_int_t  delay = 0;
+        lx_int_t  delay = 1;
         lx_hong_t time = lx_mclock();
         lx_int_t  dt = (lx_int_t)(time - starttime);
         if (fps_delay >= dt) {
