@@ -37,7 +37,6 @@ typedef struct lx_window_sdl_t_ {
     SDL_Texture*    texture;
     lx_bitmap_ref_t bitmap;
     lx_hong_t       fps_time;
-    lx_hong_t       fps_prevtime;
     lx_hong_t       fps_count;
 } lx_window_sdl_t;
 
@@ -130,6 +129,7 @@ static lx_void_t lx_window_sdl_runloop(lx_window_ref_t self) {
         // draw window
         lx_int_t      pitch = 0;
         lx_pointer_t  pixels = lx_null;
+        lx_hong_t     starttime = lx_mclock();
         if (window->base.on_draw && 0 == SDL_LockTexture(window->texture, lx_null, &pixels, &pitch)) {
             if (lx_bitmap_attach(window->bitmap, pixels, window->base.width, window->base.height, pitch)) {
                 window->base.on_draw(self, window->base.canvas);
@@ -152,30 +152,29 @@ static lx_void_t lx_window_sdl_runloop(lx_window_ref_t self) {
             }
         }
 
-        // compute framerate
+        // compute delay for framerate
+        lx_int_t  delay = 0;
         lx_hong_t time = lx_mclock();
-        if (!window->fps_time) window->fps_time = time;
-        window->fps_count++;
-        if (time > window->fps_time + 1000) {
-            lx_float_t framerate = (lx_float_t)(window->fps_count * 1000) / (lx_float_t)(time - window->fps_time);
-            lx_char_t title[256];
-            lx_snprintf(title, sizeof(title), "%s (%0.2f fps)", window->base.title, framerate);
-            SDL_SetWindowTitle(window->window, title);
-            window->fps_count = 0;
-            window->fps_time = time;
+        lx_int_t  dt = (lx_int_t)(time - starttime);
+        if (fps_delay >= dt) {
+            delay = fps_delay - dt;
         }
 
-        // compute delay for framerate
-        lx_int_t delay = fps_delay;
-        if (window->fps_prevtime) {
-            lx_int_t dt = (lx_int_t)(time - window->fps_prevtime);
-            if (delay >= dt) {
-                delay -= dt;
-            } else {
-                delay = 0;
+        // compute framerate
+        if (window->base.flags & LX_WINDOW_FLAG_SHOW_FPS) {
+            if (!window->fps_time) window->fps_time = time;
+            window->fps_count++;
+            if (time > window->fps_time + 1000) {
+                lx_float_t framerate = (lx_float_t)(window->fps_count * 1000) / (lx_float_t)(time - window->fps_time);
+                lx_char_t title[256];
+                lx_snprintf(title, sizeof(title), "%s (%0.2f fps)", window->base.title, framerate);
+                SDL_SetWindowTitle(window->window, title);
+                window->fps_count = 0;
+                window->fps_time = time;
             }
         }
-        window->fps_prevtime = time;
+
+        // delay
         SDL_Delay(delay);
     }
 }

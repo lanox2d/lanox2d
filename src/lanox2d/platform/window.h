@@ -42,6 +42,7 @@ typedef enum lx_window_flag_e_ {
 ,   LX_WINDOW_FLAG_HIHE_TITLEBAR    = 2
 ,   LX_WINDOW_FLAG_HIHE_CURSOR      = 4
 ,   LX_WINDOW_FLAG_NOT_REISZE       = 8
+,   LX_WINDOW_FLAG_SHOW_FPS         = 16
 }lx_window_flag_e;
 
 /*! the on_draw function type
