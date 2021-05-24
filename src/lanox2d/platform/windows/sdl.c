@@ -314,6 +314,17 @@ static lx_void_t lx_window_sdl_fullscreen(lx_window_ref_t self, lx_bool_t is_ful
     }
 }
 
+static lx_void_t lx_window_sdl_show(lx_window_ref_t self, lx_bool_t is_show) {
+    lx_window_sdl_t* window = (lx_window_sdl_t*)self;
+    if (window) {
+        if (is_show) {
+            SDL_ShowWindow(window->window);
+        } else {
+            SDL_HideWindow(window->window);
+        }
+    }
+}
+
 static lx_void_t lx_window_sdl_show_cursor(lx_window_ref_t self, lx_bool_t is_show) {
     SDL_ShowCursor(is_show);
 }
@@ -379,6 +390,7 @@ lx_window_ref_t lx_window_init_sdl(lx_size_t width, lx_size_t height, lx_char_t 
         window->base.runloop     = lx_window_sdl_runloop;
         window->base.quit        = lx_window_sdl_quit;
         window->base.fullscreen  = lx_window_sdl_fullscreen;
+        window->base.show        = lx_window_sdl_show;
         window->base.show_cursor = lx_window_sdl_show_cursor;
         window->base.exit        = lx_window_sdl_exit;
 

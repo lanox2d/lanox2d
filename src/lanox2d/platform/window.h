@@ -180,20 +180,6 @@ lx_void_t               lx_window_runloop(lx_window_ref_t window);
  */
 lx_void_t               lx_window_fullscreen(lx_window_ref_t window, lx_bool_t is_fullscreen);
 
-/*! enter or leave the maximum window (only for the desktop window)
- *
- * @param window        the window
- * @param is_maximum    is maximum?
- */
-lx_void_t               lx_window_maximum(lx_window_ref_t window, lx_bool_t is_maximum);
-
-/*! enter or leave the minimum window (only for the desktop window)
- *
- * @param window        the window
- * @param is_minimum    is minimum?
- */
-lx_void_t               lx_window_minimum(lx_window_ref_t window, lx_bool_t is_minimum);
-
 /*! show or hide the window (only for the desktop window)
  *
  * @param window        the window
