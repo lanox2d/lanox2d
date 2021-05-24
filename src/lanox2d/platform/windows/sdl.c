@@ -68,9 +68,18 @@ static lx_bool_t lx_window_sdl_start(lx_window_sdl_t* window) {
             break;
         }
 
+        // init window flags
+        lx_int_t flags = SDL_WINDOW_SHOWN;
+        if (window->base.flags & LX_WINDOW_FLAG_FULLSCREEN) {
+            flags |= SDL_WINDOW_FULLSCREEN;
+        }
+        if (!(window->base.flags & LX_WINDOW_FLAG_NOT_REISZE)) {
+            flags |= SDL_WINDOW_RESIZABLE;
+        }
+
         // create sdl window
         window->window = SDL_CreateWindow(window->base.title? window->base.title : "lanox2d (SDL)",
-            SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, window->base.width, window->base.height, SDL_WINDOW_SHOWN);
+            SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, window->base.width, window->base.height, flags);
         lx_assert_and_check_break(window->window);
 
         // create sdl renderer

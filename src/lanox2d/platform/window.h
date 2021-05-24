@@ -164,6 +164,34 @@ lx_void_t               lx_window_on_resize(lx_window_ref_t window, lx_window_on
  */
 lx_void_t               lx_window_runloop(lx_window_ref_t window);
 
+/*! enter or leave the fullscreen only for the desktop window
+ *
+ * @param window        the window
+ * @param is_fullscreen is fullscreen?
+ */
+lx_void_t               lx_window_fullscreen(lx_window_ref_t window, lx_bool_t is_fullscreen);
+
+/*! enter or leave the maximum window
+ *
+ * @param window        the window
+ * @param is_maximum    is maximum?
+ */
+lx_void_t               lx_window_maximum(lx_window_ref_t window, lx_bool_t is_maximum);
+
+/*! enter or leave the minimum window
+ *
+ * @param window        the window
+ * @param is_minimum    is minimum?
+ */
+lx_void_t               lx_window_minimum(lx_window_ref_t window, lx_bool_t is_minimum);
+
+/*! show or hide the window
+ *
+ * @param window        the window
+ * @param is_show       is show?
+ */
+lx_void_t               lx_window_show(lx_window_ref_t window, lx_bool_t is_show);
+
 /*! exit window
  *
  * @param window        the window

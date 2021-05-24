@@ -106,6 +106,34 @@ lx_void_t lx_window_runloop(lx_window_ref_t self) {
     window->runloop(self);
 }
 
+lx_void_t lx_window_fullscreen(lx_window_ref_t self, lx_bool_t is_fullscreen) {
+    lx_window_t* window = (lx_window_t*)self;
+    if (window && window->fullscreen) {
+        window->fullscreen(self, is_fullscreen);
+    }
+}
+
+lx_void_t lx_window_maximum(lx_window_ref_t self, lx_bool_t is_maximum) {
+    lx_window_t* window = (lx_window_t*)self;
+    if (window && window->maximum) {
+        window->maximum(self, is_maximum);
+    }
+}
+
+lx_void_t lx_window_minimum(lx_window_ref_t self, lx_bool_t is_minimum) {
+    lx_window_t* window = (lx_window_t*)self;
+    if (window && window->minimum) {
+        window->minimum(self, is_minimum);
+    }
+}
+
+lx_void_t lx_window_show(lx_window_ref_t self, lx_bool_t is_show) {
+    lx_window_t* window = (lx_window_t*)self;
+    if (window && window->show) {
+        window->show(self, is_show);
+    }
+}
+
 lx_void_t lx_window_exit(lx_window_ref_t self) {
     lx_window_t* window = (lx_window_t*)self;
     if (window) {
