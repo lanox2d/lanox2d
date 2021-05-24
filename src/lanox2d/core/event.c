@@ -39,7 +39,7 @@ lx_void_t lx_event_dump(lx_event_ref_t event) {
         lx_assert_and_check_break(event->u.mouse.button < lx_arrayn(button_cstr));
 
         // trace
-        lx_trace_i("mouse: %s %s, cursor: %d,%d, scroll: %d,%d",
+        lx_trace_i("mouse: %s %s, cursor: %0.2f,%0.2f, scroll: %0.2f,%0.2f",
             button_cstr[event->u.mouse.button], code_cstr[event->u.mouse.code],
             event->u.mouse.cursor.x, event->u.mouse.cursor.y,
             event->u.mouse.scroll.x, event->u.mouse.scroll.y);

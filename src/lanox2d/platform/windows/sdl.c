@@ -204,6 +204,11 @@ static lx_void_t lx_window_sdl_event(lx_window_sdl_t* window, SDL_Event* sdleven
         }
         break;
     }
+    case SDL_TEXTEDITING:
+    case SDL_TEXTINPUT:
+        break;
+    case SDL_WINDOWEVENT:
+        break;
     default:
         // trace
         lx_trace_e("unknown event: %x", sdlevent->type);
