@@ -23,6 +23,7 @@
  * includes
  */
 #include "point.h"
+#include "../../base/base.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
@@ -57,8 +58,8 @@ lx_float_t lx_point_distance(lx_point_ref_t point, lx_point_ref_t other) {
     lx_vector_make(&vector, other->x - point->x, other->y - point->y);
     return lx_vector_length(&vector);
 }
+#endif
 
 lx_bool_t lx_point_near_eq(lx_point_ref_t point, lx_point_ref_t other) {
     return (lx_near_eq(point->x, other->x)) && (lx_near_eq(point->y, other->y));
 }
-#endif
