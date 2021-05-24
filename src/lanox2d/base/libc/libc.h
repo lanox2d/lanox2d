@@ -52,6 +52,22 @@ do { \
 #   define lx_print
 #endif
 
+// ctype
+#define lx_isspace(x)               (((x) == 0x20) || ((x) > 0x8 && (x) < 0xe))
+#define lx_isgraph(x)               ((x) > 0x1f && (x) < 0x7f)
+#define lx_isalpha(x)               (((x) > 0x40 && (x) < 0x5b) || ((x) > 0x60 && (x) < 0x7b))
+#define lx_isupper(x)               ((x) > 0x40 && (x) < 0x5b)
+#define lx_islower(x)               ((x) > 0x60 && (x) < 0x7b)
+#define lx_isascii(x)               ((x) >= 0x0 && (x) < 0x80)
+#define lx_isdigit(x)               ((x) > 0x2f && (x) < 0x3a)
+#define lx_isdigit2(x)              ((x) == '0' || (x) == '1')
+#define lx_isdigit8(x)              (((x) > 0x2f && (x) < 0x38))
+#define lx_isdigit10(x)             (lx_isdigit(x))
+#define lx_isdigit16(x)             (((x) > 0x2f && (x) < 0x3a) || ((x) > 0x40 && (x) < 0x47) || ((x) > 0x60 && (x) < 0x67))
+
+#define lx_tolower(x)               (lx_isupper(x)? (x) + 0x20 : (x))
+#define lx_toupper(x)               (lx_islower(x)? (x) - 0x20 : (x))
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */

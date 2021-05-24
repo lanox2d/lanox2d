@@ -29,6 +29,7 @@
 #include "pixmap.h"
 #include "device.h"
 #include "canvas.h"
+#include "event.h"
 #include "quality.h"
 
 #endif

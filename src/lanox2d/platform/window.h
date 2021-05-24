@@ -25,6 +25,7 @@
  * includes
  */
 #include "prefix.h"
+#include "../core/event.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
@@ -51,6 +52,13 @@ typedef enum lx_window_flag_e_ {
  * @param canvas        the canvas
  */
 typedef lx_void_t       (*lx_window_on_draw_t)(lx_window_ref_t window, lx_canvas_ref_t canvas);
+
+/*! the on_event function type
+ *
+ * @param window        the window
+ * @param event         the event
+ */
+typedef lx_void_t       (*lx_window_on_event_t)(lx_window_ref_t window, lx_event_ref_t event);
 
 /*! the on_resize function type
  *
@@ -133,6 +141,14 @@ lx_size_t               lx_window_pixfmt(lx_window_ref_t window);
  *
  */
 lx_void_t               lx_window_on_draw(lx_window_ref_t window, lx_window_on_draw_t on_draw);
+
+/*! register on_event function
+ *
+ * @param window        the window
+ * @param on_event      the on_event function
+ *
+ */
+lx_void_t               lx_window_on_event(lx_window_ref_t window, lx_window_on_event_t on_event);
 
 /*! register on_resize function
  *

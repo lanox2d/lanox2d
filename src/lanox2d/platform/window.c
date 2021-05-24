@@ -86,6 +86,13 @@ lx_void_t lx_window_on_draw(lx_window_ref_t self, lx_window_on_draw_t on_draw) {
     }
 }
 
+lx_void_t lx_window_on_event(lx_window_ref_t self, lx_window_on_event_t on_event) {
+    lx_window_t* window = (lx_window_t*)self;
+    if (window) {
+        window->on_event = on_event;
+    }
+}
+
 lx_void_t lx_window_on_resize(lx_window_ref_t self, lx_window_on_resize_t on_resize) {
     lx_window_t* window = (lx_window_t*)self;
     if (window) {
