@@ -36,6 +36,7 @@ typedef struct lx_window_sdl_t_ {
     SDL_Renderer*   renderer;
     SDL_Texture*    texture;
     lx_bitmap_ref_t bitmap;
+    lx_size_t       button;
     lx_hong_t       fps_time;
     lx_hong_t       fps_count;
 } lx_window_sdl_t;
@@ -106,7 +107,108 @@ static lx_bool_t lx_window_sdl_start(lx_window_sdl_t* window) {
     return ok;
 }
 
-static lx_void_t lx_window_sdl_event(lx_window_sdl_t* window, SDL_Event* event) {
+static lx_void_t lx_window_sdl_event(lx_window_sdl_t* window, SDL_Event* sdlevent) {
+    switch (sdlevent->type) {
+    case SDL_MOUSEMOTION: {
+        lx_event_t              event = {0};
+        event.type              = LX_EVENT_TYPE_MOUSE;
+        event.u.mouse.code      = LX_MOUSE_MOVE;
+        event.u.mouse.button    = window->button;
+        lx_point_imake(&event.u.mouse.cursor, sdlevent->motion.x, sdlevent->motion.y);
+        if (window->base.on_event) {
+            window->base.on_event((lx_window_ref_t)window, &event);
+        }
+        break;
+    }
+    case SDL_MOUSEBUTTONUP:
+    case SDL_MOUSEBUTTONDOWN: {
+        lx_event_t              event = {0};
+        event.type              = LX_EVENT_TYPE_MOUSE;
+        event.u.mouse.code      = sdlevent->type == SDL_MOUSEBUTTONDOWN? LX_MOUSE_DOWN : LX_MOUSE_UP;
+        lx_point_imake(&event.u.mouse.cursor, sdlevent->button.x, sdlevent->button.y);
+
+        switch (sdlevent->button.button)
+        {
+        case SDL_BUTTON_LEFT:   event.u.mouse.button = LX_MOUSE_BUTTON_LEFT;    break;
+        case SDL_BUTTON_RIGHT:  event.u.mouse.button = LX_MOUSE_BUTTON_RIGHT;   break;
+        case SDL_BUTTON_MIDDLE: event.u.mouse.button = LX_MOUSE_BUTTON_MIDDLE;  break;
+        default:                event.u.mouse.button = LX_MOUSE_BUTTON_NONE;    break;
+        }
+        window->button = sdlevent->type == SDL_MOUSEBUTTONDOWN? event.u.mouse.button : LX_MOUSE_BUTTON_NONE;
+
+        if (window->base.on_event) {
+            window->base.on_event((lx_window_ref_t)window, &event);
+        }
+        break;
+    }
+    case SDL_KEYDOWN:
+    case SDL_KEYUP: {
+        lx_event_t                  event = {0};
+        event.type                  = LX_EVENT_TYPE_KEYBOARD;
+        event.u.keyboard.pressed    = sdlevent->type == SDL_KEYDOWN? lx_true : lx_false;
+
+        switch ((lx_size_t)sdlevent->key.keysym.sym)
+        {
+        case SDLK_F1:           event.u.keyboard.code = LX_KEY_F1;          break;
+        case SDLK_F2:           event.u.keyboard.code = LX_KEY_F2;          break;
+        case SDLK_F3:           event.u.keyboard.code = LX_KEY_F3;          break;
+        case SDLK_F4:           event.u.keyboard.code = LX_KEY_F4;          break;
+        case SDLK_F5:           event.u.keyboard.code = LX_KEY_F5;          break;
+        case SDLK_F6:           event.u.keyboard.code = LX_KEY_F6;          break;
+        case SDLK_F7:           event.u.keyboard.code = LX_KEY_F7;          break;
+        case SDLK_F8:           event.u.keyboard.code = LX_KEY_F8;          break;
+        case SDLK_F9:           event.u.keyboard.code = LX_KEY_F9;          break;
+        case SDLK_F10:          event.u.keyboard.code = LX_KEY_F10;         break;
+        case SDLK_F11:          event.u.keyboard.code = LX_KEY_F11;         break;
+        case SDLK_F12:          event.u.keyboard.code = LX_KEY_F12;         break;
+
+        case SDLK_LEFT:         event.u.keyboard.code = LX_KEY_LEFT;        break;
+        case SDLK_UP:           event.u.keyboard.code = LX_KEY_UP;          break;
+        case SDLK_RIGHT:        event.u.keyboard.code = LX_KEY_RIGHT;       break;
+        case SDLK_DOWN:         event.u.keyboard.code = LX_KEY_DOWN;        break;
+
+        case SDLK_HOME:         event.u.keyboard.code = LX_KEY_HOME;        break;
+        case SDLK_END:          event.u.keyboard.code = LX_KEY_END;         break;
+        case SDLK_INSERT:       event.u.keyboard.code = LX_KEY_INSERT;      break;
+        case SDLK_PAGEUP:       event.u.keyboard.code = LX_KEY_PAGEUP;      break;
+        case SDLK_PAGEDOWN:     event.u.keyboard.code = LX_KEY_PAGEDOWN;    break;
+
+        case SDLK_HELP:         event.u.keyboard.code = LX_KEY_HELP;        break;
+        case SDLK_SYSREQ:       event.u.keyboard.code = LX_KEY_SYSREQ;      break;
+        case SDLK_MENU:         event.u.keyboard.code = LX_KEY_MENU;        break;
+        case SDLK_POWER:        event.u.keyboard.code = LX_KEY_POWER;       break;
+        case SDLK_UNDO:         event.u.keyboard.code = LX_KEY_UNDO;        break;
+
+        case SDLK_CAPSLOCK:     event.u.keyboard.code = LX_KEY_CAPSLOCK;     break;
+        case SDLK_SCROLLLOCK:   event.u.keyboard.code = LX_KEY_SCROLLLOCK;  break;
+        case SDLK_RSHIFT:       event.u.keyboard.code = LX_KEY_RSHIFT;      break;
+        case SDLK_LSHIFT:       event.u.keyboard.code = LX_KEY_LSHIFT;      break;
+        case SDLK_RCTRL:        event.u.keyboard.code = LX_KEY_RCTRL;       break;
+        case SDLK_LCTRL:        event.u.keyboard.code = LX_KEY_LCTRL;       break;
+        case SDLK_RALT:         event.u.keyboard.code = LX_KEY_RALT;        break;
+        case SDLK_LALT:         event.u.keyboard.code = LX_KEY_LALT;        break;
+        case 0x136:             event.u.keyboard.code = LX_KEY_RCMD;        break;
+        case 0x135:             event.u.keyboard.code = LX_KEY_LCMD;        break;
+
+        case SDLK_PAUSE:        event.u.keyboard.code = LX_KEY_PAUSE;       break;
+
+        default :
+            if (sdlevent->key.keysym.sym < 256) {
+                event.u.keyboard.code = sdlevent->key.keysym.sym;
+            }
+            break;
+        }
+
+        if (event.u.keyboard.code && window->base.on_event) {
+            window->base.on_event((lx_window_ref_t)window, &event);
+        }
+        break;
+    }
+    default:
+        // trace
+        lx_trace_e("unknown event: %x", sdlevent->type);
+        break;
+    }
 }
 
 static lx_void_t lx_window_sdl_runloop(lx_window_ref_t self) {

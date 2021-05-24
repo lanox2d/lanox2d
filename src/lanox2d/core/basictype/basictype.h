@@ -27,6 +27,7 @@
 #include "prefix.h"
 #include "color.h"
 #include "pixmap.h"
+#include "point.h"
 
 #endif
 
