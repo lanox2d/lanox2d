@@ -110,6 +110,13 @@ lx_void_t               lx_window_udata_set(lx_window_ref_t window, lx_cpointer_
  */
 lx_void_t               lx_window_flags_set(lx_window_ref_t window, lx_uint16_t flags);
 
+/*! set window framerate
+ *
+ * @param window        the window
+ * @param fps           the window framerate
+ */
+lx_void_t               lx_window_fps_set(lx_window_ref_t window, lx_uint16_t fps);
+
 /*! get the window pixfmt
  *
  * @param window        the window

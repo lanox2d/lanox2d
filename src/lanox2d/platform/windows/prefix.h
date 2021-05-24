@@ -27,6 +27,7 @@
 #include "../prefix.h"
 #include "../window.h"
 #include "../../core/core.h"
+#include "../../base/base.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * types
@@ -36,9 +37,10 @@
 typedef struct lx_window_t_ {
 
     // the basic information
+    lx_uint16_t         fps;
+    lx_uint16_t         flags;
     lx_uint16_t         width;
     lx_uint16_t         height;
-    lx_uint16_t         flags;
     lx_uint16_t         pixfmt;
     lx_char_t const*    title;
     lx_cpointer_t       udata;
@@ -56,6 +58,7 @@ typedef struct lx_window_t_ {
     // inner functions
     lx_void_t           (*runloop)(lx_window_ref_t window);
     lx_void_t           (*exit)(lx_window_ref_t window);
+
 }lx_window_t;
 
 #endif

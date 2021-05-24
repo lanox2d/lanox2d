@@ -72,6 +72,13 @@ lx_void_t lx_window_flags_set(lx_window_ref_t self, lx_uint16_t flags) {
     }
 }
 
+lx_void_t lx_window_fps_set(lx_window_ref_t self, lx_uint16_t fps) {
+    lx_window_t* window = (lx_window_t*)self;
+    if (window) {
+        window->fps = fps;
+    }
+}
+
 lx_void_t lx_window_on_draw(lx_window_ref_t self, lx_window_on_draw_t on_draw) {
     lx_window_t* window = (lx_window_t*)self;
     if (window) {

@@ -36,6 +36,9 @@ typedef struct lx_window_sdl_t_ {
     SDL_Renderer*   renderer;
     SDL_Texture*    texture;
     lx_bitmap_ref_t bitmap;
+    lx_hong_t       fps_time;
+    lx_hong_t       fps_prevtime;
+    lx_hong_t       fps_count;
 } lx_window_sdl_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -121,6 +124,7 @@ static lx_void_t lx_window_sdl_runloop(lx_window_ref_t self) {
     SDL_Event     event;
     SDL_Texture*  texture = window->texture;
     SDL_Renderer* renderer = window->renderer;
+    lx_int_t      fps_delay = 1000 / window->base.fps;
     while (!stop) {
 
         // draw window
@@ -148,8 +152,31 @@ static lx_void_t lx_window_sdl_runloop(lx_window_ref_t self) {
             }
         }
 
-        // TODO timer/fps60
-        SDL_Delay(100);
+        // compute framerate
+        lx_hong_t time = lx_mclock();
+        if (!window->fps_time) window->fps_time = time;
+        window->fps_count++;
+        if (time > window->fps_time + 1000) {
+            lx_float_t framerate = (lx_float_t)(window->fps_count * 1000) / (lx_float_t)(time - window->fps_time);
+            lx_char_t title[256];
+            lx_snprintf(title, sizeof(title), "%s (%0.2f fps)", window->base.title, framerate);
+            SDL_SetWindowTitle(window->window, title);
+            window->fps_count = 0;
+            window->fps_time = time;
+        }
+
+        // compute delay for framerate
+        lx_int_t delay = fps_delay;
+        if (window->fps_prevtime) {
+            lx_int_t dt = (lx_int_t)(time - window->fps_prevtime);
+            if (delay >= dt) {
+                delay -= dt;
+            } else {
+                delay = 0;
+            }
+        }
+        window->fps_prevtime = time;
+        SDL_Delay(delay);
     }
 }
 
@@ -200,6 +227,7 @@ lx_window_ref_t lx_window_init_sdl(lx_size_t width, lx_size_t height, lx_char_t 
         window = lx_malloc0_type(lx_window_sdl_t);
         lx_assert_and_check_break(window);
 
+        window->base.fps     = 60;
         window->base.width   = width;
         window->base.height  = height;
         window->base.title   = title;
