@@ -24,7 +24,7 @@
  */
 #include "time.h"
 #ifdef LX_CONFIG_OS_WINDOWS
-#   include <window.h>
+#   include <windows.h>
 #else
 #   include <unistd.h>
 #   include <sys/time.h>

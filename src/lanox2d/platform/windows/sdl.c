@@ -36,7 +36,7 @@ typedef struct lx_window_sdl_t_ {
     SDL_Renderer*   renderer;
     SDL_Texture*    texture;
     lx_bitmap_ref_t bitmap;
-    lx_size_t       button;
+    lx_uint8_t      button;
     lx_bool_t       is_quit;
     lx_hong_t       fps_time;
     lx_hong_t       fps_count;
@@ -90,6 +90,9 @@ static lx_bool_t lx_window_sdl_start(lx_window_sdl_t* window) {
 
         // create sdl renderer
         window->renderer = SDL_CreateRenderer(window->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+        if (!window->renderer) {
+            window->renderer = SDL_CreateRenderer(window->window, -1, SDL_RENDERER_SOFTWARE);
+        }
         lx_assert_and_check_break(window->renderer);
 
         // create sdl texture
@@ -384,8 +387,8 @@ lx_window_ref_t lx_window_init_sdl(lx_size_t width, lx_size_t height, lx_char_t 
         lx_assert_and_check_break(window);
 
         window->base.fps         = 60;
-        window->base.width       = width;
-        window->base.height      = height;
+        window->base.width       = (lx_uint16_t)width;
+        window->base.height      = (lx_uint16_t)height;
         window->base.title       = title;
         window->base.runloop     = lx_window_sdl_runloop;
         window->base.quit        = lx_window_sdl_quit;

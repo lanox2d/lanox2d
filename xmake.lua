@@ -10,12 +10,13 @@ if is_mode("debug") then
     add_defines("LX_DEBUG")
 end
 if is_mode("releasedbg", "release", "minsizerel") then
-    add_cxflags("-flto")
-    add_shflags("-flto")
     if is_plat("android") then
         add_shflags("-fuse-ld=lld")
         add_cxflags("-fPIC")
         add_shflags("-Wl,--build-id")
+    elseif not is_plat("windows") then
+        add_cxflags("-flto")
+        add_shflags("-flto")
     end
 end
 
