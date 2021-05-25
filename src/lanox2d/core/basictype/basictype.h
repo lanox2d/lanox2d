@@ -32,6 +32,7 @@
 #include "line.h"
 #include "triangle.h"
 #include "rect.h"
+#include "round_rect.h"
 
 #endif
 
