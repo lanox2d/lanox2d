@@ -15,24 +15,38 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        basictype.h
+ * @file        utils.h
  *
  */
-#ifndef LX_CORE_BASICTYPE_H
-#define LX_CORE_BASICTYPE_H
+#ifndef LX_CORE_BASICTYPE_UTILS_H
+#define LX_CORE_BASICTYPE_UTILS_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
 #include "prefix.h"
-#include "color.h"
-#include "pixmap.h"
-#include "utils.h"
-#include "point.h"
-#include "line.h"
-#include "triangle.h"
-#include "rect.h"
 
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * extern
+ */
+lx_extern_c_enter
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * interfaces
+ */
+
+/* make bounds from the points
+ *
+ * @param bounds    the bounds
+ * @param points    the points
+ * @param count     the points count
+ */
+lx_void_t           lx_bounds_make(lx_rect_ref_t bounds, lx_point_ref_t points, lx_size_t count);
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * extern
+ */
+lx_extern_c_leave
 #endif
 
 

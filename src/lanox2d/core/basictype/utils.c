@@ -15,24 +15,40 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        basictype.h
+ * @file        utils.c
  *
  */
-#ifndef LX_CORE_BASICTYPE_H
-#define LX_CORE_BASICTYPE_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "prefix.h"
-#include "color.h"
-#include "pixmap.h"
 #include "utils.h"
-#include "point.h"
-#include "line.h"
-#include "triangle.h"
-#include "rect.h"
 
-#endif
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * implementation
+ */
 
+lx_void_t lx_bounds_make(lx_rect_ref_t bounds, lx_point_ref_t points, lx_size_t count) {
+    lx_assert(bounds && points && count);
+    lx_point_ref_t point = points++; count--;
+    lx_float_t x0 = point->x;
+    lx_float_t y0 = point->y;
+    lx_float_t x1 = x0;
+    lx_float_t y1 = y0;
+    lx_float_t x;
+    lx_float_t y;
+    while (count--) {
+        x = points->x;
+        y = points->y;
+        if (x < x0) x0 = x;
+        if (y < y0) y0 = y;
+        if (x > x1) x1 = x;
+        if (y > y1) y1 = y;
+        points++;
+    }
+    bounds->x = x0;
+    bounds->y = y0;
+    bounds->w = x1 - x0;
+    bounds->h = y1 - y0;
+}
 

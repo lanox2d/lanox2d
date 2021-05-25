@@ -57,14 +57,6 @@ lx_void_t           lx_rect_make(lx_rect_ref_t rect, lx_float_t x, lx_float_t y,
  */
 lx_void_t           lx_rect_imake(lx_rect_ref_t rect, lx_long_t x, lx_long_t y, lx_size_t w, lx_size_t h);
 
-/* make bounds from the points
- *
- * @param rect      the rect
- * @param points    the points
- * @param count     the points count
- */
-lx_void_t           lx_rect_make_bounds(lx_rect_ref_t rect, lx_point_ref_t points, lx_size_t count);
-
 /*! apply matrix to rect
  *
  * @param rect      the rect
