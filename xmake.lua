@@ -35,4 +35,4 @@ else
     add_syslinks("pthread", "dl", "m", "c")
 end
 
-includes("src")
+includes("xmake", "src")
