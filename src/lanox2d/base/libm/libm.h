@@ -79,6 +79,24 @@ lx_double_t     lx_sqrt(lx_double_t x);
 /// compute sqrt of float value
 lx_float_t      lx_sqrtf(lx_float_t x);
 
+/// compute sin of double value
+lx_double_t     lx_sin(lx_double_t x);
+
+/// compute sin of float value
+lx_float_t      lx_sinf(lx_float_t x);
+
+/// compute cos of double value
+lx_double_t     lx_cos(lx_double_t x);
+
+/// compute cos of float value
+lx_float_t      lx_cosf(lx_float_t x);
+
+/// compute sin and cos of double value
+lx_void_t       lx_sincos(lx_double_t x, lx_double_t* s, lx_double_t* c);
+
+/// compute sin and cos of float value
+lx_void_t       lx_sincosf(lx_float_t x, lx_float_t* s, lx_float_t* c);
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */

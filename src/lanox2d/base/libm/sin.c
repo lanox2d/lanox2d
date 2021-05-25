@@ -15,23 +15,32 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        prefix.h
+ * @file        sin.c
  *
  */
-#ifndef LX_BASE_MATH_PREFIX_H
-#define LX_BASE_MATH_PREFIX_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "../prefix.h"
+#include "libm.h"
+#include <math.h>
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * macros
+ * implementation
  */
-#define lx_degree_to_radian(x)  ((x) * LX_PIOVER180)
-#define lx_radian_to_degree(x)  ((x) * LX_180OVERPI)
-
+lx_double_t lx_sin(lx_double_t x) {
+#ifdef LX_CONFIG_LIBM_HAVE_SIN
+    return sin(x);
+#else
+    lx_assert(0);
+    return 0;
 #endif
+}
 
-
+lx_float_t lx_sinf(lx_float_t x) {
+#ifdef LX_CONFIG_LIBM_HAVE_SINF
+    return sinf(x);
+#else
+    return (lx_float_t)lx_sin(x);
+#endif
+}

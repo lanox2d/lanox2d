@@ -24,6 +24,7 @@
  */
 #include "point.h"
 #include "vector.h"
+#include "matrix.h"
 #include "../../base/base.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -39,7 +40,6 @@ lx_void_t lx_point_imake(lx_point_ref_t point, lx_long_t x, lx_long_t y) {
     lx_point_make(point, (lx_float_t)(x), (lx_float_t)(y));
 }
 
-#if 0
 lx_void_t lx_point_apply(lx_point_ref_t point, lx_matrix_ref_t matrix) {
     lx_float_t x = point->x;
     lx_float_t y = point->y;
@@ -53,7 +53,6 @@ lx_void_t lx_point_apply2(lx_point_ref_t point, lx_point_ref_t applied, lx_matri
     applied->x = lx_matrix_apply_x(matrix, x, y);
     applied->y = lx_matrix_apply_y(matrix, x, y);
 }
-#endif
 
 lx_float_t lx_point_distance(lx_point_ref_t point, lx_point_ref_t other) {
     lx_vector_t vector;

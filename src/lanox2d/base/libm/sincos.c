@@ -15,23 +15,40 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        prefix.h
+ * @file        sincos.c
  *
  */
-#ifndef LX_BASE_MATH_PREFIX_H
-#define LX_BASE_MATH_PREFIX_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "../prefix.h"
+#include "libm.h"
+#include <math.h>
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * macros
+ * declaration
  */
-#define lx_degree_to_radian(x)  ((x) * LX_PIOVER180)
-#define lx_radian_to_degree(x)  ((x) * LX_180OVERPI)
-
+#ifdef LX_CONFIG_LIBM_HAVE_SINCOS
+extern lx_void_t sincos(lx_double_t x, lx_double_t* s, lx_double_t* c);
 #endif
 
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * implementation
+ */
+lx_void_t lx_sincos(lx_double_t x, lx_double_t* s, lx_double_t* c) {
+#ifdef LX_CONFIG_LIBM_HAVE_SINCOS
+    sincos(x, s, c);
+#else
+    if (s) *s = lx_sin(x);
+    if (c) *c = lx_cos(x);
+#endif
+}
 
+lx_void_t lx_sincosf(lx_float_t x, lx_float_t* s, lx_float_t* c) {
+#ifdef LX_CONFIG_LIBM_HAVE_SINCOSF
+    sincosf(x, s, c);
+#else
+    if (s) *s = lx_sinf(x);
+    if (c) *c = lx_cosf(x);
+#endif
+}

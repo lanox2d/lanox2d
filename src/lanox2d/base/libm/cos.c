@@ -15,23 +15,33 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        prefix.h
+ * @file        cos.c
  *
  */
-#ifndef LX_BASE_MATH_PREFIX_H
-#define LX_BASE_MATH_PREFIX_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "../prefix.h"
+#include "libm.h"
+#include <math.h>
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * macros
+ * implementation
  */
-#define lx_degree_to_radian(x)  ((x) * LX_PIOVER180)
-#define lx_radian_to_degree(x)  ((x) * LX_180OVERPI)
-
+lx_double_t lx_cos(lx_double_t x) {
+#ifdef LX_CONFIG_LIBM_HAVE_COS
+    return cos(x);
+#else
+    lx_assert(0);
+    return 0;
 #endif
+}
 
-
+lx_float_t lx_cosf(lx_float_t x) {
+#ifdef LX_CONFIG_LIBM_HAVE_COSF
+    return cosf(x);
+#else
+    lx_assert(0);
+    return 0;
+#endif
+}
