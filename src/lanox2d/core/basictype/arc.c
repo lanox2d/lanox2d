@@ -15,28 +15,29 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        basictype.h
+ * @file        arc.c
  *
  */
-#ifndef LX_CORE_BASICTYPE_H
-#define LX_CORE_BASICTYPE_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "prefix.h"
-#include "color.h"
-#include "pixmap.h"
-#include "utils.h"
-#include "point.h"
-#include "line.h"
-#include "triangle.h"
-#include "rect.h"
-#include "round_rect.h"
-#include "circle.h"
-#include "ellipse.h"
 #include "arc.h"
+#include "point.h"
+#include "../../base/base.h"
 
-#endif
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * implementation
+ */
+lx_void_t lx_arc_make(lx_arc_ref_t arc, lx_float_t x0, lx_float_t y0, lx_float_t rx, lx_float_t ry, lx_float_t ab, lx_float_t an) {
+    arc->c.x    = x0;
+    arc->c.y    = y0;
+    arc->rx     = rx;
+    arc->ry     = ry;
+    arc->ab     = ab;
+    arc->an     = an;
+}
 
-
+lx_void_t lx_arc_imake(lx_arc_ref_t arc, lx_long_t x0, lx_long_t y0, lx_size_t rx, lx_size_t ry, lx_long_t ab, lx_long_t an) {
+    lx_arc_make(arc, (lx_float_t)x0, (lx_float_t)y0, (lx_float_t)rx, (lx_float_t)ry, (lx_float_t)ab, (lx_float_t)an);
+}

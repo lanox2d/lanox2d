@@ -15,28 +15,28 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        basictype.h
+ * @file        circle.c
  *
  */
-#ifndef LX_CORE_BASICTYPE_H
-#define LX_CORE_BASICTYPE_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "prefix.h"
-#include "color.h"
-#include "pixmap.h"
-#include "utils.h"
-#include "point.h"
-#include "line.h"
-#include "triangle.h"
-#include "rect.h"
-#include "round_rect.h"
 #include "circle.h"
-#include "ellipse.h"
-#include "arc.h"
+#include "point.h"
+#include "utils.h"
+#include "matrix.h"
+#include "../../base/base.h"
 
-#endif
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * implementation
+ */
+lx_void_t lx_circle_make(lx_circle_ref_t circle, lx_float_t x0, lx_float_t y0, lx_float_t r) {
+    circle->c.x = x0;
+    circle->c.y = y0;
+    circle->r   = r;
+}
 
-
+lx_void_t lx_circle_imake(lx_circle_ref_t circle, lx_long_t x0, lx_long_t y0, lx_size_t r) {
+    lx_circle_make(circle, (lx_float_t)(x0), (lx_float_t)y0, (lx_float_t)r);
+}
