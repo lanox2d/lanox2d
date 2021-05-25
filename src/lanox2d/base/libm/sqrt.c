@@ -15,46 +15,32 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        prefix.h
+ * @file        sqrt.c
  *
  */
-#ifndef LX_BASE_LIBM_PREFIX_H
-#define LX_BASE_LIBM_PREFIX_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "../prefix.h"
+#include "libm.h"
+#include <math.h>
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * types
+ * implementation
  */
-
-// the ieee float type
-typedef union lx_ieee_float_t_ {
-    lx_float_t  f;
-    lx_uint32_t i;
-}lx_ieee_float_t;
-
-// the ieee double type
-#ifdef LX_FLOAT_BIGENDIAN
-typedef union lx_ieee_double_t_ {
-    lx_double_t d;
-    struct {
-        lx_uint32_t h;
-        lx_uint32_t l;
-    }i;
-}lx_ieee_double_t;
+lx_double_t lx_sqrt(lx_double_t x) {
+#ifdef LX_CONFIG_LIBM_HAVE_SQRT
+    return sqrt(x);
 #else
-typedef union lx_ieee_double_t_ {
-    lx_double_t d;
-    struct {
-        lx_uint32_t l;
-        lx_uint32_t h;
-    }i;
-}lx_ieee_double_t;
+    lx_assert(0);
+    return 0;
 #endif
+}
 
+lx_float_t lx_sqrtf(lx_float_t x) {
+#ifdef LX_CONFIG_LIBM_HAVE_SQRTF
+    return (lx_float_t)sqrtf((lx_double_t)x);
+#else
+    return (lx_float_t)lx_sqrt((lx_double_t)x);
 #endif
-
-
+}

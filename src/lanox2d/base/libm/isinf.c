@@ -15,46 +15,32 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        prefix.h
+ * @file        isinf.c
  *
  */
-#ifndef LX_BASE_LIBM_PREFIX_H
-#define LX_BASE_LIBM_PREFIX_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "../prefix.h"
+#include "libm.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * types
+ * implementation
  */
+lx_int_t lx_isinf(lx_double_t x) {
+    lx_ieee_double_t e; e.d = x;
+    lx_int32_t      t = e.i.l | ((e.i.h & 0x7fffffff) ^ 0x7ff00000);
+    t |= -t;
+    return (lx_long_t)(~(t >> 31) & (e.i.h >> 30));
+}
 
-// the ieee float type
-typedef union lx_ieee_float_t_ {
-    lx_float_t  f;
-    lx_uint32_t i;
-}lx_ieee_float_t;
+lx_int_t lx_isinff(lx_float_t x) {
+    /* 0 * finite => 0
+     * 0 * infinity => NaN
+     * 0 * NaN => NaN
+     */
+    lx_float_t p = x * 0;
 
-// the ieee double type
-#ifdef LX_FLOAT_BIGENDIAN
-typedef union lx_ieee_double_t_ {
-    lx_double_t d;
-    struct {
-        lx_uint32_t h;
-        lx_uint32_t l;
-    }i;
-}lx_ieee_double_t;
-#else
-typedef union lx_ieee_double_t_ {
-    lx_double_t d;
-    struct {
-        lx_uint32_t l;
-        lx_uint32_t h;
-    }i;
-}lx_ieee_double_t;
-#endif
-
-#endif
-
-
+    // p will either be NaN or 0 now, so we can return (prod == prod) or (0 == prod).
+    return p == p;
+}

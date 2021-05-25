@@ -33,6 +33,9 @@ target("lanox2d")
     -- add options
     add_options("small", "wchar", "window")
 
+    -- check interfaces
+    check_interfaces()
+
     -- add sdl package
     if has_package("libsdl") then
         add_packages("libsdl")
