@@ -25,6 +25,7 @@
  * includes
  */
 #include "../prefix.h"
+#include "../base/base.h"
 #include "basictype/basictype.h"
 
 #endif

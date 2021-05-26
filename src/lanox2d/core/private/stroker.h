@@ -15,23 +15,23 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        core.h
+ * @file        stroker.h
  *
  */
-#ifndef LX_CORE_H
-#define LX_CORE_H
+#ifndef LX_CORE_STROKER_H
+#define LX_CORE_STROKER_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
 #include "prefix.h"
-#include "bitmap.h"
-#include "pixmap.h"
-#include "device.h"
-#include "canvas.h"
-#include "event.h"
-#include "paint.h"
-#include "quality.h"
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * macros
+ */
+
+// the default miter limit
+#define LX_STROKER_DEFAULT_MITER        (4.0f)
 
 #endif
 

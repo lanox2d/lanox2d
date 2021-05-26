@@ -55,6 +55,9 @@ typedef lx_typeref(window);
 /// the device ref type
 typedef lx_typeref(device);
 
+/// the paint ref type
+typedef lx_typeref(paint);
+
 /*! @def the color type
  *
  * the color type
