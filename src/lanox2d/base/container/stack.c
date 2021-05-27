@@ -15,23 +15,14 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        base.h
+ * @file        stack.c
  *
  */
-#ifndef LX_BASE_H
-#define LX_BASE_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "libc/libc.h"
-#include "libm/libm.h"
-#include "math/math.h"
-#include "utils/utils.h"
-#include "memory/memory.h"
-#include "platform/platform.h"
-#include "container/container.h"
+#include "stack.h"
 
-#endif
 
 

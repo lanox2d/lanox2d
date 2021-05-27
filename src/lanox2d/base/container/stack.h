@@ -15,22 +15,38 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        base.h
+ * @file        stack.h
  *
  */
-#ifndef LX_BASE_H
-#define LX_BASE_H
+#ifndef LX_BASE_CONTAINER_STACK_H
+#define LX_BASE_CONTAINER_STACK_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "libc/libc.h"
-#include "libm/libm.h"
-#include "math/math.h"
-#include "utils/utils.h"
-#include "memory/memory.h"
-#include "platform/platform.h"
-#include "container/container.h"
+#include "prefix.h"
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * types
+ */
+
+/// the stack ref type
+typedef lx_typeref(stack);
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * extern
+ */
+lx_extern_c_enter
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * interfaces
+ */
+
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * extern
+ */
+lx_extern_c_leave
 
 #endif
 
