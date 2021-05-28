@@ -42,6 +42,87 @@ lx_extern_c_enter
  * interfaces
  */
 
+/*! init stack
+ *
+ * @param grow      the item grow
+ * @param element   the element
+ *
+ * @return          the stack
+ */
+lx_stack_ref_t      lx_stack_init(lx_size_t grow/*, lx_element_t element*/);
+
+/*! exit stack
+ *
+ * @param stack     the stack
+ */
+lx_void_t           lx_stack_exit(lx_stack_ref_t stack);
+
+/*! the stack head item
+ *
+ * @param stack     the stack
+ *
+ * @return          the head item
+ */
+lx_pointer_t        lx_stack_head(lx_stack_ref_t stack);
+
+/*! the stack last item
+ *
+ * @param stack     the stack
+ *
+ * @return          the last item
+ */
+lx_pointer_t        lx_stack_last(lx_stack_ref_t stack);
+
+/*! clear the stack
+ *
+ * @param stack     the stack
+ */
+lx_void_t           lx_stack_clear(lx_stack_ref_t stack);
+
+/*! copy the stack
+ *
+ * @param stack     the stack
+ * @param copy      the copied stack
+ */
+lx_void_t           lx_stack_copy(lx_stack_ref_t stack, lx_stack_ref_t copy);
+
+/*! put the stack item
+ *
+ * @param stack     the stack
+ * @param data      the item data
+ */
+lx_void_t           lx_stack_put(lx_stack_ref_t stack, lx_cpointer_t data);
+
+/*! pop the stack item
+ *
+ * @param stack     the stack
+ */
+lx_void_t           lx_stack_pop(lx_stack_ref_t stack);
+
+/*! the stack top item
+ *
+ * @param stack     the stack
+ *
+ * @return          the stack top item
+ */
+lx_pointer_t        lx_stack_top(lx_stack_ref_t stack);
+
+/*! the stack size
+ *
+ * @param stack     the stack
+ *
+ * @return          the stack size
+ */
+lx_size_t           lx_stack_size(lx_stack_ref_t stack);
+
+/*! the stack maxn
+ *
+ * @param stack     the stack
+ *
+ * @return          the stack maxn
+ */
+lx_size_t           lx_stack_maxn(lx_stack_ref_t stack);
+
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
