@@ -23,6 +23,55 @@
  * includes
  */
 #include "stack.h"
+#include "array.h"
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * implementation
+ */
+
+lx_stack_ref_t lx_stack_init(lx_size_t grow, lx_size_t itemsize, lx_element_free_t free, lx_cpointer_t udata) {
+    return (lx_stack_ref_t)lx_array_init(grow, itemsize, free, udata);
+}
+
+lx_void_t lx_stack_exit(lx_stack_ref_t self) {
+    lx_array_exit((lx_array_ref_t)self);
+}
+
+lx_pointer_t lx_stack_head(lx_stack_ref_t self) {
+    return lx_array_head((lx_array_ref_t)self);
+}
+
+lx_pointer_t lx_stack_last(lx_stack_ref_t self) {
+    return lx_array_last((lx_array_ref_t)self);
+}
+
+lx_void_t lx_stack_clear(lx_stack_ref_t self) {
+    lx_array_clear((lx_array_ref_t)self);
+}
+
+lx_void_t lx_stack_copy(lx_stack_ref_t self, lx_stack_ref_t copy) {
+    lx_array_copy((lx_array_ref_t)self, (lx_array_ref_t)copy);
+}
+
+lx_void_t lx_stack_put(lx_stack_ref_t self, lx_cpointer_t data) {
+    lx_array_insert_tail((lx_array_ref_t)self, data);
+}
+
+lx_void_t lx_stack_pop(lx_stack_ref_t self) {
+    lx_array_remove_last((lx_array_ref_t)self);
+}
+
+lx_pointer_t lx_stack_top(lx_stack_ref_t self) {
+    return lx_array_last((lx_array_ref_t)self);
+}
+
+lx_size_t lx_stack_size(lx_stack_ref_t self) {
+    return lx_array_size((lx_array_ref_t)self);
+}
+
+lx_void_t lx_stack_foreach(lx_stack_ref_t self, lx_element_foreach_t foreach, lx_cpointer_t udata) {
+    lx_array_foreach((lx_array_ref_t)self, foreach, udata);
+}
 
 
 

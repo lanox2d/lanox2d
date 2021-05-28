@@ -45,11 +45,13 @@ lx_extern_c_enter
 /*! init stack
  *
  * @param grow      the item grow
- * @param element   the element
+ * @param itemsize  the item size
+ * @param free      the free function of element item
+ * @param udata     the user data
  *
  * @return          the stack
  */
-lx_stack_ref_t      lx_stack_init(lx_size_t grow/*, lx_element_t element*/);
+lx_stack_ref_t      lx_stack_init(lx_size_t grow, lx_size_t itemsize, lx_element_free_t free, lx_cpointer_t udata);
 
 /*! exit stack
  *
@@ -57,7 +59,7 @@ lx_stack_ref_t      lx_stack_init(lx_size_t grow/*, lx_element_t element*/);
  */
 lx_void_t           lx_stack_exit(lx_stack_ref_t stack);
 
-/*! the stack head item
+/*! get the stack head item
  *
  * @param stack     the stack
  *
@@ -65,7 +67,7 @@ lx_void_t           lx_stack_exit(lx_stack_ref_t stack);
  */
 lx_pointer_t        lx_stack_head(lx_stack_ref_t stack);
 
-/*! the stack last item
+/*! get the stack last item
  *
  * @param stack     the stack
  *
@@ -99,7 +101,7 @@ lx_void_t           lx_stack_put(lx_stack_ref_t stack, lx_cpointer_t data);
  */
 lx_void_t           lx_stack_pop(lx_stack_ref_t stack);
 
-/*! the stack top item
+/*! get the stack top item
  *
  * @param stack     the stack
  *
@@ -107,7 +109,7 @@ lx_void_t           lx_stack_pop(lx_stack_ref_t stack);
  */
 lx_pointer_t        lx_stack_top(lx_stack_ref_t stack);
 
-/*! the stack size
+/*! get the stack size
  *
  * @param stack     the stack
  *
@@ -115,14 +117,13 @@ lx_pointer_t        lx_stack_top(lx_stack_ref_t stack);
  */
 lx_size_t           lx_stack_size(lx_stack_ref_t stack);
 
-/*! the stack maxn
+/*! foreach all elements
  *
  * @param stack     the stack
- *
- * @return          the stack maxn
+ * @param foreach   the foreach function
+ * @param udata     the user data
  */
-lx_size_t           lx_stack_maxn(lx_stack_ref_t stack);
-
+lx_void_t           lx_stack_foreach(lx_stack_ref_t stack, lx_element_foreach_t foreach, lx_cpointer_t udata);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
