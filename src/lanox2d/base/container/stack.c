@@ -29,8 +29,8 @@
  * implementation
  */
 
-lx_stack_ref_t lx_stack_init(lx_size_t grow, lx_size_t itemsize, lx_element_free_t free, lx_cpointer_t udata) {
-    return (lx_stack_ref_t)lx_array_init(grow, itemsize, free, udata);
+lx_stack_ref_t lx_stack_init(lx_size_t grow, lx_size_t itemsize, lx_element_free_t itemfree) {
+    return (lx_stack_ref_t)lx_array_init(grow, itemsize, itemfree);
 }
 
 lx_void_t lx_stack_exit(lx_stack_ref_t self) {

@@ -31,7 +31,7 @@
  */
 
 /// the free function type of element
-typedef lx_void_t (*lx_element_free_t)(lx_pointer_t item, lx_cpointer_t udata);
+typedef lx_void_t (*lx_element_free_t)(lx_pointer_t item);
 
 /// the foreach function type of element
 typedef lx_void_t (*lx_element_foreach_t)(lx_pointer_t item, lx_cpointer_t udata);

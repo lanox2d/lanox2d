@@ -44,14 +44,13 @@ lx_extern_c_enter
 
 /*! init array
  *
- * @param grow      the item grow
+ * @param grow      the grow number of elements
  * @param itemsize  the item size
- * @param free      the free function of element item
- * @param udata     the user data
+ * @param itemfree  the free function of element item
  *
  * @return          the array
  */
-lx_array_ref_t      lx_array_init(lx_size_t grow, lx_size_t itemsize, lx_element_free_t free, lx_cpointer_t udata);
+lx_array_ref_t      lx_array_init(lx_size_t grow, lx_size_t itemsize, lx_element_free_t itemfree);
 
 /*! exist array
  *
@@ -66,6 +65,14 @@ lx_void_t           lx_array_exit(lx_array_ref_t array);
  * @return          the array data
  */
 lx_pointer_t        lx_array_data(lx_array_ref_t array);
+
+/*! get the array size
+ *
+ * @param array     the array
+ *
+ * @return          the array size
+ */
+lx_size_t           lx_array_size(lx_array_ref_t array);
 
 /*! get the array head item
  *
@@ -82,6 +89,15 @@ lx_pointer_t        lx_array_head(lx_array_ref_t array);
  * @return          the array last item
  */
 lx_pointer_t        lx_array_last(lx_array_ref_t array);
+
+/*! get the array item at the given index
+ *
+ * @param array     the array
+ * @param index     the item index
+ *
+ * @return          the array item
+ */
+lx_pointer_t        lx_array_item(lx_array_ref_t array, lx_size_t index);
 
 /*! resize the array
  *
@@ -101,32 +117,9 @@ lx_void_t           lx_array_clear(lx_array_ref_t array);
 /*! copy the array
  *
  * @param array     the array
- * @param copy      the copied vector
+ * @param copy      the copied array
  */
-lx_void_t           lx_array_copy(lx_array_ref_t array, lx_array_ref_t copy);
-
-/*! insert the array prev item
- *
- * @param array     the array
- * @param itor      the item itor
- * @param data      the item data
- */
-lx_void_t           lx_array_insert_prev(lx_array_ref_t array, lx_size_t itor, lx_cpointer_t data);
-
-/*! insert the array next item
- *
- * @param array     the array
- * @param itor      the item itor
- * @param data      the item data
- */
-lx_void_t           lx_array_insert_next(lx_array_ref_t array, lx_size_t itor, lx_cpointer_t data);
-
-/*! insert the array head item
- *
- * @param array     the array
- * @param data      the item data
- */
-lx_void_t           lx_array_insert_head(lx_array_ref_t array, lx_cpointer_t data);
+lx_void_t           lx_array_copy(lx_array_ref_t array, lx_array_ref_t copied);
 
 /*! insert the array tail item
  *
@@ -138,10 +131,10 @@ lx_void_t           lx_array_insert_tail(lx_array_ref_t array, lx_cpointer_t dat
 /*! replace the array item
  *
  * @param array     the array
- * @param itor      the item itor
+ * @param index     the item index
  * @param data      the item data
  */
-lx_void_t           lx_array_replace(lx_array_ref_t array, lx_size_t itor, lx_cpointer_t data);
+lx_void_t           lx_array_replace(lx_array_ref_t array, lx_size_t index, lx_cpointer_t data);
 
 /*! replace the array head item
  *
@@ -157,32 +150,11 @@ lx_void_t           lx_array_replace_head(lx_array_ref_t array, lx_cpointer_t da
  */
 lx_void_t           lx_array_replace_last(lx_array_ref_t array, lx_cpointer_t data);
 
-/*! remove the array item
- *
- * @param array     the array
- * @param itor      the item itor
- */
-lx_void_t           lx_array_remove(lx_array_ref_t array, lx_size_t itor);
-
-/*! remove the array head item
- *
- * @param array     the array
- */
-lx_void_t           lx_array_remove_head(lx_array_ref_t array);
-
 /*! remove the array last item
  *
  * @param array     the array
  */
 lx_void_t           lx_array_remove_last(lx_array_ref_t array);
-
-/*! get the array size
- *
- * @param array     the array
- *
- * @return          the array size
- */
-lx_size_t           lx_array_size(lx_array_ref_t array);
 
 /*! foreach all elements
  *

@@ -44,14 +44,13 @@ lx_extern_c_enter
 
 /*! init stack
  *
- * @param grow      the item grow
+ * @param grow      the grow number of elements
  * @param itemsize  the item size
- * @param free      the free function of element item
- * @param udata     the user data
+ * @param itemfree  the free function of element item
  *
  * @return          the stack
  */
-lx_stack_ref_t      lx_stack_init(lx_size_t grow, lx_size_t itemsize, lx_element_free_t free, lx_cpointer_t udata);
+lx_stack_ref_t      lx_stack_init(lx_size_t grow, lx_size_t itemsize, lx_element_free_t itemfree);
 
 /*! exit stack
  *
