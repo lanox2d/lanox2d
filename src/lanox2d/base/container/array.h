@@ -121,14 +121,22 @@ lx_void_t           lx_array_clear(lx_array_ref_t array);
  */
 lx_void_t           lx_array_copy(lx_array_ref_t array, lx_array_ref_t copied);
 
-/*! insert the array tail item
+/*! insert new item at given index
+ *
+ * @param array     the array
+ * @param index     the item index
+ * @param data      the item data
+ */
+lx_void_t           lx_array_insert(lx_array_ref_t array, lx_size_t index, lx_cpointer_t data);
+
+/*! insert new item at tail
  *
  * @param array     the array
  * @param data      the item data
  */
 lx_void_t           lx_array_insert_tail(lx_array_ref_t array, lx_cpointer_t data);
 
-/*! replace the array item
+/*! replace the item at given index
  *
  * @param array     the array
  * @param index     the item index
@@ -136,21 +144,21 @@ lx_void_t           lx_array_insert_tail(lx_array_ref_t array, lx_cpointer_t dat
  */
 lx_void_t           lx_array_replace(lx_array_ref_t array, lx_size_t index, lx_cpointer_t data);
 
-/*! replace the array head item
+/*! replace the head item
  *
  * @param array     the array
  * @param data      the item data
  */
 lx_void_t           lx_array_replace_head(lx_array_ref_t array, lx_cpointer_t data);
 
-/*! replace the array last item
+/*! replace the last item
  *
  * @param array     the array
  * @param data      the item data
  */
 lx_void_t           lx_array_replace_last(lx_array_ref_t array, lx_cpointer_t data);
 
-/*! remove the array last item
+/*! remove the last item
  *
  * @param array     the array
  */

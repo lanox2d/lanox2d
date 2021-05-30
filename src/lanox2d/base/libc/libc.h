@@ -173,6 +173,16 @@ lx_pointer_t        lx_memset32(lx_pointer_t s, lx_uint32_t c, lx_size_t n);
  */
 lx_pointer_t        lx_memcpy(lx_pointer_t s1, lx_cpointer_t s2, lx_size_t n);
 
+/*! memmov
+ *
+ * @param s1        the destinate data
+ * @param s1        the source data
+ * @param n         the data size
+ *
+ * @return          the destinate data
+ */
+lx_pointer_t        lx_memmov(lx_pointer_t s1, lx_cpointer_t s2, lx_size_t n);
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */

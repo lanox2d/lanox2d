@@ -83,16 +83,16 @@ lx_void_t           lx_stack_clear(lx_stack_ref_t stack);
 /*! copy the stack
  *
  * @param stack     the stack
- * @param copy      the copied stack
+ * @param copied    the copied stack
  */
-lx_void_t           lx_stack_copy(lx_stack_ref_t stack, lx_stack_ref_t copy);
+lx_void_t           lx_stack_copy(lx_stack_ref_t stack, lx_stack_ref_t copied);
 
-/*! put the stack item
+/*! push the stack item
  *
  * @param stack     the stack
  * @param data      the item data
  */
-lx_void_t           lx_stack_put(lx_stack_ref_t stack, lx_cpointer_t data);
+lx_void_t           lx_stack_push(lx_stack_ref_t stack, lx_cpointer_t data);
 
 /*! pop the stack item
  *

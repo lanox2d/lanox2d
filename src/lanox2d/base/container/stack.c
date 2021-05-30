@@ -49,11 +49,11 @@ lx_void_t lx_stack_clear(lx_stack_ref_t self) {
     lx_array_clear((lx_array_ref_t)self);
 }
 
-lx_void_t lx_stack_copy(lx_stack_ref_t self, lx_stack_ref_t copy) {
-    lx_array_copy((lx_array_ref_t)self, (lx_array_ref_t)copy);
+lx_void_t lx_stack_copy(lx_stack_ref_t self, lx_stack_ref_t copied) {
+    lx_array_copy((lx_array_ref_t)self, (lx_array_ref_t)copied);
 }
 
-lx_void_t lx_stack_put(lx_stack_ref_t self, lx_cpointer_t data) {
+lx_void_t lx_stack_push(lx_stack_ref_t self, lx_cpointer_t data) {
     lx_array_insert_tail((lx_array_ref_t)self, data);
 }
 

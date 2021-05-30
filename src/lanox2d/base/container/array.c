@@ -222,11 +222,27 @@ lx_void_t lx_array_copy(lx_array_ref_t self, lx_array_ref_t copied) {
     array->size = array_copied->size;
 }
 
-lx_void_t lx_array_insert_tail(lx_array_ref_t self, lx_cpointer_t data) {
+lx_void_t lx_array_insert(lx_array_ref_t self, lx_size_t index, lx_cpointer_t data) {
     lx_array_t* array = (lx_array_t*)self;
     if (array && lx_array_resize(self, array->size + 1)) {
-        lx_array_replace_last(self, data);
+        lx_byte_t* arraydata = array->data;
+        lx_size_t  itemsize  = array->itemsize;
+        lx_size_t  oldsize   = array->size - 1;
+        lx_assert_and_check_return(arraydata && index < array->size);
+        if (index < oldsize) {
+            lx_memmov(arraydata + (index + 1) * itemsize, arraydata + index * itemsize, (oldsize - index) * itemsize);
+        }
+        lx_pointer_t item = arraydata + index * itemsize;
+        if (itemsize == sizeof(lx_pointer_t)) {
+            *((lx_pointer_t*)item) = *((lx_pointer_t*)data);
+        } else {
+            lx_memcpy(item, data, itemsize);
+        }
     }
+}
+
+lx_void_t lx_array_insert_tail(lx_array_ref_t self, lx_cpointer_t data) {
+    lx_array_insert(self, lx_array_size(self), data);
 }
 
 lx_void_t lx_array_replace(lx_array_ref_t self, lx_size_t index, lx_cpointer_t data) {
@@ -234,6 +250,9 @@ lx_void_t lx_array_replace(lx_array_ref_t self, lx_size_t index, lx_cpointer_t d
     if (array) {
         lx_pointer_t item = lx_array_item(self, index);
         lx_assert_and_check_return(item);
+        if (array->itemfree) {
+            array->itemfree(item);
+        }
         if (array->itemsize == sizeof(lx_pointer_t)) {
             *((lx_pointer_t*)item) = *((lx_pointer_t*)data);
         } else {
