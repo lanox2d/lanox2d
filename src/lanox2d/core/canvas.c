@@ -24,15 +24,8 @@
  */
 #include "canvas.h"
 #include "device.h"
-
-/* //////////////////////////////////////////////////////////////////////////////////////
- * types
- */
-
-// the canvas type
-typedef struct lx_canvas_t_ {
-    lx_device_ref_t device;
-}lx_canvas_t;
+#include "private/canvas.h"
+#include "../base/base.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
@@ -46,7 +39,13 @@ lx_canvas_ref_t lx_canvas_init(lx_device_ref_t device) {
         canvas = lx_malloc0_type(lx_canvas_t);
         lx_assert_and_check_break(canvas);
 
+        // init device
         canvas->device = device;
+
+        // init matrix
+        lx_matrix_clear(&canvas->matrix);
+        canvas->matrix_stack = lx_stack_init(8, sizeof(lx_matrix_t), lx_null);
+        lx_assert_and_check_break(canvas->matrix_stack);
 
         ok = lx_true;
 
@@ -62,6 +61,10 @@ lx_canvas_ref_t lx_canvas_init(lx_device_ref_t device) {
 lx_void_t lx_canvas_exit(lx_canvas_ref_t self) {
     lx_canvas_t* canvas = (lx_canvas_t*)self;
     if (canvas) {
+        if (canvas->matrix_stack) {
+            lx_stack_exit(canvas->matrix_stack);
+            canvas->matrix_stack = lx_null;
+        }
         lx_free(canvas);
     }
 }
