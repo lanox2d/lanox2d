@@ -23,6 +23,7 @@
  * includes
  */
 #include "canvas_matrix.h"
+#include "device.h"
 #include "private/canvas.h"
 #include "../base/base.h"
 
@@ -41,7 +42,7 @@ lx_matrix_ref_t lx_canvas_matrix_save(lx_canvas_ref_t self) {
 
     // save matrix
     lx_stack_push(canvas->matrix_stack, &canvas->matrix);
-//    lx_device_bind_matrix(canvas->device, &canvas->matrix);
+    lx_device_bind_matrix(canvas->device, &canvas->matrix);
     return &canvas->matrix;
 }
 lx_void_t lx_canvas_matrix_load(lx_canvas_ref_t self) {
@@ -55,7 +56,7 @@ lx_void_t lx_canvas_matrix_load(lx_canvas_ref_t self) {
 
     // load matrix
     canvas->matrix = *matrix;
-//    lx_device_bind_matrix(canvas->device, &canvas->matrix);
+    lx_device_bind_matrix(canvas->device, &canvas->matrix);
     lx_stack_pop(canvas->matrix_stack);
 }
 

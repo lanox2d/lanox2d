@@ -69,9 +69,3 @@ lx_void_t lx_canvas_exit(lx_canvas_ref_t self) {
     }
 }
 
-lx_void_t lx_canvas_draw_clear(lx_canvas_ref_t self, lx_color_t color) {
-    lx_canvas_t* canvas = (lx_canvas_t*)self;
-    if (canvas && canvas->device) {
-        lx_device_draw_clear(canvas->device, color);
-    }
-}

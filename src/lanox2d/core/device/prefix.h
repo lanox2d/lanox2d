@@ -35,11 +35,12 @@
 
 // the device type
 typedef struct lx_device_t_ {
-    lx_uint16_t width;
-    lx_uint16_t height;
-    lx_void_t   (*resize)(lx_device_ref_t device, lx_size_t width, lx_size_t height);
-    lx_void_t   (*draw_clear)(lx_device_ref_t device, lx_color_t color);
-    lx_void_t   (*exit)(lx_device_ref_t device);
+    lx_uint16_t         width;
+    lx_uint16_t         height;
+    lx_matrix_ref_t     matrix;
+    lx_void_t           (*resize)(lx_device_ref_t device, lx_size_t width, lx_size_t height);
+    lx_void_t           (*draw_clear)(lx_device_ref_t device, lx_color_t color);
+    lx_void_t           (*exit)(lx_device_ref_t device);
 }lx_device_t;
 
 #endif

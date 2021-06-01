@@ -35,6 +35,13 @@ lx_extern_c_enter
  * interfaces
  */
 
+/*! clear draw and fill the given color
+ *
+ * @param canvas    the canvas
+ * @param color     the color
+ */
+lx_void_t           lx_canvas_draw_clear(lx_canvas_ref_t canvas, lx_color_t color);
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */

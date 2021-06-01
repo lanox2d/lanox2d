@@ -73,6 +73,13 @@ lx_size_t           lx_device_height(lx_device_ref_t device);
  */
 lx_void_t           lx_device_resize(lx_device_ref_t device, lx_size_t width, lx_size_t height);
 
+/*! bind matrix
+ *
+ * @param device    the device
+ * @param matrix    the matrix
+ */
+lx_void_t           lx_device_bind_matrix(lx_device_ref_t device, lx_matrix_ref_t matrix);
+
 /*! clear draw and fill the given color
  *
  * @param device    the device

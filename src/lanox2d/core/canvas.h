@@ -52,13 +52,6 @@ lx_canvas_ref_t     lx_canvas_init(lx_device_ref_t device);
  */
 lx_void_t           lx_canvas_exit(lx_canvas_ref_t canvas);
 
-/*! clear draw and fill the given color
- *
- * @param canvas    the canvas
- * @param color     the color
- */
-lx_void_t           lx_canvas_draw_clear(lx_canvas_ref_t canvas, lx_color_t color);
-
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */
