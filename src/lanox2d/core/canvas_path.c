@@ -15,55 +15,18 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        canvas.h
+ * @file        canvas_path.c
  *
  */
-#ifndef LX_CORE_CANVAS_H
-#define LX_CORE_CANVAS_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
 #include "canvas_path.h"
-#include "canvas_clip.h"
-#include "canvas_draw.h"
-#include "canvas_matrix.h"
+#include "private/canvas.h"
+#include "../base/base.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * extern
+ * implementation
  */
-lx_extern_c_enter
-
-/* //////////////////////////////////////////////////////////////////////////////////////
- * interfaces
- */
-
-/*! init canvas from the given device
- *
- * @param device    the device
- *
- * @return          the canvas
- */
-lx_canvas_ref_t     lx_canvas_init(lx_device_ref_t device);
-
-/*! exit canvas
- *
- * @param canvas    the canvas
- */
-lx_void_t           lx_canvas_exit(lx_canvas_ref_t canvas);
-
-/*! clear draw and fill the given color
- *
- * @param canvas    the canvas
- * @param color     the color
- */
-lx_void_t           lx_canvas_draw_clear(lx_canvas_ref_t canvas, lx_color_t color);
-
-/* //////////////////////////////////////////////////////////////////////////////////////
- * extern
- */
-lx_extern_c_leave
-
-#endif
-
 
