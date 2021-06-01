@@ -53,6 +53,13 @@ lx_void_t lx_device_resize(lx_device_ref_t self, lx_size_t width, lx_size_t heig
     }
 }
 
+lx_void_t lx_device_bind_paint(lx_device_ref_t self, lx_paint_ref_t paint) {
+    lx_device_t* device = (lx_device_t*)self;
+    if (device) {
+        device->paint = paint;
+    }
+}
+
 lx_void_t lx_device_bind_matrix(lx_device_ref_t self, lx_matrix_ref_t matrix) {
     lx_device_t* device = (lx_device_t*)self;
     if (device) {
