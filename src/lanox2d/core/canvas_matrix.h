@@ -49,269 +49,101 @@ lx_matrix_ref_t     lx_canvas_matrix(lx_canvas_ref_t canvas);
  *
  * @return          the current matrix
  */
-lx_matrix_ref_t     lx_canvas_save_matrix(lx_canvas_ref_t canvas);
+lx_matrix_ref_t     lx_canvas_matrix_save(lx_canvas_ref_t canvas);
 
 /*! load matrix
  *
  * @param canvas    the canvas
  */
-lx_void_t           lx_canvas_load_matrix(lx_canvas_ref_t canvas);
+lx_void_t           lx_canvas_matrix_load(lx_canvas_ref_t canvas);
 
-/*! clear matrix
- *
- * @param canvas    the canvas
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * inline interfaces
  */
-lx_void_t           lx_canvas_clear_matrix(lx_canvas_ref_t canvas);
+static lx_inline lx_void_t lx_canvas_matrix_clear(lx_canvas_ref_t canvas) {
+    lx_matrix_clear(lx_canvas_matrix(canvas));
+}
 
-/*! transform matrix with the given rotate degrees
- *
- * matrix = matrix * factor
- *
- * @param canvas    the canvas
- * @param degrees   the rotate degrees
- *
- * @return          lx_true or lx_false
- */
-lx_bool_t           lx_canvas_rotate(lx_canvas_ref_t canvas, lx_float_t degrees);
+static lx_inline lx_bool_t lx_canvas_rotate(lx_canvas_ref_t canvas, lx_float_t degrees) {
+    return lx_matrix_rotate(lx_canvas_matrix(canvas), degrees);
+}
 
-/*! transform matrix with the given rotate degrees
- *
- * matrix = factor * matrix
- *
- * @param canvas    the canvas
- * @param degrees   the rotate degrees
- *
- * @return          lx_true or lx_false
- */
-lx_bool_t           lx_canvas_rotate_lhs(lx_canvas_ref_t canvas, lx_float_t degrees);
+static lx_inline lx_bool_t lx_canvas_rotate_lhs(lx_canvas_ref_t canvas, lx_float_t degrees) {
+    return lx_matrix_rotate_lhs(lx_canvas_matrix(canvas), degrees);
+}
 
-/*! transform matrix with the given rotate degrees by the coordinate: (px, py)
- *
- * matrix = matrix * factor
- *
- * @param canvas    the canvas
- * @param degrees   the rotate degrees
- * @param px        the x-coordinate
- * @param py        the y-coordinate
- *
- * @return          lx_true or lx_false
- */
-lx_bool_t           lx_canvas_rotatep(lx_canvas_ref_t canvas, lx_float_t degrees, lx_float_t px, lx_float_t py);
+static lx_inline lx_bool_t lx_canvas_rotatep(lx_canvas_ref_t canvas, lx_float_t degrees, lx_float_t px, lx_float_t py) {
+    return lx_matrix_rotatep(lx_canvas_matrix(canvas), degrees, px, py);
+}
 
-/*! transform matrix with the given rotate degrees by the coordinate: (px, py)
- *
- * matrix = factor * matrix
- *
- * @param canvas    the canvas
- * @param degrees   the rotate degrees
- * @param px        the x-coordinate
- * @param py        the y-coordinate
- *
- * @return          lx_true or lx_false
- */
-lx_bool_t           lx_canvas_rotatep_lhs(lx_canvas_ref_t canvas, lx_float_t degrees, lx_float_t px, lx_float_t py);
+static lx_inline lx_bool_t lx_canvas_rotatep_lhs(lx_canvas_ref_t canvas, lx_float_t degrees, lx_float_t px, lx_float_t py) {
+    return lx_matrix_rotatep_lhs(lx_canvas_matrix(canvas), degrees, px, py);
+}
 
-/*! transform matrix with the given scale value
- *
- * matrix = matrix * factor
- *
- * @param canvas    the canvas
- * @param sx        the x-scale
- * @param sy        the y-scale
- *
- * @return          lx_true or lx_false
- */
-lx_bool_t           lx_canvas_scale(lx_canvas_ref_t canvas, lx_float_t sx, lx_float_t sy);
+static lx_inline lx_bool_t lx_canvas_scale(lx_canvas_ref_t canvas, lx_float_t sx, lx_float_t sy) {
+    return lx_matrix_scale(lx_canvas_matrix(canvas), sx, sy);
+}
 
-/*! transform matrix with the given scale value
- *
- * matrix = factor * matrix
- *
- * @param canvas    the canvas
- * @param sx        the x-scale
- * @param sy        the y-scale
- *
- * @return          lx_true or lx_false
- */
-lx_bool_t           lx_canvas_scale_lhs(lx_canvas_ref_t canvas, lx_float_t sx, lx_float_t sy);
+static lx_inline lx_bool_t lx_canvas_scale_lhs(lx_canvas_ref_t canvas, lx_float_t sx, lx_float_t sy) {
+    return lx_matrix_scale_lhs(lx_canvas_matrix(canvas), sx, sy);
+}
 
-/*! transform matrix with the given scale value by the coordinate: (px, py)
- *
- * matrix = matrix * factor
- *
- * @param canvas    the canvas
- * @param sx        the x-scale
- * @param sy        the y-scale
- * @param px        the x-coordinate
- * @param py        the y-coordinate
- *
- * @return          lx_true or lx_false
- */
-lx_bool_t           lx_canvas_scalep(lx_canvas_ref_t canvas, lx_float_t sx, lx_float_t sy, lx_float_t px, lx_float_t py);
+static lx_inline lx_bool_t lx_canvas_scalep(lx_canvas_ref_t canvas, lx_float_t sx, lx_float_t sy, lx_float_t px, lx_float_t py) {
+    return lx_matrix_scalep(lx_canvas_matrix(canvas), sx, sy, px, py);
+}
 
-/*! transform matrix with the given scale value by the coordinate: (px, py)
- *
- * matrix = factor * matrix
- *
- * @param canvas    the canvas
- * @param sy        the y-scale
- * @param sy        the y-scale
- * @param px        the x-coordinate
- * @param py        the y-coordinate
- *
- * @return          lx_true or lx_false
- */
-lx_bool_t           lx_canvas_scalep_lhs(lx_canvas_ref_t canvas, lx_float_t sx, lx_float_t sy, lx_float_t px, lx_float_t py);
+static lx_inline lx_bool_t lx_canvas_scalep_lhs(lx_canvas_ref_t canvas, lx_float_t sx, lx_float_t sy, lx_float_t px, lx_float_t py) {
+    return lx_matrix_scalep_lhs(lx_canvas_matrix(canvas), sx, sy, px, py);
+}
 
-/*! transform matrix with the given skew value
- *
- * matrix = matrix * factor
- *
- * @param canvas    the canvas
- * @param sk        the x-skew
- * @param sk        the y-skew
- *
- * @return          lx_true or lx_false
- */
-lx_bool_t           lx_canvas_skew(lx_canvas_ref_t canvas, lx_float_t kx, lx_float_t ky);
+static lx_inline lx_bool_t lx_canvas_skew(lx_canvas_ref_t canvas, lx_float_t kx, lx_float_t ky) {
+    return lx_matrix_skew(lx_canvas_matrix(canvas), kx, ky);
+}
 
-/*! transform matrix with the given skew value
- *
- * matrix = factor * matrix
- *
- * @param canvas    the canvas
- * @param sk        the x-skew
- * @param sk        the y-skew
- *
- * @return          lx_true or lx_false
- */
-lx_bool_t           lx_canvas_skew_lhs(lx_canvas_ref_t canvas, lx_float_t kx, lx_float_t ky);
+static lx_inline lx_bool_t lx_canvas_skew_lhs(lx_canvas_ref_t canvas, lx_float_t kx, lx_float_t ky) {
+    return lx_matrix_skew_lhs(lx_canvas_matrix(canvas), kx, ky);
+}
 
-/*! transform matrix with the given skew value by the coordinate: (px, py)
- *
- * matrix = matrix * factor
- *
- * @param canvas    the canvas
- * @param sk        the x-skew
- * @param sk        the y-skew
- * @param px        the x-coordinate
- * @param py        the y-coordinate
- *
- * @return          lx_true or lx_false
- */
-lx_bool_t           lx_canvas_skewp(lx_canvas_ref_t canvas, lx_float_t kx, lx_float_t ky, lx_float_t px, lx_float_t py);
+static lx_inline lx_bool_t lx_canvas_skewp(lx_canvas_ref_t canvas, lx_float_t kx, lx_float_t ky, lx_float_t px, lx_float_t py) {
+    return lx_matrix_skewp(lx_canvas_matrix(canvas), kx, ky, px, py);
+}
 
-/*! transform matrix with the given skew value by the coordinate: (px, py)
- *
- * matrix = factor * matrix
- *
- * @param canvas    the canvas
- * @param sk        the x-skew
- * @param sk        the y-skew
- * @param px        the x-coordinate
- * @param py        the y-coordinate
- *
- * @return          lx_true or lx_false
- */
-lx_bool_t           lx_canvas_skewp_lhs(lx_canvas_ref_t canvas, lx_float_t kx, lx_float_t ky, lx_float_t px, lx_float_t py);
+static lx_inline lx_bool_t lx_canvas_skewp_lhs(lx_canvas_ref_t canvas, lx_float_t kx, lx_float_t ky, lx_float_t px, lx_float_t py) {
+    return lx_matrix_skewp_lhs(lx_canvas_matrix(canvas), kx, ky, px, py);
+}
 
-/*! transform matrix with the given sin and cos value
- *
- * matrix = matrix * factor
- *
- * @param canvas    the canvas
- * @param sin       the sin value
- * @param cos       the cos value
- *
- * @return          lx_true or lx_false
- */
-lx_bool_t           lx_canvas_sincos(lx_canvas_ref_t canvas, lx_float_t sin, lx_float_t cos);
+static lx_inline lx_bool_t lx_canvas_sincos(lx_canvas_ref_t canvas, lx_float_t sin, lx_float_t cos) {
+    return lx_matrix_sincos(lx_canvas_matrix(canvas), sin, cos);
+}
 
-/*! transform matrix with the given sin and cos value
- *
- * matrix = factor * matrix
- *
- * @param canvas    the canvas
- * @param sin       the sin value
- * @param cos       the cos value
- *
- * @return          lx_true or lx_false
- */
-lx_bool_t           lx_canvas_sincos_lhs(lx_canvas_ref_t canvas, lx_float_t sin, lx_float_t cos);
+static lx_inline lx_bool_t lx_canvas_sincos_lhs(lx_canvas_ref_t canvas, lx_float_t sin, lx_float_t cos) {
+    return lx_matrix_sincos_lhs(lx_canvas_matrix(canvas), sin, cos);
+}
 
-/*! transform matrix with the given sin and cos value by the coordinate: (px, py)
- *
- * matrix = matrix * factor
- *
- * @param canvas    the canvas
- * @param sin       the sin value
- * @param cos       the cos value
- * @param px        the x-coordinate
- * @param py        the y-coordinate
- *
- * @return          lx_true or lx_false
- */
-lx_bool_t           lx_canvas_sincosp(lx_canvas_ref_t canvas, lx_float_t sin, lx_float_t cos, lx_float_t px, lx_float_t py);
+static lx_inline lx_bool_t lx_canvas_sincosp(lx_canvas_ref_t canvas, lx_float_t sin, lx_float_t cos, lx_float_t px, lx_float_t py) {
+    return lx_matrix_sincosp(lx_canvas_matrix(canvas), sin, cos, px, py);
+}
 
-/*! transform matrix with the given sin and cos value by the coordinate: (px, py)
- *
- * matrix = factor * matrix
- *
- * @param canvas    the canvas
- * @param sin       the sin value
- * @param cos       the cos value
- * @param px        the x-coordinate
- * @param py        the y-coordinate
- *
- * @return          lx_true or lx_false
- */
-lx_bool_t           lx_canvas_sincosp_lhs(lx_canvas_ref_t canvas, lx_float_t sin, lx_float_t cos, lx_float_t px, lx_float_t py);
+static lx_inline lx_bool_t lx_canvas_sincosp_lhs(lx_canvas_ref_t canvas, lx_float_t sin, lx_float_t cos, lx_float_t px, lx_float_t py) {
+    return lx_matrix_sincosp_lhs(lx_canvas_matrix(canvas), sin, cos, px, py);
+}
 
-/*! transform matrix with the given translate value
- *
- * matrix = matrix * factor
- *
- * @param canvas    the canvas
- * @param dx        the x-translate value
- * @param dy        the y-translate value
- *
- * @return          lx_true or lx_false
- */
-lx_bool_t           lx_canvas_translate(lx_canvas_ref_t canvas, lx_float_t dx, lx_float_t dy);
+static lx_inline lx_bool_t lx_canvas_translate(lx_canvas_ref_t canvas, lx_float_t dx, lx_float_t dy) {
+    return lx_matrix_translate(lx_canvas_matrix(canvas), dx, dy);
+}
 
-/*! transform matrix with the given translate value
- *
- * matrix = factor * matrix
- *
- * @param canvas    the canvas
- * @param dx        the x-translate value
- * @param dy        the y-translate value
- *
- * @return          lx_true or lx_false
- */
-lx_bool_t           lx_canvas_translate_lhs(lx_canvas_ref_t canvas, lx_float_t dx, lx_float_t dy);
+static lx_inline lx_bool_t lx_canvas_translate_lhs(lx_canvas_ref_t canvas, lx_float_t dx, lx_float_t dy) {
+    return lx_matrix_translate_lhs(lx_canvas_matrix(canvas), dx, dy);
+}
 
-/*! multiply matrix with the given translate factor
- *
- * matrix = matrix * factor
- *
- * @param canvas    the canvas
- * @param factor    the factor
- *
- * @return          lx_true or lx_false
- */
-lx_bool_t           lx_canvas_multiply(lx_canvas_ref_t canvas, lx_matrix_ref_t factor);
+static lx_inline lx_bool_t lx_canvas_multiply(lx_canvas_ref_t canvas, lx_matrix_ref_t factor) {
+    return lx_matrix_multiply(lx_canvas_matrix(canvas), factor);
+}
 
-/*! multiply matrix with the given translate factor
- *
- * matrix = factor * matrix
- *
- * @param canvas    the canvas
- * @param factor    the factor
- *
- * @return          lx_true or lx_false
- */
-lx_bool_t           lx_canvas_multiply_lhs(lx_canvas_ref_t canvas, lx_matrix_ref_t factor);
+static lx_inline lx_bool_t lx_canvas_multiply_lhs(lx_canvas_ref_t canvas, lx_matrix_ref_t factor) {
+    return lx_matrix_multiply_lhs(lx_canvas_matrix(canvas), factor);
+}
+
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
