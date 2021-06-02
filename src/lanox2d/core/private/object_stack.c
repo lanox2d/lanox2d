@@ -93,8 +93,14 @@ static lx_void_t lx_object_stack_object_copy(lx_size_t type, lx_handle_t object,
     }
 }
 
-static lx_void_t lx_object_stack_object_free(lx_pointer_t item) {
-    // TODO
+static lx_void_t lx_object_stack_object_free(lx_pointer_t item, lx_cpointer_t udata) {
+    lx_object_stack_t* stack = (lx_object_stack_t*)udata;
+    if (stack) {
+        lx_handle_t* pobject = (lx_handle_t*)item;
+        if (pobject && *pobject) {
+            lx_object_stack_object_exit(stack->type, *pobject);
+        }
+    }
 }
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -115,11 +121,11 @@ lx_object_stack_ref_t lx_object_stack_init(lx_size_t grow, lx_size_t type) {
         stack->cache_size = grow? grow : 8;
 
         // init cache
-        stack->cache = lx_stack_init(grow, sizeof(lx_handle_t), lx_object_stack_object_free);
+        stack->cache = lx_stack_init(grow, sizeof(lx_handle_t), lx_null);
         lx_assert_and_check_break(stack->cache);
 
         // init stack
-        stack->stack = lx_stack_init(grow, sizeof(lx_handle_t), lx_object_stack_object_free);
+        stack->stack = lx_stack_init(grow, sizeof(lx_handle_t), lx_null);
         lx_assert_and_check_break(stack->stack);
 
         // ok
@@ -142,10 +148,12 @@ lx_void_t lx_object_stack_exit(lx_object_stack_ref_t self) {
             stack->object = lx_null;
         }
         if (stack->stack) {
+            lx_stack_foreach(stack->stack, lx_object_stack_object_free, stack);
             lx_stack_exit(stack->stack);
             stack->stack = lx_null;
         }
         if (stack->cache) {
+            lx_stack_foreach(stack->cache, lx_object_stack_object_free, stack);
             lx_stack_exit(stack->cache);
             stack->cache = lx_null;
         }
