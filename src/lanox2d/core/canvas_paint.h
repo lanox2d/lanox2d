@@ -15,28 +15,31 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        canvas.h
+ * @file        canvas_paint.h
  *
  */
-#ifndef LX_CORE_PRIVATE_CANVAS_H
-#define LX_CORE_PRIVATE_CANVAS_H
+#ifndef LX_CORE_CANVAS_PAINT_H
+#define LX_CORE_CANVAS_PAINT_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
 #include "prefix.h"
-#include "object_stack.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * types
+ * extern
+ */
+lx_extern_c_enter
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * interfaces
  */
 
-// the canvas type
-typedef struct lx_canvas_t_ {
-    lx_device_ref_t device;
-    lx_matrix_t     matrix;
-    lx_stack_ref_t  matrix_stack;
-}lx_canvas_t;
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * extern
+ */
+lx_extern_c_leave
 
 #endif
 

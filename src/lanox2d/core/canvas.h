@@ -27,6 +27,7 @@
 #include "canvas_path.h"
 #include "canvas_clip.h"
 #include "canvas_draw.h"
+#include "canvas_paint.h"
 #include "canvas_matrix.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
