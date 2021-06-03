@@ -107,7 +107,7 @@ lx_float_t lx_vector_length(lx_vector_ref_t vector) {
     lx_float_t length = 0;
     lx_float_t dd = dx * dx + dy * dy;
     if (lx_isfinf(dd)) {
-        length = lx_sqrt(dd);
+        length = (lx_float_t)lx_sqrt(dd);
     } else {
         // compute the length using the double value
         lx_double_t xx = dx;
