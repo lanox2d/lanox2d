@@ -14,7 +14,7 @@ if is_mode("releasedbg", "release", "minsizerel") then
         add_shflags("-fuse-ld=lld")
         add_cxflags("-fPIC")
         add_shflags("-Wl,--build-id")
-    elseif not is_plat("windows") then
+    elseif not is_plat("windows", "mingw") then
         add_cxflags("-flto")
         add_shflags("-flto")
     end
