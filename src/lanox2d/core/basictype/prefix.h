@@ -58,6 +58,9 @@ typedef lx_typeref(device);
 /// the paint ref type
 typedef lx_typeref(paint);
 
+/// the path ref type
+typedef lx_typeref(path);
+
 /*! @def the color type
  *
  * the color type
