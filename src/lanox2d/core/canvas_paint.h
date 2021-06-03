@@ -24,7 +24,7 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "prefix.h"
+#include "paint.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
@@ -35,6 +35,70 @@ lx_extern_c_enter
  * interfaces
  */
 
+/*! get the paint
+ *
+ * @param canvas    the canvas
+ *
+ * @return          the paint
+ */
+lx_paint_ref_t      lx_canvas_paint(lx_canvas_ref_t canvas);
+
+/*! save paint
+ *
+ * @param canvas    the canvas
+ *
+ * @return          the current paint
+ */
+lx_paint_ref_t      lx_canvas_paint_save(lx_canvas_ref_t canvas);
+
+/*! load paint
+ *
+ * @param canvas    the canvas
+ */
+lx_void_t           lx_canvas_paint_load(lx_canvas_ref_t canvas);
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * inline interfaces
+ */
+static lx_inline lx_void_t lx_canvas_paint_clear(lx_canvas_ref_t canvas) {
+    lx_paint_clear(lx_canvas_paint(canvas));
+}
+
+static lx_inline lx_void_t lx_canvas_mode_set(lx_canvas_ref_t canvas, lx_size_t mode) {
+    lx_paint_mode_set(lx_canvas_paint(canvas), mode);
+}
+
+static lx_inline lx_void_t lx_canvas_flags_set(lx_canvas_ref_t canvas, lx_size_t flags) {
+    lx_paint_flags_set(lx_canvas_paint(canvas), flags);
+}
+
+static lx_inline lx_void_t lx_canvas_color_set(lx_canvas_ref_t canvas, lx_color_t color) {
+    lx_paint_color_set(lx_canvas_paint(canvas), color);
+}
+
+static lx_inline lx_void_t lx_canvas_alpha_set(lx_canvas_ref_t canvas, lx_byte_t alpha) {
+    lx_paint_alpha_set(lx_canvas_paint(canvas), alpha);
+}
+
+static lx_inline lx_void_t lx_canvas_stroke_width_set(lx_canvas_ref_t canvas, lx_float_t width) {
+    lx_paint_stroke_width_set(lx_canvas_paint(canvas), width);
+}
+
+static lx_inline lx_void_t lx_canvas_stroke_cap_set(lx_canvas_ref_t canvas, lx_size_t cap) {
+    lx_paint_stroke_cap_set(lx_canvas_paint(canvas), cap);
+}
+
+static lx_inline lx_void_t lx_canvas_stroke_join_set(lx_canvas_ref_t canvas, lx_size_t join) {
+    lx_paint_stroke_join_set(lx_canvas_paint(canvas), join);
+}
+
+static lx_inline lx_void_t lx_cavas_stroke_miter_set(lx_canvas_ref_t canvas, lx_float_t miter) {
+    lx_paint_stroke_miter_set(lx_canvas_paint(canvas), miter);
+}
+
+static lx_inline lx_void_t lx_canvas_fill_rule_set(lx_canvas_ref_t canvas, lx_size_t rule) {
+    lx_paint_fill_rule_set(lx_canvas_paint(canvas), rule);
+}
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

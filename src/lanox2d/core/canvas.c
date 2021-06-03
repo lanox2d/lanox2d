@@ -46,6 +46,12 @@ lx_canvas_ref_t lx_canvas_init(lx_device_ref_t device) {
         lx_matrix_clear(&canvas->matrix);
         canvas->matrix_stack = lx_stack_init(8, sizeof(lx_matrix_t), lx_null);
         lx_assert_and_check_break(canvas->matrix_stack);
+        lx_device_bind_matrix(canvas->device, &canvas->matrix);
+
+        // init paint
+        canvas->paint_stack = lx_object_stack_init(8, LX_OBJECT_STACK_TYPE_PAINT);
+        lx_assert_and_check_break(canvas->paint_stack);
+        lx_device_bind_paint(canvas->device, (lx_paint_ref_t)lx_object_stack_object(canvas->paint_stack));
 
         ok = lx_true;
 
@@ -61,6 +67,10 @@ lx_canvas_ref_t lx_canvas_init(lx_device_ref_t device) {
 lx_void_t lx_canvas_exit(lx_canvas_ref_t self) {
     lx_canvas_t* canvas = (lx_canvas_t*)self;
     if (canvas) {
+        if (canvas->paint_stack) {
+            lx_object_stack_exit(canvas->paint_stack);
+            canvas->paint_stack = lx_null;
+        }
         if (canvas->matrix_stack) {
             lx_stack_exit(canvas->matrix_stack);
             canvas->matrix_stack = lx_null;

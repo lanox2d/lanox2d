@@ -23,10 +23,39 @@
  * includes
  */
 #include "canvas_paint.h"
+#include "device.h"
 #include "private/canvas.h"
 #include "../base/base.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
+lx_paint_ref_t lx_canvas_paint(lx_canvas_ref_t self) {
+    lx_canvas_t* canvas = (lx_canvas_t*)self;
+    if (canvas && canvas->paint_stack) {
+        return (lx_paint_ref_t)lx_object_stack_object(canvas->paint_stack);
+    }
+    return lx_null;
+}
+
+lx_paint_ref_t lx_canvas_paint_save(lx_canvas_ref_t self) {
+    // check
+    lx_canvas_t* canvas = (lx_canvas_t*)self;
+    lx_assert_and_check_return_val(canvas && canvas->device && canvas->paint_stack, lx_null);
+
+    // save paint
+    lx_paint_ref_t paint = (lx_paint_ref_t)lx_object_stack_save(canvas->paint_stack);
+    lx_device_bind_paint(canvas->device, paint);
+    return paint;
+}
+
+lx_void_t lx_canvas_paint_load(lx_canvas_ref_t self) {
+    // check
+    lx_canvas_t* canvas = (lx_canvas_t*)self;
+    lx_assert_and_check_return(canvas && canvas->device && canvas->paint_stack);
+
+    // load paint
+    lx_object_stack_load(canvas->paint_stack);
+    lx_device_bind_paint(canvas->device, lx_canvas_paint(self));
+}
 
