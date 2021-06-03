@@ -144,7 +144,7 @@ lx_size_t lx_paint_flags(lx_paint_ref_t self) {
 lx_void_t lx_paint_flag_set(lx_paint_ref_t self, lx_size_t flags) {
     lx_paint_t* paint = (lx_paint_t*)self;
     if (paint) {
-        paint->flags = flags;
+        paint->flags = (lx_uint32_t)flags;
     }
 }
 
