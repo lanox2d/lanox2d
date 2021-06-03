@@ -39,7 +39,7 @@ lx_double_t lx_sqrt(lx_double_t x) {
 
 lx_float_t lx_sqrtf(lx_float_t x) {
 #ifdef LX_CONFIG_LIBM_HAVE_SQRTF
-    return (lx_float_t)sqrtf((lx_double_t)x);
+    return (lx_float_t)sqrtf(x);
 #else
     return (lx_float_t)lx_sqrt((lx_double_t)x);
 #endif
