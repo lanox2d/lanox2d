@@ -23,8 +23,8 @@
  * includes
  */
 #include "matrix.h"
-#include "point.h"
-#include "../../base/base.h"
+#include "../libc/libc.h"
+#include "../libm/libm.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
@@ -359,10 +359,3 @@ lx_bool_t lx_matrix_multiply_lhs(lx_matrix_ref_t matrix, lx_matrix_ref_t factor)
     return ok;
 }
 
-lx_void_t lx_matrix_apply_points(lx_matrix_ref_t matrix, lx_point_ref_t points, lx_size_t count) {
-    lx_assert(matrix && points && count);
-    lx_size_t i = 0;
-    for (i = 0; i < count; i++) {
-        lx_point_apply(points + i, matrix);
-    }
-}

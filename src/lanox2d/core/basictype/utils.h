@@ -43,6 +43,48 @@ lx_extern_c_enter
  */
 lx_void_t           lx_bounds_make(lx_rect_ref_t bounds, lx_point_ref_t points, lx_size_t count);
 
+/*! apply matrix to the points
+ *
+ * @param matrix    the matrix
+ * @param points    the points
+ * @param count     the count
+ */
+lx_void_t           lx_matrix_apply_points(lx_matrix_ref_t matrix, lx_point_ref_t points, lx_size_t count);
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * inlines
+ */
+
+/*! apply matrix to the x-coordinate
+ *
+ * x' = x * sx + y * kx + tx
+ *
+ * @param matrix    the matrix
+ * @param x         the x value
+ * @param y         the y value
+ *
+ * @return          the new x value
+ */
+static lx_inline lx_float_t lx_matrix_apply_x(lx_matrix_ref_t matrix, lx_float_t x, lx_float_t y) {
+    lx_assert(matrix);
+    return (x * matrix->sx) + (y * matrix->kx) + matrix->tx;
+}
+
+/*! apply matrix to the y-coordinate
+ *
+ * y' = x * ky + y * sy + ty
+ *
+ * @param matrix    the matrix
+ * @param x         the x value
+ * @param y         the y value
+ *
+ * @return          the new y value
+ */
+static lx_inline lx_float_t lx_matrix_apply_y(lx_matrix_ref_t matrix, lx_float_t x, lx_float_t y) {
+    lx_assert(matrix);
+    return (x * matrix->ky) + (y * matrix->sy) + matrix->ty;
+}
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */

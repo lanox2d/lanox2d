@@ -25,6 +25,7 @@
  * includes
  */
 #include "../../prefix.h"
+#include "../../base/math/matrix.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * macros
@@ -90,39 +91,6 @@ typedef struct lx_color_t_ {
     lx_byte_t           a;
 }lx_color_t, *lx_color_ref_t;
 #endif
-
-/*! the matrix type
- *
- * <pre>
- * sx: the x-scale
- * sy: the y-scale
- * kx: the x-skew
- * ky: the y-skew
- * tx: the x-translate
- * ty: the y-translate
- *
- * x' = x * sx + y * kx + tx
- * y' = x * ky + y * sy + ty
- *
- * x'           sx kx tx    x * sx + y * kx + tx
- * y' = x y 1 * ky sy ty =  x * ky + y * sy + ty
- * 1             0  0  1                       1
- *
- * the following table describes how the members of the matrix are used for each type of
- * operation:
- *                    sx                kx               ky              sy                tx     ty
- * rotation           sx * cos          sx * -sin        sy * sin        sy * cos          0      0
- * scaling            sx                0                0               sy                0      0
- * translation        0                 0                0               0                 tx     ty
- * ...
- *
- * </pre>
- *
- */
-typedef struct lx_matrix_t_ {
-    lx_float_t          sx, kx, tx;
-    lx_float_t          ky, sy, ty;
-}lx_matrix_t, *lx_matrix_ref_t;
 
 /// the point type
 typedef struct lx_point_t_ {

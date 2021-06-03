@@ -23,6 +23,7 @@
  * includes
  */
 #include "utils.h"
+#include "point.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
@@ -50,5 +51,13 @@ lx_void_t lx_bounds_make(lx_rect_ref_t bounds, lx_point_ref_t points, lx_size_t 
     bounds->y = y0;
     bounds->w = x1 - x0;
     bounds->h = y1 - y0;
+}
+
+lx_void_t lx_matrix_apply_points(lx_matrix_ref_t matrix, lx_point_ref_t points, lx_size_t count) {
+    lx_assert(matrix && points && count);
+    lx_size_t i = 0;
+    for (i = 0; i < count; i++) {
+        lx_point_apply(points + i, matrix);
+    }
 }
 

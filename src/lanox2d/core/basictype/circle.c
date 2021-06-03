@@ -25,7 +25,6 @@
 #include "circle.h"
 #include "point.h"
 #include "utils.h"
-#include "matrix.h"
 #include "../../base/base.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////

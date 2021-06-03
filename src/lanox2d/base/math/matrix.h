@@ -18,8 +18,8 @@
  * @file        matrix.h
  *
  */
-#ifndef LX_CORE_BASICTYPE_MATRIX_H
-#define LX_CORE_BASICTYPE_MATRIX_H
+#ifndef LX_BASE_MATH_MATRIX_H
+#define LX_BASE_MATH_MATRIX_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
@@ -30,6 +30,43 @@
  * extern
  */
 lx_extern_c_enter
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * types
+ */
+
+/*! the matrix type
+ *
+ * <pre>
+ * sx: the x-scale
+ * sy: the y-scale
+ * kx: the x-skew
+ * ky: the y-skew
+ * tx: the x-translate
+ * ty: the y-translate
+ *
+ * x' = x * sx + y * kx + tx
+ * y' = x * ky + y * sy + ty
+ *
+ * x'           sx kx tx    x * sx + y * kx + tx
+ * y' = x y 1 * ky sy ty =  x * ky + y * sy + ty
+ * 1             0  0  1                       1
+ *
+ * the following table describes how the members of the matrix are used for each type of
+ * operation:
+ *                    sx                kx               ky              sy                tx     ty
+ * rotation           sx * cos          sx * -sin        sy * sin        sy * cos          0      0
+ * scaling            sx                0                0               sy                0      0
+ * translation        0                 0                0               0                 tx     ty
+ * ...
+ *
+ * </pre>
+ *
+ */
+typedef struct lx_matrix_t_ {
+    lx_float_t          sx, kx, tx;
+    lx_float_t          ky, sy, ty;
+}lx_matrix_t, *lx_matrix_ref_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * interfaces
@@ -404,47 +441,6 @@ lx_bool_t           lx_matrix_multiply(lx_matrix_ref_t matrix, lx_matrix_ref_t f
  */
 lx_bool_t           lx_matrix_multiply_lhs(lx_matrix_ref_t matrix, lx_matrix_ref_t factor);
 
-/*! apply matrix to the points
- *
- * @param matrix    the matrix
- * @param points    the points
- * @param count     the count
- */
-lx_void_t           lx_matrix_apply_points(lx_matrix_ref_t matrix, lx_point_ref_t points, lx_size_t count);
-
-/* //////////////////////////////////////////////////////////////////////////////////////
- * inlines
- */
-
-/*! apply matrix to the x-coordinate
- *
- * x' = x * sx + y * kx + tx
- *
- * @param matrix    the matrix
- * @param x         the x value
- * @param y         the y value
- *
- * @return          the new x value
- */
-static lx_inline lx_float_t lx_matrix_apply_x(lx_matrix_ref_t matrix, lx_float_t x, lx_float_t y) {
-    lx_assert(matrix);
-    return (x * matrix->sx) + (y * matrix->kx) + matrix->tx;
-}
-
-/*! apply matrix to the y-coordinate
- *
- * y' = x * ky + y * sy + ty
- *
- * @param matrix    the matrix
- * @param x         the x value
- * @param y         the y value
- *
- * @return          the new y value
- */
-static lx_inline lx_float_t lx_matrix_apply_y(lx_matrix_ref_t matrix, lx_float_t x, lx_float_t y) {
-    lx_assert(matrix);
-    return (x * matrix->ky) + (y * matrix->sy) + matrix->ty;
-}
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
