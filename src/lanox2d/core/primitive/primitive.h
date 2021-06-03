@@ -15,11 +15,11 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        basictype.h
+ * @file        primitive.h
  *
  */
-#ifndef LX_CORE_BASICTYPE_H
-#define LX_CORE_BASICTYPE_H
+#ifndef LX_CORE_PRIMITIVE_H
+#define LX_CORE_PRIMITIVE_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes

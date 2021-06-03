@@ -15,11 +15,11 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        ellipse.h
+ * @file        triangle.h
  *
  */
-#ifndef LX_CORE_BASICTYPE_ELLIPSE_H
-#define LX_CORE_BASICTYPE_ELLIPSE_H
+#ifndef LX_CORE_PRIMITIVE_TRIANGLE_H
+#define LX_CORE_PRIMITIVE_TRIANGLE_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
@@ -35,32 +35,44 @@ lx_extern_c_enter
  * interfaces
  */
 
-/*! make ellipse
+/*! make triangle
  *
- * @param ellipse   the ellipse
+ * @param triangle  the triangle
  * @param x0        the x0
  * @param y0        the y0
- * @param rx        the x-radius
- * @param ry        the y-radius
+ * @param x1        the x1
+ * @param y1        the y1
+ * @param x2        the x2
+ * @param y2        the y2
  */
-lx_void_t           lx_ellipse_make(lx_ellipse_ref_t ellipse, lx_float_t x0, lx_float_t y0, lx_float_t rx, lx_float_t ry);
+lx_void_t           lx_triangle_make(lx_triangle_ref_t triangle, lx_float_t x0, lx_float_t y0, lx_float_t x1, lx_float_t y1, lx_float_t x2, lx_float_t y2);
 
-/*! make ellipse with the integer value
+/*! make triangle with the integer value
  *
- * @param ellipse   the ellipse
+ * @param triangle  the triangle
  * @param x0        the x0
  * @param y0        the y0
- * @param rx        the x-radius
- * @param ry        the y-radius
+ * @param x1        the x1
+ * @param y1        the y1
+ * @param x2        the x2
+ * @param y2        the y2
  */
-lx_void_t           lx_ellipse_imake(lx_ellipse_ref_t ellipse, lx_long_t x0, lx_long_t y0, lx_size_t rx, lx_size_t ry);
+lx_void_t           lx_triangle_imake(lx_triangle_ref_t triangle, lx_long_t x0, lx_long_t y0, lx_long_t x1, lx_long_t y1, lx_long_t x2, lx_long_t y2);
 
-/*! make ellipse from rect
+/*! apply matrix to triangle
  *
- * @param ellipse   the ellipse
- * @param rect      the rect
+ * @param triangle  the triangle
+ * @param matrix    the matrix
  */
-lx_void_t           lx_ellipse_make_from_rect(lx_ellipse_ref_t ellipse, lx_rect_ref_t rect);
+lx_void_t           lx_triangle_apply(lx_triangle_ref_t triangle, lx_matrix_ref_t matrix);
+
+/*! apply matrix to triangle
+ *
+ * @param triangle  the triangle
+ * @param applied   the applied triangle
+ * @param matrix    the matrix
+ */
+lx_void_t           lx_triangle_apply2(lx_triangle_ref_t triangle, lx_triangle_ref_t applied, lx_matrix_ref_t matrix);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

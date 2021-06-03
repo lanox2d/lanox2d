@@ -18,8 +18,8 @@
  * @file        color.h
  *
  */
-#ifndef LX_CORE_BASICTYPE_COLOR_H
-#define LX_CORE_BASICTYPE_COLOR_H
+#ifndef LX_CORE_PRIMITIVE_COLOR_H
+#define LX_CORE_PRIMITIVE_COLOR_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes

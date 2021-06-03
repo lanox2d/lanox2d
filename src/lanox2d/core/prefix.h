@@ -26,7 +26,7 @@
  */
 #include "../prefix.h"
 #include "../base/base.h"
-#include "basictype/basictype.h"
+#include "primitive/primitive.h"
 
 #endif
 

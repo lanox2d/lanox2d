@@ -18,8 +18,8 @@
  * @file        utils.h
  *
  */
-#ifndef LX_CORE_BASICTYPE_UTILS_H
-#define LX_CORE_BASICTYPE_UTILS_H
+#ifndef LX_CORE_PRIMITIVE_UTILS_H
+#define LX_CORE_PRIMITIVE_UTILS_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes

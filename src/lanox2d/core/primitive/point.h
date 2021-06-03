@@ -18,8 +18,8 @@
  * @file        point.h
  *
  */
-#ifndef LX_CORE_BASICTYPE_POINT_H
-#define LX_CORE_BASICTYPE_POINT_H
+#ifndef LX_CORE_PRIMITIVE_POINT_H
+#define LX_CORE_PRIMITIVE_POINT_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes

@@ -18,8 +18,8 @@
  * @file        prefix.h
  *
  */
-#ifndef LX_CORE_BASICTYPE_PREFIX_H
-#define LX_CORE_BASICTYPE_PREFIX_H
+#ifndef LX_CORE_PRIMITIVE_PREFIX_H
+#define LX_CORE_PRIMITIVE_PREFIX_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes

@@ -18,8 +18,8 @@
  * @file        round_rect.h
  *
  */
-#ifndef LX_CORE_BASICTYPE_ROUND_RECT_H
-#define LX_CORE_BASICTYPE_ROUND_RECT_H
+#ifndef LX_CORE_PRIMITIVE_ROUND_RECT_H
+#define LX_CORE_PRIMITIVE_ROUND_RECT_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes

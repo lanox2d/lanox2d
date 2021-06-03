@@ -18,8 +18,8 @@
  * @file        pixmap.h
  *
  */
-#ifndef LX_CORE_BASICTYPE_PIXMAP_H
-#define LX_CORE_BASICTYPE_PIXMAP_H
+#ifndef LX_CORE_PRIMITIVE_PIXMAP_H
+#define LX_CORE_PRIMITIVE_PIXMAP_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes

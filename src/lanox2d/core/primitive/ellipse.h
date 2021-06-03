@@ -15,11 +15,11 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        circle.h
+ * @file        ellipse.h
  *
  */
-#ifndef LX_CORE_BASICTYPE_CIRCLE_H
-#define LX_CORE_BASICTYPE_CIRCLE_H
+#ifndef LX_CORE_PRIMITIVE_ELLIPSE_H
+#define LX_CORE_PRIMITIVE_ELLIPSE_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
@@ -35,23 +35,32 @@ lx_extern_c_enter
  * interfaces
  */
 
-/*! make circle
+/*! make ellipse
  *
- * @param circle    the circle
+ * @param ellipse   the ellipse
  * @param x0        the x0
  * @param y0        the y0
- * @param r         the radius
+ * @param rx        the x-radius
+ * @param ry        the y-radius
  */
-lx_void_t           lx_circle_make(lx_circle_ref_t circle, lx_float_t x0, lx_float_t y0, lx_float_t r);
+lx_void_t           lx_ellipse_make(lx_ellipse_ref_t ellipse, lx_float_t x0, lx_float_t y0, lx_float_t rx, lx_float_t ry);
 
-/*! make circle with the integer value
+/*! make ellipse with the integer value
  *
- * @param circle    the circle
+ * @param ellipse   the ellipse
  * @param x0        the x0
  * @param y0        the y0
- * @param r         the radius
+ * @param rx        the x-radius
+ * @param ry        the y-radius
  */
-lx_void_t           lx_circle_imake(lx_circle_ref_t circle, lx_long_t x0, lx_long_t y0, lx_size_t r);
+lx_void_t           lx_ellipse_imake(lx_ellipse_ref_t ellipse, lx_long_t x0, lx_long_t y0, lx_size_t rx, lx_size_t ry);
+
+/*! make ellipse from rect
+ *
+ * @param ellipse   the ellipse
+ * @param rect      the rect
+ */
+lx_void_t           lx_ellipse_make_from_rect(lx_ellipse_ref_t ellipse, lx_rect_ref_t rect);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

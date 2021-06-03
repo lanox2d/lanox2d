@@ -15,11 +15,11 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        line.h
+ * @file        arc.h
  *
  */
-#ifndef LX_CORE_BASICTYPE_LINE_H
-#define LX_CORE_BASICTYPE_LINE_H
+#ifndef LX_CORE_PRIMITIVE_ARC_H
+#define LX_CORE_PRIMITIVE_ARC_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
@@ -35,40 +35,29 @@ lx_extern_c_enter
  * interfaces
  */
 
-/*! make line
+/*! make arc
  *
- * @param line      the line
+ * @param arc       the arc
  * @param x0        the x0
  * @param y0        the y0
- * @param x1        the x1
- * @param y1        the y1
+ * @param rx        the x-radius
+ * @param ry        the y-radius
+ * @param ab        the start angle
+ * @param an        the sweep angle, 0 - 360
  */
-lx_void_t           lx_line_make(lx_line_ref_t line, lx_float_t x0, lx_float_t y0, lx_float_t x1, lx_float_t y1);
+lx_void_t           lx_arc_make(lx_arc_ref_t arc, lx_float_t x0, lx_float_t y0, lx_float_t rx, lx_float_t ry, lx_float_t ab, lx_float_t an);
 
-/*! make line with the integer value
+/*! make arc with the integer value
  *
- * @param line      the line
+ * @param arc       the arc
  * @param x0        the x0
  * @param y0        the y0
- * @param x1        the x1
- * @param y1        the y1
+ * @param rx        the x-radius
+ * @param ry        the y-radius
+ * @param ab        the start angle
+ * @param an        the sweep angle, 0 - 360
  */
-lx_void_t           lx_line_imake(lx_line_ref_t line, lx_long_t x0, lx_long_t y0, lx_long_t x1, lx_long_t y1);
-
-/*! apply matrix to line
- *
- * @param line      the line
- * @param matrix    the matrix
- */
-lx_void_t           lx_line_apply(lx_line_ref_t line, lx_matrix_ref_t matrix);
-
-/*! apply matrix to line
- *
- * @param line      the line
- * @param applied   the applied line
- * @param matrix    the matrix
- */
-lx_void_t           lx_line_apply2(lx_line_ref_t line, lx_line_ref_t applied, lx_matrix_ref_t matrix);
+lx_void_t           lx_arc_imake(lx_arc_ref_t arc, lx_long_t x0, lx_long_t y0, lx_size_t rx, lx_size_t ry, lx_long_t ab, lx_long_t an);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

@@ -18,8 +18,8 @@
  * @file        vector.h
  *
  */
-#ifndef LX_CORE_BASICTYPE_VECTOR_H
-#define LX_CORE_BASICTYPE_VECTOR_H
+#ifndef LX_CORE_PRIMITIVE_VECTOR_H
+#define LX_CORE_PRIMITIVE_VECTOR_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes

@@ -18,8 +18,8 @@
  * @file        rect.h
  *
  */
-#ifndef LX_CORE_BASICTYPE_RECT_H
-#define LX_CORE_BASICTYPE_RECT_H
+#ifndef LX_CORE_PRIMITIVE_RECT_H
+#define LX_CORE_PRIMITIVE_RECT_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
