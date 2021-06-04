@@ -441,7 +441,6 @@ lx_bool_t           lx_matrix_multiply(lx_matrix_ref_t matrix, lx_matrix_ref_t f
  */
 lx_bool_t           lx_matrix_multiply_lhs(lx_matrix_ref_t matrix, lx_matrix_ref_t factor);
 
-
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */
