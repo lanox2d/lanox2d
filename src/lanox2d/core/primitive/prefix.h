@@ -25,7 +25,7 @@
  * includes
  */
 #include "../../prefix.h"
-#include "../../base/math/matrix.h"
+#include "../../base/base.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * macros

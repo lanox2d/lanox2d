@@ -32,6 +32,18 @@
 lx_extern_c_enter
 
 /* //////////////////////////////////////////////////////////////////////////////////////
+ * types
+ */
+
+/* the arc quad callback type
+ *
+ * @param ctrl      the ctrl point, the point is first if be null
+ * @param point     the point
+ * @param udata     the user data
+ */
+typedef lx_void_t   (*lx_arc_quad_cb_t)(lx_point_ref_t ctrl, lx_point_ref_t point, lx_cpointer_t udata);
+
+/* //////////////////////////////////////////////////////////////////////////////////////
  * interfaces
  */
 
@@ -58,6 +70,24 @@ lx_void_t           lx_arc_make(lx_arc_ref_t arc, lx_float_t x0, lx_float_t y0, 
  * @param an        the sweep angle, 0 - 360
  */
 lx_void_t           lx_arc_imake(lx_arc_ref_t arc, lx_long_t x0, lx_long_t y0, lx_size_t rx, lx_size_t ry, lx_long_t ab, lx_long_t an);
+
+/* make the quad curves for the arc
+ *
+ * @param arc       the arc
+ * @param callback  the make callback
+ * @param udata     the user data
+ */
+lx_void_t           lx_arc_make_quad(lx_arc_ref_t arc, lx_arc_quad_cb_t callback, lx_cpointer_t udata);
+
+/* make the quad curves for the arc
+ *
+ * @param start     the start unit vector
+ * @param stop      the stop unit vector
+ * @param matrix    the user matrix
+ * @param callback  the make callback
+ * @param udata     the user data
+ */
+lx_void_t           lx_arc_make_quad2(lx_vector_ref_t start, lx_vector_ref_t stop, lx_matrix_ref_t matrix, lx_size_t direction, lx_arc_quad_cb_t callback, lx_cpointer_t udata);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
