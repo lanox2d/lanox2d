@@ -41,7 +41,7 @@ lx_extern_c_enter
  */
 typedef enum lx_path_code_e_ {
     LX_PATH_CODE_MOVE  = 0 //!< the move-to code
-,   LX_PATH_CODE_CLOS  = 1 //!< the close code
+,   LX_PATH_CODE_CLOSE = 1 //!< the close code
 ,   LX_PATH_CODE_LINE  = 2 //!< the line-to code
 ,   LX_PATH_CODE_QUAD  = 3 //!< the quad-to code
 ,   LX_PATH_CODE_CUBIC = 4 //!< the cubic-to code

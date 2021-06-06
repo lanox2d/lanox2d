@@ -236,7 +236,7 @@ typedef struct lx_shape_t_ {
         lx_polygon_t    polygon;
         lx_triangle_t   triangle;
         lx_round_rect_t round_rect;
-        // TODO path
+        lx_path_ref_t   path;
     }u;
 
 }lx_shape_t, *lx_shape_ref_t;

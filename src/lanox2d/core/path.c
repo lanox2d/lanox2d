@@ -24,3 +24,33 @@
  */
 #include "path.h"
 
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * macros
+ */
+
+// the points grow count
+#ifdef LX_CONFIG_SMALL
+#   define LX_PATH_POINTS_GROW      (32)
+#else
+#   define LX_PATH_POINTS_GROW      (64)
+#endif
+
+// the point step for code
+#define lx_path_point_step(code)    ((code) < 1? 1 : (code) - 1)
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * types
+ */
+
+// the path flag enum
+typedef enum lx_path_flag_e_ {
+    LX_PATH_FLAG_DIRTY_HINT    = 1
+,   LX_PATH_FLAG_DIRTY_BOUNDS  = 2
+,   LX_PATH_FLAG_DIRTY_POLYGON = 4
+,   LX_PATH_FLAG_DIRTY_CONVEX  = 8
+,   LX_PATH_FLAG_DIRTY_ALL     = LX_PATH_FLAG_DIRTY_HINT | LX_PATH_FLAG_DIRTY_BOUNDS | LX_PATH_FLAG_DIRTY_POLYGON | LX_PATH_FLAG_DIRTY_CONVEX
+,   LX_PATH_FLAG_CURVE         = 16    //< have curve contour?
+,   LX_PATH_FLAG_CONVEX        = 32    //< all contours are convex polygon?
+,   LX_PATH_FLAG_CLOSED        = 64    //< the contour is closed now?
+,   LX_PATH_FLAG_SINGLE        = 128   //< single contour?
+}lx_path_flag_e;
