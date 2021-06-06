@@ -58,6 +58,9 @@
 // interpolation
 #define lx_interp(x, y, f)      ((x) + ((y) - (x)) * (f))
 
+// is in the unit range(0, 1)?
+#define lx_inunit(x)            ((x) > 0 && (x) < 1.0f)
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */

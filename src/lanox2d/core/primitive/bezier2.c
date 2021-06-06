@@ -201,7 +201,7 @@ lx_size_t lx_bezier2_divide_line_count(lx_point_t const points[3]) {
 }
 
 lx_void_t lx_bezier2_chop_at(lx_point_t const points[3], lx_point_t output[5], lx_float_t factor) {
-    lx_assert(points && output && lx_float_in_unit_range(factor));
+    lx_assert(points && output && lx_inunit(factor));
     lx_bezier2_chop_xy_at(&points[0].x, &output[0].x, factor);
     lx_bezier2_chop_xy_at(&points[0].y, &output[0].y, factor);
 }
