@@ -25,6 +25,7 @@
 #include "matrix.h"
 #include "../libc/libc.h"
 #include "../libm/libm.h"
+#include "../math/math.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation

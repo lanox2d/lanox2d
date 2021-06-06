@@ -15,18 +15,38 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        math.h
+ * @file        ilog2i.h
  *
  */
-#ifndef LX_BASE_MATH_H
-#define LX_BASE_MATH_H
+#ifndef LX_BASE_MATH_ILOG2I_H
+#define LX_BASE_MATH_ILOG2I_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "matrix.h"
-#include "float.h"
-#include "ilog2i.h"
+#include "prefix.h"
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * extern
+ */
+lx_extern_c_enter
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * interfaces
+ */
+
+/* compute log2() for integer
+ *
+ * @param x         the integer value
+ *
+ * @return          the result
+ */
+lx_uint32_t         lx_ilog2i(lx_uint32_t x);
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * extern
+ */
+lx_extern_c_leave
 
 #endif
 

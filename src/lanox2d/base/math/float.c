@@ -15,19 +15,43 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        math.h
+ * @file        float.c
  *
  */
-#ifndef LX_BASE_MATH_H
-#define LX_BASE_MATH_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "matrix.h"
 #include "float.h"
-#include "ilog2i.h"
+#include "../libm/libm.h"
 
-#endif
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * implementation
+ */
+lx_int_t lx_unitdiv(lx_float_t numer, lx_float_t denom, lx_float_t* result) {
+    lx_assert(result);
 
+    // negate it
+    if (numer < 0) {
+        numer = -numer;
+        denom = -denom;
+    }
+
+    // must be valid numerator and denominator
+    if (0 == denom || 0 == numer || numer >= denom) {
+        return 0;
+    }
+
+    // must be finite value
+    lx_float_t r = numer / denom;
+    lx_assert_and_check_return_val(lx_isfinf(r), 0);
+
+    // must be in range: [0, 1)
+    lx_assert_and_check_return_val(r >= 0 && r < 1.0f, 0);
+
+    // too smaller? not save result
+    lx_check_return_val(r != 0, 0);
+    *result = r;
+    return 1;
+}
 

@@ -27,29 +27,16 @@
 #include "prefix.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * macros
- */
-
-// constants
-#define LX_PI                   (3.141592653f)
-#define LX_NEAR0                (1.0f / (1 << 12))
-#define LX_SQRT2                (1.414213562f)      //!< sqrt(2)
-#define LX_ONEOVER_SQRT2        (0.707106781f)      //!< 1/sqrt(2)
-#define LX_TAN_PIOVER8          (0.414213562f)      //!< tan(pi/8)
-#define LX_SQRT2_OVER2          (0.707106781f)      //!< sqrt(2)/2
-#define LX_PIOVER180            (0.017453293f)      //<! pi/180
-#define LX_180OVERPI            (57.29577951f)      //!< 180/pi
-
-/// nearly zero?
-#define lx_near0(x)             (lx_abs(x) <= LX_NEAR0)
-
-/// nearly equal?
-#define lx_near_eq(x, y)        (lx_abs((x) - (y)) <= LX_NEAR0)
-
-/* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */
 lx_extern_c_enter
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * macros
+ */
+
+#define lx_ceil(x)              ((x) > 0? (lx_int32_t)((x) + 0.9999999999) : (lx_int32_t)(x))
+#define lx_floor(x)             ((x) > 0? (lx_int32_t)(x) : (lx_int32_t)((x) - 0.9999999999))
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * interfaces

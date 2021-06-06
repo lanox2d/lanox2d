@@ -26,12 +26,6 @@
  */
 #include "../prefix.h"
 
-/* //////////////////////////////////////////////////////////////////////////////////////
- * macros
- */
-#define lx_degree_to_radian(x)  ((x) * LX_PIOVER180)
-#define lx_radian_to_degree(x)  ((x) * LX_180OVERPI)
-
 #endif
 
 
