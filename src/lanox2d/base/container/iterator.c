@@ -15,19 +15,16 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        container.h
+ * @file        iterator.c
  *
  */
-#ifndef LX_BASE_CONTAINER_H
-#define LX_BASE_CONTAINER_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "stack.h"
-#include "array.h"
 #include "iterator.h"
 
-#endif
-
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * implementation
+ */
 
