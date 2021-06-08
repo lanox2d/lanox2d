@@ -705,7 +705,7 @@ lx_rect_ref_t lx_path_bounds(lx_path_ref_t self) {
     lx_assert_and_check_return_val(path && path->points, lx_null);
 
     // empty?
-    if (lx_path_empty(path)) {
+    if (lx_path_empty(self)) {
         return lx_null;
     }
 
@@ -757,7 +757,7 @@ lx_rect_ref_t lx_path_bounds(lx_path_ref_t self) {
 lx_bool_t lx_path_convex(lx_path_ref_t self) {
     lx_path_t* path = (lx_path_t*)self;
     if (path) {
-        if (lx_path_empty(path)) {
+        if (lx_path_empty(self)) {
             return lx_true;
         }
         // convex dirty? remake it
@@ -806,7 +806,7 @@ lx_shape_ref_t lx_path_hint(lx_path_ref_t self) {
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return_val(path, lx_null);
 
-    if (lx_path_empty(path)) {
+    if (lx_path_empty(self)) {
         return lx_null;
     }
 
@@ -823,7 +823,7 @@ lx_polygon_ref_t lx_path_polygon(lx_path_ref_t self) {
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return_val(path, lx_null);
 
-    if (lx_path_empty(path)) {
+    if (lx_path_empty(self)) {
         return lx_null;
     }
 
@@ -840,7 +840,7 @@ lx_void_t lx_path_apply(lx_path_ref_t self, lx_matrix_ref_t matrix) {
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return(path && path->points && matrix);
 
-    if (!lx_path_empty(path)) {
+    if (!lx_path_empty(self)) {
         lx_array_foreach(path->points, lx_path_points_apply_matrix, matrix);
     }
 }
@@ -854,7 +854,7 @@ lx_void_t lx_path_close(lx_path_ref_t self) {
         // patch a line segment if the current point is not equal to the first point of the contour
         lx_point_t last = {0};
         if (lx_path_last(path, &last) && (last.x != path->head.x || last.y != path->head.y))
-            lx_path_line_to(path, &path->head);
+            lx_path_line_to(self, &path->head);
 
         // append code
         lx_path_insert_code(path, LX_PATH_CODE_CLOSE);
@@ -1004,7 +1004,7 @@ lx_void_t lx_path_arc_to(lx_path_ref_t self, lx_arc_ref_t arc) {
 
     // empty and dirty? make hint
     lx_bool_t hint_maked = lx_false;
-    if (lx_path_empty(path) && (path->flags & LX_PATH_FLAG_DIRTY_HINT)) {
+    if (lx_path_empty(self) && (path->flags & LX_PATH_FLAG_DIRTY_HINT)) {
         path->hint.type  = LX_SHAPE_TYPE_ARC;
         path->hint.u.arc = *arc;
         hint_maked       = lx_true;
@@ -1031,6 +1031,7 @@ lx_void_t lx_path_arc2i_to(lx_path_ref_t self, lx_long_t x0, lx_long_t y0, lx_si
     lx_path_arc_to(self, &arc);
 }
 
+#if 0
 lx_void_t lx_path_path_to(lx_path_ref_t self, lx_path_ref_t added)
 {
     // done
@@ -1043,21 +1044,21 @@ lx_void_t lx_path_path_to(lx_path_ref_t self, lx_path_ref_t added)
                 // ignore the first point
                 if (item_itor != item_head)
                 {
-                    lx_path_move_to(path, &item->points[0]);
+                    lx_path_move_to(self, &item->points[0]);
                 }
             }
             break;
         case LX_PATH_CODE_LINE:
-            lx_path_line_to(path, &item->points[1]);
+            lx_path_line_to(self, &item->points[1]);
             break;
         case LX_PATH_CODE_QUAD:
-            lx_path_quad_to(path, &item->points[1], &item->points[2]);
+            lx_path_quad_to(self, &item->points[1], &item->points[2]);
             break;
         case LX_PATH_CODE_CUBIC:
-            lx_path_cubic_to(path, &item->points[1], &item->points[2], &item->points[3]);
+            lx_path_cubic_to(self, &item->points[1], &item->points[2], &item->points[3]);
             break;
         case LX_PATH_CODE_CLOSE:
-            lx_path_close(path);
+            lx_path_close(self);
             break;
         default:
             // trace
@@ -1076,7 +1077,7 @@ lx_void_t lx_path_rpath_to(lx_path_ref_t self, lx_path_ref_t added)
         // move it?
         if (need_move)
         {
-            lx_path_move_to(path, &item->points[0]);
+            lx_path_move_to(self, &item->points[0]);
             need_move = lx_false;
         }
 
@@ -1087,7 +1088,7 @@ lx_void_t lx_path_rpath_to(lx_path_ref_t self, lx_path_ref_t added)
                 // closed?
                 if (need_close)
                 {
-                    lx_path_close(path);
+                    lx_path_close(self);
                     need_close = lx_false;
                 }
 
@@ -1097,17 +1098,17 @@ lx_void_t lx_path_rpath_to(lx_path_ref_t self, lx_path_ref_t added)
             break;
         case LX_PATH_CODE_LINE:
             {
-                lx_path_line_to(path, &item->points[0]);
+                lx_path_line_to(self, &item->points[0]);
             }
             break;
         case LX_PATH_CODE_QUAD:
             {
-                lx_path_quad_to(path, &item->points[1], &item->points[0]);
+                lx_path_quad_to(self, &item->points[1], &item->points[0]);
             }
             break;
         case LX_PATH_CODE_CUBIC:
             {
-                lx_path_cubic_to(path, &item->points[2], &item->points[1], &item->points[0]);
+                lx_path_cubic_to(self, &item->points[2], &item->points[1], &item->points[0]);
             }
             break;
         case LX_PATH_CODE_CLOSE:
@@ -1126,7 +1127,7 @@ lx_void_t lx_path_rpath_to(lx_path_ref_t self, lx_path_ref_t added)
 lx_void_t lx_path_add_path(lx_path_ref_t self, lx_path_ref_t added)
 {
     // empty? copy it
-    if (lx_path_empty(path)) lx_path_copy(path, added);
+    if (lx_path_empty(self)) lx_path_copy(path, added);
     // add it
     else
     {
@@ -1136,19 +1137,19 @@ lx_void_t lx_path_add_path(lx_path_ref_t self, lx_path_ref_t added)
             switch (item->code)
             {
             case LX_PATH_CODE_MOVE:
-                lx_path_move_to(path, &item->points[0]);
+                lx_path_move_to(self, &item->points[0]);
                 break;
             case LX_PATH_CODE_LINE:
-                lx_path_line_to(path, &item->points[1]);
+                lx_path_line_to(self, &item->points[1]);
                 break;
             case LX_PATH_CODE_QUAD:
-                lx_path_quad_to(path, &item->points[1], &item->points[2]);
+                lx_path_quad_to(self, &item->points[1], &item->points[2]);
                 break;
             case LX_PATH_CODE_CUBIC:
-                lx_path_cubic_to(path, &item->points[1], &item->points[2], &item->points[3]);
+                lx_path_cubic_to(self, &item->points[1], &item->points[2], &item->points[3]);
                 break;
             case LX_PATH_CODE_CLOSE:
-                lx_path_close(path);
+                lx_path_close(self);
                 break;
             default:
                 // trace
@@ -1168,7 +1169,7 @@ lx_void_t lx_path_add_rpath(lx_path_ref_t self, lx_path_ref_t added)
         // move it?
         if (need_move)
         {
-            lx_path_move_to(path, &item->points[0]);
+            lx_path_move_to(self, &item->points[0]);
             need_move = lx_false;
         }
 
@@ -1179,7 +1180,7 @@ lx_void_t lx_path_add_rpath(lx_path_ref_t self, lx_path_ref_t added)
                 // closed?
                 if (need_close)
                 {
-                    lx_path_close(path);
+                    lx_path_close(self);
                     need_close = lx_false;
                 }
 
@@ -1189,17 +1190,17 @@ lx_void_t lx_path_add_rpath(lx_path_ref_t self, lx_path_ref_t added)
             break;
         case LX_PATH_CODE_LINE:
             {
-                lx_path_line_to(path, &item->points[0]);
+                lx_path_line_to(self, &item->points[0]);
             }
             break;
         case LX_PATH_CODE_QUAD:
             {
-                lx_path_quad_to(path, &item->points[1], &item->points[0]);
+                lx_path_quad_to(self, &item->points[1], &item->points[0]);
             }
             break;
         case LX_PATH_CODE_CUBIC:
             {
-                lx_path_cubic_to(path, &item->points[2], &item->points[1], &item->points[0]);
+                lx_path_cubic_to(self, &item->points[2], &item->points[1], &item->points[0]);
             }
             break;
         case LX_PATH_CODE_CLOSE:
@@ -1215,221 +1216,181 @@ lx_void_t lx_path_add_rpath(lx_path_ref_t self, lx_path_ref_t added)
         }
     }
 }
-lx_void_t lx_path_add_line(lx_path_ref_t self, lx_line_ref_t line)
-{
-    // check
+#endif
+
+lx_void_t lx_path_add_line(lx_path_ref_t self, lx_line_ref_t line) {
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return(path && line);
 
     // empty and dirty? make hint
     lx_bool_t hint_maked = lx_false;
-    if (lx_path_empty(path) && (path->flags & LX_PATH_FLAG_DIRTY_HINT))
-    {
-        path->hint.type         = LX_SHAPE_TYPE_LINE;
-        path->hint.u.line       = *line;
-        path->flags              &= ~LX_PATH_FLAG_DIRTY_HINT;
-        hint_maked              = lx_true;
+    if (lx_path_empty(self) && (path->flags & LX_PATH_FLAG_DIRTY_HINT)) {
+        path->hint.type   = LX_SHAPE_TYPE_LINE;
+        path->hint.u.line = *line;
+        path->flags       &= ~LX_PATH_FLAG_DIRTY_HINT;
+        hint_maked        = lx_true;
     }
 
     // add line
-    lx_path_move_to(path, &line->p0);
-    lx_path_line_to(path, &line->p1);
+    lx_path_move_to(self, &line->p0);
+    lx_path_line_to(self, &line->p1);
 
     // hint have been maked? remove dirty
-    if (hint_maked) path->flags &= ~LX_PATH_FLAG_DIRTY_HINT;
+    if (hint_maked) {
+        path->flags &= ~LX_PATH_FLAG_DIRTY_HINT;
+    }
 }
-lx_void_t lx_path_add_line2(lx_path_ref_t self, lx_float_t x0, lx_float_t y0, lx_float_t x1, lx_float_t y1)
-{
-    // make line
+
+lx_void_t lx_path_add_line2(lx_path_ref_t self, lx_float_t x0, lx_float_t y0, lx_float_t x1, lx_float_t y1) {
     lx_line_t line;
     lx_line_make(&line, x0, y0, x1, y1);
-
-    // add line
-    lx_path_add_line(path, &line);
+    lx_path_add_line(self, &line);
 }
-lx_void_t lx_path_add_line2i(lx_path_ref_t self, lx_long_t x0, lx_long_t y0, lx_long_t x1, lx_long_t y1)
-{
-    // make line
+
+lx_void_t lx_path_add_line2i(lx_path_ref_t self, lx_long_t x0, lx_long_t y0, lx_long_t x1, lx_long_t y1) {
     lx_line_t line;
     lx_line_imake(&line, x0, y0, x1, y1);
-
-    // add line
-    lx_path_add_line(path, &line);
+    lx_path_add_line(self, &line);
 }
-lx_void_t lx_path_add_arc(lx_path_ref_t self, lx_arc_ref_t arc)
-{
-    // check
+
+lx_void_t lx_path_add_arc(lx_path_ref_t self, lx_arc_ref_t arc) {
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return(path && path->codes && path->points && arc);
 
     // ellipse? add it
-    if (arc->an >= LX_DEGREE_360 || arc->an <= -LX_DEGREE_360)
-    {
-        // make ellipse
+    if (arc->an >= LX_DEGREE_360 || arc->an <= -LX_DEGREE_360) {
         lx_ellipse_t ellipse;
         lx_ellipse_make(&ellipse, arc->c.x, arc->c.y, arc->rx, arc->ry);
-
-        // add ellipse
-        lx_path_add_ellipse(path, &ellipse, (arc->an > 0)? LX_ROTATE_DIRECTION_CW : LX_ROTATE_DIRECTION_CCW);
+        lx_path_add_ellipse(self, &ellipse, (arc->an > 0)? LX_ROTATE_DIRECTION_CW : LX_ROTATE_DIRECTION_CCW);
         return ;
     }
 
     // empty and dirty? make hint
     lx_bool_t hint_maked = lx_false;
-    if (lx_path_empty(path) && (path->flags & LX_PATH_FLAG_DIRTY_HINT))
-    {
-        path->hint.type         = LX_SHAPE_TYPE_ARC;
-        path->hint.u.arc        = *arc;
-        hint_maked              = lx_true;
+    if (lx_path_empty(self) && (path->flags & LX_PATH_FLAG_DIRTY_HINT)) {
+        path->hint.type  = LX_SHAPE_TYPE_ARC;
+        path->hint.u.arc = *arc;
+        hint_maked       = lx_true;
     }
 
     // make quad curves for arc
     lx_arc_make_quad(arc, lx_path_make_quad_for_add_arc, path);
 
     // hint have been maked? remove dirty
-    if (hint_maked) path->flags &= ~LX_PATH_FLAG_DIRTY_HINT;
+    if (hint_maked) {
+        path->flags &= ~LX_PATH_FLAG_DIRTY_HINT;
+    }
 }
-lx_void_t lx_path_add_arc2(lx_path_ref_t self, lx_float_t x0, lx_float_t y0, lx_float_t rx, lx_float_t ry, lx_float_t ab, lx_float_t an)
-{
-    // make arc
+
+lx_void_t lx_path_add_arc2(lx_path_ref_t self, lx_float_t x0, lx_float_t y0, lx_float_t rx, lx_float_t ry, lx_float_t ab, lx_float_t an) {
     lx_arc_t arc;
     lx_arc_make(&arc, x0, y0, rx, ry, ab, an);
-
-    // add arc
-    lx_path_add_arc(path, &arc);
+    lx_path_add_arc(self, &arc);
 }
-lx_void_t lx_path_add_arc2i(lx_path_ref_t self, lx_long_t x0, lx_long_t y0, lx_size_t rx, lx_size_t ry, lx_long_t ab, lx_long_t an)
-{
-    // make arc
+
+lx_void_t lx_path_add_arc2i(lx_path_ref_t self, lx_long_t x0, lx_long_t y0, lx_size_t rx, lx_size_t ry, lx_long_t ab, lx_long_t an) {
     lx_arc_t arc;
     lx_arc_imake(&arc, x0, y0, rx, ry, ab, an);
-
-    // add arc
-    lx_path_add_arc(path, &arc);
+    lx_path_add_arc(self, &arc);
 }
-lx_void_t lx_path_add_triangle(lx_path_ref_t self, lx_triangle_ref_t triangle)
-{
-    // check
+
+lx_void_t lx_path_add_triangle(lx_path_ref_t self, lx_triangle_ref_t triangle) {
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return(path && triangle);
 
     // empty and dirty? make hint
     lx_bool_t hint_maked = lx_false;
-    if (lx_path_empty(path) && (path->flags & LX_PATH_FLAG_DIRTY_HINT))
-    {
-        path->hint.type         = LX_SHAPE_TYPE_TRIANGLE;
-        path->hint.u.triangle   = *triangle;
-        hint_maked              = lx_true;
+    if (lx_path_empty(self) && (path->flags & LX_PATH_FLAG_DIRTY_HINT)) {
+        path->hint.type       = LX_SHAPE_TYPE_TRIANGLE;
+        path->hint.u.triangle = *triangle;
+        hint_maked            = lx_true;
     }
 
     // add triangle
-    lx_path_move_to(path, &triangle->p0);
-    lx_path_line_to(path, &triangle->p1);
-    lx_path_line_to(path, &triangle->p2);
-    lx_path_close(path);
+    lx_path_move_to(self, &triangle->p0);
+    lx_path_line_to(self, &triangle->p1);
+    lx_path_line_to(self, &triangle->p2);
+    lx_path_close(self);
 
     // hint have been maked? remove dirty
-    if (hint_maked) path->flags &= ~LX_PATH_FLAG_DIRTY_HINT;
+    if (hint_maked) {
+        path->flags &= ~LX_PATH_FLAG_DIRTY_HINT;
+    }
 }
-lx_void_t lx_path_add_triangle2(lx_path_ref_t self, lx_float_t x0, lx_float_t y0, lx_float_t x1, lx_float_t y1, lx_float_t x2, lx_float_t y2)
-{
-    // make triangle
+
+lx_void_t lx_path_add_triangle2(lx_path_ref_t self, lx_float_t x0, lx_float_t y0, lx_float_t x1, lx_float_t y1, lx_float_t x2, lx_float_t y2) {
     lx_triangle_t triangle;
     lx_triangle_make(&triangle, x0, y0, x1, y1, x2, y2);
-
-    // add triangle
-    lx_path_add_triangle(path, &triangle);
+    lx_path_add_triangle(self, &triangle);
 }
-lx_void_t lx_path_add_triangle2i(lx_path_ref_t self, lx_long_t x0, lx_long_t y0, lx_long_t x1, lx_long_t y1, lx_long_t x2, lx_long_t y2)
-{
-    // make triangle
+
+lx_void_t lx_path_add_triangle2i(lx_path_ref_t self, lx_long_t x0, lx_long_t y0, lx_long_t x1, lx_long_t y1, lx_long_t x2, lx_long_t y2) {
     lx_triangle_t triangle;
     lx_triangle_imake(&triangle, x0, y0, x1, y1, x2, y2);
-
-    // add triangle
-    lx_path_add_triangle(path, &triangle);
+    lx_path_add_triangle(self, &triangle);
 }
-lx_void_t lx_path_add_rect(lx_path_ref_t self, lx_rect_ref_t rect, lx_size_t direction)
-{
-    // check
+
+lx_void_t lx_path_add_rect(lx_path_ref_t self, lx_rect_ref_t rect, lx_size_t direction) {
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return(path && rect);
 
     // empty and dirty? make hint
     lx_bool_t hint_maked = lx_false;
-    if (lx_path_empty(path) && (path->flags & LX_PATH_FLAG_DIRTY_HINT))
-    {
-        path->hint.type         = LX_SHAPE_TYPE_RECT;
-        path->hint.u.rect       = *rect;
-        hint_maked              = lx_true;
+    if (lx_path_empty(self) && (path->flags & LX_PATH_FLAG_DIRTY_HINT)) {
+        path->hint.type   = LX_SHAPE_TYPE_RECT;
+        path->hint.u.rect = *rect;
+        hint_maked        = lx_true;
     }
 
     // add rect
-    lx_path_move2_to(path, rect->x, rect->y);
-    if (direction == LX_ROTATE_DIRECTION_CW)
-    {
-        lx_path_line2_to(path, rect->x + rect->w, rect->y);
-        lx_path_line2_to(path, rect->x + rect->w, rect->y + rect->h);
-        lx_path_line2_to(path, rect->x, rect->y + rect->h);
+    lx_path_move2_to(self, rect->x, rect->y);
+    if (direction == LX_ROTATE_DIRECTION_CW) {
+        lx_path_line2_to(self, rect->x + rect->w, rect->y);
+        lx_path_line2_to(self, rect->x + rect->w, rect->y + rect->h);
+        lx_path_line2_to(self, rect->x, rect->y + rect->h);
+    } else {
+        lx_path_line2_to(self, rect->x, rect->y + rect->h);
+        lx_path_line2_to(self, rect->x + rect->w, rect->y + rect->h);
+        lx_path_line2_to(self, rect->x + rect->w, rect->y);
     }
-    else
-    {
-        lx_path_line2_to(path, rect->x, rect->y + rect->h);
-        lx_path_line2_to(path, rect->x + rect->w, rect->y + rect->h);
-        lx_path_line2_to(path, rect->x + rect->w, rect->y);
-    }
-    lx_path_close(path);
+    lx_path_close(self);
 
     // hint have been maked? remove dirty
-    if (hint_maked) path->flags &= ~LX_PATH_FLAG_DIRTY_HINT;
+    if (hint_maked) {
+        path->flags &= ~LX_PATH_FLAG_DIRTY_HINT;
+    }
 }
-lx_void_t lx_path_add_rect2(lx_path_ref_t self, lx_float_t x, lx_float_t y, lx_float_t w, lx_float_t h, lx_size_t direction)
-{
-    // make rect
+
+lx_void_t lx_path_add_rect2(lx_path_ref_t self, lx_float_t x, lx_float_t y, lx_float_t w, lx_float_t h, lx_size_t direction) {
     lx_rect_t rect;
     lx_rect_make(&rect, x, y, w, h);
-
-    // add rect
-    lx_path_add_rect(path, &rect, direction);
+    lx_path_add_rect(self, &rect, direction);
 }
-lx_void_t lx_path_add_rect2i(lx_path_ref_t self, lx_long_t x, lx_long_t y, lx_size_t w, lx_size_t h, lx_size_t direction)
-{
-    // make rect
+
+lx_void_t lx_path_add_rect2i(lx_path_ref_t self, lx_long_t x, lx_long_t y, lx_size_t w, lx_size_t h, lx_size_t direction) {
     lx_rect_t rect;
     lx_rect_imake(&rect, x, y, w, h);
-
-    // add rect
-    lx_path_add_rect(path, &rect, direction);
+    lx_path_add_rect(self, &rect, direction);
 }
-lx_void_t lx_path_add_round_rect(lx_path_ref_t self, lx_round_rect_ref_t rect, lx_size_t direction)
-{
-    // check
+
+lx_void_t lx_path_add_round_rect(lx_path_ref_t self, lx_round_rect_ref_t rect, lx_size_t direction) {
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return(path && rect);
 
-    // is rect?
-    if (lx_round_rect_is_rect(rect))
-    {
-        // add rect
-        lx_path_add_rect(path, &rect->bounds, direction);
+    // is rect or ellipse?
+    if (lx_round_rect_is_rect(rect)) {
+        lx_path_add_rect(self, &rect->bounds, direction);
         return ;
-    }
-    // is ellipse?
-    else if (lx_round_rect_is_ellipse(rect))
-    {
-        // make ellipse
+    } else if (lx_round_rect_is_ellipse(rect)) {
         lx_ellipse_t ellipse;
         lx_ellipse_make_from_rect(&ellipse, &rect->bounds);
-
-        // add ellipse
-        lx_path_add_ellipse(path, &ellipse, direction);
+        lx_path_add_ellipse(self, &ellipse, direction);
         return ;
     }
 
     // empty and dirty? make hint
     lx_bool_t hint_maked = lx_false;
-    if (lx_path_empty(path) && (path->flags & LX_PATH_FLAG_DIRTY_HINT))
-    {
+    if (lx_path_empty(self) && (path->flags & LX_PATH_FLAG_DIRTY_HINT)) {
         path->hint.type         = LX_SHAPE_TYPE_ROUND_RECT;
         path->hint.u.round_rect = *rect;
         hint_maked              = lx_true;
@@ -1462,190 +1423,170 @@ lx_void_t lx_path_add_round_rect(lx_path_ref_t self, lx_round_rect_ref_t rect, l
     lx_float_t cy4 = yb - ry4;
 
     // the factors of the left-top corner
-    lx_float_t sx1 = lx_mul(rx1, LX_TAN_PIOVER8);
-    lx_float_t sy1 = lx_mul(ry1, LX_TAN_PIOVER8);
-    lx_float_t mx1 = lx_mul(rx1, LX_SQRT2_OVER2);
-    lx_float_t my1 = lx_mul(ry1, LX_SQRT2_OVER2);
+    lx_float_t sx1 = rx1 * LX_TAN_PIOVER8;
+    lx_float_t sy1 = ry1 * LX_TAN_PIOVER8;
+    lx_float_t mx1 = rx1 * LX_SQRT2_OVER2;
+    lx_float_t my1 = ry1 * LX_SQRT2_OVER2;
 
     // the factors of the right-top corner
-    lx_float_t sx2 = lx_mul(rx2, LX_TAN_PIOVER8);
-    lx_float_t sy2 = lx_mul(ry2, LX_TAN_PIOVER8);
-    lx_float_t mx2 = lx_mul(rx2, LX_SQRT2_OVER2);
-    lx_float_t my2 = lx_mul(ry2, LX_SQRT2_OVER2);
+    lx_float_t sx2 = rx2 * LX_TAN_PIOVER8;
+    lx_float_t sy2 = ry2 * LX_TAN_PIOVER8;
+    lx_float_t mx2 = rx2 * LX_SQRT2_OVER2;
+    lx_float_t my2 = ry2 * LX_SQRT2_OVER2;
 
     // the factors of the right-bottom corner
-    lx_float_t sx3 = lx_mul(rx3, LX_TAN_PIOVER8);
-    lx_float_t sy3 = lx_mul(ry3, LX_TAN_PIOVER8);
-    lx_float_t mx3 = lx_mul(rx3, LX_SQRT2_OVER2);
-    lx_float_t my3 = lx_mul(ry3, LX_SQRT2_OVER2);
+    lx_float_t sx3 = rx3 * LX_TAN_PIOVER8;
+    lx_float_t sy3 = ry3 * LX_TAN_PIOVER8;
+    lx_float_t mx3 = rx3 * LX_SQRT2_OVER2;
+    lx_float_t my3 = ry3 * LX_SQRT2_OVER2;
 
     // the factors of the left-bottom corner
-    lx_float_t sx4 = lx_mul(rx4, LX_TAN_PIOVER8);
-    lx_float_t sy4 = lx_mul(ry4, LX_TAN_PIOVER8);
-    lx_float_t mx4 = lx_mul(rx4, LX_SQRT2_OVER2);
-    lx_float_t my4 = lx_mul(ry4, LX_SQRT2_OVER2);
+    lx_float_t sx4 = rx4 * LX_TAN_PIOVER8;
+    lx_float_t sy4 = ry4 * LX_TAN_PIOVER8;
+    lx_float_t mx4 = rx4 * LX_SQRT2_OVER2;
+    lx_float_t my4 = ry4 * LX_SQRT2_OVER2;
 
     // move to the first point
-    lx_path_move2_to(path, xl, yt + ry1);
+    lx_path_move2_to(self, xl, yt + ry1);
 
 #if 0
     // add the round rect
-    if (direction == LX_ROTATE_DIRECTION_CW)
-    {
-        lx_path_arc2_to(path,   xl + rx1,   yt + ry1, rx1, ry1, -LX_DEGREE_180, LX_DEGREE_90    );
-        lx_path_line2_to(path,  xr - rx2,   yt                                                  );
-        lx_path_arc2_to(path,   xr - rx2,   yt + ry2, rx2, ry2, -LX_DEGREE_90,  LX_DEGREE_90    );
-        lx_path_line2_to(path,  xr,         yb - ry3                                            );
-        lx_path_arc2_to(path,   xr - rx2,   yb - ry3, rx3, ry3, 0,              LX_DEGREE_90    );
-        lx_path_line2_to(path,  xl + rx4,   yb                                                  );
-        lx_path_arc2_to(path,   xl + rx4,   yb - ry4, rx4, ry4, LX_DEGREE_90,   LX_DEGREE_90    );
-        lx_path_line2_to(path,  xl,         yt + ry1                                            );
-    }
-    else
-    {
-        lx_path_line2_to(path,  xl,         yb - ry4                                            );
-        lx_path_arc2_to(path,   xl + rx4,   yb - ry4, rx4, ry4, LX_DEGREE_180,  -LX_DEGREE_90   );
-        lx_path_line2_to(path,  xr - rx3,   yb                                                  );
-        lx_path_arc2_to(path,   xr - rx2,   yb - ry3, rx3, ry3, LX_DEGREE_90,   -LX_DEGREE_90   );
-        lx_path_line2_to(path,  xr,         yt + ry3                                            );
-        lx_path_arc2_to(path,   xr - rx2,   yt + ry2, rx2, ry2, 0,              -LX_DEGREE_90   );
-        lx_path_line2_to(path,  xl + rx1,   yt                                                  );
-        lx_path_arc2_to(path,   xl + rx1,   yt + ry1, rx1, ry1, -LX_DEGREE_90,  -LX_DEGREE_90   );
+    if (direction == LX_ROTATE_DIRECTION_CW) {
+        lx_path_arc2_to(self,   xl + rx1,   yt + ry1, rx1, ry1, -LX_DEGREE_180, LX_DEGREE_90    );
+        lx_path_line2_to(self,  xr - rx2,   yt                                                  );
+        lx_path_arc2_to(self,   xr - rx2,   yt + ry2, rx2, ry2, -LX_DEGREE_90,  LX_DEGREE_90    );
+        lx_path_line2_to(self,  xr,         yb - ry3                                            );
+        lx_path_arc2_to(self,   xr - rx2,   yb - ry3, rx3, ry3, 0,              LX_DEGREE_90    );
+        lx_path_line2_to(self,  xl + rx4,   yb                                                  );
+        lx_path_arc2_to(self,   xl + rx4,   yb - ry4, rx4, ry4, LX_DEGREE_90,   LX_DEGREE_90    );
+        lx_path_line2_to(self,  xl,         yt + ry1                                            );
+    } else {
+        lx_path_line2_to(self,  xl,         yb - ry4                                            );
+        lx_path_arc2_to(self,   xl + rx4,   yb - ry4, rx4, ry4, LX_DEGREE_180,  -LX_DEGREE_90   );
+        lx_path_line2_to(self,  xr - rx3,   yb                                                  );
+        lx_path_arc2_to(self,   xr - rx2,   yb - ry3, rx3, ry3, LX_DEGREE_90,   -LX_DEGREE_90   );
+        lx_path_line2_to(self,  xr,         yt + ry3                                            );
+        lx_path_arc2_to(self,   xr - rx2,   yt + ry2, rx2, ry2, 0,              -LX_DEGREE_90   );
+        lx_path_line2_to(self,  xl + rx1,   yt                                                  );
+        lx_path_arc2_to(self,   xl + rx1,   yt + ry1, rx1, ry1, -LX_DEGREE_90,  -LX_DEGREE_90   );
     }
 #else
     /* add the round rect
      *
      * see lx_path_add_ellipse
      */
-    if (direction == LX_ROTATE_DIRECTION_CW)
-    {
+    if (direction == LX_ROTATE_DIRECTION_CW) {
         // the left-top corner
-        lx_path_quad2_to(path, xl,          cy1 - sy1,  cx1 - mx1,  cy1 - my1   );
-        lx_path_quad2_to(path, cx1 - sx1,   yt,         cx1,        yt          );
-        lx_path_line2_to(path, cx2,         yt                                  );
+        lx_path_quad2_to(self, xl,          cy1 - sy1,  cx1 - mx1,  cy1 - my1   );
+        lx_path_quad2_to(self, cx1 - sx1,   yt,         cx1,        yt          );
+        lx_path_line2_to(self, cx2,         yt                                  );
 
         // the right-top corner
-        lx_path_quad2_to(path, cx2 + sx2,   yt,         cx2 + mx2,  cy2 - my2   );
-        lx_path_quad2_to(path, xr,          cy2 - sy2,  xr,         cy2         );
-        lx_path_line2_to(path, xr,          cy3                                 );
+        lx_path_quad2_to(self, cx2 + sx2,   yt,         cx2 + mx2,  cy2 - my2   );
+        lx_path_quad2_to(self, xr,          cy2 - sy2,  xr,         cy2         );
+        lx_path_line2_to(self, xr,          cy3                                 );
 
         // the right-bottom corner
-        lx_path_quad2_to(path, xr,          cy3 + sy3,  cx3 + mx3,  cy3 + my3   );
-        lx_path_quad2_to(path, cx3 + sx3,   yb,         cx3,        yb          );
-        lx_path_line2_to(path, cx4,         yb                                  );
+        lx_path_quad2_to(self, xr,          cy3 + sy3,  cx3 + mx3,  cy3 + my3   );
+        lx_path_quad2_to(self, cx3 + sx3,   yb,         cx3,        yb          );
+        lx_path_line2_to(self, cx4,         yb                                  );
 
         // the left-bottom corner
-        lx_path_quad2_to(path, cx4 - sx4,   yb,         cx4 - mx4,  cy4 + my4   );
-        lx_path_quad2_to(path, xl,          cy4 + sy4,  xl,         cy4         );
-        lx_path_line2_to(path, xl,          cy1                                 );
-    }
-    else
-    {
+        lx_path_quad2_to(self, cx4 - sx4,   yb,         cx4 - mx4,  cy4 + my4   );
+        lx_path_quad2_to(self, xl,          cy4 + sy4,  xl,         cy4         );
+        lx_path_line2_to(self, xl,          cy1                                 );
+    } else {
         // the left-bottom corner
-        lx_path_line2_to(path, xl,          cy4                                 );
-        lx_path_quad2_to(path, cx4 - rx4,   cy4 + sy4,  cx4 - mx4,  cy4 + my4   );
-        lx_path_quad2_to(path, cx4 - sx4,   yb,         cx4,        yb          );
+        lx_path_line2_to(self, xl,          cy4                                 );
+        lx_path_quad2_to(self, cx4 - rx4,   cy4 + sy4,  cx4 - mx4,  cy4 + my4   );
+        lx_path_quad2_to(self, cx4 - sx4,   yb,         cx4,        yb          );
 
         // the right-bottom corner
-        lx_path_line2_to(path, cx3,         yb                                  );
-        lx_path_quad2_to(path, cx3 + sx3,   yb,         cx3 + mx3,  cy3 + my3   );
-        lx_path_quad2_to(path, xr,          cy3 + sy3,  xr,         cy3         );
+        lx_path_line2_to(self, cx3,         yb                                  );
+        lx_path_quad2_to(self, cx3 + sx3,   yb,         cx3 + mx3,  cy3 + my3   );
+        lx_path_quad2_to(self, xr,          cy3 + sy3,  xr,         cy3         );
 
         // the right-top corner
-        lx_path_line2_to(path, xr,          cy2                                 );
-        lx_path_quad2_to(path, xr,          cy2 - sy2,  cx2 + mx2,  cy2 - my2   );
-        lx_path_quad2_to(path, cx2 + sx2,   yt,         cx2,        yt          );
+        lx_path_line2_to(self, xr,          cy2                                 );
+        lx_path_quad2_to(self, xr,          cy2 - sy2,  cx2 + mx2,  cy2 - my2   );
+        lx_path_quad2_to(self, cx2 + sx2,   yt,         cx2,        yt          );
 
         // the left-top corner
-        lx_path_line2_to(path, cx1,         yt                                  );
-        lx_path_quad2_to(path, cx1 - sx1,   yt,         cx1 - mx1,  cy1 - my1   );
-        lx_path_quad2_to(path, xl,          cy1 - sy1,  xl,         cy1         );
+        lx_path_line2_to(self, cx1,         yt                                  );
+        lx_path_quad2_to(self, cx1 - sx1,   yt,         cx1 - mx1,  cy1 - my1   );
+        lx_path_quad2_to(self, xl,          cy1 - sy1,  xl,         cy1         );
     }
 #endif
 
     // close path
-    lx_path_close(path);
+    lx_path_close(self);
 
     // hint have been maked? remove dirty
-    if (hint_maked) path->flags &= ~LX_PATH_FLAG_DIRTY_HINT;
+    if (hint_maked) {
+        path->flags &= ~LX_PATH_FLAG_DIRTY_HINT;
+    }
 }
-lx_void_t lx_path_add_round_rect2(lx_path_ref_t self, lx_rect_ref_t bounds, lx_float_t rx, lx_float_t ry, lx_size_t direction)
-{
-    // make rect
+
+lx_void_t lx_path_add_round_rect2(lx_path_ref_t self, lx_rect_ref_t bounds, lx_float_t rx, lx_float_t ry, lx_size_t direction) {
     lx_round_rect_t rect;
     lx_round_rect_make_same(&rect, bounds, rx, ry);
-
-    // draw rect
-    lx_path_add_round_rect(path, &rect, direction);
+    lx_path_add_round_rect(self, &rect, direction);
 }
-lx_void_t lx_path_add_round_rect2i(lx_path_ref_t self, lx_rect_ref_t bounds, lx_size_t rx, lx_size_t ry, lx_size_t direction)
-{
-    // make rect
+
+lx_void_t lx_path_add_round_rect2i(lx_path_ref_t self, lx_rect_ref_t bounds, lx_size_t rx, lx_size_t ry, lx_size_t direction) {
     lx_round_rect_t rect;
     lx_round_rect_imake_same(&rect, bounds, rx, ry);
-
-    // draw rect
-    lx_path_add_round_rect(path, &rect, direction);
+    lx_path_add_round_rect(self, &rect, direction);
 }
-lx_void_t lx_path_add_circle(lx_path_ref_t self, lx_circle_ref_t circle, lx_size_t direction)
-{
-    // check
+
+lx_void_t lx_path_add_circle(lx_path_ref_t self, lx_circle_ref_t circle, lx_size_t direction) {
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return(path && circle);
 
     // empty and dirty? make hint
     lx_bool_t hint_maked = lx_false;
-    if (lx_path_empty(path) && (path->flags & LX_PATH_FLAG_DIRTY_HINT))
-    {
-        path->hint.type         = LX_SHAPE_TYPE_CIRCLE;
-        path->hint.u.circle    = *circle;
-        hint_maked              = lx_true;
+    if (lx_path_empty(self) && (path->flags & LX_PATH_FLAG_DIRTY_HINT)) {
+        path->hint.type     = LX_SHAPE_TYPE_CIRCLE;
+        path->hint.u.circle = *circle;
+        hint_maked          = lx_true;
 
         // @note remove dirty first before adding ellipse
-        path->flags              &= ~LX_PATH_FLAG_DIRTY_HINT;
+        path->flags         &= ~LX_PATH_FLAG_DIRTY_HINT;
     }
 
-    // make ellipse
+    // add ellipse
     lx_ellipse_t ellipse;
     lx_ellipse_make(&ellipse, circle->c.x, circle->c.y, circle->r, circle->r);
-
-    // add ellipse
-    lx_path_add_ellipse(path, &ellipse, direction);
+    lx_path_add_ellipse(self, &ellipse, direction);
 
     // hint have been maked? remove dirty
-    if (hint_maked) path->flags &= ~LX_PATH_FLAG_DIRTY_HINT;
+    if (hint_maked) {
+        path->flags &= ~LX_PATH_FLAG_DIRTY_HINT;
+    }
 }
-lx_void_t lx_path_add_circle2(lx_path_ref_t self, lx_float_t x0, lx_float_t y0, lx_float_t r, lx_size_t direction)
-{
-    // make circle
+
+lx_void_t lx_path_add_circle2(lx_path_ref_t self, lx_float_t x0, lx_float_t y0, lx_float_t r, lx_size_t direction) {
     lx_circle_t circle;
     lx_circle_make(&circle, x0, y0, r);
-
-    // add circle
-    lx_path_add_circle(path, &circle, direction);
+    lx_path_add_circle(self, &circle, direction);
 }
-lx_void_t lx_path_add_circle2i(lx_path_ref_t self, lx_long_t x0, lx_long_t y0, lx_size_t r, lx_size_t direction)
-{
-    // make circle
+
+lx_void_t lx_path_add_circle2i(lx_path_ref_t self, lx_long_t x0, lx_long_t y0, lx_size_t r, lx_size_t direction) {
     lx_circle_t circle;
     lx_circle_imake(&circle, x0, y0, r);
-
-    // add circle
     lx_path_add_circle(path, &circle, direction);
 }
-lx_void_t lx_path_add_ellipse(lx_path_ref_t self, lx_ellipse_ref_t ellipse, lx_size_t direction)
-{
-    // check
+
+lx_void_t lx_path_add_ellipse(lx_path_ref_t self, lx_ellipse_ref_t ellipse, lx_size_t direction) {
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return(path && ellipse);
 
     // empty and dirty? make hint
     lx_bool_t hint_maked = lx_false;
-    if (lx_path_empty(path) && (path->flags & LX_PATH_FLAG_DIRTY_HINT))
-    {
-        path->hint.type         = LX_SHAPE_TYPE_ELLIPSE;
-        path->hint.u.ellipse    = *ellipse;
-        hint_maked              = lx_true;
+    if (lx_path_empty(self) && (path->flags & LX_PATH_FLAG_DIRTY_HINT)) {
+        path->hint.type      = LX_SHAPE_TYPE_ELLIPSE;
+        path->hint.u.ellipse = *ellipse;
+        hint_maked           = lx_true;
     }
 
     // init center and radius
@@ -1655,10 +1596,10 @@ lx_void_t lx_path_add_ellipse(lx_path_ref_t self, lx_ellipse_ref_t ellipse, lx_s
     lx_float_t y0 = ellipse->c.y;
 
     // init factor
-    lx_float_t sx = lx_mul(rx, LX_TAN_PIOVER8); //< tan(pi/8)
-    lx_float_t sy = lx_mul(ry, LX_TAN_PIOVER8);
-    lx_float_t mx = lx_mul(rx, LX_SQRT2_OVER2); //< sqrt(2)/2
-    lx_float_t my = lx_mul(ry, LX_SQRT2_OVER2);
+    lx_float_t sx = rx * LX_TAN_PIOVER8; //< tan(pi/8)
+    lx_float_t sy = ry * LX_TAN_PIOVER8;
+    lx_float_t mx = rx * LX_SQRT2_OVER2; //< sqrt(2)/2
+    lx_float_t my = ry * LX_SQRT2_OVER2;
 
     // init bounds
     lx_float_t x1 = x0 - rx;
@@ -1715,65 +1656,58 @@ lx_void_t lx_path_add_ellipse(lx_path_ref_t self, lx_ellipse_ref_t ellipse, lx_s
      *
      * </pre>
      */
-    lx_path_move2_to(path, x2, y0);
-    if (direction == LX_ROTATE_DIRECTION_CW)
-    {
+    lx_path_move2_to(self, x2, y0);
+    if (direction == LX_ROTATE_DIRECTION_CW) {
         // the right-bottom corner
-        lx_path_quad2_to(path, x2,          y0 + sy,    x0 + mx,    y0 + my );
-        lx_path_quad2_to(path, x0 + sx,     y2,         x0,         y2      );
+        lx_path_quad2_to(self, x2,          y0 + sy,    x0 + mx,    y0 + my );
+        lx_path_quad2_to(self, x0 + sx,     y2,         x0,         y2      );
 
         // the left-bottom corner
-        lx_path_quad2_to(path, x0 - sx,     y2,         x0 - mx,    y0 + my );
-        lx_path_quad2_to(path, x1,          y0 + sy,    x1,         y0      );
+        lx_path_quad2_to(self, x0 - sx,     y2,         x0 - mx,    y0 + my );
+        lx_path_quad2_to(self, x1,          y0 + sy,    x1,         y0      );
 
         // the left-top corner
-        lx_path_quad2_to(path, x1,          y0 - sy,    x0 - mx,    y0 - my );
-        lx_path_quad2_to(path, x0 - sx,     y1,         x0,         y1      );
+        lx_path_quad2_to(self, x1,          y0 - sy,    x0 - mx,    y0 - my );
+        lx_path_quad2_to(self, x0 - sx,     y1,         x0,         y1      );
 
         // the right-top corner
-        lx_path_quad2_to(path, x0 + sx,     y1,         x0 + mx,    y0 - my );
-        lx_path_quad2_to(path, x2,          y0 - sy,    x2,         y0      );
-    }
-    else
-    {
+        lx_path_quad2_to(self, x0 + sx,     y1,         x0 + mx,    y0 - my );
+        lx_path_quad2_to(self, x2,          y0 - sy,    x2,         y0      );
+    } else {
         // the right-top corner
-        lx_path_quad2_to(path, x2,          y0 - sy,    x0 + mx,    y0 - my );
-        lx_path_quad2_to(path, x0 + sx,     y1,         x0,         y1      );
+        lx_path_quad2_to(self, x2,          y0 - sy,    x0 + mx,    y0 - my );
+        lx_path_quad2_to(self, x0 + sx,     y1,         x0,         y1      );
 
         // the left-top corner
-        lx_path_quad2_to(path, x0 - sx,     y1,         x0 - mx,    y0 - my );
-        lx_path_quad2_to(path, x1,          y0 - sy,    x1,         y0      );
+        lx_path_quad2_to(self, x0 - sx,     y1,         x0 - mx,    y0 - my );
+        lx_path_quad2_to(self, x1,          y0 - sy,    x1,         y0      );
 
         // the left-bottom corner
-        lx_path_quad2_to(path, x1,          y0 + sy,    x0 - mx,    y0 + my );
-        lx_path_quad2_to(path, x0 - sx,     y2,         x0,         y2      );
+        lx_path_quad2_to(self, x1,          y0 + sy,    x0 - mx,    y0 + my );
+        lx_path_quad2_to(self, x0 - sx,     y2,         x0,         y2      );
 
         // the right-bottom corner
-        lx_path_quad2_to(path, x0 + sx,     y2,         x0 + mx,    y0 + my );
-        lx_path_quad2_to(path, x2,          y0 + sy,    x2,         y0      );
+        lx_path_quad2_to(self, x0 + sx,     y2,         x0 + mx,    y0 + my );
+        lx_path_quad2_to(self, x2,          y0 + sy,    x2,         y0      );
     }
 
     // close path
-    lx_path_close(path);
+    lx_path_close(self);
 
     // hint have been maked? remove dirty
-    if (hint_maked) path->flags &= ~LX_PATH_FLAG_DIRTY_HINT;
+    if (hint_maked) {
+        path->flags &= ~LX_PATH_FLAG_DIRTY_HINT;
+    }
 }
-lx_void_t lx_path_add_ellipse2(lx_path_ref_t self, lx_float_t x0, lx_float_t y0, lx_float_t rx, lx_float_t ry, lx_size_t direction)
-{
-    // make ellipse
+
+lx_void_t lx_path_add_ellipse2(lx_path_ref_t self, lx_float_t x0, lx_float_t y0, lx_float_t rx, lx_float_t ry, lx_size_t direction) {
     lx_ellipse_t ellipse;
     lx_ellipse_make(&ellipse, x0, y0, rx, ry);
-
-    // add ellipse
-    lx_path_add_ellipse(path, &ellipse, direction);
+    lx_path_add_ellipse(self, &ellipse, direction);
 }
-lx_void_t lx_path_add_ellipse2i(lx_path_ref_t self, lx_long_t x0, lx_long_t y0, lx_size_t rx, lx_size_t ry, lx_size_t direction)
-{
-    // make ellipse
+
+lx_void_t lx_path_add_ellipse2i(lx_path_ref_t self, lx_long_t x0, lx_long_t y0, lx_size_t rx, lx_size_t ry, lx_size_t direction) {
     lx_ellipse_t ellipse;
     lx_ellipse_imake(&ellipse, x0, y0, rx, ry);
-
-    // add ellipse
-    lx_path_add_ellipse(path, &ellipse, direction);
+    lx_path_add_ellipse(self, &ellipse, direction);
 }
