@@ -87,17 +87,15 @@ static lx_inline lx_void_t lx_path_insert_code(lx_path_t* path, lx_uint8_t code)
     lx_array_insert_tail(path->codes, &code);
 }
 
-static lx_bool_t lx_path_make_hint(lx_path_t* path)
-{
-    // check
+static lx_bool_t lx_path_make_hint(lx_path_t* path) {
     lx_assert_and_check_return_val(path && path->codes && path->points, lx_false);
 
     // clear hint first
     path->hint.type = LX_SHAPE_TYPE_NONE;
 
     // no curve? make bounds
-    if (!(path->flags & LX_PATH_FLAG_CURVE))
-    {
+    if (!(path->flags & LX_PATH_FLAG_CURVE)) {
+
         // the codes
         lx_uint8_t const* codes = (lx_uint8_t const*)lx_array_data(path->codes);
         lx_assert_and_check_return_val(codes, lx_false);
@@ -106,13 +104,10 @@ static lx_bool_t lx_path_make_hint(lx_path_t* path)
         lx_point_ref_t points = (lx_point_ref_t)lx_array_data(path->points);
         lx_assert_and_check_return_val(points, lx_false);
 
-        // the points count
+        // is rect?
         lx_size_t count = lx_array_size(path->points);
-
-        // rect?
         if (    count == 5
-            &&  points[0].x == points[4].x
-            &&  points[0].y == points[4].y
+            &&  points[0].x == points[4].x && points[0].y == points[4].y
             &&  codes[0] == LX_PATH_CODE_MOVE
             &&  codes[1] == LX_PATH_CODE_LINE
             &&  codes[2] == LX_PATH_CODE_LINE
@@ -126,84 +121,48 @@ static lx_bool_t lx_path_make_hint(lx_path_t* path)
                     (   points[0].x == points[1].x && points[0].y != points[1].y
                     &&  points[1].x != points[2].x && points[1].y == points[2].y
                     &&  points[2].x == points[3].x && points[2].y != points[3].y
-                    &&  points[3].x != points[4].x && points[3].y == points[4].y)))
-        {
-            // make hint
+                    &&  points[3].x != points[4].x && points[3].y == points[4].y))) {
             path->hint.type = LX_SHAPE_TYPE_RECT;
             lx_bounds_make(&path->hint.u.rect, points, 4);
-
-            // trace
-            lx_trace_d("make: hint: %{rect}", &path->hint.u.rect);
-        }
-        // triangle?
-        else if (   count == 4
-                &&  points[0].x == points[3].x
-                &&  points[0].y == points[3].y
+        } else if ( count == 4 // is triangle?
+                &&  points[0].x == points[3].x && points[0].y == points[3].y
                 &&  codes[0] == LX_PATH_CODE_MOVE
                 &&  codes[1] == LX_PATH_CODE_LINE
                 &&  codes[2] == LX_PATH_CODE_LINE
                 &&  codes[3] == LX_PATH_CODE_LINE
-                &&  points[0].x != points[1].x
-                &&  points[0].y != points[1].y
-                &&  points[0].x != points[2].x
-                &&  points[0].y != points[2].y
-                &&  points[1].x != points[2].x
-                &&  points[1].y != points[2].y)
-        {
-            // make hint
-            path->hint.type             = LX_SHAPE_TYPE_TRIANGLE;
-            path->hint.u.triangle.p0    = points[0];
-            path->hint.u.triangle.p1    = points[1];
-            path->hint.u.triangle.p2    = points[2];
-
-            // trace
-            lx_trace_d("make: hint: %{triangle}", &path->hint.u.triangle);
-        }
-        // line?
-        else if (   count == 2
+                &&  points[0].x != points[1].x && points[0].y != points[1].y
+                &&  points[0].x != points[2].x && points[0].y != points[2].y
+                &&  points[1].x != points[2].x && points[1].y != points[2].y) {
+            path->hint.type          = LX_SHAPE_TYPE_TRIANGLE;
+            path->hint.u.triangle.p0 = points[0];
+            path->hint.u.triangle.p1 = points[1];
+            path->hint.u.triangle.p2 = points[2];
+        } else if ( count == 2 // is line?
                 &&  codes[0] == LX_PATH_CODE_MOVE
                 &&  codes[1] == LX_PATH_CODE_LINE
-                &&  points[0].x != points[1].x
-                &&  points[0].y != points[1].y)
-        {
-            // make hint
-            path->hint.type         = LX_SHAPE_TYPE_LINE;
-            path->hint.u.line.p0    = points[0];
-            path->hint.u.line.p1    = points[1];
-
-            // trace
-            lx_trace_d("make: hint: %{line}", &path->hint.u.line);
-        }
-        // point
-        else if (count == 1 && codes[0] == LX_PATH_CODE_MOVE)
-        {
-            // make hint
+                &&  points[0].x != points[1].x && points[0].y != points[1].y) {
+            path->hint.type      = LX_SHAPE_TYPE_LINE;
+            path->hint.u.line.p0 = points[0];
+            path->hint.u.line.p1 = points[1];
+        } else if (count == 1 && codes[0] == LX_PATH_CODE_MOVE) { // is point?
             path->hint.type     = LX_SHAPE_TYPE_POINT;
             path->hint.u.point  = points[0];
-
-            // trace
-            lx_trace_d("make: hint: %{point}", &path->hint.u.point);
         }
     }
-
-    // ok
     return lx_true;
 }
-static lx_bool_t lx_path_make_convex(lx_path_t* path)
-{
-    // check
+
+#if 0
+static lx_bool_t lx_path_make_convex(lx_path_t* path) {
     lx_assert_and_check_return_val(path && path->codes && path->points, lx_false);
 
     // clear convex first
     path->flags &= ~LX_PATH_FLAG_CONVEX;
 
     // attempt to analyze convex from the hint shape first
-    lx_shape_ref_t hint = lx_path_hint(self);
-    if (hint && hint->type)
-    {
-        // done
-        switch (hint->type)
-        {
+    lx_shape_ref_t hint = lx_path_hint((lx_path_ref_t)pth);
+    if (hint && hint->type) {
+        switch (hint->type) {
         case LX_SHAPE_TYPE_RECT:
         case LX_SHAPE_TYPE_CIRCLE:
         case LX_SHAPE_TYPE_ELLIPSE:
@@ -217,11 +176,11 @@ static lx_bool_t lx_path_make_convex(lx_path_t* path)
     }
 
     // analyze convex from the single closed contour
-    if (    !(path->flags & LX_PATH_FLAG_CONVEX)
+    if (   !(path->flags & LX_PATH_FLAG_CONVEX)
         &&  (path->flags & LX_PATH_FLAG_SINGLE)
         &&  (path->flags & LX_PATH_FLAG_CLOSED)
-        &&  lx_array_size(path->codes) > 3)
-    {
+        &&  lx_array_size(path->codes) > 3) {
+
         // init flag first
         path->flags |= LX_PATH_FLAG_CONVEX;
 
@@ -441,26 +400,32 @@ static lx_bool_t lx_path_make_convex(lx_path_t* path)
     // ok
     return lx_true;
 }
-static lx_void_t lx_path_make_quad_for_arc_to(lx_point_ref_t ctrl, lx_point_ref_t point, lx_cpointer_t priv)
-{
-    // check
-    lx_assert(priv && point);
+#else
+static lx_bool_t lx_path_make_convex(lx_path_t* path) {
+    return lx_false;
+}
+#endif
 
+static lx_void_t lx_path_make_quad_for_arc_to(lx_point_ref_t ctrl, lx_point_ref_t point, lx_cpointer_t udata) {
     // append point and skip the first point which the ctrl point is empty
-    if (ctrl) lx_path_quad_to((lx_path_ref_t)priv, ctrl, point);
+    lx_assert(udata && point);
+    if (ctrl) {
+        lx_path_quad_to((lx_path_ref_t)udata, ctrl, point);
+    }
 }
-static lx_void_t lx_path_make_quad_for_add_arc(lx_point_ref_t ctrl, lx_point_ref_t point, lx_cpointer_t priv)
-{
-    // check
-    lx_assert(priv && point);
 
-    // append point
-    ctrl? lx_path_quad_to((lx_path_ref_t)priv, ctrl, point) : lx_path_move_to((lx_path_ref_t)priv, point);
+static lx_void_t lx_path_make_quad_for_add_arc(lx_point_ref_t ctrl, lx_point_ref_t point, lx_cpointer_t udata) {
+    lx_assert(udata && point);
+    if (ctrl) {
+        lx_path_quad_to((lx_path_ref_t)udata, ctrl, point);
+    } else {
+        lx_path_move_to((lx_path_ref_t)udata, point);
+    }
 }
-static lx_void_t lx_path_make_line_for_curve_to(lx_point_ref_t point, lx_cpointer_t priv)
-{
-    // check
-    lx_value_t* values = (lx_value_t*)priv;
+
+#if 0
+static lx_void_t lx_path_make_line_for_curve_to(lx_point_ref_t point, lx_cpointer_t udata) {
+    lx_value_t* values = (lx_value_t*)udata;
     lx_assert(values && point);
 
     // the polygon points
@@ -473,20 +438,19 @@ static lx_void_t lx_path_make_line_for_curve_to(lx_point_ref_t point, lx_cpointe
     // update the points count
     values[1].u16++;
 }
-static lx_bool_t lx_path_make_python(lx_path_t* path)
-{
-    // check
+
+static lx_bool_t lx_path_make_polygon(lx_path_t* path) {
     lx_assert_and_check_return_val(path && path->codes && path->points, lx_false);
 
-    // make polygon counts
-    if (!path->polygon_counts) path->polygon_counts = lx_array_init(8, lx_element_uint16());
+    // init polygon counts
+    if (!path->polygon_counts) path->polygon_counts = lx_array_init(8, sizeof(lx_uint16_t), lx_null);
     lx_assert_and_check_return_val(path->polygon_counts, lx_false);
 
     // have curve?
     if (path->flags & LX_PATH_FLAG_CURVE)
     {
-        // make polygon points
-        if (!path->polygon_points) path->polygon_points = lx_array_init(lx_array_size(path->points), lx_element_mem(sizeof(lx_point_t), lx_null, lx_null));
+        // init polygon points
+        if (!path->polygon_points) path->polygon_points = lx_array_init(lx_array_size(path->points), sizeof(lx_point_t), lx_null);
         lx_assert_and_check_return_val(path->polygon_points, lx_false);
 
         // clear polygon points and counts
@@ -497,8 +461,6 @@ static lx_bool_t lx_path_make_python(lx_path_t* path)
         lx_value_t values[2];
         values[0].ptr = path->polygon_points;
         values[1].u16 = 0;
-
-        // done
         lx_for_all_if (lx_path_item_ref_t, item, self, item)
         {
             switch (item->code)
@@ -602,6 +564,11 @@ static lx_bool_t lx_path_make_python(lx_path_t* path)
     // ok
     return lx_true;
 }
+#else
+static lx_bool_t lx_path_make_polygon(lx_path_t* path) {
+    return lx_false;
+}
+#endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
@@ -631,10 +598,10 @@ lx_path_ref_t lx_path_init() {
     } while (0);
 
     if (!ok && path) {
-        lx_path_exit(self);
+        lx_path_exit((lx_path_ref_t)path);
         path = lx_null;
     }
-    return self;
+    return (lx_path_ref_t)path;
 }
 
 lx_void_t lx_path_exit(lx_path_ref_t self) {
@@ -681,7 +648,7 @@ lx_void_t lx_path_copy(lx_path_ref_t self, lx_path_ref_t copied) {
 
     // empty? clear it
     if (lx_path_empty(copied)) {
-        lx_path_clear(path);
+        lx_path_clear(self);
         return ;
     }
 
@@ -723,7 +690,7 @@ lx_rect_ref_t lx_path_bounds(lx_path_ref_t self) {
             case LX_SHAPE_TYPE_CIRCLE: {
                     path->bounds.x  = path->hint.u.circle.c.x - path->hint.u.circle.r;
                     path->bounds.y  = path->hint.u.circle.c.y - path->hint.u.circle.r;
-                    path->bounds.w  = lx_lsh(path->hint.u.circle.r, 1);
+                    path->bounds.w  = path->hint.u.circle.r * 2.0f;
                     path->bounds.h  = path->bounds.w;
                     path->flags      &= ~LX_PATH_FLAG_DIRTY_BOUNDS;
                 }
@@ -731,8 +698,8 @@ lx_rect_ref_t lx_path_bounds(lx_path_ref_t self) {
             case LX_SHAPE_TYPE_ELLIPSE: {
                     path->bounds.x  = path->hint.u.ellipse.c.x - path->hint.u.ellipse.rx;
                     path->bounds.y  = path->hint.u.ellipse.c.y - path->hint.u.ellipse.ry;
-                    path->bounds.w  = lx_lsh(path->hint.u.ellipse.rx, 1);
-                    path->bounds.h  = lx_lsh(path->hint.u.ellipse.ry, 1);
+                    path->bounds.w  = path->hint.u.ellipse.rx * 2.0f;
+                    path->bounds.h  = path->hint.u.ellipse.ry * 2.0f;
                     path->flags      &= ~LX_PATH_FLAG_DIRTY_BOUNDS;
                 }
                 break;
@@ -829,7 +796,7 @@ lx_polygon_ref_t lx_path_polygon(lx_path_ref_t self) {
 
     // polygon dirty? remake it
     if (path->flags & LX_PATH_FLAG_DIRTY_POLYGON) {
-        if (lx_path_make_python(path)) {
+        if (lx_path_make_polygon(path)) {
             path->flags &= ~LX_PATH_FLAG_DIRTY_POLYGON;
         }
     }
@@ -853,7 +820,7 @@ lx_void_t lx_path_close(lx_path_ref_t self) {
     if (lx_array_size(path->points) > 2 && !lx_path_is_last_code(path, LX_PATH_CODE_CLOSE)) {
         // patch a line segment if the current point is not equal to the first point of the contour
         lx_point_t last = {0};
-        if (lx_path_last(path, &last) && (last.x != path->head.x || last.y != path->head.y))
+        if (lx_path_last(self, &last) && (last.x != path->head.x || last.y != path->head.y))
             lx_path_line_to(self, &path->head);
 
         // append code
@@ -1574,7 +1541,7 @@ lx_void_t lx_path_add_circle2(lx_path_ref_t self, lx_float_t x0, lx_float_t y0, 
 lx_void_t lx_path_add_circle2i(lx_path_ref_t self, lx_long_t x0, lx_long_t y0, lx_size_t r, lx_size_t direction) {
     lx_circle_t circle;
     lx_circle_imake(&circle, x0, y0, r);
-    lx_path_add_circle(path, &circle, direction);
+    lx_path_add_circle(self, &circle, direction);
 }
 
 lx_void_t lx_path_add_ellipse(lx_path_ref_t self, lx_ellipse_ref_t ellipse, lx_size_t direction) {

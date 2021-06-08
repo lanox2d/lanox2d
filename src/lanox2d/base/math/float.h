@@ -39,6 +39,10 @@
 #define LX_SQRT2_OVER2          (0.707106781f)      //!< sqrt(2)/2
 #define LX_PIOVER180            (0.017453293f)      //<! pi/180
 #define LX_180OVERPI            (57.29577951f)      //!< 180/pi
+#define LX_DEGREE_45            (45.0f)
+#define LX_DEGREE_90            (90.0f)
+#define LX_DEGREE_180           (180.0f)
+#define LX_DEGREE_360           (360.0f)
 
 /// some helper functions
 #define lx_avg(x, y)            (((x) + (y)) * 0.5f)

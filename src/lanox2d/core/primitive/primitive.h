@@ -30,6 +30,7 @@
 #include "utils.h"
 #include "point.h"
 #include "line.h"
+#include "vector.h"
 #include "triangle.h"
 #include "rect.h"
 #include "round_rect.h"
