@@ -1,4 +1,4 @@
-/*!The Treasure Box Library
+/*!A lightweight and fast 2D vector graphics engine
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Copyright (C) 2009-present, TBOOX Open Source Group.
+ * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
  * @file        check.h
