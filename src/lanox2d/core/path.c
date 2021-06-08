@@ -72,6 +72,21 @@ typedef struct lx_path_t_ {
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
+static lx_void_t lx_path_points_apply_matrix(lx_pointer_t item, lx_cpointer_t udata) {
+    lx_point_apply((lx_point_ref_t)item, (lx_matrix_ref_t)udata);
+}
+
+static lx_inline lx_bool_t lx_path_is_last_code(lx_path_t* path, lx_uint8_t code) {
+    lx_assert(path->codes);
+    lx_uint8_t* pcode = lx_array_last(path->codes);
+    return pcode? *pcode == code : lx_false;
+}
+
+static lx_inline lx_void_t lx_path_insert_code(lx_path_t* path, lx_uint8_t code) {
+    lx_assert(path->codes);
+    lx_array_insert_tail(path->codes, &code);
+}
+
 static lx_bool_t lx_path_make_hint(lx_path_t* path)
 {
     // check
@@ -183,7 +198,7 @@ static lx_bool_t lx_path_make_convex(lx_path_t* path)
     path->flags &= ~LX_PATH_FLAG_CONVEX;
 
     // attempt to analyze convex from the hint shape first
-    lx_shape_ref_t hint = lx_path_hint((lx_path_ref_t)path);
+    lx_shape_ref_t hint = lx_path_hint(self);
     if (hint && hint->type)
     {
         // done
@@ -223,7 +238,7 @@ static lx_bool_t lx_path_make_convex(lx_path_t* path)
         lx_size_t       point_count = 0;
         lx_size_t       contour_count = 0;
         lx_bool_t       finished = lx_false;
-        lx_for_all_if (lx_path_item_ref_t, item, (lx_path_ref_t)path, item && contour_count < 2)
+        lx_for_all_if (lx_path_item_ref_t, item, self, item && contour_count < 2)
         {
             switch (item->code)
             {
@@ -369,7 +384,7 @@ static lx_bool_t lx_path_make_convex(lx_path_t* path)
                     y2 = lx_float_to_fixed(item->points[3].y);
                 }
                 break;
-            case LX_PATH_CODE_CLOS:
+            case LX_PATH_CODE_CLOSE:
                 {
                     // the points
                     lx_point_ref_t points = (lx_point_ref_t)lx_array_data(path->points);
@@ -431,7 +446,7 @@ static lx_void_t lx_path_make_quad_for_arc_to(lx_point_ref_t ctrl, lx_point_ref_
     // check
     lx_assert(priv && point);
 
-    // append point and skip the first point which the ctrl point is null
+    // append point and skip the first point which the ctrl point is empty
     if (ctrl) lx_path_quad_to((lx_path_ref_t)priv, ctrl, point);
 }
 static lx_void_t lx_path_make_quad_for_add_arc(lx_point_ref_t ctrl, lx_point_ref_t point, lx_cpointer_t priv)
@@ -484,7 +499,7 @@ static lx_bool_t lx_path_make_python(lx_path_t* path)
         values[1].u16 = 0;
 
         // done
-        lx_for_all_if (lx_path_item_ref_t, item, (lx_path_ref_t)path, item)
+        lx_for_all_if (lx_path_item_ref_t, item, self, item)
         {
             switch (item->code)
             {
@@ -521,7 +536,7 @@ static lx_bool_t lx_path_make_python(lx_path_t* path)
                     lx_cubic_make_line(item->points, lx_path_make_line_for_curve_to, values);
                 }
                 break;
-            case LX_PATH_CODE_CLOS:
+            case LX_PATH_CODE_CLOSE:
             default:
                 break;
             }
@@ -582,7 +597,7 @@ static lx_bool_t lx_path_make_python(lx_path_t* path)
     lx_assert_and_check_return_val(path->polygon.points && path->polygon.counts, lx_false);
 
     // is convex polygon?
-    path->polygon.convex = lx_path_convex((lx_path_ref_t)path);
+    path->polygon.convex = lx_path_convex(self);
 
     // ok
     return lx_true;
@@ -616,10 +631,10 @@ lx_path_ref_t lx_path_init() {
     } while (0);
 
     if (!ok && path) {
-        lx_path_exit((lx_path_ref_t)path);
+        lx_path_exit(self);
         path = lx_null;
     }
-    return (lx_path_ref_t)path;
+    return self;
 }
 
 lx_void_t lx_path_exit(lx_path_ref_t self) {
@@ -659,7 +674,6 @@ lx_void_t lx_path_clear(lx_path_ref_t self) {
 }
 
 lx_void_t lx_path_copy(lx_path_ref_t self, lx_path_ref_t copied) {
-    // check
     lx_path_t* path        = (lx_path_t*)self;
     lx_path_t* path_copied = (lx_path_t*)copied;
     lx_assert_and_check_return(path && path->codes && path->points);
@@ -687,7 +701,6 @@ lx_bool_t lx_path_empty(lx_path_ref_t self) {
 }
 
 lx_rect_ref_t lx_path_bounds(lx_path_ref_t self) {
-    // check
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return_val(path && path->points, lx_null);
 
@@ -740,396 +753,284 @@ lx_rect_ref_t lx_path_bounds(lx_path_ref_t self) {
     lx_assert_and_check_return_val(!(path->flags & LX_PATH_FLAG_DIRTY_BOUNDS), lx_null);
     return &path->bounds;
 }
-lx_bool_t lx_path_convex(lx_path_ref_t self)
-{
-    // check
+
+lx_bool_t lx_path_convex(lx_path_ref_t self) {
     lx_path_t* path = (lx_path_t*)self;
-    lx_assert_and_check_return_val(path, lx_false);
+    if (path) {
+        if (lx_path_empty(path)) {
+            return lx_true;
+        }
+        // convex dirty? remake it
+        if (path->flags & LX_PATH_FLAG_DIRTY_CONVEX) {
+            if (lx_path_make_convex(path)) {
+                path->flags &= ~LX_PATH_FLAG_DIRTY_CONVEX;
+            }
+        }
+        return path->flags & LX_PATH_FLAG_CONVEX;
+    }
+    return lx_false;
+}
 
-    // null?
-    if (lx_path_empty(path)) return lx_true;
-
-    // convex dirty? remake it
-    if (path->flags & LX_PATH_FLAG_DIRTY_CONVEX)
-    {
-        // make convex
-        if (!lx_path_make_convex(path)) return lx_false;
-
-        // remove dirty
+lx_void_t lx_path_convex_set(lx_path_ref_t self, lx_bool_t convex) {
+    lx_path_t* path = (lx_path_t*)self;
+    if (path) {
+        if (convex) path->flags |= LX_PATH_FLAG_CONVEX;
+        else path->flags &= ~LX_PATH_FLAG_CONVEX;
         path->flags &= ~LX_PATH_FLAG_DIRTY_CONVEX;
     }
-
-    // convex?
-    return path->flags & LX_PATH_FLAG_CONVEX;
 }
-lx_void_t lx_path_convex_set(lx_path_ref_t self, lx_bool_t convex)
-{
-    // check
-    lx_path_t* path = (lx_path_t*)self;
-    lx_assert_and_check_return(path);
 
-    // mark convex
-    if (convex) path->flags |= LX_PATH_FLAG_CONVEX;
-    else path->flags &= ~LX_PATH_FLAG_CONVEX;
-
-    // clear dirty
-    path->flags &= ~LX_PATH_FLAG_DIRTY_CONVEX;
-}
-lx_bool_t lx_path_last(lx_path_ref_t self, lx_point_ref_t point)
-{
-    // check
+lx_bool_t lx_path_last(lx_path_ref_t self, lx_point_ref_t point) {
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return_val(path && point, lx_false);
 
-    // the last point
-    lx_point_ref_t last = lx_null;
-    if (lx_array_size(path->points)) last = (lx_point_ref_t)lx_array_last(path->points);
-
-    // save it
-    if (last) *point = *last;
-
-    // ok?
-    return last? lx_true : lx_false;
+    lx_point_ref_t last = (lx_point_ref_t)lx_array_last(path->points);
+    if (last) {
+        *point = *last;
+        return lx_true;
+    }
+    return lx_false;
 }
-lx_void_t lx_path_last_set(lx_path_ref_t self, lx_point_ref_t point)
-{
-    // check
+
+lx_void_t lx_path_last_set(lx_path_ref_t self, lx_point_ref_t point) {
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return(path && point);
 
-    // the last point
-    lx_point_ref_t last = lx_null;
-    if (lx_array_size(path->points)) last = (lx_point_ref_t)lx_array_last(path->points);
-    lx_assert(last);
+    lx_point_ref_t last = (lx_point_ref_t)lx_array_last(path->points);
+    lx_assert_and_check_return(last);
 
-    // save it
-    if (last) *last = *point;
+    *last = *point;
 }
-lx_shape_ref_t lx_path_hint(lx_path_ref_t self)
-{
-    // check
+
+lx_shape_ref_t lx_path_hint(lx_path_ref_t self) {
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return_val(path, lx_null);
 
-    // null?
-    if (lx_path_empty(path)) return lx_null;
+    if (lx_path_empty(path)) {
+        return lx_null;
+    }
 
     // hint dirty? remake it
-    if (path->flags & LX_PATH_FLAG_DIRTY_HINT)
-    {
-        // make hint
-        if (!lx_path_make_hint(path)) return lx_null;
-
-        // remove dirty
-        path->flags &= ~LX_PATH_FLAG_DIRTY_HINT;
+    if (path->flags & LX_PATH_FLAG_DIRTY_HINT) {
+        if (lx_path_make_hint(path)) {
+            path->flags &= ~LX_PATH_FLAG_DIRTY_HINT;
+        }
     }
-
-    // ok?
     return path->hint.type != LX_SHAPE_TYPE_NONE? &path->hint : lx_null;
 }
-lx_polygon_ref_t lx_path_polygon(lx_path_ref_t self)
-{
-    // check
+
+lx_polygon_ref_t lx_path_polygon(lx_path_ref_t self) {
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return_val(path, lx_null);
 
-    // null?
-    if (lx_path_empty(path)) return lx_null;
-
-    // polygon dirty? remake it
-    if (path->flags & LX_PATH_FLAG_DIRTY_POLYGON)
-    {
-        // make polygon
-        if (!lx_path_make_python(path)) return lx_null;
-
-        // remove dirty
-        path->flags &= ~LX_PATH_FLAG_DIRTY_POLYGON;
+    if (lx_path_empty(path)) {
+        return lx_null;
     }
 
-    // ok?
+    // polygon dirty? remake it
+    if (path->flags & LX_PATH_FLAG_DIRTY_POLYGON) {
+        if (lx_path_make_python(path)) {
+            path->flags &= ~LX_PATH_FLAG_DIRTY_POLYGON;
+        }
+    }
     return &path->polygon;
 }
-lx_void_t lx_path_apply(lx_path_ref_t self, lx_matrix_ref_t matrix)
-{
-    // check
+
+lx_void_t lx_path_apply(lx_path_ref_t self, lx_matrix_ref_t matrix) {
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return(path && path->points && matrix);
 
-    // empty?
-    lx_check_return(!lx_path_empty(path));
-
-    // done
-    lx_for_all_if (lx_point_ref_t, point, path->points, point)
-    {
-        // apply it
-        lx_point_apply(point, matrix);
+    if (!lx_path_empty(path)) {
+        lx_array_foreach(path->points, lx_path_points_apply_matrix, matrix);
     }
 }
-lx_void_t lx_path_close(lx_path_ref_t self)
-{
-    // check
+
+lx_void_t lx_path_close(lx_path_ref_t self) {
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return(path && path->codes && path->points);
 
-    // close it for avoiding be double closed
-    if (lx_array_size(path->points) > 2 && lx_array_size(path->codes) && lx_array_last(path->codes) != (lx_cpointer_t)LX_PATH_CODE_CLOS)
-    {
+    // close path and avoid double close
+    if (lx_array_size(path->points) > 2 && !lx_path_is_last_code(path, LX_PATH_CODE_CLOSE)) {
         // patch a line segment if the current point is not equal to the first point of the contour
         lx_point_t last = {0};
         if (lx_path_last(path, &last) && (last.x != path->head.x || last.y != path->head.y))
             lx_path_line_to(path, &path->head);
 
         // append code
-        lx_array_insert_tail(path->codes, (lx_cpointer_t)LX_PATH_CODE_CLOS);
+        lx_path_insert_code(path, LX_PATH_CODE_CLOSE);
     }
-
-    // mark closed
     path->flags |= LX_PATH_FLAG_CLOSED;
 }
+
 lx_void_t lx_path_move_to(lx_path_ref_t self, lx_point_ref_t point)
 {
     // check
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return(path && path->codes && path->points && point);
 
-    // replace the last point for avoiding one lone move-to point
-    if (lx_array_size(path->codes) && lx_array_last(path->codes) == (lx_cpointer_t)LX_PATH_CODE_MOVE)
-    {
-        // replace point
+    // replace the last point to avoid one alone move-to point
+    if (lx_path_is_last_code(path, LX_PATH_CODE_MOVE)) {
         lx_array_replace_last(path->points, point);
-    }
-    // move-to
-    else
-    {
-        // append code
-        lx_array_insert_tail(path->codes, (lx_cpointer_t)LX_PATH_CODE_MOVE);
-
-        // append point
+    } else {
+        // move-to
+        lx_path_insert_code(path, LX_PATH_CODE_MOVE);
         lx_array_insert_tail(path->points, point);
 
         // clear single if the contour count > 1
-        if (lx_array_size(path->codes) > 1) path->flags &= ~LX_PATH_FLAG_SINGLE;
+        if (lx_array_size(path->codes) > 1) {
+            path->flags &= ~LX_PATH_FLAG_SINGLE;
+        }
     }
 
-    // save point
     path->head = *point;
-
-    // clear closed
     path->flags &= ~LX_PATH_FLAG_CLOSED;
-
-    // mark dirty
     path->flags |= LX_PATH_FLAG_DIRTY_ALL;
 }
-lx_void_t lx_path_move2_to(lx_path_ref_t self, lx_float_t x, lx_float_t y)
-{
-    // make point
+
+lx_void_t lx_path_move2_to(lx_path_ref_t self, lx_float_t x, lx_float_t y) {
     lx_point_t point;
     lx_point_make(&point, x, y);
-
-    // move-to
-    lx_path_move_to(path, &point);
+    lx_path_move_to(self, &point);
 }
-lx_void_t lx_path_move2i_to(lx_path_ref_t self, lx_long_t x, lx_long_t y)
-{
-    // make point
+
+lx_void_t lx_path_move2i_to(lx_path_ref_t self, lx_long_t x, lx_long_t y) {
     lx_point_t point;
     lx_point_imake(&point, x, y);
-
-    // move-to
-    lx_path_move_to(path, &point);
+    lx_path_move_to(self, &point);
 }
-lx_void_t lx_path_line_to(lx_path_ref_t self, lx_point_ref_t point)
-{
-    // check
+
+lx_void_t lx_path_line_to(lx_path_ref_t self, lx_point_ref_t point) {
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return(path && path->codes && path->points && point);
 
     // closed? patch one move-to point first using the last point
-    if (path->flags & LX_PATH_FLAG_CLOSED)
-    {
+    if (path->flags & LX_PATH_FLAG_CLOSED) {
         // move-to the last point if exists
         lx_point_t last = {0};
-        lx_path_last((lx_path_ref_t)path, &last);
-        lx_path_move_to((lx_path_ref_t)path, &last);
+        lx_path_last(self, &last);
+        lx_path_move_to(self, &last);
     }
 
-    // append code
-    lx_array_insert_tail(path->codes, (lx_cpointer_t)LX_PATH_CODE_LINE);
-
-    // append point
+    // line-to
+    lx_path_insert_code(path, LX_PATH_CODE_LINE);
     lx_array_insert_tail(path->points, point);
-
-    // mark dirty
     path->flags |= LX_PATH_FLAG_DIRTY_ALL;
 }
-lx_void_t lx_path_line2_to(lx_path_ref_t self, lx_float_t x, lx_float_t y)
-{
-    // make point
+
+lx_void_t lx_path_line2_to(lx_path_ref_t self, lx_float_t x, lx_float_t y) {
     lx_point_t point;
     lx_point_make(&point, x, y);
-
-    // line-to
-    lx_path_line_to(path, &point);
+    lx_path_line_to(self, &point);
 }
-lx_void_t lx_path_line2i_to(lx_path_ref_t self, lx_long_t x, lx_long_t y)
-{
-    // make point
+
+lx_void_t lx_path_line2i_to(lx_path_ref_t self, lx_long_t x, lx_long_t y) {
     lx_point_t point;
     lx_point_imake(&point, x, y);
-
-    // line-to
-    lx_path_line_to(path, &point);
+    lx_path_line_to(self, &point);
 }
-lx_void_t lx_path_quad_to(lx_path_ref_t self, lx_point_ref_t ctrl, lx_point_ref_t point)
-{
-    // check
+
+lx_void_t lx_path_quad_to(lx_path_ref_t self, lx_point_ref_t ctrl, lx_point_ref_t point) {
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return(path && path->codes && path->points && ctrl && point);
 
     // closed? patch one move-to point first using the last point
-    if (path->flags & LX_PATH_FLAG_CLOSED)
-    {
+    if (path->flags & LX_PATH_FLAG_CLOSED) {
         // move-to the last point if exists
         lx_point_t last = {0};
-        lx_path_last((lx_path_ref_t)path, &last);
-        lx_path_move_to((lx_path_ref_t)path, &last);
+        lx_path_last(self, &last);
+        lx_path_move_to(self, &last);
     }
 
-    // append code
-    lx_array_insert_tail(path->codes, (lx_cpointer_t)LX_PATH_CODE_QUAD);
-
-    // append points
+    // quad-to
+    lx_path_insert_code(path, LX_PATH_CODE_QUAD);
     lx_array_insert_tail(path->points, ctrl);
     lx_array_insert_tail(path->points, point);
-
-    // mark dirty and curve
     path->flags |= LX_PATH_FLAG_DIRTY_ALL | LX_PATH_FLAG_CURVE;
 }
-lx_void_t lx_path_quad2_to(lx_path_ref_t self, lx_float_t cx, lx_float_t cy, lx_float_t x, lx_float_t y)
-{
-    // make ctrl
-    lx_point_t ctrl;
+
+lx_void_t lx_path_quad2_to(lx_path_ref_t self, lx_float_t cx, lx_float_t cy, lx_float_t x, lx_float_t y) {
+    lx_point_t ctrl, point;
     lx_point_make(&ctrl, cx, cy);
-
-    // make point
-    lx_point_t point;
     lx_point_make(&point, x, y);
-
-    // quad-to
-    lx_path_quad_to(path, &ctrl, &point);
+    lx_path_quad_to(self, &ctrl, &point);
 }
-lx_void_t lx_path_quad2i_to(lx_path_ref_t self, lx_long_t cx, lx_long_t cy, lx_long_t x, lx_long_t y)
-{
-    // make ctrl
-    lx_point_t ctrl;
+
+lx_void_t lx_path_quad2i_to(lx_path_ref_t self, lx_long_t cx, lx_long_t cy, lx_long_t x, lx_long_t y) {
+    lx_point_t ctrl, point;
     lx_point_imake(&ctrl, cx, cy);
-
-    // make point
-    lx_point_t point;
     lx_point_imake(&point, x, y);
-
-    // quad-to
-    lx_path_quad_to(path, &ctrl, &point);
+    lx_path_quad_to(self, &ctrl, &point);
 }
-lx_void_t lx_path_cubic_to(lx_path_ref_t self, lx_point_ref_t ctrl0, lx_point_ref_t ctrl1, lx_point_ref_t point)
-{
-    // check
+
+lx_void_t lx_path_cubic_to(lx_path_ref_t self, lx_point_ref_t ctrl0, lx_point_ref_t ctrl1, lx_point_ref_t point) {
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return(path && path->codes && path->points && ctrl0 && ctrl1 && point);
 
     // closed? patch one move-to point first using the last point
-    if (path->flags & LX_PATH_FLAG_CLOSED)
-    {
+    if (path->flags & LX_PATH_FLAG_CLOSED) {
         // move-to the last point if exists
         lx_point_t last = {0};
-        lx_path_last((lx_path_ref_t)path, &last);
-        lx_path_move_to((lx_path_ref_t)path, &last);
+        lx_path_last(self, &last);
+        lx_path_move_to(self, &last);
     }
 
-    // append code
-    lx_array_insert_tail(path->codes, (lx_cpointer_t)LX_PATH_CODE_CUBIC);
-
-    // append points
+    // cubic-to
+    lx_path_insert_code(path, LX_PATH_CODE_CUBIC);
     lx_array_insert_tail(path->points, ctrl0);
     lx_array_insert_tail(path->points, ctrl1);
     lx_array_insert_tail(path->points, point);
-
-    // mark dirty and curve
     path->flags |= LX_PATH_FLAG_DIRTY_ALL | LX_PATH_FLAG_CURVE;
 }
-lx_void_t lx_path_cubic2_to(lx_path_ref_t self, lx_float_t cx0, lx_float_t cy0, lx_float_t cx1, lx_float_t cy1, lx_float_t x, lx_float_t y)
-{
-    // make ctrl0
-    lx_point_t ctrl0;
+
+lx_void_t lx_path_cubic2_to(lx_path_ref_t self, lx_float_t cx0, lx_float_t cy0, lx_float_t cx1, lx_float_t cy1, lx_float_t x, lx_float_t y) {
+    lx_point_t ctrl0, ctrl1, point;
     lx_point_make(&ctrl0, cx0, cy0);
-
-    // make ctrl1
-    lx_point_t ctrl1;
     lx_point_make(&ctrl1, cx1, cy1);
-
-    // make point
-    lx_point_t point;
     lx_point_make(&point, x, y);
-
-    // cubic-to
-    lx_path_cubic_to(path, &ctrl0, &ctrl1, &point);
+    lx_path_cubic_to(self, &ctrl0, &ctrl1, &point);
 }
-lx_void_t lx_path_cubic2i_to(lx_path_ref_t self, lx_long_t cx0, lx_long_t cy0, lx_long_t cx1, lx_long_t cy1, lx_long_t x, lx_long_t y)
-{
-    // make ctrl0
-    lx_point_t ctrl0;
+
+lx_void_t lx_path_cubic2i_to(lx_path_ref_t self, lx_long_t cx0, lx_long_t cy0, lx_long_t cx1, lx_long_t cy1, lx_long_t x, lx_long_t y) {
+    lx_point_t ctrl0, ctrl1, point;
     lx_point_imake(&ctrl0, cx0, cy0);
-
-    // make ctrl1
-    lx_point_t ctrl1;
     lx_point_imake(&ctrl1, cx1, cy1);
-
-    // make point
-    lx_point_t point;
     lx_point_imake(&point, x, y);
-
-    // cubic-to
-    lx_path_cubic_to(path, &ctrl0, &ctrl1, &point);
+    lx_path_cubic_to(self, &ctrl0, &ctrl1, &point);
 }
-lx_void_t lx_path_arc_to(lx_path_ref_t self, lx_arc_ref_t arc)
-{
-    // check
+
+lx_void_t lx_path_arc_to(lx_path_ref_t self, lx_arc_ref_t arc) {
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return(path && arc);
 
-    // null and dirty? make hint
+    // empty and dirty? make hint
     lx_bool_t hint_maked = lx_false;
-    if (lx_path_empty(path) && (path->flags & LX_PATH_FLAG_DIRTY_HINT))
-    {
-        path->hint.type         = LX_SHAPE_TYPE_ARC;
-        path->hint.u.arc        = *arc;
-        hint_maked              = lx_true;
+    if (lx_path_empty(path) && (path->flags & LX_PATH_FLAG_DIRTY_HINT)) {
+        path->hint.type  = LX_SHAPE_TYPE_ARC;
+        path->hint.u.arc = *arc;
+        hint_maked       = lx_true;
     }
 
     // make quad points for arc
     lx_arc_make_quad(arc, lx_path_make_quad_for_arc_to, path);
 
     // hint have been maked? remove dirty
-    if (hint_maked) path->flags &= ~LX_PATH_FLAG_DIRTY_HINT;
+    if (hint_maked) {
+        path->flags &= ~LX_PATH_FLAG_DIRTY_HINT;
+    }
 }
-lx_void_t lx_path_arc2_to(lx_path_ref_t self, lx_float_t x0, lx_float_t y0, lx_float_t rx, lx_float_t ry, lx_float_t ab, lx_float_t an)
-{
-    // make arc
+
+lx_void_t lx_path_arc2_to(lx_path_ref_t self, lx_float_t x0, lx_float_t y0, lx_float_t rx, lx_float_t ry, lx_float_t ab, lx_float_t an) {
     lx_arc_t arc;
     lx_arc_make(&arc, x0, y0, rx, ry, ab, an);
-
-    // arc-to
-    lx_path_arc_to(path, &arc);
+    lx_path_arc_to(self, &arc);
 }
-lx_void_t lx_path_arc2i_to(lx_path_ref_t self, lx_long_t x0, lx_long_t y0, lx_size_t rx, lx_size_t ry, lx_long_t ab, lx_long_t an)
-{
-    // make arc
+
+lx_void_t lx_path_arc2i_to(lx_path_ref_t self, lx_long_t x0, lx_long_t y0, lx_size_t rx, lx_size_t ry, lx_long_t ab, lx_long_t an) {
     lx_arc_t arc;
     lx_arc_imake(&arc, x0, y0, rx, ry, ab, an);
-
-    // arc-to
-    lx_path_arc_to(path, &arc);
+    lx_path_arc_to(self, &arc);
 }
+
 lx_void_t lx_path_path_to(lx_path_ref_t self, lx_path_ref_t added)
 {
     // done
@@ -1155,7 +1056,7 @@ lx_void_t lx_path_path_to(lx_path_ref_t self, lx_path_ref_t added)
         case LX_PATH_CODE_CUBIC:
             lx_path_cubic_to(path, &item->points[1], &item->points[2], &item->points[3]);
             break;
-        case LX_PATH_CODE_CLOS:
+        case LX_PATH_CODE_CLOSE:
             lx_path_close(path);
             break;
         default:
@@ -1209,7 +1110,7 @@ lx_void_t lx_path_rpath_to(lx_path_ref_t self, lx_path_ref_t added)
                 lx_path_cubic_to(path, &item->points[2], &item->points[1], &item->points[0]);
             }
             break;
-        case LX_PATH_CODE_CLOS:
+        case LX_PATH_CODE_CLOSE:
             {
                 // need close path after makeing contour
                 need_close = lx_true;
@@ -1224,7 +1125,7 @@ lx_void_t lx_path_rpath_to(lx_path_ref_t self, lx_path_ref_t added)
 }
 lx_void_t lx_path_add_path(lx_path_ref_t self, lx_path_ref_t added)
 {
-    // null? copy it
+    // empty? copy it
     if (lx_path_empty(path)) lx_path_copy(path, added);
     // add it
     else
@@ -1246,7 +1147,7 @@ lx_void_t lx_path_add_path(lx_path_ref_t self, lx_path_ref_t added)
             case LX_PATH_CODE_CUBIC:
                 lx_path_cubic_to(path, &item->points[1], &item->points[2], &item->points[3]);
                 break;
-            case LX_PATH_CODE_CLOS:
+            case LX_PATH_CODE_CLOSE:
                 lx_path_close(path);
                 break;
             default:
@@ -1301,7 +1202,7 @@ lx_void_t lx_path_add_rpath(lx_path_ref_t self, lx_path_ref_t added)
                 lx_path_cubic_to(path, &item->points[2], &item->points[1], &item->points[0]);
             }
             break;
-        case LX_PATH_CODE_CLOS:
+        case LX_PATH_CODE_CLOSE:
             {
                 // need close path after makeing contour
                 need_close = lx_true;
@@ -1320,7 +1221,7 @@ lx_void_t lx_path_add_line(lx_path_ref_t self, lx_line_ref_t line)
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return(path && line);
 
-    // null and dirty? make hint
+    // empty and dirty? make hint
     lx_bool_t hint_maked = lx_false;
     if (lx_path_empty(path) && (path->flags & LX_PATH_FLAG_DIRTY_HINT))
     {
@@ -1373,7 +1274,7 @@ lx_void_t lx_path_add_arc(lx_path_ref_t self, lx_arc_ref_t arc)
         return ;
     }
 
-    // null and dirty? make hint
+    // empty and dirty? make hint
     lx_bool_t hint_maked = lx_false;
     if (lx_path_empty(path) && (path->flags & LX_PATH_FLAG_DIRTY_HINT))
     {
@@ -1412,7 +1313,7 @@ lx_void_t lx_path_add_triangle(lx_path_ref_t self, lx_triangle_ref_t triangle)
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return(path && triangle);
 
-    // null and dirty? make hint
+    // empty and dirty? make hint
     lx_bool_t hint_maked = lx_false;
     if (lx_path_empty(path) && (path->flags & LX_PATH_FLAG_DIRTY_HINT))
     {
@@ -1454,7 +1355,7 @@ lx_void_t lx_path_add_rect(lx_path_ref_t self, lx_rect_ref_t rect, lx_size_t dir
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return(path && rect);
 
-    // null and dirty? make hint
+    // empty and dirty? make hint
     lx_bool_t hint_maked = lx_false;
     if (lx_path_empty(path) && (path->flags & LX_PATH_FLAG_DIRTY_HINT))
     {
@@ -1525,7 +1426,7 @@ lx_void_t lx_path_add_round_rect(lx_path_ref_t self, lx_round_rect_ref_t rect, l
         return ;
     }
 
-    // null and dirty? make hint
+    // empty and dirty? make hint
     lx_bool_t hint_maked = lx_false;
     if (lx_path_empty(path) && (path->flags & LX_PATH_FLAG_DIRTY_HINT))
     {
@@ -1692,7 +1593,7 @@ lx_void_t lx_path_add_circle(lx_path_ref_t self, lx_circle_ref_t circle, lx_size
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return(path && circle);
 
-    // null and dirty? make hint
+    // empty and dirty? make hint
     lx_bool_t hint_maked = lx_false;
     if (lx_path_empty(path) && (path->flags & LX_PATH_FLAG_DIRTY_HINT))
     {
@@ -1738,7 +1639,7 @@ lx_void_t lx_path_add_ellipse(lx_path_ref_t self, lx_ellipse_ref_t ellipse, lx_s
     lx_path_t* path = (lx_path_t*)self;
     lx_assert_and_check_return(path && ellipse);
 
-    // null and dirty? make hint
+    // empty and dirty? make hint
     lx_bool_t hint_maked = lx_false;
     if (lx_path_empty(path) && (path->flags & LX_PATH_FLAG_DIRTY_HINT))
     {
