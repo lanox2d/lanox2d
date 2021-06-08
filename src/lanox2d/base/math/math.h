@@ -27,6 +27,10 @@
 #include "matrix.h"
 #include "float.h"
 #include "ilog2i.h"
+#include "fixed.h"
+#include "fixed16.h"
+#include "fixed6.h"
+#include "fixed30.h"
 
 #endif
 
