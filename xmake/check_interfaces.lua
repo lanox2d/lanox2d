@@ -63,4 +63,8 @@ function check_interfaces()
         "sinf",
         "exp",
         "expf")
+
+    -- add the interfaces for libc
+    check_module_cfuncs("libc", {"string.h", "stdlib.h"},
+        "strnlen")
 end

@@ -15,29 +15,53 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        isinf.c
+ * @file        strnlen.c
  *
  */
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "libm.h"
+#include "libc.h"
+#include <string.h>
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_int_t lx_isinf(lx_double_t x) {
-    lx_ieee_double_t e; e.d = x;
-    lx_int32_t      t = e.i.l | ((e.i.h & 0x7fffffff) ^ 0x7ff00000);
-    t |= -t;
-    return (lx_long_t)(~(t >> 31) & (e.i.h >> 30));
-}
 
-lx_int_t lx_isinff(lx_float_t x) {
-    lx_ieee_float_t e; e.f = x;
-    lx_int32_t      t = e.i & 0x7fffffff;
-    t ^= 0x7f800000;
-    t |= -t;
-    return (lx_long_t)(~(t >> 31) & (e.i >> 30));
+#ifdef LX_CONFIG_LIBC_HAVE_STRNLEN
+lx_size_t lx_strnlen(lx_char_t const* s, lx_size_t n) {
+#   ifdef LX_CONFIG_OS_ANDROID
+    /* fix the bug for android
+     *
+     * return -1 if n == (lx_uint32_t)-1
+     */
+    return strnlen(s, (lx_uint16_t)n);
+#   else
+    return strnlen(s, n);
+#   endif
 }
+#else
+lx_size_t lx_strnlen(lx_char_t const* s, lx_size_t n) {
+    lx_assert_and_check_return_val(s, 0);
+    if (!n) return 0;
+
+    lx_register lx_char_t const* p = s;
+#   ifdef LX_CONFIG_SMALL
+    while (n-- && *p) ++p;
+    return p - s;
+#   else
+    lx_size_t l = n & 0x3; n = (n - l) >> 2;
+    while (n--) {
+        if (!p[0]) return (p - s + 0);
+        if (!p[1]) return (p - s + 1);
+        if (!p[2]) return (p - s + 2);
+        if (!p[3]) return (p - s + 3);
+        p += 4;
+    }
+    while (l-- && *p) ++p;
+    return p - s;
+#   endif
+}
+#endif
+

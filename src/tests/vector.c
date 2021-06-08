@@ -36,7 +36,7 @@ static lx_void_t test_length_set(lx_long_t x, lx_long_t y, lx_float_t n) {
     lx_vector_imake(&vector, x, y);
     lx_bool_t ok = lx_vector_length_set(&vector, n);
     lx_float_t length = lx_vector_length(&vector);
-    lx_trace_i("set %{vector}.length: %0.2f => %{float}: %s", &vector, n, &length, ok? "ok" : "no");
+    lx_trace_i("set %{vector}.length: %{float} => %{float}: %s", &vector, &n, &length, ok? "ok" : "no");
 }
 
 int main(int argc, char** argv) {

@@ -53,8 +53,4 @@ lx_int_t lx_snprintf(lx_char_t* s, lx_size_t n, lx_char_t const* fmt, ...) {
     return ret;
 }
 
-lx_int_t lx_vsnprintf(lx_char_t* s, lx_size_t n, lx_char_t const* fmt, va_list args) {
-    return vsnprintf(s, n, fmt, args);
-}
-
 

@@ -26,6 +26,82 @@
 #include "point.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
+ * declaration
+ */
+lx_extern_c_enter
+lx_int_t lx_vsnprintf_object(lx_char_t* s, lx_size_t n, lx_char_t const* name, lx_cpointer_t object);
+lx_extern_c_leave
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * private implementation
+ */
+static lx_inline lx_int_t lx_vsnprintf_float(lx_char_t* s, lx_size_t n, lx_float_t* value) {
+    return lx_snprintf(s, n, "%f", *value);
+}
+static lx_inline lx_int_t lx_vsnprintf_point(lx_char_t* s, lx_size_t n, lx_point_ref_t point) {
+    return lx_snprintf(s, n, "(%{float}, %{float})", &point->x, &point->y);
+}
+static lx_inline lx_int_t lx_vsnprintf_line(lx_char_t* s, lx_size_t n, lx_line_ref_t line) {
+    return lx_snprintf(s, n, "(%{point} => %{point})", &line->p0, &line->p1);
+}
+static lx_inline lx_int_t lx_vsnprintf_rect(lx_char_t* s, lx_size_t n, lx_rect_ref_t rect) {
+    return lx_snprintf(s, n, "(x: %{float}, y: %{float}, w: %{float}, h: %{float})", &rect->x, &rect->y, &rect->w, &rect->h);
+}
+static lx_inline lx_int_t lx_vsnprintf_round_rect(lx_char_t* s, lx_size_t n, lx_round_rect_ref_t rect) {
+    return lx_snprintf(s, n, "(x: %{float}, y: %{float}, w: %{float}, h: %{float}, lt: %{vector}, rt: %{vector}, rb: %{vector}, lb: %{vector})",
+                       &rect->bounds.x, &rect->bounds.y, &rect->bounds.w, &rect->bounds.h,
+                       &rect->radius[LX_RECT_CORNER_LT],
+                       &rect->radius[LX_RECT_CORNER_RT],
+                       &rect->radius[LX_RECT_CORNER_RB],
+                       &rect->radius[LX_RECT_CORNER_LB]);
+}
+static lx_inline lx_int_t lx_vsnprintf_triangle(lx_char_t* s, lx_size_t n, lx_triangle_ref_t triangle) {
+    return lx_snprintf(s, n, "(%{point}, %{point}, %{point})", &triangle->p0, &triangle->p1, &triangle->p2);
+}
+static lx_inline lx_int_t lx_vsnprintf_circle(lx_char_t* s, lx_size_t n, lx_circle_ref_t circle) {
+    return lx_snprintf(s, n, "(c: %{point}, r: %{float})", &circle->c, &circle->r);
+}
+static lx_inline lx_int_t lx_vsnprintf_ellipse(lx_char_t* s, lx_size_t n, lx_ellipse_ref_t ellipse) {
+    return lx_snprintf(s, n, "(c: %{point}, rx: %{float}, ry: %{float})", &ellipse->c, &ellipse->rx, &ellipse->ry);
+}
+static lx_inline lx_int_t lx_vsnprintf_arc(lx_char_t* s, lx_size_t n, lx_arc_ref_t arc) {
+    return lx_snprintf(s, n, "(c: %{point}, rx: %{float}, ry: %{float}, ab: %{float}, an: %{float})", &arc->c, &arc->rx, &arc->ry, &arc->ab, &arc->an);
+}
+static lx_inline lx_int_t lx_vsnprintf_color(lx_char_t* s, lx_size_t n, lx_color_ref_t color) {
+    return lx_snprintf(s, n, "(a: %u, r: %u, g: %u, b: %u)", color->a, color->r, color->g, color->b);
+}
+static lx_inline lx_int_t lx_vsnprintf_matrix(lx_char_t* s, lx_size_t n, lx_matrix_ref_t matrix) {
+    return lx_snprintf(s, n, "(sx: %{float}, sy: %{float}, kx: %{float}, ky: %{float}, tx: %{float}, ty: %{float})", &matrix->sx, &matrix->sy, &matrix->kx, &matrix->ky, &matrix->tx, &matrix->ty);
+}
+lx_int_t lx_vsnprintf_object(lx_char_t* s, lx_size_t n, lx_char_t const* name, lx_cpointer_t object) {
+    lx_check_return_val(s && n && name && object, -1);
+    if (!lx_strcmp(name, "float")) {
+        return lx_vsnprintf_float(s, n, (lx_float_t*)object);
+    } else if (!lx_strcmp(name, "point") || !lx_strcmp(name, "vector")) {
+        return lx_vsnprintf_point(s, n, (lx_point_ref_t)object);
+    } else if (!lx_strcmp(name, "line")) {
+        return lx_vsnprintf_line(s, n, (lx_line_ref_t)object);
+    } else if (!lx_strcmp(name, "rect")) {
+        return lx_vsnprintf_rect(s, n, (lx_rect_ref_t)object);
+    } else if (!lx_strcmp(name, "round_rect")) {
+        return lx_vsnprintf_round_rect(s, n, (lx_round_rect_ref_t)object);
+    } else if (!lx_strcmp(name, "triangle")) {
+        return lx_vsnprintf_triangle(s, n, (lx_triangle_ref_t)object);
+    } else if (!lx_strcmp(name, "circle")) {
+        return lx_vsnprintf_circle(s, n, (lx_circle_ref_t)object);
+    } else if (!lx_strcmp(name, "ellipse")) {
+        return lx_vsnprintf_ellipse(s, n, (lx_ellipse_ref_t)object);
+    } else if (!lx_strcmp(name, "arc")) {
+        return lx_vsnprintf_arc(s, n, (lx_arc_ref_t)object);
+    } else if (!lx_strcmp(name, "color")) {
+        return lx_vsnprintf_color(s, n, (lx_color_ref_t)object);
+    } else if (!lx_strcmp(name, "matrix")) {
+        return lx_vsnprintf_matrix(s, n, (lx_matrix_ref_t)object);
+    }
+    return -1;
+}
+
+/* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
 

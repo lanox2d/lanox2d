@@ -15,29 +15,19 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        isinf.c
+ * @file        strlen.c
  *
  */
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "libm.h"
+#include "libc.h"
+#include <string.h>
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_int_t lx_isinf(lx_double_t x) {
-    lx_ieee_double_t e; e.d = x;
-    lx_int32_t      t = e.i.l | ((e.i.h & 0x7fffffff) ^ 0x7ff00000);
-    t |= -t;
-    return (lx_long_t)(~(t >> 31) & (e.i.h >> 30));
-}
-
-lx_int_t lx_isinff(lx_float_t x) {
-    lx_ieee_float_t e; e.f = x;
-    lx_int32_t      t = e.i & 0x7fffffff;
-    t ^= 0x7f800000;
-    t |= -t;
-    return (lx_long_t)(~(t >> 31) & (e.i >> 30));
+lx_size_t lx_strlen(lx_char_t const* s) {
+    return strlen(s);
 }

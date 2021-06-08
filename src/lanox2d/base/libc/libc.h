@@ -183,6 +183,32 @@ lx_pointer_t        lx_memcpy(lx_pointer_t s1, lx_cpointer_t s2, lx_size_t n);
  */
 lx_pointer_t        lx_memmov(lx_pointer_t s1, lx_cpointer_t s2, lx_size_t n);
 
+/*! strlen
+ *
+ * @param s         the c-string
+ *
+ * @return          the string length
+ */
+lx_size_t           lx_strlen(lx_char_t const* s);
+
+/*! strnlen
+ *
+ * @param s         the c-string
+ * @param n         the max length
+ *
+ * @return          the string length
+ */
+lx_size_t           lx_strnlen(lx_char_t const* s, lx_size_t n);
+
+/*! strcmp
+ *
+ * @param s1        the c-string
+ * @param s2        the c-string
+ *
+ * @return          >0, 0, <0
+ */
+lx_int_t            lx_strcmp(lx_char_t const* s1, lx_char_t const* s2);
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */
