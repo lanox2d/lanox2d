@@ -57,6 +57,7 @@ typedef enum lx_path_flag_e_ {
 
 // the path type
 typedef struct lx_path_t_ {
+    lx_iterator_base_t  base;
     lx_shape_t          hint;
     lx_uint8_t          flags;
     lx_rect_t           bounds;
@@ -567,6 +568,87 @@ static lx_bool_t lx_path_make_polygon(lx_path_t* path) {
 }
 #endif
 
+static lx_size_t lx_path_iterator_head(lx_iterator_ref_t iterator) {
+    return 0;
+}
+
+static lx_size_t lx_path_iterator_tail(lx_iterator_ref_t iterator) {
+    lx_path_t* path = (lx_path_t*)iterator->container;
+    lx_assert(path && path->codes && path->points);
+
+    lx_size_t code_tail  = lx_array_size(path->codes);
+    lx_size_t point_tail = lx_array_size(path->points);
+    lx_assert(code_tail <= LX_MAXU16 && point_tail <= LX_MAXU16);
+    return ((code_tail << 16) | point_tail);
+}
+
+static lx_size_t lx_path_iterator_next(lx_iterator_ref_t iterator, lx_size_t itor) {
+    lx_path_t* path = (lx_path_t*)iterator->container;
+    lx_assert(path && path->codes);
+
+    // the code
+    lx_uint8_t* pcode = (lx_uint8_t*)lx_array_item(path->codes, itor >> 16);
+    lx_uint8_t  code = *pcode;
+    lx_assert(code < LX_PATH_CODE_MAXN);
+
+    /* code_index++
+     * point_index += point_step
+     */
+    return itor + (0x10000 | lx_path_point_step(code));
+}
+
+static lx_size_t lx_path_iterator_prev(lx_iterator_ref_t iterator, lx_size_t itor) {
+    lx_path_t* path = (lx_path_t*)iterator->container;
+    lx_assert(path && path->codes);
+
+    // check the code index
+    lx_assert(itor >> 16);
+
+    // the code
+    lx_uint8_t* pcode = (lx_uint8_t*)lx_array_item(path->codes, (itor >> 16) - 1);
+    lx_uint8_t  code = *pcode;
+    lx_assert(code < LX_PATH_CODE_MAXN);
+
+    // check the point index
+    lx_assert((itor & 0xffff) >= lx_path_point_step(code));
+
+    /* code_index--
+     * point_index -= point_step
+     */
+    return itor - (0x10000 | lx_path_point_step(code));
+}
+
+static lx_pointer_t lx_path_iterator_item(lx_iterator_ref_t iterator, lx_size_t itor) {
+    lx_path_t* path = (lx_path_t*)iterator->container;
+    lx_assert(path && path->codes && path->points);
+
+    // get code
+    lx_size_t   code_index  = itor >> 16;
+    lx_size_t   point_index = itor & 0xffff;
+    lx_uint8_t* pcode       = (lx_uint8_t*)lx_array_item(path->codes, code_index);
+    lx_uint8_t  code        = *pcode;
+    lx_assert(code < 1 || point_index);
+
+    // get item
+    path->item.code   = code;
+    path->item.points = (lx_point_ref_t)lx_array_item(path->points, code < 1? point_index : point_index - 1);
+    lx_assert(path->item.points);
+    return &path->item;
+}
+
+static lx_void_t lx_path_iterator_of(lx_iterator_ref_t iterator, lx_cpointer_t container) {
+    static lx_iterator_op_t op = {
+        lx_path_iterator_head,
+        lx_path_iterator_tail,
+        lx_path_iterator_prev,
+        lx_path_iterator_next,
+        lx_path_iterator_item
+    };
+    iterator->container = container;
+    iterator->mode      = LX_ITERATOR_MODE_FORWARD | LX_ITERATOR_MODE_REVERSE | LX_ITERATOR_MODE_READONLY;
+    iterator->op        = &op;
+}
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
@@ -578,8 +660,9 @@ lx_path_ref_t lx_path_init() {
         path = lx_malloc0_type(lx_path_t);
         lx_assert_and_check_break(path);
 
-        path->hint.type = LX_SHAPE_TYPE_NONE;
-        path->flags = LX_PATH_FLAG_DIRTY_ALL | LX_PATH_FLAG_CLOSED | LX_PATH_FLAG_SINGLE;
+        path->hint.type        = LX_SHAPE_TYPE_NONE;
+        path->flags            = LX_PATH_FLAG_DIRTY_ALL | LX_PATH_FLAG_CLOSED | LX_PATH_FLAG_SINGLE;
+        path->base.iterator_of = lx_path_iterator_of;
 
         // init codes
         path->codes = lx_array_init(LX_PATH_POINTS_GROW >> 1, sizeof(lx_uint8_t), lx_null);
@@ -997,23 +1080,17 @@ lx_void_t lx_path_arc2i_to(lx_path_ref_t self, lx_long_t x0, lx_long_t y0, lx_si
     lx_path_arc_to(self, &arc);
 }
 
-#if 0
-lx_void_t lx_path_path_to(lx_path_ref_t self, lx_path_ref_t added)
-{
-    // done
-    lx_for_all_if (lx_path_item_ref_t, item, added, item)
-    {
-        switch (item->code)
-        {
-        case LX_PATH_CODE_MOVE:
+lx_void_t lx_path_path_to(lx_path_ref_t self, lx_path_ref_t added) {
+    lx_for_all (lx_path_item_ref_t, item, added) {
+        switch (item->code) {
+        case LX_PATH_CODE_MOVE: {
+            // ignore the first point
+            if (item_itor != item_head)
             {
-                // ignore the first point
-                if (item_itor != item_head)
-                {
-                    lx_path_move_to(self, &item->points[0]);
-                }
+                lx_path_move_to(self, &item->points[0]);
             }
             break;
+        }
         case LX_PATH_CODE_LINE:
             lx_path_line_to(self, &item->points[1]);
             break;
@@ -1027,12 +1104,12 @@ lx_void_t lx_path_path_to(lx_path_ref_t self, lx_path_ref_t added)
             lx_path_close(self);
             break;
         default:
-            // trace
-            lx_trace_e("invalid code: %lu", item->code);
+            lx_trace_e("invalid code: %u", item->code);
             break;
         }
     }
 }
+#if 0
 lx_void_t lx_path_rpath_to(lx_path_ref_t self, lx_path_ref_t added)
 {
     // done
@@ -1090,18 +1167,13 @@ lx_void_t lx_path_rpath_to(lx_path_ref_t self, lx_path_ref_t added)
         }
     }
 }
-lx_void_t lx_path_add_path(lx_path_ref_t self, lx_path_ref_t added)
-{
-    // empty? copy it
-    if (lx_path_empty(self)) lx_path_copy(path, added);
-    // add it
-    else
-    {
-        // done
-        lx_for_all_if (lx_path_item_ref_t, item, added, item)
-        {
-            switch (item->code)
-            {
+#endif
+lx_void_t lx_path_add_path(lx_path_ref_t self, lx_path_ref_t added) {
+    if (lx_path_empty(self)) {
+        lx_path_copy(self, added);
+    } else {
+        lx_for_all (lx_path_item_ref_t, item, added) {
+            switch (item->code) {
             case LX_PATH_CODE_MOVE:
                 lx_path_move_to(self, &item->points[0]);
                 break;
@@ -1118,13 +1190,13 @@ lx_void_t lx_path_add_path(lx_path_ref_t self, lx_path_ref_t added)
                 lx_path_close(self);
                 break;
             default:
-                // trace
-                lx_trace_e("invalid code: %lu", item->code);
+                lx_trace_e("invalid code: %u", item->code);
                 break;
             }
         }
     }
 }
+#if 0
 lx_void_t lx_path_add_rpath(lx_path_ref_t self, lx_path_ref_t added)
 {
     // done

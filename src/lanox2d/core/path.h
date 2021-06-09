@@ -52,7 +52,7 @@ typedef enum lx_path_code_e_ {
 typedef struct lx_path_item_t_ {
 
     /// the code
-    lx_size_t       code;
+    lx_uint8_t      code;
 
     /*! the points[4]
      *
