@@ -28,6 +28,11 @@
  * implementation
  */
 
+lx_void_t lx_iterator_of(lx_iterator_ref_t iterator, lx_cpointer_t container) {
+    lx_assert(iterator && container);
+    ((lx_iterator_base_t*)container)->iterator_of(iterator, container);
+}
+
 lx_size_t lx_iterator_mode(lx_iterator_ref_t iterator) {
     return iterator->mode;
 }

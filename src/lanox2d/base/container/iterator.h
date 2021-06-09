@@ -55,8 +55,7 @@ typedef lx_iterator_op_t const* lx_iterator_op_ref_t;
 /// the iterator type
 typedef struct lx_iterator_t_ {
     lx_size_t               mode;
-    lx_size_t               step;
-    lx_pointer_t            udata;
+    lx_cpointer_t           container;
     lx_iterator_op_ref_t    op;
 }lx_iterator_t, *lx_iterator_ref_t;
 
@@ -68,7 +67,7 @@ typedef struct lx_iterator_t_ {
  * }lx_container_t;
  */
 typedef struct lx_iterator_base_t_ {
-    lx_void_t (*iterator)(lx_iterator_t* iterator);
+    lx_void_t (*iterator_of)(lx_iterator_t* iterator, lx_cpointer_t container);
 }lx_iterator_base_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -79,6 +78,13 @@ lx_extern_c_enter
 /* //////////////////////////////////////////////////////////////////////////////////////
  * interfaces
  */
+
+/*! get iterator of container
+ *
+ * @param iterator  the iterator
+ * @param container the container
+ */
+lx_void_t           lx_iterator_of(lx_iterator_ref_t iterator, lx_cpointer_t container);
 
 /*! the iterator mode
  *
