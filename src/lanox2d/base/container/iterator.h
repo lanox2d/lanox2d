@@ -42,17 +42,11 @@ typedef enum lx_iterator_mode_t_ {
 /// the iterator operation type
 struct lx_iterator_t_;
 typedef struct lx_iterator_op_t_ {
-    lx_size_t               (*size)(struct lx_iterator_t_* iterator);
     lx_size_t               (*head)(struct lx_iterator_t_* iterator);
-    lx_size_t               (*last)(struct lx_iterator_t_* iterator);
     lx_size_t               (*tail)(struct lx_iterator_t_* iterator);
     lx_size_t               (*prev)(struct lx_iterator_t_* iterator, lx_size_t itor);
     lx_size_t               (*next)(struct lx_iterator_t_* iterator, lx_size_t itor);
     lx_pointer_t            (*item)(struct lx_iterator_t_* iterator, lx_size_t itor);
-    lx_long_t               (*comp)(struct lx_iterator_t_* iterator, lx_cpointer_t litem, lx_cpointer_t ritem);
-    lx_void_t               (*copy)(struct lx_iterator_t_* iterator, lx_size_t itor, lx_cpointer_t item);
-    lx_void_t               (*remove)(struct lx_iterator_t_* iterator, lx_size_t itor);
-    lx_void_t               (*nremove)(struct lx_iterator_t_* iterator, lx_size_t prev, lx_size_t next, lx_size_t size);
 }lx_iterator_op_t;
 
 /// the iterator operation ref type
@@ -94,22 +88,6 @@ lx_extern_c_enter
  */
 lx_size_t           lx_iterator_mode(lx_iterator_ref_t iterator);
 
-/*! the iterator step
- *
- * @param iterator  the iterator
- *
- * @return          the iterator step
- */
-lx_size_t           lx_iterator_step(lx_iterator_ref_t iterator);
-
-/*! the iterator size
- *
- * @param iterator  the iterator
- *
- * @return          the iterator size
- */
-lx_size_t           lx_iterator_size(lx_iterator_ref_t iterator);
-
 /*! the iterator head
  *
  * @param iterator  the iterator
@@ -117,14 +95,6 @@ lx_size_t           lx_iterator_size(lx_iterator_ref_t iterator);
  * @return          the iterator head
  */
 lx_size_t           lx_iterator_head(lx_iterator_ref_t iterator);
-
-/*! the iterator last
- *
- * @param iterator  the iterator
- *
- * @return          the iterator last
- */
-lx_size_t           lx_iterator_last(lx_iterator_ref_t iterator);
 
 /*! the iterator tail
  *
@@ -160,40 +130,6 @@ lx_size_t           lx_iterator_next(lx_iterator_ref_t iterator, lx_size_t itor)
  * @return          the iterator item
  */
 lx_pointer_t        lx_iterator_item(lx_iterator_ref_t iterator, lx_size_t itor);
-
-/*! remove the iterator item
- *
- * @param iterator  the iterator
- * @param itor      the item itor
- */
-lx_void_t           lx_iterator_remove(lx_iterator_ref_t iterator, lx_size_t itor);
-
-/*! remove the iterator items from range(prev, next)
- *
- * @param iterator  the iterator
- * @param prev      the prev item
- * @param next      the next item
- * @param size      the removed size
- */
-lx_void_t           lx_iterator_nremove(lx_iterator_ref_t iterator, lx_size_t prev, lx_size_t next, lx_size_t size);
-
-/*! copy the iterator item
- *
- * @param iterator  the iterator
- * @param itor      the item itor
- * @param item      the copied item
- */
-lx_void_t           lx_iterator_copy(lx_iterator_ref_t iterator, lx_size_t itor, lx_cpointer_t item);
-
-/*! compare the iterator item
- *
- * @param iterator  the iterator
- * @param litem     the item
- * @param ritem     the compared item
- *
- * @return          =: 0, >: 1, <: -1
- */
-lx_long_t           lx_iterator_comp(lx_iterator_ref_t iterator, lx_cpointer_t litem, lx_cpointer_t ritem);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

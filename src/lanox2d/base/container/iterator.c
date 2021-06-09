@@ -28,3 +28,31 @@
  * implementation
  */
 
+lx_size_t lx_iterator_mode(lx_iterator_ref_t iterator) {
+    return iterator->mode;
+}
+
+lx_size_t lx_iterator_head(lx_iterator_ref_t iterator) {
+    lx_assert(iterator && iterator->op && iterator->op->head);
+    return iterator->op->head(iterator);
+}
+
+lx_size_t lx_iterator_tail(lx_iterator_ref_t iterator) {
+    lx_assert(iterator && iterator->op && iterator->op->tail);
+    return iterator->op->tail(iterator);
+}
+
+lx_size_t lx_iterator_prev(lx_iterator_ref_t iterator, lx_size_t itor) {
+    lx_assert(iterator && iterator->op && iterator->op->prev);
+    return iterator->op->prev(iterator, itor);
+}
+
+lx_size_t lx_iterator_next(lx_iterator_ref_t iterator, lx_size_t itor) {
+    lx_assert(iterator && iterator->op && iterator->op->next);
+    return iterator->op->next(iterator, itor);
+}
+
+lx_pointer_t lx_iterator_item(lx_iterator_ref_t iterator, lx_size_t itor) {
+    lx_assert(iterator && iterator->op && iterator->op->item);
+    return iterator->op->item(iterator, itor);
+}
