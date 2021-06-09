@@ -72,8 +72,9 @@ typedef struct lx_path_t_ {
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
-static lx_void_t lx_path_points_apply_matrix(lx_pointer_t item, lx_cpointer_t udata) {
+static lx_bool_t lx_path_points_apply_matrix(lx_iterator_ref_t iterator, lx_pointer_t item, lx_cpointer_t udata) {
     lx_point_apply((lx_point_ref_t)item, (lx_matrix_ref_t)udata);
+    return lx_true;
 }
 
 static lx_inline lx_bool_t lx_path_is_last_code(lx_path_t* path, lx_uint8_t code) {
@@ -808,7 +809,7 @@ lx_void_t lx_path_apply(lx_path_ref_t self, lx_matrix_ref_t matrix) {
     lx_assert_and_check_return(path && path->points && matrix);
 
     if (!lx_path_empty(self)) {
-        lx_array_foreach(path->points, lx_path_points_apply_matrix, matrix);
+        lx_foreach_all(path->points, lx_path_points_apply_matrix, matrix);
     }
 }
 

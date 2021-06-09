@@ -116,14 +116,6 @@ lx_pointer_t        lx_stack_top(lx_stack_ref_t stack);
  */
 lx_size_t           lx_stack_size(lx_stack_ref_t stack);
 
-/*! foreach all elements
- *
- * @param stack     the stack
- * @param foreach   the foreach function
- * @param udata     the user data
- */
-lx_void_t           lx_stack_foreach(lx_stack_ref_t stack, lx_element_foreach_t foreach, lx_cpointer_t udata);
-
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */

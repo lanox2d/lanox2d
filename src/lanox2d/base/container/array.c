@@ -324,19 +324,3 @@ lx_void_t lx_array_remove_last(lx_array_ref_t self) {
     }
 }
 
-lx_void_t lx_array_foreach(lx_array_ref_t self, lx_element_foreach_t foreach, lx_cpointer_t udata) {
-    lx_array_t* array = (lx_array_t*)self;
-    lx_assert_and_check_return(array && foreach);
-    if (array->data && array->size) {
-        lx_size_t  i;
-        lx_byte_t* data = array->data;
-        lx_size_t  size = array->size;
-        lx_size_t  itemsize = array->itemsize;
-        for (i = 0; i < size; i++) {
-            foreach(data + i * itemsize, udata);
-        }
-    }
-}
-
-
-

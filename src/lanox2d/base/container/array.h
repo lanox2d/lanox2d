@@ -164,14 +164,6 @@ lx_void_t           lx_array_replace_last(lx_array_ref_t array, lx_cpointer_t da
  */
 lx_void_t           lx_array_remove_last(lx_array_ref_t array);
 
-/*! foreach all elements
- *
- * @param array     the array
- * @param foreach   the foreach function
- * @param udata     the user data
- */
-lx_void_t           lx_array_foreach(lx_array_ref_t array, lx_element_foreach_t foreach, lx_cpointer_t udata);
-
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */

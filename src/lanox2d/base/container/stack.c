@@ -69,9 +69,4 @@ lx_size_t lx_stack_size(lx_stack_ref_t self) {
     return lx_array_size((lx_array_ref_t)self);
 }
 
-lx_void_t lx_stack_foreach(lx_stack_ref_t self, lx_element_foreach_t foreach, lx_cpointer_t udata) {
-    lx_array_foreach((lx_array_ref_t)self, foreach, udata);
-}
-
-
 

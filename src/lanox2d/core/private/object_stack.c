@@ -93,7 +93,7 @@ static lx_void_t lx_object_stack_object_copy(lx_size_t type, lx_handle_t object,
     }
 }
 
-static lx_void_t lx_object_stack_object_free(lx_pointer_t item, lx_cpointer_t udata) {
+static lx_bool_t lx_object_stack_object_free(lx_iterator_ref_t iterator, lx_pointer_t item, lx_cpointer_t udata) {
     lx_object_stack_t* stack = (lx_object_stack_t*)udata;
     if (stack) {
         lx_handle_t* pobject = (lx_handle_t*)item;
@@ -101,6 +101,7 @@ static lx_void_t lx_object_stack_object_free(lx_pointer_t item, lx_cpointer_t ud
             lx_object_stack_object_exit(stack->type, *pobject);
         }
     }
+    return lx_true;
 }
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -148,12 +149,12 @@ lx_void_t lx_object_stack_exit(lx_object_stack_ref_t self) {
             stack->object = lx_null;
         }
         if (stack->stack) {
-            lx_stack_foreach(stack->stack, lx_object_stack_object_free, stack);
+            lx_foreach_all(stack->stack, lx_object_stack_object_free, stack);
             lx_stack_exit(stack->stack);
             stack->stack = lx_null;
         }
         if (stack->cache) {
-            lx_stack_foreach(stack->cache, lx_object_stack_object_free, stack);
+            lx_foreach_all(stack->cache, lx_object_stack_object_free, stack);
             lx_stack_exit(stack->cache);
             stack->cache = lx_null;
         }
