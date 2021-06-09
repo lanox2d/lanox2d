@@ -25,7 +25,9 @@
  * includes
  */
 #include "for.h"
+#include "rfor.h"
 #include "foreach.h"
+#include "rforeach.h"
 
 #endif
 

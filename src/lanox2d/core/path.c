@@ -1109,65 +1109,44 @@ lx_void_t lx_path_path_to(lx_path_ref_t self, lx_path_ref_t added) {
         }
     }
 }
-#if 0
-lx_void_t lx_path_rpath_to(lx_path_ref_t self, lx_path_ref_t added)
-{
-    // done
+
+lx_void_t lx_path_rpath_to(lx_path_ref_t self, lx_path_ref_t added) {
     lx_bool_t need_move = lx_false;
     lx_bool_t need_close = lx_false;
-    lx_rfor_all_if (lx_path_item_ref_t, item, added, item)
-    {
-        // move it?
-        if (need_move)
-        {
+    lx_rfor_all (lx_path_item_ref_t, item, added) {
+        if (need_move) {
             lx_path_move_to(self, &item->points[0]);
             need_move = lx_false;
         }
-
-        switch (item->code)
-        {
-        case LX_PATH_CODE_MOVE:
-            {
-                // closed?
-                if (need_close)
-                {
-                    lx_path_close(self);
-                    need_close = lx_false;
-                }
-
-                // need move to the next point
-                need_move = lx_true;
+        switch (item->code) {
+        case LX_PATH_CODE_MOVE: {
+            if (need_close) {
+                lx_path_close(self);
+                need_close = lx_false;
             }
+            need_move = lx_true;
             break;
+        }
         case LX_PATH_CODE_LINE:
-            {
-                lx_path_line_to(self, &item->points[0]);
-            }
+            lx_path_line_to(self, &item->points[0]);
             break;
         case LX_PATH_CODE_QUAD:
-            {
-                lx_path_quad_to(self, &item->points[1], &item->points[0]);
-            }
+            lx_path_quad_to(self, &item->points[1], &item->points[0]);
             break;
         case LX_PATH_CODE_CUBIC:
-            {
-                lx_path_cubic_to(self, &item->points[2], &item->points[1], &item->points[0]);
-            }
+            lx_path_cubic_to(self, &item->points[2], &item->points[1], &item->points[0]);
             break;
         case LX_PATH_CODE_CLOSE:
-            {
-                // need close path after makeing contour
-                need_close = lx_true;
-            }
+            // need close path after makeing contour
+            need_close = lx_true;
             break;
         default:
-            // trace
-            lx_trace_e("invalid code: %lu", item->code);
+            lx_trace_e("invalid code: %u", item->code);
             break;
         }
     }
 }
-#endif
+
 lx_void_t lx_path_add_path(lx_path_ref_t self, lx_path_ref_t added) {
     if (lx_path_empty(self)) {
         lx_path_copy(self, added);
@@ -1196,65 +1175,43 @@ lx_void_t lx_path_add_path(lx_path_ref_t self, lx_path_ref_t added) {
         }
     }
 }
-#if 0
-lx_void_t lx_path_add_rpath(lx_path_ref_t self, lx_path_ref_t added)
-{
-    // done
+
+lx_void_t lx_path_add_rpath(lx_path_ref_t self, lx_path_ref_t added) {
     lx_bool_t need_move = lx_true;
     lx_bool_t need_close = lx_false;
-    lx_rfor_all_if (lx_path_item_ref_t, item, added, item)
-    {
-        // move it?
-        if (need_move)
-        {
+    lx_rfor_all (lx_path_item_ref_t, item, added) {
+        if (need_move) {
             lx_path_move_to(self, &item->points[0]);
             need_move = lx_false;
         }
-
-        switch (item->code)
-        {
-        case LX_PATH_CODE_MOVE:
-            {
-                // closed?
-                if (need_close)
-                {
-                    lx_path_close(self);
-                    need_close = lx_false;
-                }
-
-                // need move to the next point
-                need_move = lx_true;
+        switch (item->code) {
+        case LX_PATH_CODE_MOVE: {
+            if (need_close) {
+                lx_path_close(self);
+                need_close = lx_false;
             }
+            need_move = lx_true;
             break;
+        }
         case LX_PATH_CODE_LINE:
-            {
-                lx_path_line_to(self, &item->points[0]);
-            }
+            lx_path_line_to(self, &item->points[0]);
             break;
         case LX_PATH_CODE_QUAD:
-            {
-                lx_path_quad_to(self, &item->points[1], &item->points[0]);
-            }
+            lx_path_quad_to(self, &item->points[1], &item->points[0]);
             break;
         case LX_PATH_CODE_CUBIC:
-            {
-                lx_path_cubic_to(self, &item->points[2], &item->points[1], &item->points[0]);
-            }
+            lx_path_cubic_to(self, &item->points[2], &item->points[1], &item->points[0]);
             break;
         case LX_PATH_CODE_CLOSE:
-            {
-                // need close path after makeing contour
-                need_close = lx_true;
-            }
+            // need close path after makeing contour
+            need_close = lx_true;
             break;
         default:
-            // trace
             lx_trace_e("invalid code: %lu", item->code);
             break;
         }
     }
 }
-#endif
 
 lx_void_t lx_path_add_line(lx_path_ref_t self, lx_line_ref_t line) {
     lx_path_t* path = (lx_path_t*)self;
