@@ -38,6 +38,7 @@ typedef struct lx_canvas_t_ {
     lx_stack_ref_t          matrix_stack;
     lx_object_stack_ref_t   path_stack;
     lx_object_stack_ref_t   paint_stack;
+    lx_object_stack_ref_t   clipper_stack;
 }lx_canvas_t;
 
 #endif

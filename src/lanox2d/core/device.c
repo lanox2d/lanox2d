@@ -74,6 +74,13 @@ lx_void_t lx_device_bind_matrix(lx_device_ref_t self, lx_matrix_ref_t matrix) {
     }
 }
 
+lx_void_t lx_device_bind_clipper(lx_device_ref_t self, lx_clipper_ref_t clipper) {
+    lx_device_t* device = (lx_device_t*)self;
+    if (device) {
+        device->clipper = clipper;
+    }
+}
+
 lx_void_t lx_device_draw_clear(lx_device_ref_t self, lx_color_t color) {
     lx_device_t* device = (lx_device_t*)self;
     if (device && device->draw_clear) {

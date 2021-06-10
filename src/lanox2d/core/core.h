@@ -32,6 +32,7 @@
 #include "event.h"
 #include "paint.h"
 #include "path.h"
+#include "clipper.h"
 #include "quality.h"
 
 #endif

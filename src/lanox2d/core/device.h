@@ -94,6 +94,13 @@ lx_void_t           lx_device_bind_paint(lx_device_ref_t device, lx_paint_ref_t 
  */
 lx_void_t           lx_device_bind_matrix(lx_device_ref_t device, lx_matrix_ref_t matrix);
 
+/*! bind clipper
+ *
+ * @param device    the device
+ * @param clipper   the clipper
+ */
+lx_void_t           lx_device_bind_clipper(lx_device_ref_t device, lx_clipper_ref_t clipper);
+
 /*! clear draw and fill the given color
  *
  * @param device    the device

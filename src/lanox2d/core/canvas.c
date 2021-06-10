@@ -58,6 +58,11 @@ lx_canvas_ref_t lx_canvas_init(lx_device_ref_t device) {
         lx_assert_and_check_break(canvas->paint_stack);
         lx_device_bind_paint(canvas->device, (lx_paint_ref_t)lx_object_stack_object(canvas->paint_stack));
 
+        // init clipper
+        canvas->clipper_stack = lx_object_stack_init(8, LX_OBJECT_STACK_TYPE_CLIPPER);
+        lx_assert_and_check_break(canvas->clipper_stack);
+        lx_device_bind_clipper(canvas->device, (lx_clipper_ref_t)lx_object_stack_object(canvas->clipper_stack));
+
         ok = lx_true;
 
     } while (0);
@@ -72,6 +77,10 @@ lx_canvas_ref_t lx_canvas_init(lx_device_ref_t device) {
 lx_void_t lx_canvas_exit(lx_canvas_ref_t self) {
     lx_canvas_t* canvas = (lx_canvas_t*)self;
     if (canvas) {
+        if (canvas->clipper_stack) {
+            lx_object_stack_exit(canvas->clipper_stack);
+            canvas->clipper_stack = lx_null;
+        }
         if (canvas->paint_stack) {
             lx_object_stack_exit(canvas->paint_stack);
             canvas->paint_stack = lx_null;
