@@ -150,7 +150,6 @@ static lx_bool_t lx_path_make_hint(lx_path_t* path) {
     return lx_true;
 }
 
-#if 0
 static lx_bool_t lx_path_make_convex(lx_path_t* path) {
     lx_assert_and_check_return_val(path && path->codes && path->points, lx_false);
 
@@ -158,7 +157,7 @@ static lx_bool_t lx_path_make_convex(lx_path_t* path) {
     path->flags &= ~LX_PATH_FLAG_CONVEX;
 
     // attempt to analyze convex from the hint shape first
-    lx_shape_ref_t hint = lx_path_hint((lx_path_ref_t)pth);
+    lx_shape_ref_t hint = lx_path_hint((lx_path_ref_t)path);
     if (hint && hint->type) {
         switch (hint->type) {
         case LX_SHAPE_TYPE_RECT:
@@ -183,137 +182,51 @@ static lx_bool_t lx_path_make_convex(lx_path_t* path) {
         path->flags |= LX_PATH_FLAG_CONVEX;
 
         // analyze it
-        lx_fixed_t      x0 = 0;
-        lx_fixed_t      y0 = 0;
-        lx_fixed_t      x1 = 0;
-        lx_fixed_t      y1 = 0;
-        lx_fixed_t      x2 = 0;
-        lx_fixed_t      y2 = 0;
-        lx_long_t       cross = 0;
-        lx_long_t       cross_prev = 0;
-        lx_hong_t       cross_value = 0;
-        lx_size_t       point_count = 0;
-        lx_size_t       contour_count = 0;
-        lx_bool_t       finished = lx_false;
-        lx_for_all_if (lx_path_item_ref_t, item, self, item && contour_count < 2)
-        {
-            switch (item->code)
-            {
-            case LX_PATH_CODE_MOVE:
-                {
-                    // update points
-                    x0 = x1;
-                    y0 = y1;
-                    x1 = x2;
-                    y1 = y2;
-                    x2 = lx_float_to_fixed(item->points[0].x);
-                    y2 = lx_float_to_fixed(item->points[0].y);
-
-                    // update the contour count
-                    contour_count++;
-
-                    // update the point count
-                    point_count++;
-                }
+        lx_fixed_t x0 = 0;
+        lx_fixed_t y0 = 0;
+        lx_fixed_t x1 = 0;
+        lx_fixed_t y1 = 0;
+        lx_fixed_t x2 = 0;
+        lx_fixed_t y2 = 0;
+        lx_long_t  cross = 0;
+        lx_long_t  cross_prev = 0;
+        lx_hong_t  cross_value = 0;
+        lx_size_t  point_count = 0;
+        lx_size_t  contour_count = 0;
+        lx_bool_t  finished = lx_false;
+        lx_for_all_if (lx_path_item_ref_t, item, path, item && contour_count < 2) {
+            switch (item->code) {
+            case LX_PATH_CODE_MOVE: {
+                x0 = x1;
+                y0 = y1;
+                x1 = x2;
+                y1 = y2;
+                x2 = lx_float_to_fixed(item->points[0].x);
+                y2 = lx_float_to_fixed(item->points[0].y);
+                contour_count++;
+                point_count++;
                 break;
-            case LX_PATH_CODE_LINE:
-                {
-                    // update points
-                    x0 = x1;
-                    y0 = y1;
-                    x1 = x2;
-                    y1 = y2;
-                    x2 = lx_float_to_fixed(item->points[0].x);
-                    y2 = lx_float_to_fixed(item->points[0].y);
-
-                    // update the point count
-                    point_count++;
-                }
+            }
+            case LX_PATH_CODE_LINE: {
+                x0 = x1;
+                y0 = y1;
+                x1 = x2;
+                y1 = y2;
+                x2 = lx_float_to_fixed(item->points[0].x);
+                y2 = lx_float_to_fixed(item->points[0].y);
+                point_count++;
                 break;
-            case LX_PATH_CODE_QUAD:
-                {
-                    // update points
-                    x0 = x1;
-                    y0 = y1;
-                    x1 = x2;
-                    y1 = y2;
-                    x2 = lx_float_to_fixed(item->points[1].x);
-                    y2 = lx_float_to_fixed(item->points[1].y);
+            }
+            case LX_PATH_CODE_QUAD: {
+                x0 = x1;
+                y0 = y1;
+                x1 = x2;
+                y1 = y2;
+                x2 = lx_float_to_fixed(item->points[1].x);
+                y2 = lx_float_to_fixed(item->points[1].y);
 
-                    // points enough?
-                    if (point_count > 1)
-                    {
-                        // compute the cross value of the vectors (p1, p0) and (p1, p2)
-                        cross_value = (lx_hong_t)(x0 - x1) * (y2 - y1) - (lx_hong_t)(y0 - y1) * (x2 - x1);
-
-                        // compute cross = sign(cross_value)
-                        cross = cross_value < 0? -1 : cross_value > 0;
-
-                        // concave contour?
-                        if ((cross * cross_prev) < 0)
-                        {
-                            path->flags &= ~LX_PATH_FLAG_CONVEX;
-                            finished = lx_true;
-                            break;
-                        }
-
-                        // update the previous cross
-                        cross_prev = cross;
-                    }
-
-                    // update the point count
-                    point_count += 2;
-
-                    // update points
-                    x0 = x1;
-                    y0 = y1;
-                    x1 = x2;
-                    y1 = y2;
-                    x2 = lx_float_to_fixed(item->points[2].x);
-                    y2 = lx_float_to_fixed(item->points[2].y);
-                }
-                break;
-            case LX_PATH_CODE_CUBIC:
-                {
-                    // update points
-                    x0 = x1;
-                    y0 = y1;
-                    x1 = x2;
-                    y1 = y2;
-                    x2 = lx_float_to_fixed(item->points[1].x);
-                    y2 = lx_float_to_fixed(item->points[1].y);
-
-                    // points enough?
-                    if (point_count > 1)
-                    {
-                        // compute the cross value of the vectors (p1, p0) and (p1, p2)
-                        cross_value = (lx_hong_t)(x0 - x1) * (y2 - y1) - (lx_hong_t)(y0 - y1) * (x2 - x1);
-
-                        // compute cross = sign(cross_value)
-                        cross = cross_value < 0? -1 : cross_value > 0;
-
-                        // concave contour?
-                        if ((cross * cross_prev) < 0)
-                        {
-                            path->flags  &= ~LX_PATH_FLAG_CONVEX;
-                            finished = lx_true;
-                            break;
-                        }
-
-                        // update the previous cross
-                        cross_prev = cross;
-                    }
-
-                    // update the point count
-                    point_count += 3;
-
-                    // update points
-                    x0 = x1;
-                    y0 = y1;
-                    x1 = x2;
-                    y1 = y2;
-                    x2 = lx_float_to_fixed(item->points[2].x);
-                    y2 = lx_float_to_fixed(item->points[2].y);
+                // points enough?
+                if (point_count > 1) {
 
                     // compute the cross value of the vectors (p1, p0) and (p1, p2)
                     cross_value = (lx_hong_t)(x0 - x1) * (y2 - y1) - (lx_hong_t)(y0 - y1) * (x2 - x1);
@@ -322,43 +235,92 @@ static lx_bool_t lx_path_make_convex(lx_path_t* path) {
                     cross = cross_value < 0? -1 : cross_value > 0;
 
                     // concave contour?
-                    if ((cross * cross_prev) < 0)
-                    {
+                    if ((cross * cross_prev) < 0) {
                         path->flags &= ~LX_PATH_FLAG_CONVEX;
                         finished = lx_true;
                         break;
                     }
-
-                    // update the previous cross
                     cross_prev = cross;
-
-                    // update points
-                    x0 = x1;
-                    y0 = y1;
-                    x1 = x2;
-                    y1 = y2;
-                    x2 = lx_float_to_fixed(item->points[3].x);
-                    y2 = lx_float_to_fixed(item->points[3].y);
                 }
+
+                x0 = x1;
+                y0 = y1;
+                x1 = x2;
+                y1 = y2;
+                x2 = lx_float_to_fixed(item->points[2].x);
+                y2 = lx_float_to_fixed(item->points[2].y);
+                point_count += 2;
                 break;
-            case LX_PATH_CODE_CLOSE:
-                {
-                    // the points
-                    lx_point_ref_t points = (lx_point_ref_t)lx_array_data(path->points);
+            }
+            case LX_PATH_CODE_CUBIC: {
+                x0 = x1;
+                y0 = y1;
+                x1 = x2;
+                y1 = y2;
+                x2 = lx_float_to_fixed(item->points[1].x);
+                y2 = lx_float_to_fixed(item->points[1].y);
 
-                    // check
-                    lx_assert(points && lx_array_size(path->points) > 1);
-                    lx_assert(points[0].x == item->points[0].x && points[0].y == item->points[0].y);
+                // points enough?
+                if (point_count > 1) {
 
-                    // update the points
-                    x0 = x1;
-                    y0 = y1;
-                    x1 = x2;
-                    y1 = y2;
-                    x2 = lx_float_to_fixed(points[1].x);
-                    y2 = lx_float_to_fixed(points[1].y);
+                    // compute the cross value of the vectors (p1, p0) and (p1, p2)
+                    cross_value = (lx_hong_t)(x0 - x1) * (y2 - y1) - (lx_hong_t)(y0 - y1) * (x2 - x1);
+
+                    // compute cross = sign(cross_value)
+                    cross = cross_value < 0? -1 : cross_value > 0;
+
+                    // concave contour?
+                    if ((cross * cross_prev) < 0) {
+                        path->flags  &= ~LX_PATH_FLAG_CONVEX;
+                        finished = lx_true;
+                        break;
+                    }
+                    cross_prev = cross;
                 }
+
+                x0 = x1;
+                y0 = y1;
+                x1 = x2;
+                y1 = y2;
+                x2 = lx_float_to_fixed(item->points[2].x);
+                y2 = lx_float_to_fixed(item->points[2].y);
+                point_count += 3;
+
+                // compute the cross value of the vectors (p1, p0) and (p1, p2)
+                cross_value = (lx_hong_t)(x0 - x1) * (y2 - y1) - (lx_hong_t)(y0 - y1) * (x2 - x1);
+
+                // compute cross = sign(cross_value)
+                cross = cross_value < 0? -1 : cross_value > 0;
+
+                // concave contour?
+                if ((cross * cross_prev) < 0) {
+                    path->flags &= ~LX_PATH_FLAG_CONVEX;
+                    finished = lx_true;
+                    break;
+                }
+
+                x0 = x1;
+                y0 = y1;
+                x1 = x2;
+                y1 = y2;
+                x2 = lx_float_to_fixed(item->points[3].x);
+                y2 = lx_float_to_fixed(item->points[3].y);
+                cross_prev = cross;
                 break;
+            }
+            case LX_PATH_CODE_CLOSE: {
+                lx_point_ref_t points = (lx_point_ref_t)lx_array_data(path->points);
+                lx_assert(points && lx_array_size(path->points) > 1);
+                lx_assert(points[0].x == item->points[0].x && points[0].y == item->points[0].y);
+
+                x0 = x1;
+                y0 = y1;
+                x1 = x2;
+                y1 = y2;
+                x2 = lx_float_to_fixed(points[1].x);
+                y2 = lx_float_to_fixed(points[1].y);
+                break;
+            }
             default:
                 lx_assert(0);
                 break;
@@ -398,11 +360,6 @@ static lx_bool_t lx_path_make_convex(lx_path_t* path) {
     // ok
     return lx_true;
 }
-#else
-static lx_bool_t lx_path_make_convex(lx_path_t* path) {
-    return lx_false;
-}
-#endif
 
 static lx_void_t lx_path_make_quad_for_arc_to(lx_point_ref_t ctrl, lx_point_ref_t point, lx_cpointer_t udata) {
     // append point and skip the first point which the ctrl point is empty
@@ -421,7 +378,6 @@ static lx_void_t lx_path_make_quad_for_add_arc(lx_point_ref_t ctrl, lx_point_ref
     }
 }
 
-#if 0
 static lx_void_t lx_path_make_line_for_curve_to(lx_point_ref_t point, lx_cpointer_t udata) {
     lx_value_t* values = (lx_value_t*)udata;
     lx_assert(values && point);
@@ -432,8 +388,6 @@ static lx_void_t lx_path_make_line_for_curve_to(lx_point_ref_t point, lx_cpointe
 
     // append point
     lx_array_insert_tail(polygon_points, point);
-
-    // update the points count
     values[1].u16++;
 }
 
@@ -441,14 +395,18 @@ static lx_bool_t lx_path_make_polygon(lx_path_t* path) {
     lx_assert_and_check_return_val(path && path->codes && path->points, lx_false);
 
     // init polygon counts
-    if (!path->polygon_counts) path->polygon_counts = lx_array_init(8, sizeof(lx_uint16_t), lx_null);
+    if (!path->polygon_counts) {
+        path->polygon_counts = lx_array_init(8, sizeof(lx_uint16_t), lx_null);
+    }
     lx_assert_and_check_return_val(path->polygon_counts, lx_false);
 
     // have curve?
-    if (path->flags & LX_PATH_FLAG_CURVE)
-    {
+    if (path->flags & LX_PATH_FLAG_CURVE) {
+
         // init polygon points
-        if (!path->polygon_points) path->polygon_points = lx_array_init(lx_array_size(path->points), sizeof(lx_point_t), lx_null);
+        if (!path->polygon_points) {
+            path->polygon_points = lx_array_init(lx_array_size(path->points), sizeof(lx_point_t), lx_null);
+        }
         lx_assert_and_check_return_val(path->polygon_points, lx_false);
 
         // clear polygon points and counts
@@ -457,45 +415,29 @@ static lx_bool_t lx_path_make_polygon(lx_path_t* path) {
 
         // init values
         lx_value_t values[2];
-        values[0].ptr = path->polygon_points;
+        values[0].ptr = (lx_pointer_t)path->polygon_points;
         values[1].u16 = 0;
-        lx_for_all_if (lx_path_item_ref_t, item, self, item)
-        {
-            switch (item->code)
-            {
-            case LX_PATH_CODE_MOVE:
-                {
-                    // append count
-                    if (values[1].u16) lx_array_insert_tail(path->polygon_counts, lx_u2p(values[1].u16));
-
-                    // make point
-                    lx_array_insert_tail(path->polygon_points, &item->points[0]);
-
-                    // init the points count
-                    values[1].u16 = 1;
-                }
+        lx_for_all (lx_path_item_ref_t, item, path) {
+            switch (item->code) {
+            case LX_PATH_CODE_MOVE: {
+                if (values[1].u16) lx_array_insert_tail(path->polygon_counts, &values[1].u16);
+                lx_array_insert_tail(path->polygon_points, &item->points[0]);
+                values[1].u16 = 1;
                 break;
-            case LX_PATH_CODE_LINE:
-                {
-                    // make point
-                    lx_array_insert_tail(path->polygon_points, &item->points[1]);
-
-                    // update the points count
-                    values[1].u16++;
-                }
+            }
+            case LX_PATH_CODE_LINE: {
+                lx_array_insert_tail(path->polygon_points, &item->points[1]);
+                values[1].u16++;
                 break;
-            case LX_PATH_CODE_QUAD:
-                {
-                    // make quad points
-                    lx_quad_make_line(item->points, lx_path_make_line_for_curve_to, values);
-                }
+            }
+            case LX_PATH_CODE_QUAD: {
+                lx_bezier2_make_line(item->points, lx_path_make_line_for_curve_to, values);
                 break;
-            case LX_PATH_CODE_CUBIC:
-                {
-                    // make cubic points
-                    lx_cubic_make_line(item->points, lx_path_make_line_for_curve_to, values);
-                }
+            }
+            case LX_PATH_CODE_CUBIC: {
+                lx_bezier3_make_line(item->points, lx_path_make_line_for_curve_to, values);
                 break;
+            }
             case LX_PATH_CODE_CLOSE:
             default:
                 break;
@@ -503,50 +445,42 @@ static lx_bool_t lx_path_make_polygon(lx_path_t* path) {
         }
 
         // append the last count
-        if (values[1].u16)
-        {
-            lx_array_insert_tail(path->polygon_counts, lx_u2p(values[1].u16));
+        if (values[1].u16) {
+            lx_array_insert_tail(path->polygon_counts, &values[1].u16);
             values[1].u16 = 0;
         }
 
         // append the tail count
-        lx_array_insert_tail(path->polygon_counts, (lx_cpointer_t)0);
+        lx_uint16_t zero = 0;
+        lx_array_insert_tail(path->polygon_counts, &zero);
 
         // init polygon
         path->polygon.points = (lx_point_ref_t)lx_array_data(path->polygon_points);
         path->polygon.counts = (lx_uint16_t*)lx_array_data(path->polygon_counts);
     }
     // only move-to and line-to? using the points directly
-    else
-    {
+    else {
         // init polygon counts
         lx_uint16_t count = 0;
         lx_array_clear(path->polygon_counts);
-        lx_for_all (lx_long_t, code, path->codes)
-        {
-            // check
+        lx_for_all (lx_long_t, code, path->codes) {
             lx_assert(code >= 0 && code < LX_PATH_CODE_MAXN);
-
-            // append count
-            if (code == LX_PATH_CODE_MOVE)
-            {
-                if (count) lx_array_insert_tail(path->polygon_counts, lx_u2p(count));
+            if (code == LX_PATH_CODE_MOVE) {
+                if (count) lx_array_insert_tail(path->polygon_counts, &count);
                 count = 0;
             }
-
-            // update count
             count += (lx_uint16_t)lx_path_point_step(code);
         }
 
         // append the last count
-        if (count)
-        {
-            lx_array_insert_tail(path->polygon_counts, lx_u2p(count));
+        if (count) {
+            lx_array_insert_tail(path->polygon_counts, &count);
             count = 0;
         }
 
         // append the tail count
-        lx_array_insert_tail(path->polygon_counts, (lx_cpointer_t)0);
+        count = 0;
+        lx_array_insert_tail(path->polygon_counts, &count);
 
         // init polygon
         path->polygon.points = (lx_point_ref_t)lx_array_data(path->points);
@@ -557,16 +491,9 @@ static lx_bool_t lx_path_make_polygon(lx_path_t* path) {
     lx_assert_and_check_return_val(path->polygon.points && path->polygon.counts, lx_false);
 
     // is convex polygon?
-    path->polygon.convex = lx_path_convex(self);
-
-    // ok
+    path->polygon.convex = lx_path_convex((lx_path_ref_t)path);
     return lx_true;
 }
-#else
-static lx_bool_t lx_path_make_polygon(lx_path_t* path) {
-    return lx_false;
-}
-#endif
 
 static lx_size_t lx_path_iterator_head(lx_iterator_ref_t iterator) {
     return 0;
@@ -1706,3 +1633,38 @@ lx_void_t lx_path_add_ellipse2i(lx_path_ref_t self, lx_long_t x0, lx_long_t y0, 
     lx_ellipse_imake(&ellipse, x0, y0, rx, ry);
     lx_path_add_ellipse(self, &ellipse, direction);
 }
+
+#ifdef LX_DEBUG
+lx_void_t lx_path_dump(lx_path_ref_t self) {
+    lx_assert_and_check_return(self);
+
+    lx_trace_i("");
+    lx_point_t last = {0};
+    if (lx_path_last(self, &last)) {
+        lx_trace_i("last: %{point}", &last);
+    }
+
+    lx_trace_i("bounds: %{rect}", lx_path_bounds(self));
+    lx_for_all_if (lx_path_item_ref_t, item, self, item) {
+        switch (item->code) {
+        case LX_PATH_CODE_MOVE:
+            lx_trace_i("move_to: %{point}", &item->points[0]);
+            break;
+        case LX_PATH_CODE_LINE:
+            lx_trace_i("line_to: %{point}", &item->points[1]);
+            break;
+        case LX_PATH_CODE_QUAD:
+            lx_trace_i("quad_to: %{point}, %{point}", &item->points[1], &item->points[2]);
+            break;
+        case LX_PATH_CODE_CUBIC:
+            lx_trace_i("cubic_to: %{point}, %{point}, %{point}", &item->points[1], &item->points[2], &item->points[3]);
+            break;
+        case LX_PATH_CODE_CLOSE:
+            lx_trace_i("closed");
+            break;
+        default:
+            break;
+        }
+    }
+}
+#endif
