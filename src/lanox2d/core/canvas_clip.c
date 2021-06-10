@@ -23,10 +23,36 @@
  * includes
  */
 #include "canvas_clip.h"
+#include "device.h"
 #include "private/canvas.h"
 #include "../base/base.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
+lx_clipper_ref_t lx_canvas_clipper(lx_canvas_ref_t self) {
+    lx_canvas_t* canvas = (lx_canvas_t*)self;
+    if (canvas && canvas->clipper_stack) {
+        return (lx_clipper_ref_t)lx_object_stack_object(canvas->clipper_stack);
+    }
+    return lx_null;
+}
 
+lx_clipper_ref_t lx_canvas_clipper_save(lx_canvas_ref_t self) {
+    lx_canvas_t* canvas = (lx_canvas_t*)self;
+    lx_assert_and_check_return_val(canvas && canvas->clipper_stack, lx_null);
+
+    // save clipper
+    lx_clipper_ref_t clipper = (lx_clipper_ref_t)lx_object_stack_save(canvas->clipper_stack);
+    lx_device_bind_clipper(canvas->device, clipper);
+    return clipper;
+}
+
+lx_void_t lx_canvas_clipper_load(lx_canvas_ref_t self) {
+    lx_canvas_t* canvas = (lx_canvas_t*)self;
+    lx_assert_and_check_return(canvas && canvas->clipper_stack);
+
+    // load clipper
+    lx_object_stack_load(canvas->clipper_stack);
+    lx_device_bind_clipper(canvas->device, lx_canvas_clipper(self));
+}

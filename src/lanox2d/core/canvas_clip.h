@@ -35,6 +35,28 @@ lx_extern_c_enter
  * interfaces
  */
 
+/*! get the clipper
+ *
+ * @param canvas    the canvas
+ *
+ * @return          the clipper
+ */
+lx_clipper_ref_t    lx_canvas_clipper(lx_canvas_ref_t canvas);
+
+/*! save clipper
+ *
+ * @param canvas    the canvas
+ *
+ * @return          the current clipper
+ */
+lx_clipper_ref_t    lx_canvas_clipper_save(lx_canvas_ref_t canvas);
+
+/*! load clipper
+ *
+ * @param canvas    the canvas
+ */
+lx_void_t           lx_canvas_clipper_load(lx_canvas_ref_t canvas);
+
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
