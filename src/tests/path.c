@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
         if (copy) {
             lx_path_copy(copy, path);
 #ifdef LX_DEBUG
-//            lx_path_dump(copy);
+            lx_path_dump(copy);
 #endif
             lx_path_exit(copy);
         }
