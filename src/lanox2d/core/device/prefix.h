@@ -37,6 +37,7 @@
 typedef struct lx_device_t_ {
     lx_uint16_t         width;
     lx_uint16_t         height;
+    lx_path_ref_t       path;
     lx_paint_ref_t      paint;
     lx_matrix_ref_t     matrix;
     lx_void_t           (*resize)(lx_device_ref_t device, lx_size_t width, lx_size_t height);
