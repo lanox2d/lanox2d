@@ -78,6 +78,12 @@ lx_double_t     lx_cos(lx_double_t x);
 /// compute cos of float value
 lx_float_t      lx_cosf(lx_float_t x);
 
+/// compute atan of double value
+lx_double_t     lx_atan(lx_double_t x);
+
+/// compute atan of float value
+lx_float_t      lx_atanf(lx_float_t x);
+
 /// compute sin and cos of double value
 lx_void_t       lx_sincos(lx_double_t x, lx_double_t* s, lx_double_t* c);
 
