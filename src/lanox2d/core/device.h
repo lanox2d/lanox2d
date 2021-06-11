@@ -108,6 +108,41 @@ lx_void_t           lx_device_bind_clipper(lx_device_ref_t device, lx_clipper_re
  */
 lx_void_t           lx_device_draw_clear(lx_device_ref_t device, lx_color_t color);
 
+/*! draw path
+ *
+ * @param device    the device
+ * @param path      the path
+ */
+lx_void_t           lx_device_draw_path(lx_device_ref_t device, lx_path_ref_t path);
+
+/*! draw lines
+ *
+ * @param device    the device
+ * @param points    the points
+ * @param count     the points count
+ * @param bounds    the bounds
+ */
+lx_void_t           lx_device_draw_lines(lx_device_ref_t device, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds);
+
+/*! draw points
+ *
+ * @param device    the device
+ * @param points    the points
+ * @param count     the points count
+ * @param bounds    the bounds
+ */
+lx_void_t           lx_device_draw_points(lx_device_ref_t device, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds);
+
+/*! draw polygon
+ *
+ * @param device    the device
+ * @param polygon   the polygon
+ * @param hint      the hint shape
+ * @param bounds    the bounds
+ */
+lx_void_t           lx_device_draw_polygon(lx_device_ref_t device, lx_polygon_ref_t polygon, lx_shape_ref_t hint, lx_rect_ref_t bounds);
+
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */

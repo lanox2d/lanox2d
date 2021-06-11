@@ -24,6 +24,7 @@
  */
 #include "device.h"
 #include "device/prefix.h"
+#include "path.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
@@ -83,8 +84,41 @@ lx_void_t lx_device_bind_clipper(lx_device_ref_t self, lx_clipper_ref_t clipper)
 
 lx_void_t lx_device_draw_clear(lx_device_ref_t self, lx_color_t color) {
     lx_device_t* device = (lx_device_t*)self;
-    if (device && device->draw_clear) {
-        device->draw_clear(self, color);
+    lx_assert(device && device->draw_clear);
+    device->draw_clear(self, color);
+}
+
+lx_void_t lx_device_draw_path(lx_device_ref_t self, lx_path_ref_t path) {
+    lx_device_t* device = (lx_device_t*)self;
+    lx_assert_and_check_return(device);
+
+    if (!lx_path_empty(path)) {
+        if (device->draw_path) {
+            device->draw_path(self, path);
+        } else {
+            /* draw the polygon for path
+             *
+             * @note the quality of drawing curve may be not higher and faster for stroking with the width > 1
+             */
+            lx_device_draw_polygon(self, lx_path_polygon(path), lx_path_hint(path), lx_path_bounds(path));
+        }
     }
 }
 
+lx_void_t lx_device_draw_lines(lx_device_ref_t self, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds) {
+    lx_device_t* device = (lx_device_t*)self;
+    lx_assert(device && device->draw_lines);
+    device->draw_lines(self, points, count, bounds);
+}
+
+lx_void_t lx_device_draw_points(lx_device_ref_t self, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds) {
+    lx_device_t* device = (lx_device_t*)self;
+    lx_assert(device && device->draw_points);
+    device->draw_points(self, points, count, bounds);
+}
+
+lx_void_t lx_device_draw_polygon(lx_device_ref_t self, lx_polygon_ref_t polygon, lx_shape_ref_t hint, lx_rect_ref_t bounds) {
+    lx_device_t* device = (lx_device_t*)self;
+    lx_assert(device && device->draw_polygon);
+    device->draw_polygon(self, polygon, hint, bounds);
+}
