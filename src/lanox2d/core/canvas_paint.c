@@ -38,7 +38,7 @@ lx_paint_ref_t lx_canvas_paint(lx_canvas_ref_t self) {
     return lx_null;
 }
 
-lx_paint_ref_t lx_canvas_paint_save(lx_canvas_ref_t self) {
+lx_paint_ref_t lx_canvas_save_paint(lx_canvas_ref_t self) {
     lx_canvas_t* canvas = (lx_canvas_t*)self;
     lx_assert_and_check_return_val(canvas && canvas->device && canvas->paint_stack, lx_null);
 
@@ -48,7 +48,7 @@ lx_paint_ref_t lx_canvas_paint_save(lx_canvas_ref_t self) {
     return paint;
 }
 
-lx_void_t lx_canvas_paint_load(lx_canvas_ref_t self) {
+lx_void_t lx_canvas_load_paint(lx_canvas_ref_t self) {
     lx_canvas_t* canvas = (lx_canvas_t*)self;
     lx_assert_and_check_return(canvas && canvas->device && canvas->paint_stack);
 

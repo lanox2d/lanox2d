@@ -49,19 +49,19 @@ lx_path_ref_t       lx_canvas_path(lx_canvas_ref_t canvas);
  *
  * @return          the current path
  */
-lx_path_ref_t       lx_canvas_path_save(lx_canvas_ref_t canvas);
+lx_path_ref_t       lx_canvas_save_path(lx_canvas_ref_t canvas);
 
 /*! load path
  *
  * @param canvas    the canvas
  */
-lx_void_t           lx_canvas_path_load(lx_canvas_ref_t canvas);
+lx_void_t           lx_canvas_load_path(lx_canvas_ref_t canvas);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * inline interfaces
  */
 
-static lx_inline lx_void_t lx_canvas_path_clear(lx_canvas_ref_t canvas) {
+static lx_inline lx_void_t lx_canvas_clear_path(lx_canvas_ref_t canvas) {
     lx_path_clear(lx_canvas_path(canvas));
 }
 

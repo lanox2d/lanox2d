@@ -38,7 +38,7 @@ lx_clipper_ref_t lx_canvas_clipper(lx_canvas_ref_t self) {
     return lx_null;
 }
 
-lx_clipper_ref_t lx_canvas_clipper_save(lx_canvas_ref_t self) {
+lx_clipper_ref_t lx_canvas_save_clipper(lx_canvas_ref_t self) {
     lx_canvas_t* canvas = (lx_canvas_t*)self;
     lx_assert_and_check_return_val(canvas && canvas->clipper_stack, lx_null);
 
@@ -48,7 +48,7 @@ lx_clipper_ref_t lx_canvas_clipper_save(lx_canvas_ref_t self) {
     return clipper;
 }
 
-lx_void_t lx_canvas_clipper_load(lx_canvas_ref_t self) {
+lx_void_t lx_canvas_load_clipper(lx_canvas_ref_t self) {
     lx_canvas_t* canvas = (lx_canvas_t*)self;
     lx_assert_and_check_return(canvas && canvas->clipper_stack);
 

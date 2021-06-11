@@ -49,18 +49,18 @@ lx_matrix_ref_t     lx_canvas_matrix(lx_canvas_ref_t canvas);
  *
  * @return          the current matrix
  */
-lx_matrix_ref_t     lx_canvas_matrix_save(lx_canvas_ref_t canvas);
+lx_matrix_ref_t     lx_canvas_save_matrix(lx_canvas_ref_t canvas);
 
 /*! load matrix
  *
  * @param canvas    the canvas
  */
-lx_void_t           lx_canvas_matrix_load(lx_canvas_ref_t canvas);
+lx_void_t           lx_canvas_load_matrix(lx_canvas_ref_t canvas);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * inline interfaces
  */
-static lx_inline lx_void_t lx_canvas_matrix_clear(lx_canvas_ref_t canvas) {
+static lx_inline lx_void_t lx_canvas_clear_matrix(lx_canvas_ref_t canvas) {
     lx_matrix_clear(lx_canvas_matrix(canvas));
 }
 

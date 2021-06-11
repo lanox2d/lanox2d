@@ -92,12 +92,12 @@ lx_void_t lx_canvas_draw_arc(lx_canvas_ref_t self, lx_arc_ref_t arc) {
     lx_canvas_t* canvas = (lx_canvas_t*)self;
     lx_assert_and_check_return(canvas && arc);
 
-    lx_path_ref_t path = lx_canvas_path_save(self);
+    lx_path_ref_t path = lx_canvas_save_path(self);
     if (path) {
         lx_path_clear(path);
         lx_path_add_arc(path, arc);
         lx_canvas_draw_path(self, path);
-        lx_canvas_path_load(self);
+        lx_canvas_load_path(self);
     }
 }
 
@@ -200,12 +200,12 @@ lx_void_t lx_canvas_draw_round_rect(lx_canvas_ref_t self, lx_round_rect_ref_t re
         return ;
     }
 
-    lx_path_ref_t path = lx_canvas_path_save(self);
+    lx_path_ref_t path = lx_canvas_save_path(self);
     if (path) {
         lx_path_clear(path);
         lx_path_add_round_rect(path, rect, LX_ROTATE_DIRECTION_CW);
         lx_canvas_draw_path(self, path);
-        lx_canvas_path_load(self);
+        lx_canvas_load_path(self);
     }
 }
 
@@ -222,12 +222,12 @@ lx_void_t lx_canvas_draw_round_rect2i(lx_canvas_ref_t self, lx_rect_ref_t bounds
 }
 
 lx_void_t lx_canvas_draw_circle(lx_canvas_ref_t self, lx_circle_ref_t circle) {
-    lx_path_ref_t path = lx_canvas_path_save(self);
+    lx_path_ref_t path = lx_canvas_save_path(self);
     if (path) {
         lx_path_clear(path);
         lx_path_add_circle(path, circle, LX_ROTATE_DIRECTION_CW);
         lx_canvas_draw_path(self, path);
-        lx_canvas_path_load(self);
+        lx_canvas_load_path(self);
     }
 }
 
@@ -244,12 +244,12 @@ lx_void_t lx_canvas_draw_circle2i(lx_canvas_ref_t self, lx_long_t x0, lx_long_t 
 }
 
 lx_void_t lx_canvas_draw_ellipse(lx_canvas_ref_t self, lx_ellipse_ref_t ellipse) {
-    lx_path_ref_t path = lx_canvas_path_save(self);
+    lx_path_ref_t path = lx_canvas_save_path(self);
     if (path) {
         lx_path_clear(path);
         lx_path_add_ellipse(path, ellipse, LX_ROTATE_DIRECTION_CW);
         lx_canvas_draw_path(self, path);
-        lx_canvas_path_load(self);
+        lx_canvas_load_path(self);
     }
 }
 

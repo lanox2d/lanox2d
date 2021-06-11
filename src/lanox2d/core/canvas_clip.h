@@ -49,18 +49,18 @@ lx_clipper_ref_t    lx_canvas_clipper(lx_canvas_ref_t canvas);
  *
  * @return          the current clipper
  */
-lx_clipper_ref_t    lx_canvas_clipper_save(lx_canvas_ref_t canvas);
+lx_clipper_ref_t    lx_canvas_save_clipper(lx_canvas_ref_t canvas);
 
 /*! load clipper
  *
  * @param canvas    the canvas
  */
-lx_void_t           lx_canvas_clipper_load(lx_canvas_ref_t canvas);
+lx_void_t           lx_canvas_load_clipper(lx_canvas_ref_t canvas);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * inline interfaces
  */
-static lx_inline lx_void_t lx_canvas_clipper_clear(lx_canvas_ref_t canvas) {
+static lx_inline lx_void_t lx_canvas_clear_clipper(lx_canvas_ref_t canvas) {
     lx_clipper_clear(lx_canvas_clipper(canvas));
 }
 

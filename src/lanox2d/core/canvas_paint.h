@@ -49,18 +49,18 @@ lx_paint_ref_t      lx_canvas_paint(lx_canvas_ref_t canvas);
  *
  * @return          the current paint
  */
-lx_paint_ref_t      lx_canvas_paint_save(lx_canvas_ref_t canvas);
+lx_paint_ref_t      lx_canvas_save_paint(lx_canvas_ref_t canvas);
 
 /*! load paint
  *
  * @param canvas    the canvas
  */
-lx_void_t           lx_canvas_paint_load(lx_canvas_ref_t canvas);
+lx_void_t           lx_canvas_load_paint(lx_canvas_ref_t canvas);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * inline interfaces
  */
-static lx_inline lx_void_t lx_canvas_paint_clear(lx_canvas_ref_t canvas) {
+static lx_inline lx_void_t lx_canvas_clear_paint(lx_canvas_ref_t canvas) {
     lx_paint_clear(lx_canvas_paint(canvas));
 }
 

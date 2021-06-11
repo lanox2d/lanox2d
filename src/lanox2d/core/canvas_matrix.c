@@ -35,7 +35,7 @@ lx_matrix_ref_t lx_canvas_matrix(lx_canvas_ref_t self) {
     return canvas? &canvas->matrix : lx_null;
 }
 
-lx_matrix_ref_t lx_canvas_matrix_save(lx_canvas_ref_t self) {
+lx_matrix_ref_t lx_canvas_save_matrix(lx_canvas_ref_t self) {
     lx_canvas_t* canvas = (lx_canvas_t*)self;
     lx_assert_and_check_return_val(canvas && canvas->device && canvas->matrix_stack, lx_null);
 
@@ -44,7 +44,7 @@ lx_matrix_ref_t lx_canvas_matrix_save(lx_canvas_ref_t self) {
     lx_device_bind_matrix(canvas->device, &canvas->matrix);
     return &canvas->matrix;
 }
-lx_void_t lx_canvas_matrix_load(lx_canvas_ref_t self) {
+lx_void_t lx_canvas_load_matrix(lx_canvas_ref_t self) {
     lx_canvas_t* canvas = (lx_canvas_t*)self;
     lx_assert_and_check_return(canvas && canvas->device && canvas->matrix_stack);
 
