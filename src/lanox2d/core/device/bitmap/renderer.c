@@ -24,7 +24,7 @@
  */
 #include "renderer.h"
 #include "biltter.h"
-//#include "../../impl/stroker.h"
+#include "../../private/stroker.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
