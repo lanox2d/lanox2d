@@ -22,18 +22,17 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "prefix.h"
+#include "renderer.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * types
+ * macros
  */
 
-// the bitmap device type
-typedef struct lx_bitmap_device_t_ {
-    lx_device_t     base;
-    lx_bitmap_ref_t bitmap;
-    lx_pixmap_ref_t pixmap;
-}lx_bitmap_device_t;
+#ifdef LX_CONFIG_SMALL
+#   define LX_DEVICE_BITMAP_POINTS_GROW      (64)
+#else
+#   define LX_DEVICE_BITMAP_POINTS_GROW      (128)
+#endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
@@ -49,7 +48,7 @@ static lx_void_t lx_device_bitmap_draw_clear(lx_device_ref_t self, lx_color_t co
 
     // check
     lx_bitmap_device_t* device = (lx_bitmap_device_t*)self;
-    lx_assert_and_check_return(device && device->bitmap);
+    lx_assert(device && device->bitmap);
 
     // get the bitmap data
     lx_byte_t* data = lx_bitmap_data(device->bitmap);
@@ -74,9 +73,27 @@ static lx_void_t lx_device_bitmap_draw_clear(lx_device_ref_t self, lx_color_t co
     }
 }
 
+static lx_void_t lx_device_bitmap_draw_lines(lx_device_ref_t self, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds) {
+    lx_bitmap_device_t* device = (lx_bitmap_device_t*)self;
+    lx_assert(device && points && count);
+
+    if (lx_bitmap_renderer_init(device)) {
+        lx_bitmap_renderer_draw_lines(device, points, count, bounds);
+        lx_bitmap_renderer_exit(device);
+    }
+}
+
 static lx_void_t lx_device_bitmap_exit(lx_device_ref_t self) {
     lx_bitmap_device_t* device = (lx_bitmap_device_t*)self;
     if (device) {
+        if (device->points) {
+            lx_array_exit(device->points);
+            device->points = lx_null;
+        }
+        if (device->counts) {
+            lx_array_exit(device->counts);
+            device->counts = lx_null;
+        }
         lx_free(device);
     }
 }
@@ -105,12 +122,21 @@ lx_device_ref_t lx_device_init_from_bitmap(lx_bitmap_ref_t bitmap) {
 
         device->base.resize     = lx_device_bitmap_resize;
         device->base.draw_clear = lx_device_bitmap_draw_clear;
+        device->base.draw_lines = lx_device_bitmap_draw_lines;
         device->base.exit       = lx_device_bitmap_exit;
         device->bitmap          = bitmap;
 
         // init pixmap
         device->pixmap = lx_pixmap(lx_bitmap_pixfmt(bitmap), 0xff);
         lx_assert_and_check_break(device->pixmap);
+
+        // init points
+        device->points = lx_array_init(LX_DEVICE_BITMAP_POINTS_GROW, sizeof(lx_point_t), lx_null);
+        lx_assert_and_check_break(device->points);
+
+        // init counts
+        device->counts = lx_array_init(8, sizeof(lx_uint16_t), lx_null);
+        lx_assert_and_check_break(device->counts);
 
         // ok
         ok = lx_true;

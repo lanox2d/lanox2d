@@ -25,6 +25,50 @@
  * includes
  */
 #include "../prefix.h"
+#include "../../path.h"
+#include "../../paint.h"
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * types
+ */
+
+// the bitmap biltter solid type
+typedef struct lx_bitmap_biltter_solid_t_ {
+    lx_pixel_t                pixel;
+    lx_byte_t                 alpha;
+}lx_bitmap_biltter_solid_t;
+
+// the bitmap biltter type
+typedef struct lx_bitmap_biltter_t_ {
+    union {
+        lx_bitmap_biltter_solid_t    solid;
+    }u;
+    lx_bitmap_ref_t          bitmap;
+    lx_pixmap_ref_t          pixmap;
+    lx_size_t                btp;
+    lx_size_t                row_bytes;
+    lx_void_t                (*exit)(struct lx_bitmap_biltter_t_* biltter);
+    lx_void_t                (*done_p)(struct lx_bitmap_biltter_t_* biltter, lx_long_t x, lx_long_t y);
+    lx_void_t                (*done_h)(struct lx_bitmap_biltter_t_* biltter, lx_long_t x, lx_long_t y, lx_long_t w);
+    lx_void_t                (*done_v)(struct lx_bitmap_biltter_t_* biltter, lx_long_t x, lx_long_t y, lx_long_t h);
+    lx_void_t                (*done_r)(struct lx_bitmap_biltter_t_* biltter, lx_long_t x, lx_long_t y, lx_long_t w, lx_long_t h);
+}lx_bitmap_biltter_t;
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * types
+ */
+
+// the bitmap device type
+typedef struct lx_bitmap_device_t_ {
+    lx_device_t             base;
+    lx_bitmap_ref_t         bitmap;
+    lx_pixmap_ref_t         pixmap;
+    lx_rect_t               bounds;
+    lx_array_ref_t          points;
+    lx_array_ref_t          counts;
+    lx_pointer_t            stroker;
+    lx_bitmap_biltter_t     biltter;
+}lx_bitmap_device_t;
 
 #endif
 
