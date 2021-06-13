@@ -14,56 +14,19 @@ static lx_float_t       g_width = 1.0f;
 static lx_byte_t        g_alpha = 255;
 static lx_bool_t        g_transform = lx_false;
 static lx_entry_t*      g_entry = lx_null;
-static lx_long_t        g_line_dx = 100;
-static lx_long_t        g_line_dy = 100;
+static lx_path_ref_t    g_path = lx_null;
 
-static lx_void_t on_draw_line(lx_window_ref_t window, lx_canvas_ref_t canvas) {
-    lx_canvas_color_set(canvas, LX_COLOR_BLUE);
-    lx_canvas_mode_set(canvas, LX_PAINT_MODE_STROKE);
-    lx_canvas_draw_line2i(canvas, -g_line_dx, -g_line_dy, g_line_dx, g_line_dy);
-}
-
-static lx_void_t on_draw_rect(lx_window_ref_t window, lx_canvas_ref_t canvas) {
-    lx_rect_t rect;
-    lx_rect_imake(&rect, -100, -100, 200, 200);
-
-    lx_canvas_color_set(canvas, LX_COLOR_RED);
-    lx_canvas_mode_set(canvas, LX_PAINT_MODE_FILL);
-    lx_canvas_draw_rect(canvas, &rect);
-
-    lx_canvas_color_set(canvas, LX_COLOR_BLUE);
-    lx_canvas_mode_set(canvas, LX_PAINT_MODE_STROKE);
-    lx_canvas_draw_rect(canvas, &rect);
-}
-
-static lx_void_t on_draw_triangle(lx_window_ref_t window, lx_canvas_ref_t canvas) {
-    lx_triangle_t triangle;
-    lx_triangle_imake(&triangle, -100, 100, 0, -100, 100, 100);
-
-    lx_canvas_color_set(canvas, LX_COLOR_RED);
-    lx_canvas_mode_set(canvas, LX_PAINT_MODE_FILL);
-    lx_canvas_draw_triangle(canvas, &triangle);
-
-    lx_canvas_color_set(canvas, LX_COLOR_BLUE);
-    lx_canvas_mode_set(canvas, LX_PAINT_MODE_STROKE);
-    lx_canvas_draw_triangle(canvas, &triangle);
-}
-
-static lx_void_t on_event_line(lx_window_ref_t window, lx_event_ref_t event) {
-    if (event->type == LX_EVENT_TYPE_MOUSE && event->u.mouse.code == LX_MOUSE_MOVE &&
-            event->u.mouse.button == LX_MOUSE_BUTTON_LEFT) {
-        lx_long_t x0 = lx_window_width(window) >> 1;
-        lx_long_t y0 = lx_window_height(window) >> 1;
-        lx_long_t cx = (lx_long_t)event->u.mouse.cursor.x;
-        lx_long_t cy = (lx_long_t)event->u.mouse.cursor.y;
-        g_line_dx = cx - x0;
-        g_line_dy = y0 - cy;
-    }
-}
+#include "shape/line.c"
+#include "shape/rect.c"
+#include "shape/triangle.c"
+#include "shape/bezier2.c"
+#include "shape/bezier3.c"
 
 static lx_entry_t g_entries[] = {
     {"line",     on_draw_line,     on_event_line},
     {"rect",     on_draw_rect,     lx_null},
+    {"bezier2",  on_draw_bezier2,  on_event_bezier2},
+    {"bezier3",  on_draw_bezier3,  on_event_bezier3},
     {"triangle", on_draw_triangle, lx_null}
 };
 
@@ -168,20 +131,35 @@ static lx_entry_t* get_entry(lx_char_t const* name) {
     return lx_null;
 }
 
+static lx_void_t window_init(lx_window_ref_t window) {
+
+    lx_window_on_draw(window, on_draw);
+    lx_window_on_event(window, on_event);
+    lx_window_on_resize(window, on_resize);
+
+    lx_float_t x0 = lx_window_width(window) / 2.0f;
+    lx_float_t y0 = lx_window_height(window) / 2.0f;
+    lx_window_flags_set(window, LX_WINDOW_FLAG_SHOW_FPS);
+    lx_quality_set(g_quality);
+    lx_matrix_init_translate(&g_matrix, x0, y0);
+
+    g_path = lx_path_init();
+}
+
+static lx_void_t window_exit(lx_window_ref_t window) {
+    if (g_path) {
+        lx_path_exit(g_path);
+    }
+    lx_window_exit(window);
+}
+
 int main(int argc, char** argv) {
     g_entry = get_entry(argv[1]? argv[1] : "rect");
     lx_window_ref_t window = lx_window_init(640, 480, "lanox2d");
     if (window) {
-        lx_float_t x0 = lx_window_width(window) / 2.0f;
-        lx_float_t y0 = lx_window_height(window) / 2.0f;
-        lx_window_flags_set(window, LX_WINDOW_FLAG_SHOW_FPS);
-        lx_quality_set(g_quality);
-        lx_matrix_init_translate(&g_matrix, x0, y0);
-        lx_window_on_draw(window, on_draw);
-        lx_window_on_event(window, on_event);
-        lx_window_on_resize(window, on_resize);
+        window_init(window);
         lx_window_runloop(window);
-        lx_window_exit(window);
+        window_exit(window);
     }
     return 0;
 }
