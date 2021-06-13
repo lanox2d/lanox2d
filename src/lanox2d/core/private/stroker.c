@@ -61,18 +61,16 @@ typedef lx_void_t               (*lx_stroker_capper_t)(lx_path_ref_t path, lx_po
 typedef lx_void_t               (*lx_stroker_joiner_t)(lx_path_ref_t inner, lx_path_ref_t outer, lx_point_ref_t center, lx_float_t radius, lx_vector_ref_t normal_unit_before, lx_vector_ref_t normal_unit_after, lx_float_t miter_invert, lx_bool_t is_line_to_prev, lx_bool_t is_line_to);
 
 // the stroker joiner angle type enum
-typedef enum __lx_stroker_joiner_angle_type_e
-{
+typedef enum lx_stroker_joiner_angle_type_e {
     LX_STROKER_JOINER_ANGLE_NEAR0   = 0
 ,   LX_STROKER_JOINER_ANGLE_NEAR180 = 1
 ,   LX_STROKER_JOINER_ANGLE_OBTUSE  = 2
 ,   LX_STROKER_JOINER_ANGLE_SHARP   = 3
-
 }lx_stroker_joiner_angle_type_e;
 
-// the stroker impl type
-typedef struct __lx_stroker_impl_t
-{
+// the stroker stroker type
+typedef struct __lx_stroker_t {
+
     // the cap
     lx_size_t               cap;
 
@@ -133,84 +131,53 @@ typedef struct __lx_stroker_impl_t
     // the joiner
     lx_stroker_joiner_t     joiner;
 
-}lx_stroker_impl_t;
+}lx_stroker_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
-static lx_bool_t lx_stroker_add_hint(lx_stroker_ref_t stroker, lx_shape_ref_t hint, lx_bool_t* convex)
-{
-    // check
+static lx_bool_t lx_stroker_add_hint(lx_stroker_ref_t self, lx_shape_ref_t hint, lx_bool_t* convex) {
     lx_check_return_val(hint, lx_false);
 
-    // done
     lx_bool_t ok = lx_false;
-    switch (hint->type)
-    {
-    case LX_SHAPE_TYPE_RECT:
-        {
-            // add rect
-            lx_stroker_add_rect(stroker, &hint->u.rect);
-
-            // ok
-            ok = lx_true;
-        }
+    switch (hint->type) {
+    case LX_SHAPE_TYPE_RECT: {
+        lx_stroker_add_rect(self, &hint->u.rect);
+        ok = lx_true;
         break;
-    case LX_SHAPE_TYPE_LINE:
-        {
-            // add lines
-            lx_point_t points[2];
-            points[0] = hint->u.line.p0;
-            points[1] = hint->u.line.p1;
-            lx_stroker_add_lines(stroker, points, lx_arrayn(points));
-
-            // set convex
-            if (convex) *convex = lx_true;
-
-            // ok
-            ok = lx_true;
-        }
+    }
+    case LX_SHAPE_TYPE_LINE: {
+        lx_point_t points[2];
+        points[0] = hint->u.line.p0;
+        points[1] = hint->u.line.p1;
+        lx_stroker_add_lines(self, points, lx_arrayn(points));
+        if (convex) *convex = lx_true;
+        ok = lx_true;
         break;
-    case LX_SHAPE_TYPE_CIRCLE:
-        {
-            // add circle
-            lx_stroker_add_circle(stroker, &hint->u.circle);
-
-            // ok
-            ok = lx_true;
-        }
+    }
+    case LX_SHAPE_TYPE_CIRCLE: {
+        lx_stroker_add_circle(self, &hint->u.circle);
+        ok = lx_true;
         break;
-    case LX_SHAPE_TYPE_ELLIPSE:
-        {
-            // add ellipse
-            lx_stroker_add_ellipse(stroker, &hint->u.ellipse);
-
-            // ok
-            ok = lx_true;
-        }
+    }
+    case LX_SHAPE_TYPE_ELLIPSE: {
+        lx_stroker_add_ellipse(self, &hint->u.ellipse);
+        ok = lx_true;
         break;
-    case LX_SHAPE_TYPE_POINT:
-        {
-            // add point
-            lx_stroker_add_points(stroker, &hint->u.point, 1);
-
-            // set convex
-            if (convex) *convex = lx_true;
-
-            // ok
-            ok = lx_true;
-        }
+    }
+    case LX_SHAPE_TYPE_POINT: {
+        lx_stroker_add_points(self, &hint->u.point, 1);
+        if (convex) *convex = lx_true;
+        ok = lx_true;
         break;
+    }
     default:
         break;
     }
-
-    // ok?
     return ok;
 }
-static lx_void_t lx_stroker_capper_butt(lx_path_ref_t path, lx_point_ref_t center, lx_point_ref_t end, lx_vector_ref_t normal, lx_bool_t is_line_to)
-{
-    // check
+
+static lx_void_t lx_stroker_capper_butt(lx_path_ref_t path, lx_point_ref_t center, lx_point_ref_t end, lx_vector_ref_t normal, lx_bool_t is_line_to) {
     lx_assert(path && end);
 
     /* cap th butt
@@ -235,9 +202,8 @@ static lx_void_t lx_stroker_capper_butt(lx_path_ref_t path, lx_point_ref_t cente
      */
     lx_path_line_to(path, end);
 }
-static lx_void_t lx_stroker_capper_round(lx_path_ref_t path, lx_point_ref_t center, lx_point_ref_t end, lx_vector_ref_t normal, lx_bool_t is_line_to)
-{
-    // check
+
+static lx_void_t lx_stroker_capper_round(lx_path_ref_t path, lx_point_ref_t center, lx_point_ref_t end, lx_vector_ref_t normal, lx_bool_t is_line_to) {
     lx_assert(path && center && end && normal);
 
     /* cap th round
@@ -341,20 +307,19 @@ static lx_void_t lx_stroker_capper_round(lx_path_ref_t path, lx_point_ref_t cent
      */
 
     // the factors
-    lx_float_t    x0 = center->x;
-    lx_float_t    y0 = center->y;
-    lx_float_t    nx = normal->x;
-    lx_float_t    ny = normal->y;
-    lx_float_t    lx = nx * LX_ARC_MAKE_CUBIC_FACTOR;
-    lx_float_t    ly = ny * LX_ARC_MAKE_CUBIC_FACTOR;
+    lx_float_t x0 = center->x;
+    lx_float_t y0 = center->y;
+    lx_float_t nx = normal->x;
+    lx_float_t ny = normal->y;
+    lx_float_t lx = nx * LX_ARC_MAKE_CUBIC_FACTOR;
+    lx_float_t ly = ny * LX_ARC_MAKE_CUBIC_FACTOR;
 
     // cap the round
     lx_path_cubic2_to(path, x0 + nx - ly, y0 + ny + lx, x0 - ny + lx, y0 + nx + ly, x0 - ny, y0 + nx);
     lx_path_cubic2_to(path, x0 - ny - lx, y0 + nx - ly, x0 - nx - ly, y0 - ny + lx, end->x, end->y);
 }
-static lx_void_t lx_stroker_capper_square(lx_path_ref_t path, lx_point_ref_t center, lx_point_ref_t end, lx_vector_ref_t normal, lx_bool_t is_line_to)
-{
-    // check
+
+static lx_void_t lx_stroker_capper_square(lx_path_ref_t path, lx_point_ref_t center, lx_point_ref_t end, lx_vector_ref_t normal, lx_bool_t is_line_to) {
     lx_assert(path && center && end && normal);
 
     // make the patched vector
@@ -386,24 +351,20 @@ static lx_void_t lx_stroker_capper_square(lx_path_ref_t path, lx_point_ref_t cen
      *                        cap
      *
      */
-    if (is_line_to)
-    {
+    if (is_line_to) {
         // ignore the two points for optimization if cap the line-to contour
         lx_point_t last;
         lx_point_make(&last, center->x + normal->x + patched.x, center->y + normal->y + patched.y);
         lx_path_last_set(path, &last);
         lx_path_line2_to(path, center->x - normal->x + patched.x, center->y - normal->y + patched.y);
-    }
-    else
-    {
+    } else {
         lx_path_line2_to(path, center->x + normal->x + patched.x, center->y + normal->y + patched.y);
         lx_path_line2_to(path, center->x - normal->x + patched.x, center->y - normal->y + patched.y);
         lx_path_line_to(path, end);
     }
 }
-static lx_float_t lx_stroker_joiner_angle(lx_vector_ref_t normal_unit_before, lx_vector_ref_t normal_unit_after, lx_size_t* ptype)
-{
-    // check
+
+static lx_float_t lx_stroker_joiner_angle(lx_vector_ref_t normal_unit_before, lx_vector_ref_t normal_unit_after, lx_size_t* ptype) {
     lx_assert(normal_unit_before && normal_unit_after);
 
     /* the cos(angle) value
@@ -432,26 +393,27 @@ static lx_float_t lx_stroker_joiner_angle(lx_vector_ref_t normal_unit_before, lx
     lx_float_t angle = lx_vector_dot(normal_unit_before, normal_unit_after);
 
     // compute the angle type
-    if (ptype)
-    {
-        if (angle < 0) *ptype = (1.0f + angle) <= LX_NEAR0? LX_STROKER_JOINER_ANGLE_NEAR180 : LX_STROKER_JOINER_ANGLE_OBTUSE;
-        else *ptype = (1.0f - angle) <= LX_NEAR0? LX_STROKER_JOINER_ANGLE_NEAR0 : LX_STROKER_JOINER_ANGLE_SHARP;
+    if (ptype) {
+        if (angle < 0) {
+            *ptype = (1.0f + angle) <= LX_NEAR0? LX_STROKER_JOINER_ANGLE_NEAR180 : LX_STROKER_JOINER_ANGLE_OBTUSE;
+        } else {
+            *ptype = (1.0f - angle) <= LX_NEAR0? LX_STROKER_JOINER_ANGLE_NEAR0 : LX_STROKER_JOINER_ANGLE_SHARP;
+        }
     }
-
-    // the angle
     return angle;
 }
-static lx_void_t lx_stroker_joiner_outer(lx_point_ref_t ctrl, lx_point_ref_t point, lx_cpointer_t priv)
-{
-    // check
-    lx_path_ref_t outer = (lx_path_ref_t)priv;
+
+static lx_void_t lx_stroker_joiner_outer(lx_point_ref_t ctrl, lx_point_ref_t point, lx_cpointer_t udata) {
+    lx_path_ref_t outer = (lx_path_ref_t)udata;
     lx_assert(outer && point);
 
     // add quadratic curve for the outer contour
-    if (ctrl) lx_path_quad_to(outer, ctrl, point);
+    if (ctrl) {
+        lx_path_quad_to(outer, ctrl, point);
+    }
 }
-static lx_void_t lx_stroker_joiner_inner(lx_path_ref_t inner, lx_point_ref_t center, lx_vector_ref_t normal_after)
-{
+
+static lx_void_t lx_stroker_joiner_inner(lx_path_ref_t inner, lx_point_ref_t center, lx_vector_ref_t normal_after) {
     /* join the inner contour
      *
      *               <-
@@ -487,9 +449,8 @@ static lx_void_t lx_stroker_joiner_inner(lx_path_ref_t inner, lx_point_ref_t cen
     lx_path_line2_to(inner, center->x, center->y);
     lx_path_line2_to(inner, center->x - normal_after->x, center->y - normal_after->y);
 }
-static lx_void_t lx_stroker_joiner_miter(lx_path_ref_t inner, lx_path_ref_t outer, lx_point_ref_t center, lx_float_t radius, lx_vector_ref_t normal_unit_before, lx_vector_ref_t normal_unit_after, lx_float_t miter_invert, lx_bool_t is_line_to_prev, lx_bool_t is_line_to)
-{
-    // check
+
+static lx_void_t lx_stroker_joiner_miter(lx_path_ref_t inner, lx_path_ref_t outer, lx_point_ref_t center, lx_float_t radius, lx_vector_ref_t normal_unit_before, lx_vector_ref_t normal_unit_after, lx_float_t miter_invert, lx_bool_t is_line_to_prev, lx_bool_t is_line_to) {
     lx_assert(inner && outer && center && normal_unit_before && normal_unit_after);
 
     /*                   normal_before
@@ -526,20 +487,21 @@ static lx_void_t lx_stroker_joiner_miter(lx_path_ref_t inner, lx_path_ref_t oute
     lx_float_t  cos_angle = lx_stroker_joiner_angle(normal_unit_before, normal_unit_after, &type);
 
     // the join is nearly line? ignore this join directly
-    if (type == LX_STROKER_JOINER_ANGLE_NEAR0) return ;
+    if (type == LX_STROKER_JOINER_ANGLE_NEAR0) {
+        return ;
+    }
 
     // the unit normal vectors and direction
-    lx_vector_t before       = *normal_unit_before;
-    lx_vector_t after        = *normal_unit_after;
+    lx_vector_t before = *normal_unit_before;
+    lx_vector_t after  = *normal_unit_after;
 
-    // done miter
+    // make miter
     lx_vector_t     miter;
     lx_bool_t       miter_join = lx_true;
-    do
-    {
+    do {
+
         // the join is nearly 180 degrees? join the bevel
-        if (type == LX_STROKER_JOINER_ANGLE_NEAR180)
-        {
+        if (type == LX_STROKER_JOINER_ANGLE_NEAR180) {
             // disable the line-to optimization
             is_line_to = lx_false;
 
@@ -550,8 +512,7 @@ static lx_void_t lx_stroker_joiner_miter(lx_path_ref_t inner, lx_path_ref_t oute
 
         // counter-clockwise? reverse it
         lx_bool_t clockwise;
-        if (!(clockwise = lx_vector_is_clockwise(normal_unit_before, normal_unit_after)))
-        {
+        if (!(clockwise = lx_vector_is_clockwise(normal_unit_before, normal_unit_after))) {
             // swap the inner and outer path
             lx_swap(lx_path_ref_t, inner, outer);
 
@@ -574,8 +535,7 @@ static lx_void_t lx_stroker_joiner_miter(lx_path_ref_t inner, lx_path_ref_t oute
          * if (M = L / R >= sqrt(2)) miter
          * if (1 / m <= 1 / sqrt(2)) miter
          */
-        if (lx_near0(cos_angle) && miter_invert <= LX_ONEOVER_SQRT2)
-        {
+        if (lx_near0(cos_angle) && miter_invert <= LX_ONEOVER_SQRT2) {
             lx_vector_make(&miter, (before.x + after.x) * radius, (before.y + after.y) * radius);
             break;
         }
@@ -594,8 +554,7 @@ static lx_void_t lx_stroker_joiner_miter(lx_path_ref_t inner, lx_path_ref_t oute
          * if (1 / cos(a/2) > M) strip
          * if (1 / M > cos(a/2)) strip
          */
-        if (miter_invert > cos_half_a)
-        {
+        if (miter_invert > cos_half_a) {
             // disable the line-to optimization
             is_line_to = lx_false;
 
@@ -611,8 +570,7 @@ static lx_void_t lx_stroker_joiner_miter(lx_path_ref_t inner, lx_path_ref_t oute
         lx_float_t length = radius / cos_half_a;
 
         // compute the miter vector
-        if (type == LX_STROKER_JOINER_ANGLE_OBTUSE)
-        {
+        if (type == LX_STROKER_JOINER_ANGLE_OBTUSE) {
             /* compute the more accurate miter vector for the obtuse angle
              *
              *                              miter
@@ -647,9 +605,12 @@ static lx_void_t lx_stroker_joiner_miter(lx_path_ref_t inner, lx_path_ref_t oute
              * because miter.length > (before + after).length
              */
             lx_vector_make(&miter, after.y - before.y, before.x - after.x);
-            if (!clockwise) lx_vector_negate(&miter);
+            if (!clockwise) {
+                lx_vector_negate(&miter);
+            }
+        } else {
+            lx_vector_make(&miter, before.x + after.x, before.y + after.y);
         }
-        else lx_vector_make(&miter, before.x + after.x, before.y + after.y);
         lx_vector_length_set(&miter, length);
 
     } while (0);
@@ -658,27 +619,27 @@ static lx_void_t lx_stroker_joiner_miter(lx_path_ref_t inner, lx_path_ref_t oute
     lx_vector_scale(&after, radius);
 
     // join the outer contour
-    if (miter_join)
-    {
-        if (is_line_to_prev)
-        {
+    if (miter_join) {
+        if (is_line_to_prev) {
             // ignore one point for optimization if join the previous line-to contour
             lx_point_t last;
             lx_point_make(&last, center->x + miter.x, center->y + miter.y);
             lx_path_last_set(outer, &last);
+        } else {
+            lx_path_line2_to(outer, center->x + miter.x, center->y + miter.y);
         }
-        else lx_path_line2_to(outer, center->x + miter.x, center->y + miter.y);
     }
 
     // ignore one point for optimization if join the line-to contour
-    if (!is_line_to) lx_path_line2_to(outer, center->x + after.x, center->y + after.y);
+    if (!is_line_to) {
+        lx_path_line2_to(outer, center->x + after.x, center->y + after.y);
+    }
 
     // join the inner contour
     lx_stroker_joiner_inner(inner, center, &after);
 }
-static lx_void_t lx_stroker_joiner_round(lx_path_ref_t inner, lx_path_ref_t outer, lx_point_ref_t center, lx_float_t radius, lx_vector_ref_t normal_unit_before, lx_vector_ref_t normal_unit_after, lx_float_t miter_invert, lx_bool_t is_line_to_prev, lx_bool_t is_line_to)
-{
-    // check
+
+static lx_void_t lx_stroker_joiner_round(lx_path_ref_t inner, lx_path_ref_t outer, lx_point_ref_t center, lx_float_t radius, lx_vector_ref_t normal_unit_before, lx_vector_ref_t normal_unit_after, lx_float_t miter_invert, lx_bool_t is_line_to_prev, lx_bool_t is_line_to) {
     lx_assert(inner && outer && center && normal_unit_before && normal_unit_after);
 
     // compute the angle type
@@ -686,7 +647,9 @@ static lx_void_t lx_stroker_joiner_round(lx_path_ref_t inner, lx_path_ref_t oute
     lx_stroker_joiner_angle(normal_unit_before, normal_unit_after, &type);
 
     // the join is nearly line? ignore this join directly
-    if (type == LX_STROKER_JOINER_ANGLE_NEAR0) return ;
+    if (type == LX_STROKER_JOINER_ANGLE_NEAR0) {
+        return ;
+    }
 
     // the unit normal vectors and direction
     lx_vector_t start       = *normal_unit_before;
@@ -694,8 +657,7 @@ static lx_void_t lx_stroker_joiner_round(lx_path_ref_t inner, lx_path_ref_t oute
     lx_size_t   direction   = LX_ROTATE_DIRECTION_CW;
 
     // counter-clockwise? reverse it
-    if (!lx_vector_is_clockwise(normal_unit_before, normal_unit_after))
-    {
+    if (!lx_vector_is_clockwise(normal_unit_before, normal_unit_after)) {
         // swap the inner and outer path
         lx_swap(lx_path_ref_t, inner, outer);
 
@@ -721,9 +683,8 @@ static lx_void_t lx_stroker_joiner_round(lx_path_ref_t inner, lx_path_ref_t oute
     lx_vector_scale(&stop, radius);
     lx_stroker_joiner_inner(inner, center, &stop);
 }
-static lx_void_t lx_stroker_joiner_bevel(lx_path_ref_t inner, lx_path_ref_t outer, lx_point_ref_t center, lx_float_t radius, lx_vector_ref_t normal_unit_before, lx_vector_ref_t normal_unit_after, lx_float_t miter_invert, lx_bool_t is_line_to_prev, lx_bool_t is_line_to)
-{
-    // check
+
+static lx_void_t lx_stroker_joiner_bevel(lx_path_ref_t inner, lx_path_ref_t outer, lx_point_ref_t center, lx_float_t radius, lx_vector_ref_t normal_unit_before, lx_vector_ref_t normal_unit_after, lx_float_t miter_invert, lx_bool_t is_line_to_prev, lx_bool_t is_line_to) {
     lx_assert(inner && outer && center && normal_unit_before && normal_unit_after);
 
     /* the after normal
@@ -753,8 +714,7 @@ static lx_void_t lx_stroker_joiner_bevel(lx_path_ref_t inner, lx_path_ref_t oute
     lx_vector_scale2(normal_unit_after, &normal_after, radius);
 
     // counter-clockwise? reverse it
-    if (!lx_vector_is_clockwise(normal_unit_before, normal_unit_after))
-    {
+    if (!lx_vector_is_clockwise(normal_unit_before, normal_unit_after)) {
         // swap the inner and outer path
         lx_swap(lx_path_ref_t, inner, outer);
 
@@ -768,9 +728,8 @@ static lx_void_t lx_stroker_joiner_bevel(lx_path_ref_t inner, lx_path_ref_t oute
     // join the inner contour
     lx_stroker_joiner_inner(inner, center, &normal_after);
 }
-static lx_bool_t lx_stroker_normals_make(lx_point_ref_t before, lx_point_ref_t after, lx_float_t radius, lx_vector_ref_t normal, lx_vector_ref_t normal_unit)
-{
-    // check
+
+static lx_bool_t lx_stroker_normals_make(lx_point_ref_t before, lx_point_ref_t after, lx_float_t radius, lx_vector_ref_t normal, lx_vector_ref_t normal_unit) {
     lx_assert(before && after && normal_unit);
 
     // the radius
@@ -795,17 +754,19 @@ static lx_bool_t lx_stroker_normals_make(lx_point_ref_t before, lx_point_ref_t a
      *    inner         line        outer
      *
      */
-    if (!lx_vector_make_unit(normal_unit, after->x - before->x, after->y - before->y)) return lx_false;
+    if (!lx_vector_make_unit(normal_unit, after->x - before->x, after->y - before->y)) {
+        return lx_false;
+    }
     lx_vector_rotate(normal_unit, LX_ROTATE_DIRECTION_CCW);
 
     // compute the normal vector
-    if (normal) lx_vector_scale2(normal_unit, normal, radius);
-
-    // ok
+    if (normal) {
+        lx_vector_scale2(normal_unit, normal, radius);
+    }
     return lx_true;
 }
-static lx_inline lx_bool_t lx_stroker_normals_too_curvy(lx_float_t cos_angle)
-{
+
+static lx_inline lx_bool_t lx_stroker_normals_too_curvy(lx_float_t cos_angle) {
     /*
      *              curve
      *               . .
@@ -826,10 +787,9 @@ static lx_inline lx_bool_t lx_stroker_normals_too_curvy(lx_float_t cos_angle)
      */
     return (cos_angle <= (LX_SQRT2_OVER2 + 1.0f / 10));
 }
+
 #if 0
-static lx_inline lx_bool_t lx_stroker_normals_too_sharp(lx_vector_ref_t normal_unit_before, lx_vector_ref_t normal_unit_after)
-{
-    // check
+static lx_inline lx_bool_t lx_stroker_normals_too_sharp(lx_vector_ref_t normal_unit_before, lx_vector_ref_t normal_unit_after) {
     lx_assert(normal_unit_before && normal_unit_after);
 
     /*
@@ -851,25 +811,23 @@ static lx_inline lx_bool_t lx_stroker_normals_too_sharp(lx_vector_ref_t normal_u
     return lx_vector_dot(normal_unit_before, normal_unit_after) <= LX_STROKER_TOO_SHARP_LIMIT;
 }
 #endif
-static lx_void_t lx_stroker_make_line_to(lx_stroker_impl_t* impl, lx_point_ref_t point, lx_vector_ref_t normal)
-{
-    // check
-    lx_assert(impl && impl->path_inner && impl->path_outer && point && normal);
+
+static lx_void_t lx_stroker_make_line_to(lx_stroker_t* stroker, lx_point_ref_t point, lx_vector_ref_t normal) {
+    lx_assert(stroker && stroker->path_inner && stroker->path_outer && point && normal);
 
     // line to the point for the inner and outer path
-    lx_path_line2_to(impl->path_outer, point->x + normal->x, point->y + normal->y);
-    lx_path_line2_to(impl->path_inner, point->x - normal->x, point->y - normal->y);
+    lx_path_line2_to(stroker->path_outer, point->x + normal->x, point->y + normal->y);
+    lx_path_line2_to(stroker->path_inner, point->x - normal->x, point->y - normal->y);
 }
-static lx_void_t lx_stroker_make_quad_to(lx_stroker_impl_t* impl, lx_point_ref_t points, lx_vector_ref_t normal_01, lx_vector_ref_t normal_unit_01, lx_vector_ref_t normal_12, lx_vector_ref_t normal_unit_12, lx_size_t divided_count)
-{
-    // check
-    lx_assert(impl && points && normal_01 && normal_unit_01 && normal_12 && normal_unit_12);
+
+static lx_void_t lx_stroker_make_quad_to(lx_stroker_t* stroker, lx_point_ref_t points, lx_vector_ref_t normal_01, lx_vector_ref_t normal_unit_01, lx_vector_ref_t normal_12, lx_vector_ref_t normal_unit_12, lx_size_t divided_count) {
+    lx_assert(stroker && points && normal_01 && normal_unit_01 && normal_12 && normal_unit_12);
 
     // compute the normal and unit normal vectors for b => c
-    if (!lx_stroker_normals_make(&points[1], &points[2], impl->radius, normal_12, normal_unit_12))
-    {
+    if (!lx_stroker_normals_make(&points[1], &points[2], stroker->radius, normal_12, normal_unit_12)) {
+
         // p1 nearly equals p2? make line-to
-        lx_stroker_make_line_to(impl, &points[2], normal_01);
+        lx_stroker_make_line_to(stroker, &points[2], normal_01);
 
         // save the normal and unit normal for b => c
         *normal_12 = *normal_01;
@@ -881,8 +839,8 @@ static lx_void_t lx_stroker_make_quad_to(lx_stroker_impl_t* impl, lx_point_ref_t
     lx_float_t cos_angle = lx_vector_dot(normal_unit_01, normal_unit_12);
 
     // this curve is too curvy? divide to the more flat curve
-    if (divided_count && lx_stroker_normals_too_curvy(cos_angle))
-    {
+    if (divided_count && lx_stroker_normals_too_curvy(cos_angle)) {
+
         // chop the quad at half
         lx_point_t output[5];
         lx_bezier2_chop_at_half(points, output);
@@ -890,30 +848,27 @@ static lx_void_t lx_stroker_make_quad_to(lx_stroker_impl_t* impl, lx_point_ref_t
         // make sub-quad-to curves for the inner and outer contour
         lx_vector_t normal;
         lx_vector_t normal_unit;
-        lx_stroker_make_quad_to(impl, output, normal_01, normal_unit_01, &normal, &normal_unit, divided_count - 1);
-        lx_stroker_make_quad_to(impl, output + 2, &normal, &normal_unit, normal_12, normal_unit_12, divided_count - 1);
-    }
-    /* too sharp and short?
-     *  .
-     * . .
-     */
-    else if (!divided_count && lx_stroker_normals_too_curvy(cos_angle))
-    {
+        lx_stroker_make_quad_to(stroker, output, normal_01, normal_unit_01, &normal, &normal_unit, divided_count - 1);
+        lx_stroker_make_quad_to(stroker, output + 2, &normal, &normal_unit, normal_12, normal_unit_12, divided_count - 1);
+
+    } else if (!divided_count && lx_stroker_normals_too_curvy(cos_angle)) {
+        /* too sharp and short?
+         *  .
+         * . .
+         */
+
         // check
-        lx_assert(impl->path_other);
+        lx_assert(stroker->path_other);
 
         // line-to it
-        lx_stroker_make_line_to(impl, &points[1], normal_01);
-        lx_stroker_make_line_to(impl, &points[2], normal_12);
+        lx_stroker_make_line_to(stroker, &points[1], normal_01);
+        lx_stroker_make_line_to(stroker, &points[2], normal_12);
 
         // patch one circle at the sharp join
-        lx_path_add_circle2(impl->path_other, points[1].x, points[1].y, impl->radius, LX_ROTATE_DIRECTION_CW);
-    }
-    // for flat curve
-    else
-    {
-        // check
-        lx_assert(impl->path_inner && impl->path_outer);
+        lx_path_add_circle2(stroker->path_other, points[1].x, points[1].y, stroker->radius, LX_ROTATE_DIRECTION_CW);
+
+    } else { // for flat curve
+        lx_assert(stroker->path_inner && stroker->path_outer);
 
         /* compute the approximate normal of the vector(p1, p1^)
          *
@@ -951,52 +906,43 @@ static lx_void_t lx_stroker_make_quad_to(lx_stroker_impl_t* impl, lx_point_ref_t
          *
          * length(p1, p1^) ~= R / cos(angle/2) = R / sqrt((1 + cos(angle)) / 2)
          */
-        if (!lx_vector_length_set(&normal_1, impl->radius / lx_sqrt(lx_avg(1.0f, cos_angle))))
-        {
-            // failed
+        if (!lx_vector_length_set(&normal_1, stroker->radius / lx_sqrt(lx_avg(1.0f, cos_angle)))) {
             lx_assert(0);
             return ;
         }
 
         // quad-to the inner and outer contour
-        lx_path_quad2_to(impl->path_outer, points[1].x + normal_1.x, points[1].y + normal_1.y, points[2].x + normal_12->x, points[2].y + normal_12->y);
-        lx_path_quad2_to(impl->path_inner, points[1].x - normal_1.x, points[1].y - normal_1.y, points[2].x - normal_12->x, points[2].y - normal_12->y);
+        lx_path_quad2_to(stroker->path_outer, points[1].x + normal_1.x, points[1].y + normal_1.y, points[2].x + normal_12->x, points[2].y + normal_12->y);
+        lx_path_quad2_to(stroker->path_inner, points[1].x - normal_1.x, points[1].y - normal_1.y, points[2].x - normal_12->x, points[2].y - normal_12->y);
     }
 }
-static lx_void_t lx_stroker_make_cubic_to(lx_stroker_impl_t* impl, lx_point_ref_t points, lx_vector_ref_t normal_01, lx_vector_ref_t normal_unit_01, lx_vector_ref_t normal_23, lx_vector_ref_t normal_unit_23, lx_bool_t normal_23_is_valid, lx_size_t divided_count)
-{
-    // check
-    lx_assert(impl && points && normal_01 && normal_unit_01 && normal_23 && normal_unit_23);
+
+static lx_void_t lx_stroker_make_cubic_to(lx_stroker_t* stroker, lx_point_ref_t points, lx_vector_ref_t normal_01, lx_vector_ref_t normal_unit_01, lx_vector_ref_t normal_23, lx_vector_ref_t normal_unit_23, lx_bool_t normal_23_is_valid, lx_size_t divided_count) {
+    lx_assert(stroker && points && normal_01 && normal_unit_01 && normal_23 && normal_unit_23);
 
     // compute the normal and unit normal vectors of the vector(p1, p2)
     lx_vector_t normal_12;
     lx_vector_t normal_unit_12;
-    if (!lx_stroker_normals_make(&points[1], &points[2], impl->radius, &normal_12, &normal_unit_12))
-    {
-        // quad-to it
+    if (!lx_stroker_normals_make(&points[1], &points[2], stroker->radius, &normal_12, &normal_unit_12)) {
         lx_point_t quad_points[3];
         quad_points[0] = points[0];
         quad_points[1] = points[1];
         quad_points[2] = points[3];
-        lx_stroker_make_quad_to(impl, quad_points, normal_01, normal_unit_01, normal_23, normal_unit_23, divided_count);
+        lx_stroker_make_quad_to(stroker, quad_points, normal_01, normal_unit_01, normal_23, normal_unit_23, divided_count);
         return ;
     }
 
     // compute the normal and unit normal vectors of the vector(p2, p3) if be not valid
-    if (!normal_23_is_valid && !lx_stroker_normals_make(&points[2], &points[3], impl->radius, normal_23, normal_unit_23))
-    {
-        // quad-to it
-        lx_stroker_make_quad_to(impl, points, normal_01, normal_unit_01, normal_23, normal_unit_23, divided_count);
+    if (!normal_23_is_valid && !lx_stroker_normals_make(&points[2], &points[3], stroker->radius, normal_23, normal_unit_23)) {
+        lx_stroker_make_quad_to(stroker, points, normal_01, normal_unit_01, normal_23, normal_unit_23, divided_count);
         return ;
     }
 
     // the vector(p0, p1) is degenerate?
     lx_vector_t vector_01;
     lx_vector_make_from_two_points(&vector_01, &points[0], &points[1]);
-    if (!lx_vector_can_normalize(&vector_01))
-    {
-        // quad-to it
-        lx_stroker_make_quad_to(impl, &points[1], &normal_12, &normal_unit_12, normal_23, normal_unit_23, divided_count);
+    if (!lx_vector_can_normalize(&vector_01)) {
+        lx_stroker_make_quad_to(stroker, &points[1], &normal_12, &normal_unit_12, normal_23, normal_unit_23, divided_count);
         return ;
     }
 
@@ -1007,8 +953,8 @@ static lx_void_t lx_stroker_make_cubic_to(lx_stroker_impl_t* impl, lx_point_ref_
     lx_float_t cos_angle_123 = lx_vector_dot(&normal_unit_12, normal_unit_23);
 
     // this curve is too curvy? divide to the more flat curve
-    if (divided_count && (lx_stroker_normals_too_curvy(cos_angle_012) || lx_stroker_normals_too_curvy(cos_angle_123)))
-    {
+    if (divided_count && (lx_stroker_normals_too_curvy(cos_angle_012) || lx_stroker_normals_too_curvy(cos_angle_123))) {
+
         // chop the cubic at half
         lx_point_t output[7];
         lx_bezier3_chop_at_half(points, output);
@@ -1019,34 +965,34 @@ static lx_void_t lx_stroker_make_cubic_to(lx_stroker_impl_t* impl, lx_point_ref_
          */
         lx_vector_t normal;
         lx_vector_t normal_unit;
-        lx_stroker_make_cubic_to(impl, output, normal_01, normal_unit_01, &normal, &normal_unit, lx_false, divided_count - 1);
-        lx_stroker_make_cubic_to(impl, output + 3, &normal, &normal_unit, normal_23, normal_unit_23, lx_true, divided_count - 1);
-    }
-    /* too sharp and short?
-     *
-     *  .
-     * . . .
-     *    .
-     */
-    else if (!divided_count && (lx_stroker_normals_too_curvy(cos_angle_012) || lx_stroker_normals_too_curvy(cos_angle_123)))
-    {
+        lx_stroker_make_cubic_to(stroker, output, normal_01, normal_unit_01, &normal, &normal_unit, lx_false, divided_count - 1);
+        lx_stroker_make_cubic_to(stroker, output + 3, &normal, &normal_unit, normal_23, normal_unit_23, lx_true, divided_count - 1);
+
+    } else if (!divided_count && (lx_stroker_normals_too_curvy(cos_angle_012) || lx_stroker_normals_too_curvy(cos_angle_123))) {
+
+        /* too sharp and short?
+         *
+         *  .
+         * . . .
+         *    .
+         */
         // check
-        lx_assert(impl->path_other);
+        lx_assert(stroker->path_other);
 
         // line-to it
-        lx_stroker_make_line_to(impl, &points[1], normal_01);
-        lx_stroker_make_line_to(impl, &points[2], &normal_12);
-        lx_stroker_make_line_to(impl, &points[3], normal_23);
+        lx_stroker_make_line_to(stroker, &points[1], normal_01);
+        lx_stroker_make_line_to(stroker, &points[2], &normal_12);
+        lx_stroker_make_line_to(stroker, &points[3], normal_23);
 
         // patch circles at the join is too sharp
-        if (lx_stroker_normals_too_curvy(cos_angle_012)) lx_path_add_circle2(impl->path_other, points[1].x, points[1].y, impl->radius, LX_ROTATE_DIRECTION_CW);
-        if (lx_stroker_normals_too_curvy(cos_angle_123)) lx_path_add_circle2(impl->path_other, points[2].x, points[2].y, impl->radius, LX_ROTATE_DIRECTION_CW);
-    }
-    // for flat curve
-    else
-    {
-        // check
-        lx_assert(impl->path_inner && impl->path_outer);
+        if (lx_stroker_normals_too_curvy(cos_angle_012)) {
+            lx_path_add_circle2(stroker->path_other, points[1].x, points[1].y, stroker->radius, LX_ROTATE_DIRECTION_CW);
+        }
+        if (lx_stroker_normals_too_curvy(cos_angle_123)) {
+            lx_path_add_circle2(stroker->path_other, points[2].x, points[2].y, stroker->radius, LX_ROTATE_DIRECTION_CW);
+        }
+    } else { // for flat curve
+        lx_assert(stroker->path_inner && stroker->path_outer);
 
         /* compute the approximate normal of the vector(p1, p1^) and vector(p2, p2^)
          *
@@ -1090,9 +1036,7 @@ static lx_void_t lx_stroker_make_cubic_to(lx_stroker_impl_t* impl, lx_point_ref_
          *
          * length(p1, p1^) ~= R / cos(angle/2) = R / sqrt((1 + cos(angle)) / 2)
          */
-        if (!lx_vector_length_set(&normal_1, impl->radius / lx_sqrt(lx_avg(1.0f, cos_angle_012))))
-        {
-            // failed
+        if (!lx_vector_length_set(&normal_1, stroker->radius / lx_sqrt(lx_avg(1.0f, cos_angle_012)))) {
             lx_assert(0);
             return ;
         }
@@ -1101,106 +1045,75 @@ static lx_void_t lx_stroker_make_cubic_to(lx_stroker_impl_t* impl, lx_point_ref_
          *
          * length(p1, p1^) ~= R / cos(angle/2) = R / sqrt((1 + cos(angle)) / 2)
          */
-        if (!lx_vector_length_set(&normal_2, impl->radius / lx_sqrt(lx_avg(1.0f, cos_angle_123))))
-        {
-            // failed
+        if (!lx_vector_length_set(&normal_2, stroker->radius / lx_sqrt(lx_avg(1.0f, cos_angle_123)))) {
             lx_assert(0);
             return ;
         }
 
         // cubic-to the inner and outer contour
-        lx_path_cubic2_to(impl->path_outer, points[1].x + normal_1.x, points[1].y + normal_1.y, points[2].x + normal_2.x, points[2].y + normal_2.y, points[3].x + normal_23->x, points[3].y + normal_23->y);
-        lx_path_cubic2_to(impl->path_inner, points[1].x - normal_1.x, points[1].y - normal_1.y, points[2].x - normal_2.x, points[2].y - normal_2.y, points[3].x - normal_23->x, points[3].y - normal_23->y);
+        lx_path_cubic2_to(stroker->path_outer, points[1].x + normal_1.x, points[1].y + normal_1.y, points[2].x + normal_2.x, points[2].y + normal_2.y, points[3].x + normal_23->x, points[3].y + normal_23->y);
+        lx_path_cubic2_to(stroker->path_inner, points[1].x - normal_1.x, points[1].y - normal_1.y, points[2].x - normal_2.x, points[2].y - normal_2.y, points[3].x - normal_23->x, points[3].y - normal_23->y);
     }
 }
-static lx_bool_t lx_stroker_enter_to(lx_stroker_impl_t* impl, lx_point_ref_t point, lx_vector_ref_t normal, lx_vector_ref_t normal_unit, lx_bool_t is_line_to)
-{
-    // check
-    lx_assert(impl && point && normal && normal_unit);
-    lx_assert(impl->segment_count >= 0);
+
+static lx_bool_t lx_stroker_enter_to(lx_stroker_t* stroker, lx_point_ref_t point, lx_vector_ref_t normal, lx_vector_ref_t normal_unit, lx_bool_t is_line_to) {
+    lx_assert(stroker && point && normal && normal_unit);
+    lx_assert(stroker->segment_count >= 0);
 
     // the radius
-    lx_float_t radius = impl->radius;
+    lx_float_t radius = stroker->radius;
     lx_assert_and_check_return_val(radius > 0, lx_false);
 
     // compute the normal and unit normal vectors
-    if (!lx_stroker_normals_make(&impl->point_prev, point, radius, normal, normal_unit))
-    {
-        lx_trace_i("%{point} %{point}", &impl->point_prev, point);
-        // failed
+    if (!lx_stroker_normals_make(&stroker->point_prev, point, radius, normal, normal_unit)) {
+        lx_trace_i("%{point} %{point}", &stroker->point_prev, point);
         lx_assert(0);
         return lx_false;
     }
 
     // body?
-    if (impl->segment_count > 0)
-    {
-        // check
-        lx_assert(impl->joiner);
+    if (stroker->segment_count > 0) {
+        lx_assert(stroker->joiner);
+        stroker->joiner(stroker->path_inner, stroker->path_outer, &stroker->point_prev, radius, &stroker->normal_unit_prev, normal_unit, stroker->miter_invert, stroker->is_line_to_prev, is_line_to);
+    } else { // start?
 
-        // join it
-        impl->joiner(impl->path_inner, impl->path_outer, &impl->point_prev, radius, &impl->normal_unit_prev, normal_unit, impl->miter_invert, impl->is_line_to_prev, is_line_to);
-    }
-    // start?
-    else
-    {
         // save the first point of the outer contour
-        lx_point_make(&impl->outer_first, impl->point_prev.x + normal->x, impl->point_prev.y + normal->y);
-
-        // save the first normal
-        impl->normal_first = *normal;
-
-        // save the first unit normal
-        impl->normal_unit_first = *normal_unit;
-
-        // save the first line-to state?
-        impl->is_line_to_first = is_line_to;
+        lx_point_make(&stroker->outer_first, stroker->point_prev.x + normal->x, stroker->point_prev.y + normal->y);
+        stroker->normal_first = *normal;
+        stroker->normal_unit_first = *normal_unit;
+        stroker->is_line_to_first = is_line_to;
 
         // move to the start point for the inner and outer path
-        lx_path_move_to(impl->path_outer, &impl->outer_first);
-        lx_path_move2_to(impl->path_inner, impl->point_prev.x - normal->x, impl->point_prev.y - normal->y);
+        lx_path_move_to(stroker->path_outer, &stroker->outer_first);
+        lx_path_move2_to(stroker->path_inner, stroker->point_prev.x - normal->x, stroker->point_prev.y - normal->y);
     }
 
     // update the previous line-to state?
-    impl->is_line_to_prev = is_line_to;
-
-    // ok
+    stroker->is_line_to_prev = is_line_to;
     return lx_true;
 }
-static lx_void_t lx_stroker_leave_to(lx_stroker_impl_t* impl, lx_point_ref_t point, lx_vector_ref_t normal, lx_vector_ref_t normal_unit)
-{
-    // check
-    lx_assert(impl && point && normal && normal_unit);
 
-    // update the previous point
-    impl->point_prev = *point;
+static lx_void_t lx_stroker_leave_to(lx_stroker_t* stroker, lx_point_ref_t point, lx_vector_ref_t normal, lx_vector_ref_t normal_unit) {
+    lx_assert(stroker && point && normal && normal_unit);
 
-    // update the previous normal
-    impl->normal_prev = *normal;
-
-    // update the previous unit normal
-    impl->normal_unit_prev = *normal_unit;
-
-    // update the segment count
-    impl->segment_count++;
+    stroker->point_prev = *point;
+    stroker->normal_prev = *normal;
+    stroker->normal_unit_prev = *normal_unit;
+    stroker->segment_count++;
 }
-static lx_void_t lx_stroker_finish(lx_stroker_impl_t* impl, lx_bool_t closed)
-{
-    // check
-    lx_assert(impl && impl->path_inner && impl->path_outer);
-    lx_assert(impl->capper && impl->joiner);
+
+static lx_void_t lx_stroker_finish(lx_stroker_t* stroker, lx_bool_t closed) {
+    lx_assert(stroker && stroker->path_inner && stroker->path_outer);
+    lx_assert(stroker->capper && stroker->joiner);
 
     // exists contour now?
-    if (impl->segment_count > 0)
-    {
-        // closed?
-        if (closed)
-        {
+    if (stroker->segment_count > 0) {
+        if (closed) {
             // join it
-            impl->joiner(impl->path_inner, impl->path_outer, &impl->point_prev, impl->radius, &impl->normal_unit_prev, &impl->normal_unit_first, impl->miter_invert, impl->is_line_to_prev, impl->is_line_to_first);
+            stroker->joiner(stroker->path_inner, stroker->path_outer, &stroker->point_prev, stroker->radius, &stroker->normal_unit_prev, &stroker->normal_unit_first, stroker->miter_invert, stroker->is_line_to_prev, stroker->is_line_to_first);
 
             // close the outer contour
-            lx_path_close(impl->path_outer);
+            lx_path_close(stroker->path_outer);
 
             /* add the inner contour in reverse order to the outer path
              *
@@ -1217,170 +1130,155 @@ static lx_void_t lx_stroker_finish(lx_stroker_impl_t* impl, lx_bool_t closed)
              * <--
              */
             lx_point_t inner_last;
-            lx_path_last(impl->path_inner, &inner_last);
-            lx_path_move_to(impl->path_outer, &inner_last);
-            lx_path_rpath_to(impl->path_outer, impl->path_inner);
-            lx_path_close(impl->path_outer);
+            lx_path_last(stroker->path_inner, &inner_last);
+            lx_path_move_to(stroker->path_outer, &inner_last);
+            lx_path_rpath_to(stroker->path_outer, stroker->path_inner);
+            lx_path_close(stroker->path_outer);
 
-        }
-        /* add caps to the start and end point
-         *
-         *                    start cap
-         *             ------------------------>
-         *
-         *                       normal
-         *              ----------------------> first outer
-         *             |  radius   |           |
-         *             |           |           |
-         *             |           |           |
-         *             |           |           |
-         *             |           |           |
-         * reverse add |           |           |
-         *             |           |           |
-         *             |           |           |
-         *             |           |           |
-         *             |           |           |
-         *             |           |           |
-         * last inner \|/         \|/         \|/
-         *          inner        center       outer
-         *
-         *             <------------------------
-         *                     end cap
-         */
-        else
-        {
+        } else {
+            /* add caps to the start and end point
+             *
+             *                    start cap
+             *             ------------------------>
+             *
+             *                       normal
+             *              ----------------------> first outer
+             *             |  radius   |           |
+             *             |           |           |
+             *             |           |           |
+             *             |           |           |
+             *             |           |           |
+             * reverse add |           |           |
+             *             |           |           |
+             *             |           |           |
+             *             |           |           |
+             *             |           |           |
+             *             |           |           |
+             * last inner \|/         \|/         \|/
+             *          inner        center       outer
+             *
+             *             <------------------------
+             *                     end cap
+             */
             // cap the end point
             lx_point_t inner_last;
-            lx_path_last(impl->path_inner, &inner_last);
-            impl->capper(impl->path_outer, &impl->point_prev, &inner_last, &impl->normal_prev, impl->is_line_to_prev);
+            lx_path_last(stroker->path_inner, &inner_last);
+            stroker->capper(stroker->path_outer, &stroker->point_prev, &inner_last, &stroker->normal_prev, stroker->is_line_to_prev);
 
             // add the inner contour in reverse order to the outer path
-            lx_path_rpath_to(impl->path_outer, impl->path_inner);
+            lx_path_rpath_to(stroker->path_outer, stroker->path_inner);
 
             // cap the start point
             lx_vector_t normal_first;
-            lx_vector_negate2(&impl->normal_first, &normal_first);
-            impl->capper(impl->path_outer, &impl->point_first, &impl->outer_first, &normal_first, impl->is_line_to_first);
+            lx_vector_negate2(&stroker->normal_first, &normal_first);
+            stroker->capper(stroker->path_outer, &stroker->point_first, &stroker->outer_first, &normal_first, stroker->is_line_to_first);
 
             // close the outer contour
-            lx_path_close(impl->path_outer);
+            lx_path_close(stroker->path_outer);
         }
     }
 
     // finish it
-    impl->segment_count = -1;
+    stroker->segment_count = -1;
 
     // clear the inner path for reusing it
-    lx_path_clear(impl->path_inner);
+    lx_path_clear(stroker->path_inner);
 }
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_stroker_ref_t lx_stroker_init()
-{
-    // done
-    lx_bool_t           ok = lx_false;
-    lx_stroker_impl_t*  impl = lx_null;
-    do
-    {
-        // make stroker
-        impl = lx_malloc0_type(lx_stroker_impl_t);
-        lx_assert_and_check_break(impl);
-
+lx_stroker_ref_t lx_stroker_init() {
+    lx_bool_t      ok = lx_false;
+    lx_stroker_t*  stroker = lx_null;
+    do {
         // init stroker
-        impl->cap               = LX_PAINT_STROKE_CAP_BUTT;
-        impl->join              = LX_PAINT_STROKE_JOIN_MITER;
-        impl->miter             = LX_STROKER_DEFAULT_MITER;
-        impl->radius            = 0;
-        impl->segment_count     = -1;
-        impl->capper            = lx_stroker_capper_butt;
-        impl->joiner            = lx_stroker_joiner_miter;
-        impl->miter_invert      = lx_invert(LX_STROKER_DEFAULT_MITER);
-        impl->is_line_to_prev   = lx_false;
-        impl->is_line_to_first  = lx_false;
+        stroker = lx_malloc0_type(lx_stroker_t);
+        lx_assert_and_check_break(stroker);
+
+        stroker->cap               = LX_PAINT_STROKE_CAP_BUTT;
+        stroker->join              = LX_PAINT_STROKE_JOIN_MITER;
+        stroker->miter             = LX_STROKER_DEFAULT_MITER;
+        stroker->radius            = 0;
+        stroker->segment_count     = -1;
+        stroker->capper            = lx_stroker_capper_butt;
+        stroker->joiner            = lx_stroker_joiner_miter;
+        stroker->miter_invert      = lx_invert(LX_STROKER_DEFAULT_MITER);
+        stroker->is_line_to_prev   = lx_false;
+        stroker->is_line_to_first  = lx_false;
 
         // init the outer path
-        impl->path_outer = lx_path_init();
-        lx_assert_and_check_break(impl->path_outer);
+        stroker->path_outer = lx_path_init();
+        lx_assert_and_check_break(stroker->path_outer);
 
         // init the inner path
-        impl->path_inner = lx_path_init();
-        lx_assert_and_check_break(impl->path_inner);
+        stroker->path_inner = lx_path_init();
+        lx_assert_and_check_break(stroker->path_inner);
 
         // init the other path
-        impl->path_other = lx_path_init();
-        lx_assert_and_check_break(impl->path_other);
+        stroker->path_other = lx_path_init();
+        lx_assert_and_check_break(stroker->path_other);
 
         // ok
         ok = lx_true;
 
     } while (0);
 
-    // failed?
-    if (!ok)
-    {
-        // exit it
-        if (impl) lx_stroker_exit((lx_stroker_ref_t)impl);
-        impl = lx_null;
+    if (!ok && stroker) {
+        lx_stroker_exit((lx_stroker_ref_t)stroker);
+        stroker = lx_null;
     }
-
-    // ok?
-    return (lx_stroker_ref_t)impl;
+    return (lx_stroker_ref_t)stroker;
 }
-lx_void_t lx_stroker_exit(lx_stroker_ref_t stroker)
-{
-    // check
-    lx_stroker_impl_t* impl = (lx_stroker_impl_t*)stroker;
-    lx_assert_and_check_return(impl);
 
-    // exit the other path
-    if (impl->path_other) lx_path_exit(impl->path_other);
-    impl->path_other = lx_null;
-
-    // exit the inner path
-    if (impl->path_inner) lx_path_exit(impl->path_inner);
-    impl->path_inner = lx_null;
-
-    // exit the outer path
-    if (impl->path_outer) lx_path_exit(impl->path_outer);
-    impl->path_outer = lx_null;
-
-    // exit it
-    lx_free(impl);
+lx_void_t lx_stroker_exit(lx_stroker_ref_t self) {
+    lx_stroker_t* stroker = (lx_stroker_t*)self;
+    if (stroker) {
+        if (stroker->path_other) {
+            lx_path_exit(stroker->path_other);
+            stroker->path_other = lx_null;
+        }
+        if (stroker->path_inner) {
+            lx_path_exit(stroker->path_inner);
+            stroker->path_inner = lx_null;
+        }
+        if (stroker->path_outer) {
+            lx_path_exit(stroker->path_outer);
+            stroker->path_outer = lx_null;
+        }
+        lx_free(stroker);
+    }
 }
-lx_void_t lx_stroker_clear(lx_stroker_ref_t stroker)
-{
-    // check
-    lx_stroker_impl_t* impl = (lx_stroker_impl_t*)stroker;
-    lx_assert_and_check_return(impl);
+
+lx_void_t lx_stroker_clear(lx_stroker_ref_t self) {
+    lx_stroker_t* stroker = (lx_stroker_t*)self;
+    lx_assert_and_check_return(stroker);
 
     // clear it
-    impl->cap               = LX_PAINT_STROKE_CAP_BUTT;
-    impl->join              = LX_PAINT_STROKE_JOIN_MITER;
-    impl->miter             = LX_STROKER_DEFAULT_MITER;
-    impl->radius            = 0;
-    impl->segment_count     = -1;
-    impl->capper            = lx_stroker_capper_butt;
-    impl->joiner            = lx_stroker_joiner_miter;
-    impl->miter_invert      = lx_invert(LX_STROKER_DEFAULT_MITER);
-    impl->is_line_to_prev   = lx_false;
-    impl->is_line_to_first  = lx_false;
+    stroker->cap               = LX_PAINT_STROKE_CAP_BUTT;
+    stroker->join              = LX_PAINT_STROKE_JOIN_MITER;
+    stroker->miter             = LX_STROKER_DEFAULT_MITER;
+    stroker->radius            = 0;
+    stroker->segment_count     = -1;
+    stroker->capper            = lx_stroker_capper_butt;
+    stroker->joiner            = lx_stroker_joiner_miter;
+    stroker->miter_invert      = lx_invert(LX_STROKER_DEFAULT_MITER);
+    stroker->is_line_to_prev   = lx_false;
+    stroker->is_line_to_first  = lx_false;
 
     // clear the other path
-    if (impl->path_other) lx_path_clear(impl->path_other);
+    if (stroker->path_other) lx_path_clear(stroker->path_other);
 
     // clear the inner path
-    if (impl->path_inner) lx_path_clear(impl->path_inner);
+    if (stroker->path_inner) lx_path_clear(stroker->path_inner);
 
     // clear the outer path
-    if (impl->path_outer) lx_path_clear(impl->path_outer);
+    if (stroker->path_outer) lx_path_clear(stroker->path_outer);
 }
-lx_void_t lx_stroker_apply_paint(lx_stroker_ref_t stroker, lx_paint_ref_t paint)
-{
-    // check
-    lx_stroker_impl_t* impl = (lx_stroker_impl_t*)stroker;
-    lx_assert_and_check_return(impl && paint);
+
+lx_void_t lx_stroker_apply_paint(lx_stroker_ref_t self, lx_paint_ref_t paint) {
+    lx_stroker_t* stroker = (lx_stroker_t*)self;
+    lx_assert_and_check_return(stroker && paint);
 
     // the width
     lx_float_t width = lx_paint_stroke_width(paint);
@@ -1390,114 +1288,111 @@ lx_void_t lx_stroker_apply_paint(lx_stroker_ref_t stroker, lx_paint_ref_t paint)
     lx_float_t miter = lx_paint_stroke_miter(paint);
 
     // set the cap
-    impl->cap = lx_paint_stroke_cap(paint);
+    stroker->cap = lx_paint_stroke_cap(paint);
 
     // set the join
-    impl->join = lx_paint_stroke_join(paint);
+    stroker->join = lx_paint_stroke_join(paint);
 
     // set the radius
-    impl->radius = lx_half(width);
+    stroker->radius = lx_half(width);
 
     // set the invert miter limit
-    if (impl->miter != miter)
-    {
-        impl->miter_invert = 0;
-        if (impl->join == LX_PAINT_STROKE_JOIN_MITER)
-        {
-            if (miter >= 1.0f) impl->join = LX_PAINT_STROKE_JOIN_BEVEL;
-            else impl->miter_invert = lx_invert(miter);
+    if (stroker->miter != miter) {
+        stroker->miter_invert = 0;
+        if (stroker->join == LX_PAINT_STROKE_JOIN_MITER) {
+            if (miter >= 1.0f) {
+                stroker->join = LX_PAINT_STROKE_JOIN_BEVEL;
+            } else {
+                stroker->miter_invert = lx_invert(miter);
+            }
         }
     }
 
     // set the miter limit
-    impl->miter = miter;
+    stroker->miter = miter;
 
     // the cappers
-    static lx_stroker_capper_t s_cappers[] =
-    {
-        lx_stroker_capper_butt
-    ,   lx_stroker_capper_round
-    ,   lx_stroker_capper_square
+    static lx_stroker_capper_t s_cappers[] = {
+        lx_stroker_capper_butt,
+        lx_stroker_capper_round,
+        lx_stroker_capper_square
     };
-    lx_assert(impl->cap < lx_arrayn(s_cappers));
+    lx_assert(stroker->cap < lx_arrayn(s_cappers));
 
     // the joiners
-    static lx_stroker_joiner_t s_joiners[] =
-    {
-        lx_stroker_joiner_miter
-    ,   lx_stroker_joiner_round
-    ,   lx_stroker_joiner_bevel
+    static lx_stroker_joiner_t s_joiners[] = {
+        lx_stroker_joiner_miter,
+        lx_stroker_joiner_round,
+        lx_stroker_joiner_bevel
     };
-    lx_assert(impl->join < lx_arrayn(s_joiners));
+    lx_assert(stroker->join < lx_arrayn(s_joiners));
 
     // set capper
-    impl->capper = s_cappers[impl->cap];
+    stroker->capper = s_cappers[stroker->cap];
 
     // set joiner
-    impl->joiner = s_joiners[impl->join];
+    stroker->joiner = s_joiners[stroker->join];
 }
-lx_void_t lx_stroker_close(lx_stroker_ref_t stroker)
-{
-    // check
-    lx_stroker_impl_t* impl = (lx_stroker_impl_t*)stroker;
-    lx_assert_and_check_return(impl);
+
+lx_void_t lx_stroker_close(lx_stroker_ref_t self) {
+    lx_stroker_t* stroker = (lx_stroker_t*)self;
+    lx_assert_and_check_return(stroker);
 
     // close this contour
-    lx_stroker_finish(impl, lx_true);
+    lx_stroker_finish(stroker, lx_true);
 }
-lx_void_t lx_stroker_move_to(lx_stroker_ref_t stroker, lx_point_ref_t point)
-{
-    // check
-    lx_stroker_impl_t* impl = (lx_stroker_impl_t*)stroker;
-    lx_assert_and_check_return(impl && impl->path_inner && impl->path_outer && point);
+
+lx_void_t lx_stroker_move_to(lx_stroker_ref_t self, lx_point_ref_t point) {
+    lx_stroker_t* stroker = (lx_stroker_t*)self;
+    lx_assert_and_check_return(stroker && stroker->path_inner && stroker->path_outer && point);
 
     // finish the current contour first
-    if (impl->segment_count > 0) lx_stroker_finish(impl, lx_false);
+    if (stroker->segment_count > 0) lx_stroker_finish(stroker, lx_false);
 
     // start a new contour
-    impl->segment_count = 0;
+    stroker->segment_count = 0;
 
     // save the first point
-    impl->point_first = *point;
+    stroker->point_first = *point;
 
     // save the previous point
-    impl->point_prev = *point;
+    stroker->point_prev = *point;
 }
-lx_void_t lx_stroker_line_to(lx_stroker_ref_t stroker, lx_point_ref_t point)
-{
-    // check
-    lx_stroker_impl_t* impl = (lx_stroker_impl_t*)stroker;
-    lx_assert_and_check_return(impl && point);
+
+lx_void_t lx_stroker_line_to(lx_stroker_ref_t self, lx_point_ref_t point) {
+    lx_stroker_t* stroker = (lx_stroker_t*)self;
+    lx_assert_and_check_return(stroker && point);
 
     // only be a point?
-    if (lx_point_near_eq(&impl->point_prev, point)) return ;
+    if (lx_point_near_eq(&stroker->point_prev, point)) {
+        return ;
+    }
 
     // enter-to
     lx_vector_t normal;
     lx_vector_t normal_unit;
-    if (!lx_stroker_enter_to(impl, point, &normal, &normal_unit, lx_true)) return ;
+    if (!lx_stroker_enter_to(stroker, point, &normal, &normal_unit, lx_true)) {
+        return ;
+    }
 
     // make line-to for the inner and outer contour
-    lx_stroker_make_line_to(impl, point, &normal);
+    lx_stroker_make_line_to(stroker, point, &normal);
 
     // leave-to
-    lx_stroker_leave_to(impl, point, &normal, &normal_unit);
+    lx_stroker_leave_to(stroker, point, &normal, &normal_unit);
 }
-lx_void_t lx_stroker_quad_to(lx_stroker_ref_t stroker, lx_point_ref_t ctrl, lx_point_ref_t point)
-{
-    // check
-    lx_stroker_impl_t* impl = (lx_stroker_impl_t*)stroker;
-    lx_assert_and_check_return(impl && ctrl && point);
+
+lx_void_t lx_stroker_quad_to(lx_stroker_ref_t self, lx_point_ref_t ctrl, lx_point_ref_t point) {
+    lx_stroker_t* stroker = (lx_stroker_t*)self;
+    lx_assert_and_check_return(stroker && ctrl && point);
 
     // is point for p0 => p1 and p1 => p2?
-    lx_bool_t is_point_for_01 = lx_point_near_eq(&impl->point_prev, ctrl);
+    lx_bool_t is_point_for_01 = lx_point_near_eq(&stroker->point_prev, ctrl);
     lx_bool_t is_point_for_12 = lx_point_near_eq(ctrl, point);
 
     // only be line?
-    if (is_point_for_01 | is_point_for_12)
-    {
-        // line-to it
-        lx_stroker_line_to(stroker, point);
+    if (is_point_for_01 | is_point_for_12) {
+        lx_stroker_line_to(self, point);
         return ;
     }
 
@@ -1506,22 +1401,24 @@ lx_void_t lx_stroker_quad_to(lx_stroker_ref_t stroker, lx_point_ref_t ctrl, lx_p
     lx_vector_t normal_12;
     lx_vector_t normal_unit_01;
     lx_vector_t normal_unit_12;
-    if (!lx_stroker_enter_to(impl, ctrl, &normal_01, &normal_unit_01, lx_false)) return ;
+    if (!lx_stroker_enter_to(stroker, ctrl, &normal_01, &normal_unit_01, lx_false)) {
+        return ;
+    }
 
     // init points
     lx_point_t points[3];
-    points[0] = impl->point_prev;
+    points[0] = stroker->point_prev;
     points[1] = *ctrl;
     points[2] = *point;
 
 #if 0
     // attempt to chop the quadratic curve at the max curvature
     lx_point_t output[5];
-    if (lx_bezier2_chop_at_max_curvature(points, output) == 2)
-    {
+    if (lx_bezier2_chop_at_max_curvature(points, output) == 2) {
+
         // make the unit normal of (p1, p2)
-        if (lx_stroker_normals_make(&points[1], &points[2], 0, lx_null, &normal_unit_12))
-        {
+        if (lx_stroker_normals_make(&points[1], &points[2], 0, lx_null, &normal_unit_12)) {
+
             /* too sharp? make the approximate curve using lines
              *
              *      .
@@ -1533,78 +1430,64 @@ lx_void_t lx_stroker_quad_to(lx_stroker_ref_t stroker, lx_point_ref_t ctrl, lx_p
              *     . .
              *     . .
              */
-            if (lx_stroker_normals_too_sharp(&normal_unit_01, &normal_unit_12))
-            {
-                // check
-                lx_assert(impl->path_inner && impl->path_outer && impl->path_other && impl->radius > 0);
+            if (lx_stroker_normals_too_sharp(&normal_unit_01, &normal_unit_12)) {
+                lx_assert(stroker->path_inner && stroker->path_outer && stroker->path_other && stroker->radius > 0);
 
                 // compute the normal of (p1, p2)
-                lx_vector_scale2(&normal_unit_12, &normal_12, impl->radius);
+                lx_vector_scale2(&normal_unit_12, &normal_12, stroker->radius);
 
                 // make the approximate curve for the outer contour using lines directly
-                lx_path_line2_to(impl->path_outer, output[2].x + normal_01.x, output[2].y + normal_01.y);
-                lx_path_line2_to(impl->path_outer, output[2].x + normal_12.x, output[2].y + normal_12.y);
-                lx_path_line2_to(impl->path_outer, output[4].x + normal_12.x, output[4].y + normal_12.y);
+                lx_path_line2_to(stroker->path_outer, output[2].x + normal_01.x, output[2].y + normal_01.y);
+                lx_path_line2_to(stroker->path_outer, output[2].x + normal_12.x, output[2].y + normal_12.y);
+                lx_path_line2_to(stroker->path_outer, output[4].x + normal_12.x, output[4].y + normal_12.y);
 
                 // make the approximate curve for the inner contour using lines directly
-                lx_path_line2_to(impl->path_inner, output[2].x - normal_01.x, output[2].y - normal_01.y);
-                lx_path_line2_to(impl->path_inner, output[2].x - normal_12.x, output[2].y - normal_12.y);
-                lx_path_line2_to(impl->path_inner, output[4].x - normal_12.x, output[4].y - normal_12.y);
+                lx_path_line2_to(stroker->path_inner, output[2].x - normal_01.x, output[2].y - normal_01.y);
+                lx_path_line2_to(stroker->path_inner, output[2].x - normal_12.x, output[2].y - normal_12.y);
+                lx_path_line2_to(stroker->path_inner, output[4].x - normal_12.x, output[4].y - normal_12.y);
 
                 // patch one circle for making the join of two sub-curves more like curve
-                lx_path_add_circle2(impl->path_other, output[2].x, output[2].y, impl->radius, LX_ROTATE_DIRECTION_CW);
-            }
-            else
-            {
+                lx_path_add_circle2(stroker->path_other, output[2].x, output[2].y, stroker->radius, LX_ROTATE_DIRECTION_CW);
+
+            } else {
+
                 // make more flat quad-to curves for the first sub-curve
-                lx_stroker_make_quad_to(impl, &output[0], &normal_01, &normal_unit_01, &normal_12, &normal_unit_12, LX_BEZIER2_DIVIDED_MAXN);
+                lx_stroker_make_quad_to(stroker, &output[0], &normal_01, &normal_unit_01, &normal_12, &normal_unit_12, LX_BEZIER2_DIVIDED_MAXN);
 
                 // make more flat quad-to curves for the second sub-curve
                 lx_vector_t normal2_01 = normal_12;
                 lx_vector_t normal2_unit_01 = normal_unit_12;
-                lx_stroker_make_quad_to(impl, &output[2], &normal2_01, &normal2_unit_01, &normal_12, &normal_unit_12, LX_BEZIER2_DIVIDED_MAXN);
+                lx_stroker_make_quad_to(stroker, &output[2], &normal2_01, &normal2_unit_01, &normal_12, &normal_unit_12, LX_BEZIER2_DIVIDED_MAXN);
             }
-        }
-        else
-        {
-            // trace
+        } else {
             lx_trace_e("failed to make unit normal for %{point} => %{point}", &points[1], &points[2]);
-
-            // failed
             lx_assert(0);
         }
-    }
-    // only one curve?
-    else
-    {
+    } else { // only one curve?
         // make more flat quad-to curves for the whole curve
-        lx_stroker_make_quad_to(impl, points, &normal_01, &normal_unit_01, &normal_12, &normal_unit_12, LX_BEZIER2_DIVIDED_MAXN);
+        lx_stroker_make_quad_to(stroker, points, &normal_01, &normal_unit_01, &normal_12, &normal_unit_12, LX_BEZIER2_DIVIDED_MAXN);
     }
 #else
     // make more flat quad-to curves for the whole curve
-    lx_stroker_make_quad_to(impl, points, &normal_01, &normal_unit_01, &normal_12, &normal_unit_12, LX_BEZIER2_DIVIDED_MAXN);
+    lx_stroker_make_quad_to(stroker, points, &normal_01, &normal_unit_01, &normal_12, &normal_unit_12, LX_BEZIER2_DIVIDED_MAXN);
 #endif
 
     // leave-to
-    lx_stroker_leave_to(impl, point, &normal_12, &normal_unit_12);
+    lx_stroker_leave_to(stroker, point, &normal_12, &normal_unit_12);
 }
-lx_void_t lx_stroker_cubic_to(lx_stroker_ref_t stroker, lx_point_ref_t ctrl0, lx_point_ref_t ctrl1, lx_point_ref_t point)
-{
-    // check
-    lx_stroker_impl_t* impl = (lx_stroker_impl_t*)stroker;
-    lx_assert_and_check_return(impl && ctrl0 && ctrl1 && point);
+
+lx_void_t lx_stroker_cubic_to(lx_stroker_ref_t self, lx_point_ref_t ctrl0, lx_point_ref_t ctrl1, lx_point_ref_t point) {
+    lx_stroker_t* stroker = (lx_stroker_t*)self;
+    lx_assert_and_check_return(stroker && ctrl0 && ctrl1 && point);
 
     // is point for p0 => p1 and p1 => p2 and p2 = > p3?
-    lx_bool_t is_point_for_01 = lx_point_near_eq(&impl->point_prev, ctrl0);
+    lx_bool_t is_point_for_01 = lx_point_near_eq(&stroker->point_prev, ctrl0);
     lx_bool_t is_point_for_12 = lx_point_near_eq(ctrl0, ctrl1);
     lx_bool_t is_point_for_23 = lx_point_near_eq(ctrl1, point);
 
     // only be quad?
-    if (is_point_for_01 | is_point_for_12 | is_point_for_23)
-    {
-        // quad-to it
-        lx_stroker_quad_to(stroker, is_point_for_01? ctrl1 : ctrl0, point);
-
+    if (is_point_for_01 | is_point_for_12 | is_point_for_23) {
+        lx_stroker_quad_to(self, is_point_for_01? ctrl1 : ctrl0, point);
         // only point
         return ;
     }
@@ -1614,11 +1497,13 @@ lx_void_t lx_stroker_cubic_to(lx_stroker_ref_t stroker, lx_point_ref_t ctrl0, lx
     lx_vector_t normal_23;
     lx_vector_t normal_unit_01;
     lx_vector_t normal_unit_23;
-    if (!lx_stroker_enter_to(impl, ctrl0, &normal_01, &normal_unit_01, lx_false)) return ;
+    if (!lx_stroker_enter_to(stroker, ctrl0, &normal_01, &normal_unit_01, lx_false)) {
+        return ;
+    }
 
     // init points
     lx_point_t points[4];
-    points[0] = impl->point_prev;
+    points[0] = stroker->point_prev;
     points[1] = *ctrl0;
     points[2] = *ctrl1;
     points[3] = *point;
@@ -1633,10 +1518,10 @@ lx_void_t lx_stroker_cubic_to(lx_stroker_ref_t stroker, lx_point_ref_t ctrl0, lx
     lx_size_t   index;
     lx_vector_t normal2_01 = normal_01;
     lx_vector_t normal2_unit_01 = normal_unit_01;
-    for (index = 0; index < count; index++)
-    {
+    for (index = 0; index < count; index++) {
+
         // make more flat cubic-to curves for the sub-curve
-        lx_stroker_make_cubic_to(impl, &output[(index << 1) + index], &normal2_01, &normal2_unit_01, &normal_23, &normal_unit_23, lx_false, LX_BEZIER3_DIVIDED_MAXN);
+        lx_stroker_make_cubic_to(stroker, &output[(index << 1) + index], &normal2_01, &normal2_unit_01, &normal_23, &normal_unit_23, lx_false, LX_BEZIER3_DIVIDED_MAXN);
 
         // end?
         lx_check_break(index != count - 1);
@@ -1647,49 +1532,44 @@ lx_void_t lx_stroker_cubic_to(lx_stroker_ref_t stroker, lx_point_ref_t ctrl0, lx
     }
 #else
     // make more flat cubic-to curves for the whole curve
-    lx_stroker_make_cubic_to(impl, points, &normal_01, &normal_unit_01, &normal_23, &normal_unit_23, lx_false, LX_BEZIER3_DIVIDED_MAXN);
+    lx_stroker_make_cubic_to(stroker, points, &normal_01, &normal_unit_01, &normal_23, &normal_unit_23, lx_false, LX_BEZIER3_DIVIDED_MAXN);
 #endif
 
     // leave-to
-    lx_stroker_leave_to(impl, point, &normal_23, &normal_unit_23);
+    lx_stroker_leave_to(stroker, point, &normal_23, &normal_unit_23);
 }
-lx_void_t lx_stroker_add_path(lx_stroker_ref_t stroker, lx_path_ref_t path)
-{
-    // done
-    lx_for_all_if (lx_path_item_ref_t, item, path, item)
-    {
-        switch (item->code)
-        {
+
+lx_void_t lx_stroker_add_path(lx_stroker_ref_t self, lx_path_ref_t path) {
+    lx_for_all_if (lx_path_item_ref_t, item, path, item) {
+        switch (item->code) {
         case LX_PATH_CODE_MOVE:
-            lx_stroker_move_to(stroker, &item->points[0]);
+            lx_stroker_move_to(self, &item->points[0]);
             break;
         case LX_PATH_CODE_LINE:
-            lx_stroker_line_to(stroker, &item->points[1]);
+            lx_stroker_line_to(self, &item->points[1]);
             break;
         case LX_PATH_CODE_QUAD:
-            lx_stroker_quad_to(stroker, &item->points[1], &item->points[2]);
+            lx_stroker_quad_to(self, &item->points[1], &item->points[2]);
             break;
         case LX_PATH_CODE_CUBIC:
-            lx_stroker_cubic_to(stroker, &item->points[1], &item->points[2], &item->points[3]);
+            lx_stroker_cubic_to(self, &item->points[1], &item->points[2], &item->points[3]);
             break;
         case LX_PATH_CODE_CLOSE:
-            lx_stroker_close(stroker);
+            lx_stroker_close(self);
             break;
         default:
-            // trace
             lx_trace_e("invalid code: %lu", item->code);
             break;
         }
     }
 }
-lx_void_t lx_stroker_add_rect(lx_stroker_ref_t stroker, lx_rect_ref_t rect)
-{
-    // check
-    lx_stroker_impl_t* impl = (lx_stroker_impl_t*)stroker;
-    lx_assert_and_check_return(impl && impl->path_other && rect);
+
+lx_void_t lx_stroker_add_rect(lx_stroker_ref_t self, lx_rect_ref_t rect) {
+    lx_stroker_t* stroker = (lx_stroker_t*)self;
+    lx_assert_and_check_return(stroker && stroker->path_other && rect);
 
     // the radius
-    lx_float_t radius = impl->radius;
+    lx_float_t radius = stroker->radius;
     lx_check_return(radius > 0);
 
     // the width
@@ -1697,13 +1577,13 @@ lx_void_t lx_stroker_add_rect(lx_stroker_ref_t stroker, lx_rect_ref_t rect)
 
     // init the inner rect
     lx_rect_t rect_inner = *rect;
-    if (rect_inner.w > width && rect_inner.h > width)
-    {
+    if (rect_inner.w > width && rect_inner.h > width) {
+
         // make the inner rect
         lx_rect_deflate(&rect_inner, radius, radius);
 
         // add the inner rect to the other path
-        lx_path_add_rect(impl->path_other, &rect_inner, LX_ROTATE_DIRECTION_CW);
+        lx_path_add_rect(stroker->path_other, &rect_inner, LX_ROTATE_DIRECTION_CW);
     }
 
     // init the outer rect
@@ -1713,9 +1593,10 @@ lx_void_t lx_stroker_add_rect(lx_stroker_ref_t stroker, lx_rect_ref_t rect)
     lx_rect_inflate(&rect_outer, radius, radius);
 
     // the join
-    lx_size_t join = impl->join;
-    if (join == LX_PAINT_STROKE_JOIN_MITER && impl->miter < LX_SQRT2)
+    lx_size_t join = stroker->join;
+    if (join == LX_PAINT_STROKE_JOIN_MITER && stroker->miter < LX_SQRT2) {
         join = LX_PAINT_STROKE_JOIN_BEVEL;
+    }
 
     /* add the outer rect to the other path
      *
@@ -1737,16 +1618,12 @@ lx_void_t lx_stroker_add_rect(lx_stroker_ref_t stroker, lx_rect_ref_t rect)
      * R: radius
      * miter_limit = L / R > 1
      */
-    switch (join)
-    {
-    case LX_PAINT_STROKE_JOIN_MITER:
-        {
+    switch (join) {
+        case LX_PAINT_STROKE_JOIN_MITER: {
             // add miter rect
-            lx_path_add_rect(impl->path_other, &rect_outer, LX_ROTATE_DIRECTION_CCW);
-        }
-        break;
-    case LX_PAINT_STROKE_JOIN_BEVEL:
-        {
+            lx_path_add_rect(stroker->path_other, &rect_outer, LX_ROTATE_DIRECTION_CCW);
+            break;
+        case LX_PAINT_STROKE_JOIN_BEVEL: {
             // the bounds
             lx_float_t x = rect_outer.x;
             lx_float_t y = rect_outer.y;
@@ -1754,60 +1631,55 @@ lx_void_t lx_stroker_add_rect(lx_stroker_ref_t stroker, lx_rect_ref_t rect)
             lx_float_t h = rect_outer.h;
 
             // add bevel rect by counter-clockwise
-            lx_path_move2_to(impl->path_other, x,               y + radius);
-            lx_path_line2_to(impl->path_other, x,               y + h - radius);
-            lx_path_line2_to(impl->path_other, x + radius,      y + h);
-            lx_path_line2_to(impl->path_other, x + w - radius,  y + h);
-            lx_path_line2_to(impl->path_other, x + w,           y + h - radius);
-            lx_path_line2_to(impl->path_other, x + w,           y + radius);
-            lx_path_line2_to(impl->path_other, x + w - radius,  y);
-            lx_path_line2_to(impl->path_other, x + radius,      y);
-            lx_path_close(impl->path_other);
+            lx_path_move2_to(stroker->path_other, x,               y + radius);
+            lx_path_line2_to(stroker->path_other, x,               y + h - radius);
+            lx_path_line2_to(stroker->path_other, x + radius,      y + h);
+            lx_path_line2_to(stroker->path_other, x + w - radius,  y + h);
+            lx_path_line2_to(stroker->path_other, x + w,           y + h - radius);
+            lx_path_line2_to(stroker->path_other, x + w,           y + radius);
+            lx_path_line2_to(stroker->path_other, x + w - radius,  y);
+            lx_path_line2_to(stroker->path_other, x + radius,      y);
+            lx_path_close(stroker->path_other);
+            break;
         }
-        break;
-    case LX_PAINT_STROKE_JOIN_ROUND:
-        {
+        case LX_PAINT_STROKE_JOIN_ROUND: {
             // add round rect
-            lx_path_add_round_rect2(impl->path_other, &rect_outer, radius, radius, LX_ROTATE_DIRECTION_CCW);
+            lx_path_add_round_rect2(stroker->path_other, &rect_outer, radius, radius, LX_ROTATE_DIRECTION_CCW);
+            break;
         }
-        break;
-    default:
-        lx_trace_e("unknown join: %lu", impl->join);
-        break;
+        default:
+            lx_trace_e("unknown join: %lu", stroker->join);
+            break;
+        }
     }
 }
-lx_void_t lx_stroker_add_circle(lx_stroker_ref_t stroker, lx_circle_ref_t circle)
-{
-    // check
+
+lx_void_t lx_stroker_add_circle(lx_stroker_ref_t self, lx_circle_ref_t circle) {
     lx_assert_and_check_return(circle);
 
-    // make ellipse
     lx_ellipse_t ellipse;
     lx_ellipse_make(&ellipse, circle->c.x, circle->c.y, circle->r, circle->r);
-
-    // add ellipse
-    lx_stroker_add_ellipse(stroker, &ellipse);
+    lx_stroker_add_ellipse(self, &ellipse);
 }
-lx_void_t lx_stroker_add_ellipse(lx_stroker_ref_t stroker, lx_ellipse_ref_t ellipse)
-{
-    // check
-    lx_stroker_impl_t* impl = (lx_stroker_impl_t*)stroker;
-    lx_assert_and_check_return(impl && impl->path_other && ellipse);
+
+lx_void_t lx_stroker_add_ellipse(lx_stroker_ref_t self, lx_ellipse_ref_t ellipse) {
+    lx_stroker_t* stroker = (lx_stroker_t*)self;
+    lx_assert_and_check_return(stroker && stroker->path_other && ellipse);
 
     // the radius
-    lx_float_t radius = impl->radius;
+    lx_float_t radius = stroker->radius;
     lx_check_return(radius > 0);
 
     // init the inner ellipse
     lx_ellipse_t ellipse_inner = *ellipse;
-    if (ellipse_inner.rx > radius && ellipse_inner.ry > radius)
-    {
+    if (ellipse_inner.rx > radius && ellipse_inner.ry > radius) {
+
         // make the inner ellipse
         ellipse_inner.rx -= radius;
         ellipse_inner.ry -= radius;
 
         // add the inner ellipse to the other path
-        lx_path_add_ellipse(impl->path_other, &ellipse_inner, LX_ROTATE_DIRECTION_CW);
+        lx_path_add_ellipse(stroker->path_other, &ellipse_inner, LX_ROTATE_DIRECTION_CW);
     }
 
     // init the outer ellipse
@@ -1818,205 +1690,139 @@ lx_void_t lx_stroker_add_ellipse(lx_stroker_ref_t stroker, lx_ellipse_ref_t elli
     ellipse_outer.ry += radius;
 
     // add the inner and outer ellipse to the other path
-    lx_path_add_ellipse(impl->path_other, &ellipse_outer, LX_ROTATE_DIRECTION_CCW);
+    lx_path_add_ellipse(stroker->path_other, &ellipse_outer, LX_ROTATE_DIRECTION_CCW);
 }
-lx_void_t lx_stroker_add_lines(lx_stroker_ref_t stroker, lx_point_ref_t points, lx_size_t count)
-{
-    // check
+
+lx_void_t lx_stroker_add_lines(lx_stroker_ref_t self, lx_point_ref_t points, lx_size_t count) {
     lx_assert_and_check_return(points && count && !(count & 0x1));
 
-    // done
     lx_size_t index;
-    for (index = 0; index < count; index += 2)
-    {
-        lx_stroker_move_to(stroker, points + index);
-        lx_stroker_line_to(stroker, points + index + 1);
+    for (index = 0; index < count; index += 2) {
+        lx_stroker_move_to(self, points + index);
+        lx_stroker_line_to(self, points + index + 1);
     }
 }
-lx_void_t lx_stroker_add_points(lx_stroker_ref_t stroker, lx_point_ref_t points, lx_size_t count)
-{
-    // check
-    lx_stroker_impl_t* impl = (lx_stroker_impl_t*)stroker;
-    lx_assert_and_check_return(impl && impl->path_other && points && count);
+
+lx_void_t lx_stroker_add_points(lx_stroker_ref_t self, lx_point_ref_t points, lx_size_t count) {
+    lx_stroker_t* stroker = (lx_stroker_t*)self;
+    lx_assert_and_check_return(stroker && stroker->path_other && points && count);
 
     // the radius
-    lx_float_t radius = impl->radius;
+    lx_float_t radius = stroker->radius;
     lx_check_return(radius > 0);
 
     // make the stroked path
-    switch (impl->cap)
-    {
-    case LX_PAINT_STROKE_CAP_ROUND:
-        {
-            // done
+    switch (stroker->cap) {
+        case LX_PAINT_STROKE_CAP_ROUND: {
             lx_size_t       index;
             lx_point_ref_t  point;
             lx_circle_t     circle;
-            for (index = 0; index < count; index++)
-            {
-                // the point
+            for (index = 0; index < count; index++) {
                 point = points + index;
-
-                // make circle
                 lx_circle_make(&circle, point->x, point->y, radius);
-
-                // add circle to the other path
-                lx_path_add_circle(impl->path_other, &circle, LX_ROTATE_DIRECTION_CW);
+                lx_path_add_circle(stroker->path_other, &circle, LX_ROTATE_DIRECTION_CW);
             }
+            break;
         }
-        break;
-    case LX_PAINT_STROKE_CAP_BUTT:
-    case LX_PAINT_STROKE_CAP_SQUARE:
-    default:
-        {
-            // done
+        case LX_PAINT_STROKE_CAP_BUTT:
+        case LX_PAINT_STROKE_CAP_SQUARE:
+        default: {
             lx_rect_t       rect;
             lx_size_t       index;
             lx_point_ref_t  point;
             lx_float_t      width = radius * 2.0f;
-            for (index = 0; index < count; index++)
-            {
-                // the point
+            for (index = 0; index < count; index++) {
                 point = points + index;
-
-                // make rect
                 lx_rect_make(&rect, point->x - radius, point->y - radius, width, width);
-
-                // add rect to the other path
-                lx_path_add_rect(impl->path_other, &rect, LX_ROTATE_DIRECTION_CW);
+                lx_path_add_rect(stroker->path_other, &rect, LX_ROTATE_DIRECTION_CW);
             }
+            break;
         }
-        break;
     }
 }
-lx_void_t lx_stroker_add_polygon(lx_stroker_ref_t stroker, lx_polygon_ref_t polygon)
-{
-    // check
+
+lx_void_t lx_stroker_add_polygon(lx_stroker_ref_t self, lx_polygon_ref_t polygon) {
     lx_assert_and_check_return(polygon && polygon->points && polygon->counts);
 
-    // done
     lx_point_ref_t  first = lx_null;
     lx_point_ref_t  point = lx_null;
     lx_point_ref_t  points = polygon->points;
     lx_uint16_t*    counts = polygon->counts;
     lx_uint16_t     count = *counts++;
     lx_size_t       index = 0;
-    while (index < count)
-    {
-        // the point
+    while (index < count) {
         point = points++;
-
-        // first point?
-        if (!index)
-        {
-            lx_stroker_move_to(stroker, point);
+        if (!index) {
+            lx_stroker_move_to(self, point);
             first = point;
+        } else {
+            lx_stroker_line_to(self, point);
         }
-        else lx_stroker_line_to(stroker, point);
-
-        // next point
         index++;
 
         // next polygon
-        if (index == count)
-        {
-            // close path
-            if (first && first->x == point->x && first->y == point->y) lx_stroker_close(stroker);
-
-            // next
+        if (index == count) {
+            if (first && first->x == point->x && first->y == point->y) {
+                lx_stroker_close(self);
+            }
             count = *counts++;
             index = 0;
         }
     }
 }
-lx_path_ref_t lx_stroker_done(lx_stroker_ref_t stroker, lx_bool_t convex)
-{
-    // check
-    lx_stroker_impl_t* impl = (lx_stroker_impl_t*)stroker;
-    lx_assert_and_check_return_val(impl, lx_null);
+
+lx_path_ref_t lx_stroker_done(lx_stroker_ref_t self, lx_bool_t convex) {
+    lx_stroker_t* stroker = (lx_stroker_t*)self;
+    lx_assert_and_check_return_val(stroker, lx_null);
 
     // finish the current contour first
-    if (impl->segment_count > 0) lx_stroker_finish(impl, lx_false);
+    if (stroker->segment_count > 0) {
+        lx_stroker_finish(stroker, lx_false);
+    }
 
     // exists the other path? merge it
-    if (impl->path_other && !lx_path_empty(impl->path_other))
-    {
-        // add the other path
-        lx_path_add_path(impl->path_outer, impl->path_other);
-
-        // clear the other path
-        lx_path_clear(impl->path_other);
+    if (stroker->path_other && !lx_path_empty(stroker->path_other)) {
+        lx_path_add_path(stroker->path_outer, stroker->path_other);
+        lx_path_clear(stroker->path_other);
     }
 
     // update convex and disable to analyze convex in the path automatically
-    lx_path_convex_set(impl->path_outer, convex);
-
-    // the stroked path
-    return impl->path_outer;
+    lx_path_convex_set(stroker->path_outer, convex);
+    return stroker->path_outer;
 }
-lx_path_ref_t lx_stroker_done_path(lx_stroker_ref_t stroker, lx_paint_ref_t paint, lx_path_ref_t path)
-{
-    // clear the stroker
-    lx_stroker_clear(stroker);
 
-    // apply paint to the stroker
-    lx_stroker_apply_paint(stroker, paint);
-
+lx_path_ref_t lx_stroker_done_path(lx_stroker_ref_t self, lx_paint_ref_t paint, lx_path_ref_t path) {
+    lx_stroker_clear(self);
+    lx_stroker_apply_paint(self, paint);
     // attempt to add hint first
     lx_bool_t convex = lx_false;
-    if (!lx_stroker_add_hint(stroker, lx_path_hint(path), &convex))
-    {
-        // add path to the stroker
-        lx_stroker_add_path(stroker, path);
+    if (!lx_stroker_add_hint(self, lx_path_hint(path), &convex)) {
+        lx_stroker_add_path(self, path);
     }
-
-    // done the stroker
-    return lx_stroker_done(stroker, convex);
+    return lx_stroker_done(self, convex);
 }
-lx_path_ref_t lx_stroker_done_lines(lx_stroker_ref_t stroker, lx_paint_ref_t paint, lx_point_ref_t points, lx_size_t count)
-{
-    // clear the stroker
-    lx_stroker_clear(stroker);
 
-    // apply paint to the stroker
-    lx_stroker_apply_paint(stroker, paint);
-
-    // add lines to the stroker
-    lx_stroker_add_lines(stroker, points, count);
-
-    // done the stroker
-    return lx_stroker_done(stroker, lx_true);
+lx_path_ref_t lx_stroker_done_lines(lx_stroker_ref_t self, lx_paint_ref_t paint, lx_point_ref_t points, lx_size_t count) {
+    lx_stroker_clear(self);
+    lx_stroker_apply_paint(self, paint);
+    lx_stroker_add_lines(self, points, count);
+    return lx_stroker_done(self, lx_true);
 }
-lx_path_ref_t lx_stroker_done_points(lx_stroker_ref_t stroker, lx_paint_ref_t paint, lx_point_ref_t points, lx_size_t count)
-{
-    // clear the stroker
-    lx_stroker_clear(stroker);
 
-    // apply paint to the stroker
-    lx_stroker_apply_paint(stroker, paint);
-
-    // add points to the stroker
-    lx_stroker_add_points(stroker, points, count);
-
-    // done the stroker
-    return lx_stroker_done(stroker, lx_true);
+lx_path_ref_t lx_stroker_done_points(lx_stroker_ref_t self, lx_paint_ref_t paint, lx_point_ref_t points, lx_size_t count) {
+    lx_stroker_clear(self);
+    lx_stroker_apply_paint(self, paint);
+    lx_stroker_add_points(self, points, count);
+    return lx_stroker_done(self, lx_true);
 }
-lx_path_ref_t lx_stroker_done_polygon(lx_stroker_ref_t stroker, lx_paint_ref_t paint, lx_polygon_ref_t polygon, lx_shape_ref_t hint)
-{
-    // clear the stroker
-    lx_stroker_clear(stroker);
 
-    // apply paint to the stroker
-    lx_stroker_apply_paint(stroker, paint);
-
+lx_path_ref_t lx_stroker_done_polygon(lx_stroker_ref_t self, lx_paint_ref_t paint, lx_polygon_ref_t polygon, lx_shape_ref_t hint) {
+    lx_stroker_clear(self);
+    lx_stroker_apply_paint(self, paint);
     // attempt to add hint first
     lx_bool_t convex = lx_false;
-    if (!lx_stroker_add_hint(stroker, hint, &convex))
-    {
-        // add polygon to the stroker
-        lx_stroker_add_polygon(stroker, polygon);
+    if (!lx_stroker_add_hint(self, hint, &convex)) {
+        lx_stroker_add_polygon(self, polygon);
     }
-
-    // done the stroker
-    return lx_stroker_done(stroker, convex);
+    return lx_stroker_done(self, convex);
 }
