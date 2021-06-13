@@ -1771,7 +1771,7 @@ lx_void_t lx_stroker_add_polygon(lx_stroker_ref_t self, lx_polygon_ref_t polygon
     }
 }
 
-lx_path_ref_t lx_stroker_done(lx_stroker_ref_t self, lx_bool_t convex) {
+lx_path_ref_t lx_stroker_make(lx_stroker_ref_t self, lx_bool_t convex) {
     lx_stroker_t* stroker = (lx_stroker_t*)self;
     lx_assert_and_check_return_val(stroker, lx_null);
 
@@ -1791,7 +1791,7 @@ lx_path_ref_t lx_stroker_done(lx_stroker_ref_t self, lx_bool_t convex) {
     return stroker->path_outer;
 }
 
-lx_path_ref_t lx_stroker_done_path(lx_stroker_ref_t self, lx_paint_ref_t paint, lx_path_ref_t path) {
+lx_path_ref_t lx_stroker_make_from_path(lx_stroker_ref_t self, lx_paint_ref_t paint, lx_path_ref_t path) {
     lx_stroker_clear(self);
     lx_stroker_apply_paint(self, paint);
     // attempt to add hint first
@@ -1799,24 +1799,24 @@ lx_path_ref_t lx_stroker_done_path(lx_stroker_ref_t self, lx_paint_ref_t paint, 
     if (!lx_stroker_add_hint(self, lx_path_hint(path), &convex)) {
         lx_stroker_add_path(self, path);
     }
-    return lx_stroker_done(self, convex);
+    return lx_stroker_make(self, convex);
 }
 
-lx_path_ref_t lx_stroker_done_lines(lx_stroker_ref_t self, lx_paint_ref_t paint, lx_point_ref_t points, lx_size_t count) {
+lx_path_ref_t lx_stroker_make_from_lines(lx_stroker_ref_t self, lx_paint_ref_t paint, lx_point_ref_t points, lx_size_t count) {
     lx_stroker_clear(self);
     lx_stroker_apply_paint(self, paint);
     lx_stroker_add_lines(self, points, count);
-    return lx_stroker_done(self, lx_true);
+    return lx_stroker_make(self, lx_true);
 }
 
-lx_path_ref_t lx_stroker_done_points(lx_stroker_ref_t self, lx_paint_ref_t paint, lx_point_ref_t points, lx_size_t count) {
+lx_path_ref_t lx_stroker_make_from_points(lx_stroker_ref_t self, lx_paint_ref_t paint, lx_point_ref_t points, lx_size_t count) {
     lx_stroker_clear(self);
     lx_stroker_apply_paint(self, paint);
     lx_stroker_add_points(self, points, count);
-    return lx_stroker_done(self, lx_true);
+    return lx_stroker_make(self, lx_true);
 }
 
-lx_path_ref_t lx_stroker_done_polygon(lx_stroker_ref_t self, lx_paint_ref_t paint, lx_polygon_ref_t polygon, lx_shape_ref_t hint) {
+lx_path_ref_t lx_stroker_make_from_polygon(lx_stroker_ref_t self, lx_paint_ref_t paint, lx_polygon_ref_t polygon, lx_shape_ref_t hint) {
     lx_stroker_clear(self);
     lx_stroker_apply_paint(self, paint);
     // attempt to add hint first
@@ -1824,5 +1824,5 @@ lx_path_ref_t lx_stroker_done_polygon(lx_stroker_ref_t self, lx_paint_ref_t pain
     if (!lx_stroker_add_hint(self, hint, &convex)) {
         lx_stroker_add_polygon(self, polygon);
     }
-    return lx_stroker_done(self, convex);
+    return lx_stroker_make(self, convex);
 }

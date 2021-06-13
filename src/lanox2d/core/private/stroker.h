@@ -128,7 +128,7 @@ lx_void_t                   lx_stroker_add_rect(lx_stroker_ref_t stroker, lx_rec
 /* add circle
  *
  * @param stroker           the stroker
- * @param circle              the circle
+ * @param circle            the circle
  */
 lx_void_t                   lx_stroker_add_circle(lx_stroker_ref_t stroker, lx_circle_ref_t circle);
 
@@ -162,16 +162,16 @@ lx_void_t                   lx_stroker_add_points(lx_stroker_ref_t stroker, lx_p
  */
 lx_void_t                   lx_stroker_add_polygon(lx_stroker_ref_t stroker, lx_polygon_ref_t polygon);
 
-/* done stroker and get the stroked path
+/* make the stroked path
  *
  * @param stroker           the stroker
  * @param convex            is convex?
  *
  * @return                  the stroked path
  */
-lx_path_ref_t               lx_stroker_done(lx_stroker_ref_t stroker, lx_bool_t convex);
+lx_path_ref_t               lx_stroker_make(lx_stroker_ref_t stroker, lx_bool_t convex);
 
-/* done path to stroker and get the stroked path
+/* make the stroked path from the given path
  *
  * @param stroker           the stroker
  * @param paint             the paint
@@ -179,9 +179,9 @@ lx_path_ref_t               lx_stroker_done(lx_stroker_ref_t stroker, lx_bool_t 
  *
  * @return                  the stroked path
  */
-lx_path_ref_t               lx_stroker_done_path(lx_stroker_ref_t stroker, lx_paint_ref_t paint, lx_path_ref_t path);
+lx_path_ref_t               lx_stroker_make_from_path(lx_stroker_ref_t stroker, lx_paint_ref_t paint, lx_path_ref_t path);
 
-/* done lines to stroker and get the stroked path
+/* make the stroked path from the given lines
  *
  * @param stroker           the stroker
  * @param paint             the paint
@@ -190,9 +190,9 @@ lx_path_ref_t               lx_stroker_done_path(lx_stroker_ref_t stroker, lx_pa
  *
  * @return                  the stroked path
  */
-lx_path_ref_t               lx_stroker_done_lines(lx_stroker_ref_t stroker, lx_paint_ref_t paint, lx_point_ref_t points, lx_size_t count);
+lx_path_ref_t               lx_stroker_make_from_lines(lx_stroker_ref_t stroker, lx_paint_ref_t paint, lx_point_ref_t points, lx_size_t count);
 
-/* done points to stroker and get the stroked path
+/* make the stroked path from the given points
  *
  * @param stroker           the stroker
  * @param paint             the paint
@@ -201,9 +201,9 @@ lx_path_ref_t               lx_stroker_done_lines(lx_stroker_ref_t stroker, lx_p
  *
  * @return                  the stroked path
  */
-lx_path_ref_t               lx_stroker_done_points(lx_stroker_ref_t stroker, lx_paint_ref_t paint, lx_point_ref_t points, lx_size_t count);
+lx_path_ref_t               lx_stroker_make_from_points(lx_stroker_ref_t stroker, lx_paint_ref_t paint, lx_point_ref_t points, lx_size_t count);
 
-/* done polygon to stroker and get the stroked path
+/* make the stroked path from the given polygon
  *
  * @param stroker           the stroker
  * @param paint             the paint
@@ -212,7 +212,7 @@ lx_path_ref_t               lx_stroker_done_points(lx_stroker_ref_t stroker, lx_
  *
  * @return                  the stroked path
  */
-lx_path_ref_t               lx_stroker_done_polygon(lx_stroker_ref_t stroker, lx_paint_ref_t paint, lx_polygon_ref_t polygon, lx_shape_ref_t hint);
+lx_path_ref_t               lx_stroker_make_from_polygon(lx_stroker_ref_t stroker, lx_paint_ref_t paint, lx_polygon_ref_t polygon, lx_shape_ref_t hint);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

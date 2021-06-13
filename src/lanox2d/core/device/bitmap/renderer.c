@@ -151,7 +151,7 @@ lx_void_t lx_bitmap_renderer_draw_path(lx_bitmap_device_t* device, lx_path_ref_t
         if (lx_bitmap_renderer_stroke_only(device)) {
             lx_bitmap_renderer_draw_polygon(device, lx_path_polygon(path), lx_path_hint(path), lx_path_bounds(path));
         } else {
-            lx_bitmap_renderer_stroke_fill(device, lx_stroker_done_path(device->stroker, device->base.paint, path));
+            lx_bitmap_renderer_stroke_fill(device, lx_stroker_make_from_path(device->stroker, device->base.paint, path));
         }
     }
 }
@@ -174,7 +174,7 @@ lx_void_t lx_bitmap_renderer_draw_lines(lx_bitmap_device_t* device, lx_point_ref
         lx_bitmap_renderer_stroke_lines(device, stroked_points, stroked_count);
     } else {
         // fill the stroked lines
-        lx_bitmap_renderer_stroke_fill(device, lx_stroker_done_lines(device->stroker, device->base.paint, points, count));
+        lx_bitmap_renderer_stroke_fill(device, lx_stroker_make_from_lines(device->stroker, device->base.paint, points, count));
     }
 }
 
@@ -196,7 +196,7 @@ lx_void_t lx_bitmap_renderer_draw_points(lx_bitmap_device_t* device, lx_point_re
         lx_bitmap_renderer_stroke_points(device, stroked_points, stroked_count);
     } else {
         // fill the stroked points
-        lx_bitmap_renderer_stroke_fill(device, lx_stroker_done_points(device->stroker, device->base.paint, points, count));
+        lx_bitmap_renderer_stroke_fill(device, lx_stroker_make_from_points(device->stroker, device->base.paint, points, count));
     }
 }
 
@@ -251,7 +251,7 @@ lx_void_t lx_bitmap_renderer_draw_polygon(lx_bitmap_device_t* device, lx_polygon
             // stroke polygon
             if (stroked_count) lx_bitmap_renderer_stroke_polygon(device, &stroked_polygon);
         } else {
-            lx_bitmap_renderer_stroke_fill(device, lx_stroker_done_polygon(device->stroker, device->base.paint, polygon, hint));
+            lx_bitmap_renderer_stroke_fill(device, lx_stroker_make_from_polygon(device->stroker, device->base.paint, polygon, hint));
         }
     }
 }
