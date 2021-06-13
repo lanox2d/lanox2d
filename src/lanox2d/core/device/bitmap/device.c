@@ -15,7 +15,7 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        bitmap.c
+ * @file        device.c
  *
  */
 
@@ -83,6 +83,36 @@ static lx_void_t lx_device_bitmap_draw_lines(lx_device_ref_t self, lx_point_ref_
     }
 }
 
+static lx_void_t lx_device_bitmap_draw_points(lx_device_ref_t self, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds) {
+    lx_bitmap_device_t* device = (lx_bitmap_device_t*)self;
+    lx_assert(device && points && count);
+
+    if (lx_bitmap_renderer_init(device)) {
+        lx_bitmap_renderer_draw_points(device, points, count, bounds);
+        lx_bitmap_renderer_exit(device);
+    }
+}
+
+static lx_void_t lx_device_bitmap_draw_polygon(lx_device_ref_t self, lx_polygon_ref_t polygon, lx_shape_ref_t hint, lx_rect_ref_t bounds) {
+    lx_bitmap_device_t* device = (lx_bitmap_device_t*)self;
+    lx_assert(device && polygon);
+
+    if (lx_bitmap_renderer_init(device)) {
+        lx_bitmap_renderer_draw_polygon(device, polygon, hint, bounds);
+        lx_bitmap_renderer_exit(device);
+    }
+}
+
+static lx_void_t lx_device_bitmap_draw_path(lx_device_ref_t self, lx_path_ref_t path) {
+    lx_bitmap_device_t* device = (lx_bitmap_device_t*)self;
+    lx_assert(device && path);
+
+    if (lx_bitmap_renderer_init(device)) {
+        lx_bitmap_renderer_draw_path(device, path);
+        lx_bitmap_renderer_exit(device);
+    }
+}
+
 static lx_void_t lx_device_bitmap_exit(lx_device_ref_t self) {
     lx_bitmap_device_t* device = (lx_bitmap_device_t*)self;
     if (device) {
@@ -120,11 +150,14 @@ lx_device_ref_t lx_device_init_from_bitmap(lx_bitmap_ref_t bitmap) {
         device = lx_malloc0_type(lx_bitmap_device_t);
         lx_assert_and_check_break(device);
 
-        device->base.resize     = lx_device_bitmap_resize;
-        device->base.draw_clear = lx_device_bitmap_draw_clear;
-        device->base.draw_lines = lx_device_bitmap_draw_lines;
-        device->base.exit       = lx_device_bitmap_exit;
-        device->bitmap          = bitmap;
+        device->base.resize       = lx_device_bitmap_resize;
+        device->base.draw_clear   = lx_device_bitmap_draw_clear;
+        device->base.draw_lines   = lx_device_bitmap_draw_lines;
+        device->base.draw_points  = lx_device_bitmap_draw_points;
+        device->base.draw_polygon = lx_device_bitmap_draw_polygon;
+        device->base.draw_path    = lx_device_bitmap_draw_path;
+        device->base.exit         = lx_device_bitmap_exit;
+        device->bitmap            = bitmap;
 
         // init pixmap
         device->pixmap = lx_pixmap(lx_bitmap_pixfmt(bitmap), 0xff);
