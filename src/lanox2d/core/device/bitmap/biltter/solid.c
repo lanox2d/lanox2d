@@ -26,7 +26,7 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
-static lx_void_t lx_bitmap_biltter_solid_done_p(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y) {
+static lx_void_t lx_bitmap_biltter_solid_draw_pixel(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y) {
     lx_assert(biltter && biltter->pixmap && biltter->pixmap->pixel_set);
     lx_assert(x >= 0 && y >= 0);
 
@@ -35,7 +35,7 @@ static lx_void_t lx_bitmap_biltter_solid_done_p(lx_bitmap_biltter_t* biltter, lx
     biltter->pixmap->pixel_set(pixels + y * biltter->row_bytes + x * biltter->btp, biltter->u.solid.pixel, biltter->u.solid.alpha);
 }
 
-static lx_void_t lx_bitmap_biltter_solid_done_h(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y, lx_long_t w) {
+static lx_void_t lx_bitmap_biltter_solid_draw_hline(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y, lx_long_t w) {
     lx_assert(biltter && biltter->pixmap && biltter->pixmap->pixels_fill);
     lx_assert(x >= 0 && y >= 0 && w >= 0);
     lx_check_return(w);
@@ -45,7 +45,7 @@ static lx_void_t lx_bitmap_biltter_solid_done_h(lx_bitmap_biltter_t* biltter, lx
     biltter->pixmap->pixels_fill(pixels + y * biltter->row_bytes + x * biltter->btp, biltter->u.solid.pixel, w, biltter->u.solid.alpha);
 }
 
-static lx_void_t lx_bitmap_biltter_solid_done_v(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y, lx_long_t h) {
+static lx_void_t lx_bitmap_biltter_solid_draw_vline(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y, lx_long_t h) {
     lx_assert(biltter && biltter->pixmap && biltter->pixmap->pixels_fill);
     lx_assert(x >= 0 && y >= 0 && h >= 0);
     lx_check_return(h);
@@ -63,7 +63,7 @@ static lx_void_t lx_bitmap_biltter_solid_done_v(lx_bitmap_biltter_t* biltter, lx
     }
 }
 
-static lx_void_t lx_bitmap_biltter_solid_done_r(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y, lx_long_t w, lx_long_t h) {
+static lx_void_t lx_bitmap_biltter_solid_draw_rect(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y, lx_long_t w, lx_long_t h) {
     lx_assert(biltter && biltter->pixmap && biltter->pixmap->pixels_fill);
     lx_assert(x >= 0 && y >= 0 && w >= 0 && h >= 0);
     lx_check_return(h && w);
@@ -99,10 +99,10 @@ lx_bool_t lx_bitmap_biltter_solid_init(lx_bitmap_biltter_t* biltter, lx_bitmap_r
     biltter->row_bytes     = lx_bitmap_row_bytes(biltter->bitmap);
     biltter->u.solid.pixel = biltter->pixmap->pixel(lx_paint_color(paint));
     biltter->u.solid.alpha = lx_paint_alpha(paint);
-    biltter->done_p        = lx_bitmap_biltter_solid_done_p;
-    biltter->done_h        = lx_bitmap_biltter_solid_done_h;
-    biltter->done_v        = lx_bitmap_biltter_solid_done_v;
-    biltter->done_r        = lx_bitmap_biltter_solid_done_r;
+    biltter->draw_pixel    = lx_bitmap_biltter_solid_draw_pixel;
+    biltter->draw_hline    = lx_bitmap_biltter_solid_draw_hline;
+    biltter->draw_vline    = lx_bitmap_biltter_solid_draw_vline;
+    biltter->draw_rect     = lx_bitmap_biltter_solid_draw_rect;
     biltter->exit          = lx_null;
     lx_check_return_val(biltter->pixmap, lx_false);
     return lx_true;

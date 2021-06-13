@@ -31,6 +31,6 @@ lx_void_t lx_bitmap_renderer_stroke_points(lx_bitmap_device_t* device, lx_point_
     lx_assert(device && points && count);
     lx_size_t i;
     for (i = 0; i < count; i++) {
-        lx_bitmap_biltter_done_p(&device->biltter, (lx_long_t)points[i].x, (lx_long_t)points[i].y);
+        lx_bitmap_biltter_draw_pixel(&device->biltter, (lx_long_t)points[i].x, (lx_long_t)points[i].y);
     }
 }

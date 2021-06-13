@@ -49,10 +49,10 @@ typedef struct lx_bitmap_biltter_t_ {
     lx_size_t                btp;
     lx_size_t                row_bytes;
     lx_void_t                (*exit)(struct lx_bitmap_biltter_t_* biltter);
-    lx_void_t                (*done_p)(struct lx_bitmap_biltter_t_* biltter, lx_long_t x, lx_long_t y);
-    lx_void_t                (*done_h)(struct lx_bitmap_biltter_t_* biltter, lx_long_t x, lx_long_t y, lx_long_t w);
-    lx_void_t                (*done_v)(struct lx_bitmap_biltter_t_* biltter, lx_long_t x, lx_long_t y, lx_long_t h);
-    lx_void_t                (*done_r)(struct lx_bitmap_biltter_t_* biltter, lx_long_t x, lx_long_t y, lx_long_t w, lx_long_t h);
+    lx_void_t                (*draw_pixel)(struct lx_bitmap_biltter_t_* biltter, lx_long_t x, lx_long_t y);
+    lx_void_t                (*draw_hline)(struct lx_bitmap_biltter_t_* biltter, lx_long_t x, lx_long_t y, lx_long_t w);
+    lx_void_t                (*draw_vline)(struct lx_bitmap_biltter_t_* biltter, lx_long_t x, lx_long_t y, lx_long_t h);
+    lx_void_t                (*draw_rect)(struct lx_bitmap_biltter_t_* biltter, lx_long_t x, lx_long_t y, lx_long_t w, lx_long_t h);
 }lx_bitmap_biltter_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////

@@ -37,35 +37,35 @@ lx_void_t lx_bitmap_biltter_exit(lx_bitmap_biltter_t* biltter) {
     }
 }
 
-lx_void_t lx_bitmap_biltter_done_p(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y) {
-    lx_assert(biltter && biltter->done_p);
-    biltter->done_p(biltter, x, y);
+lx_void_t lx_bitmap_biltter_draw_pixel(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y) {
+    lx_assert(biltter && biltter->draw_pixel);
+    biltter->draw_pixel(biltter, x, y);
 }
 
-lx_void_t lx_bitmap_biltter_done_h(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y, lx_long_t w) {
-    lx_assert(biltter && biltter->done_h);
-    biltter->done_h(biltter, x, y, w);
+lx_void_t lx_bitmap_biltter_draw_hline(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y, lx_long_t w) {
+    lx_assert(biltter && biltter->draw_hline);
+    biltter->draw_hline(biltter, x, y, w);
 }
 
-lx_void_t lx_bitmap_biltter_done_v(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y, lx_long_t h) {
-    lx_assert(biltter && biltter->done_v);
-    biltter->done_v(biltter, x, y, h);
+lx_void_t lx_bitmap_biltter_draw_vline(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y, lx_long_t h) {
+    lx_assert(biltter && biltter->draw_vline);
+    biltter->draw_vline(biltter, x, y, h);
 }
 
-lx_void_t lx_bitmap_biltter_done_r(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y, lx_long_t w, lx_long_t h) {
+lx_void_t lx_bitmap_biltter_draw_rect(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y, lx_long_t w, lx_long_t h) {
     lx_assert(biltter);
     if (h == 1) {
-        lx_assert(biltter->done_h);
-        biltter->done_h(biltter, x, y, w);
+        lx_assert(biltter->draw_hline);
+        biltter->draw_hline(biltter, x, y, w);
         return ;
     } else if (w == 1) {
-        lx_assert(biltter->done_v);
-        biltter->done_v(biltter, x, y, h);
+        lx_assert(biltter->draw_vline);
+        biltter->draw_vline(biltter, x, y, h);
         return ;
-    } else if (biltter->done_r) {
-        biltter->done_r(biltter, x, y, w, h);
+    } else if (biltter->draw_rect) {
+        biltter->draw_rect(biltter, x, y, w, h);
     } else {
-        lx_assert(biltter->done_h);
-        while (h--) biltter->done_h(biltter, x, y++, w);
+        lx_assert(biltter->draw_hline);
+        while (h--) biltter->draw_hline(biltter, x, y++, w);
     }
 }

@@ -77,7 +77,7 @@ static lx_size_t lx_bitmap_renderer_stroke_line_generic(lx_bitmap_biltter_t* bil
 
         // draw
         do {
-            lx_bitmap_biltter_done_p(biltter, ixb, lx_fixed_round(start_y));
+            lx_bitmap_biltter_draw_pixel(biltter, ixb, lx_fixed_round(start_y));
             start_y += slope;
         } while (++ixb < ixe);
 
@@ -118,7 +118,7 @@ static lx_size_t lx_bitmap_renderer_stroke_line_generic(lx_bitmap_biltter_t* bil
 
         // draw
         do {
-            lx_bitmap_biltter_done_p(biltter, lx_fixed_round(start_x), iyb);
+            lx_bitmap_biltter_draw_pixel(biltter, lx_fixed_round(start_x), iyb);
             start_x += slope;
         } while (++iyb < iye);
     }
@@ -130,7 +130,7 @@ static lx_void_t lx_bitmap_renderer_stroke_line_vertical(lx_bitmap_biltter_t* bi
     if (yb > ye) {
         lx_swap(lx_long_t, yb, ye);
     }
-    lx_bitmap_biltter_done_v(biltter, lx_fixed6_round(xb), lx_fixed6_round(yb), lx_fixed6_round(ye - yb + LX_FIXED6_ONE));
+    lx_bitmap_biltter_draw_vline(biltter, lx_fixed6_round(xb), lx_fixed6_round(yb), lx_fixed6_round(ye - yb + LX_FIXED6_ONE));
 }
 
 static lx_void_t lx_bitmap_renderer_stroke_line_horizontal(lx_bitmap_biltter_t* biltter, lx_fixed6_t xb, lx_fixed6_t yb, lx_fixed6_t xe, lx_fixed6_t ye) {
@@ -138,7 +138,7 @@ static lx_void_t lx_bitmap_renderer_stroke_line_horizontal(lx_bitmap_biltter_t* 
     if (xb > xe) {
         lx_swap(lx_long_t, xb, xe);
     }
-    lx_bitmap_biltter_done_h(biltter, lx_fixed6_round(xb), lx_fixed6_round(yb), lx_fixed6_round(xe - xb + LX_FIXED6_ONE));
+    lx_bitmap_biltter_draw_hline(biltter, lx_fixed6_round(xb), lx_fixed6_round(yb), lx_fixed6_round(xe - xb + LX_FIXED6_ONE));
 }
 
 /* //////////////////////////////////////////////////////////////////////////////////////

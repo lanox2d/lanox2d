@@ -56,7 +56,7 @@ lx_void_t               lx_bitmap_biltter_exit(lx_bitmap_biltter_t* biltter);
  * @param x             the x-coordinate
  * @param y             the y-coordinate
  */
-lx_void_t               lx_bitmap_biltter_done_p(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y);
+lx_void_t               lx_bitmap_biltter_draw_pixel(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y);
 
 /* done biltter by horizontal
  *
@@ -65,7 +65,7 @@ lx_void_t               lx_bitmap_biltter_done_p(lx_bitmap_biltter_t* biltter, l
  * @param y             the start y-coordinate
  * @param w             the width
  */
-lx_void_t               lx_bitmap_biltter_done_h(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y, lx_long_t w);
+lx_void_t               lx_bitmap_biltter_draw_hline(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y, lx_long_t w);
 
 /* done biltter by vertical
  *
@@ -74,7 +74,7 @@ lx_void_t               lx_bitmap_biltter_done_h(lx_bitmap_biltter_t* biltter, l
  * @param y             the start y-coordinate
  * @param h             the height
  */
-lx_void_t               lx_bitmap_biltter_done_v(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y, lx_long_t h);
+lx_void_t               lx_bitmap_biltter_draw_vline(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y, lx_long_t h);
 
 /* done biltter by rect
  *
@@ -84,7 +84,7 @@ lx_void_t               lx_bitmap_biltter_done_v(lx_bitmap_biltter_t* biltter, l
  * @param w             the width
  * @param h             the height
  */
-lx_void_t               lx_bitmap_biltter_done_r(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y, lx_long_t w, lx_long_t h);
+lx_void_t               lx_bitmap_biltter_draw_rect(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y, lx_long_t w, lx_long_t h);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

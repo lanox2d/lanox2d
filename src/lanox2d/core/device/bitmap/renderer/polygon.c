@@ -31,7 +31,7 @@
 #if 0
 static lx_void_t lx_bitmap_renderer_fill_raster(lx_long_t lx, lx_long_t rx, lx_long_t yb, lx_long_t ye, lx_cpointer_t udata) {
     lx_assert(udata && rx >= lx && ye > yb);
-    lx_bitmap_biltter_done_r((lx_bitmap_biltter_t*)udata, lx, yb, rx - lx, ye - yb);
+    lx_bitmap_biltter_draw_rect((lx_bitmap_biltter_t*)udata, lx, yb, rx - lx, ye - yb);
 }
 #endif
 
