@@ -345,8 +345,8 @@ static lx_void_t lx_stroker_capper_round(lx_path_ref_t path, lx_point_ref_t cent
     lx_float_t    y0 = center->y;
     lx_float_t    nx = normal->x;
     lx_float_t    ny = normal->y;
-    lx_float_t    lx = lx_mul(nx, LX_ARC_MAKE_CUBIC_FACTOR);
-    lx_float_t    ly = lx_mul(ny, LX_ARC_MAKE_CUBIC_FACTOR);
+    lx_float_t    lx = nx * LX_ARC_MAKE_CUBIC_FACTOR;
+    lx_float_t    ly = ny * LX_ARC_MAKE_CUBIC_FACTOR;
 
     // cap the round
     lx_path_cubic2_to(path, x0 + nx - ly, y0 + ny + lx, x0 - ny + lx, y0 + nx + ly, x0 - ny, y0 + nx);
@@ -434,8 +434,8 @@ static lx_float_t lx_stroker_joiner_angle(lx_vector_ref_t normal_unit_before, lx
     // compute the angle type
     if (ptype)
     {
-        if (angle < 0) *ptype = (LX_ONE + angle) <= LX_NEAR0? LX_STROKER_JOINER_ANGLE_NEAR180 : LX_STROKER_JOINER_ANGLE_OBTUSE;
-        else *ptype = (LX_ONE - angle) <= LX_NEAR0? LX_STROKER_JOINER_ANGLE_NEAR0 : LX_STROKER_JOINER_ANGLE_SHARP;
+        if (angle < 0) *ptype = (1.0f + angle) <= LX_NEAR0? LX_STROKER_JOINER_ANGLE_NEAR180 : LX_STROKER_JOINER_ANGLE_OBTUSE;
+        else *ptype = (1.0f - angle) <= LX_NEAR0? LX_STROKER_JOINER_ANGLE_NEAR0 : LX_STROKER_JOINER_ANGLE_SHARP;
     }
 
     // the angle
@@ -576,7 +576,7 @@ static lx_void_t lx_stroker_joiner_miter(lx_path_ref_t inner, lx_path_ref_t oute
          */
         if (lx_near0(cos_angle) && miter_invert <= LX_ONEOVER_SQRT2)
         {
-            lx_vector_make(&miter, lx_mul(before.x + after.x, radius), lx_mul(before.y + after.y, radius));
+            lx_vector_make(&miter, (before.x + after.x) * radius, (before.y + after.y) * radius);
             break;
         }
 
@@ -584,7 +584,7 @@ static lx_void_t lx_stroker_joiner_miter(lx_path_ref_t inner, lx_path_ref_t oute
          *
          * cos(a/2) = sqrt((1 + cos(a)) / 2)
          */
-        lx_float_t cos_half_a = lx_sqrt(lx_avg(LX_ONE, cos_angle));
+        lx_float_t cos_half_a = lx_sqrt(lx_avg(1.0f, cos_angle));
 
         /* limit the miter length
          *
@@ -608,7 +608,7 @@ static lx_void_t lx_stroker_joiner_miter(lx_path_ref_t inner, lx_path_ref_t oute
          *
          * L = R / cos(a/2)
          */
-        lx_float_t length = lx_div(radius, cos_half_a);
+        lx_float_t length = radius / cos_half_a;
 
         // compute the miter vector
         if (type == LX_STROKER_JOINER_ANGLE_OBTUSE)
@@ -804,7 +804,7 @@ static lx_bool_t lx_stroker_normals_make(lx_point_ref_t before, lx_point_ref_t a
     // ok
     return lx_true;
 }
-static __lx_inline__ lx_bool_t lx_stroker_normals_too_curvy(lx_float_t cos_angle)
+static lx_inline lx_bool_t lx_stroker_normals_too_curvy(lx_float_t cos_angle)
 {
     /*
      *              curve
@@ -824,10 +824,10 @@ static __lx_inline__ lx_bool_t lx_stroker_normals_too_curvy(lx_float_t cos_angle
      *
      * curvy: angle(curve) = 180 - angle <= 135 + 9 = 144 degrees
      */
-    return (cos_angle <= (LX_SQRT2_OVER2 + LX_ONE / 10));
+    return (cos_angle <= (LX_SQRT2_OVER2 + 1.0f / 10));
 }
 #if 0
-static __lx_inline__ lx_bool_t lx_stroker_normals_too_sharp(lx_vector_ref_t normal_unit_before, lx_vector_ref_t normal_unit_after)
+static lx_inline lx_bool_t lx_stroker_normals_too_sharp(lx_vector_ref_t normal_unit_before, lx_vector_ref_t normal_unit_after)
 {
     // check
     lx_assert(normal_unit_before && normal_unit_after);
@@ -885,7 +885,7 @@ static lx_void_t lx_stroker_make_quad_to(lx_stroker_impl_t* impl, lx_point_ref_t
     {
         // chop the quad at half
         lx_point_t output[5];
-        lx_quad_chop_at_half(points, output);
+        lx_bezier2_chop_at_half(points, output);
 
         // make sub-quad-to curves for the inner and outer contour
         lx_vector_t normal;
@@ -951,7 +951,7 @@ static lx_void_t lx_stroker_make_quad_to(lx_stroker_impl_t* impl, lx_point_ref_t
          *
          * length(p1, p1^) ~= R / cos(angle/2) = R / sqrt((1 + cos(angle)) / 2)
          */
-        if (!lx_vector_length_set(&normal_1, lx_div(impl->radius, lx_sqrt(lx_avg(LX_ONE, cos_angle)))))
+        if (!lx_vector_length_set(&normal_1, impl->radius / lx_sqrt(lx_avg(1.0f, cos_angle))))
         {
             // failed
             lx_assert(0);
@@ -1011,7 +1011,7 @@ static lx_void_t lx_stroker_make_cubic_to(lx_stroker_impl_t* impl, lx_point_ref_
     {
         // chop the cubic at half
         lx_point_t output[7];
-        lx_cubic_chop_at_half(points, output);
+        lx_bezier3_chop_at_half(points, output);
 
         /* make sub-cubic-to curves for the inner and outer contour
          *
@@ -1090,7 +1090,7 @@ static lx_void_t lx_stroker_make_cubic_to(lx_stroker_impl_t* impl, lx_point_ref_
          *
          * length(p1, p1^) ~= R / cos(angle/2) = R / sqrt((1 + cos(angle)) / 2)
          */
-        if (!lx_vector_length_set(&normal_1, lx_div(impl->radius, lx_sqrt(lx_avg(LX_ONE, cos_angle_012)))))
+        if (!lx_vector_length_set(&normal_1, impl->radius / lx_sqrt(lx_avg(1.0f, cos_angle_012))))
         {
             // failed
             lx_assert(0);
@@ -1101,7 +1101,7 @@ static lx_void_t lx_stroker_make_cubic_to(lx_stroker_impl_t* impl, lx_point_ref_
          *
          * length(p1, p1^) ~= R / cos(angle/2) = R / sqrt((1 + cos(angle)) / 2)
          */
-        if (!lx_vector_length_set(&normal_2, lx_div(impl->radius, lx_sqrt(lx_avg(LX_ONE, cos_angle_123)))))
+        if (!lx_vector_length_set(&normal_2, impl->radius / lx_sqrt(lx_avg(1.0f, cos_angle_123))))
         {
             // failed
             lx_assert(0);
@@ -1200,7 +1200,7 @@ static lx_void_t lx_stroker_finish(lx_stroker_impl_t* impl, lx_bool_t closed)
             impl->joiner(impl->path_inner, impl->path_outer, &impl->point_prev, impl->radius, &impl->normal_unit_prev, &impl->normal_unit_first, impl->miter_invert, impl->is_line_to_prev, impl->is_line_to_first);
 
             // close the outer contour
-            lx_path_clos(impl->path_outer);
+            lx_path_close(impl->path_outer);
 
             /* add the inner contour in reverse order to the outer path
              *
@@ -1220,7 +1220,7 @@ static lx_void_t lx_stroker_finish(lx_stroker_impl_t* impl, lx_bool_t closed)
             lx_path_last(impl->path_inner, &inner_last);
             lx_path_move_to(impl->path_outer, &inner_last);
             lx_path_rpath_to(impl->path_outer, impl->path_inner);
-            lx_path_clos(impl->path_outer);
+            lx_path_close(impl->path_outer);
 
         }
         /* add caps to the start and end point
@@ -1263,7 +1263,7 @@ static lx_void_t lx_stroker_finish(lx_stroker_impl_t* impl, lx_bool_t closed)
             impl->capper(impl->path_outer, &impl->point_first, &impl->outer_first, &normal_first, impl->is_line_to_first);
 
             // close the outer contour
-            lx_path_clos(impl->path_outer);
+            lx_path_close(impl->path_outer);
         }
     }
 
@@ -1404,7 +1404,7 @@ lx_void_t lx_stroker_apply_paint(lx_stroker_ref_t stroker, lx_paint_ref_t paint)
         impl->miter_invert = 0;
         if (impl->join == LX_PAINT_STROKE_JOIN_MITER)
         {
-            if (miter >= LX_ONE) impl->join = LX_PAINT_STROKE_JOIN_BEVEL;
+            if (miter >= 1.0f) impl->join = LX_PAINT_STROKE_JOIN_BEVEL;
             else impl->miter_invert = lx_invert(miter);
         }
     }
@@ -1436,7 +1436,7 @@ lx_void_t lx_stroker_apply_paint(lx_stroker_ref_t stroker, lx_paint_ref_t paint)
     // set joiner
     impl->joiner = s_joiners[impl->join];
 }
-lx_void_t lx_stroker_clos(lx_stroker_ref_t stroker)
+lx_void_t lx_stroker_close(lx_stroker_ref_t stroker)
 {
     // check
     lx_stroker_impl_t* impl = (lx_stroker_impl_t*)stroker;
@@ -1517,7 +1517,7 @@ lx_void_t lx_stroker_quad_to(lx_stroker_ref_t stroker, lx_point_ref_t ctrl, lx_p
 #if 0
     // attempt to chop the quadratic curve at the max curvature
     lx_point_t output[5];
-    if (lx_quad_chop_at_max_curvature(points, output) == 2)
+    if (lx_bezier2_chop_at_max_curvature(points, output) == 2)
     {
         // make the unit normal of (p1, p2)
         if (lx_stroker_normals_make(&points[1], &points[2], 0, lx_null, &normal_unit_12))
@@ -1557,12 +1557,12 @@ lx_void_t lx_stroker_quad_to(lx_stroker_ref_t stroker, lx_point_ref_t ctrl, lx_p
             else
             {
                 // make more flat quad-to curves for the first sub-curve
-                lx_stroker_make_quad_to(impl, &output[0], &normal_01, &normal_unit_01, &normal_12, &normal_unit_12, LX_QUAD_DIVIDED_MAXN);
+                lx_stroker_make_quad_to(impl, &output[0], &normal_01, &normal_unit_01, &normal_12, &normal_unit_12, LX_BEZIER2_DIVIDED_MAXN);
 
                 // make more flat quad-to curves for the second sub-curve
                 lx_vector_t normal2_01 = normal_12;
                 lx_vector_t normal2_unit_01 = normal_unit_12;
-                lx_stroker_make_quad_to(impl, &output[2], &normal2_01, &normal2_unit_01, &normal_12, &normal_unit_12, LX_QUAD_DIVIDED_MAXN);
+                lx_stroker_make_quad_to(impl, &output[2], &normal2_01, &normal2_unit_01, &normal_12, &normal_unit_12, LX_BEZIER2_DIVIDED_MAXN);
             }
         }
         else
@@ -1578,11 +1578,11 @@ lx_void_t lx_stroker_quad_to(lx_stroker_ref_t stroker, lx_point_ref_t ctrl, lx_p
     else
     {
         // make more flat quad-to curves for the whole curve
-        lx_stroker_make_quad_to(impl, points, &normal_01, &normal_unit_01, &normal_12, &normal_unit_12, LX_QUAD_DIVIDED_MAXN);
+        lx_stroker_make_quad_to(impl, points, &normal_01, &normal_unit_01, &normal_12, &normal_unit_12, LX_BEZIER2_DIVIDED_MAXN);
     }
 #else
     // make more flat quad-to curves for the whole curve
-    lx_stroker_make_quad_to(impl, points, &normal_01, &normal_unit_01, &normal_12, &normal_unit_12, LX_QUAD_DIVIDED_MAXN);
+    lx_stroker_make_quad_to(impl, points, &normal_01, &normal_unit_01, &normal_12, &normal_unit_12, LX_BEZIER2_DIVIDED_MAXN);
 #endif
 
     // leave-to
@@ -1626,7 +1626,7 @@ lx_void_t lx_stroker_cubic_to(lx_stroker_ref_t stroker, lx_point_ref_t ctrl0, lx
 #if 0
     // chop the cubic curve at the max curvature
     lx_point_t  output[13];
-    lx_size_t   count = lx_cubic_chop_at_max_curvature(points, output);
+    lx_size_t   count = lx_bezier3_chop_at_max_curvature(points, output);
     lx_assert(count);
 
     // make every cubic sub-curves
@@ -1636,7 +1636,7 @@ lx_void_t lx_stroker_cubic_to(lx_stroker_ref_t stroker, lx_point_ref_t ctrl0, lx
     for (index = 0; index < count; index++)
     {
         // make more flat cubic-to curves for the sub-curve
-        lx_stroker_make_cubic_to(impl, &output[(index << 1) + index], &normal2_01, &normal2_unit_01, &normal_23, &normal_unit_23, lx_false, LX_CUBIC_DIVIDED_MAXN);
+        lx_stroker_make_cubic_to(impl, &output[(index << 1) + index], &normal2_01, &normal2_unit_01, &normal_23, &normal_unit_23, lx_false, LX_BEZIER3_DIVIDED_MAXN);
 
         // end?
         lx_check_break(index != count - 1);
@@ -1647,7 +1647,7 @@ lx_void_t lx_stroker_cubic_to(lx_stroker_ref_t stroker, lx_point_ref_t ctrl0, lx
     }
 #else
     // make more flat cubic-to curves for the whole curve
-    lx_stroker_make_cubic_to(impl, points, &normal_01, &normal_unit_01, &normal_23, &normal_unit_23, lx_false, LX_CUBIC_DIVIDED_MAXN);
+    lx_stroker_make_cubic_to(impl, points, &normal_01, &normal_unit_01, &normal_23, &normal_unit_23, lx_false, LX_BEZIER3_DIVIDED_MAXN);
 #endif
 
     // leave-to
@@ -1672,8 +1672,8 @@ lx_void_t lx_stroker_add_path(lx_stroker_ref_t stroker, lx_path_ref_t path)
         case LX_PATH_CODE_CUBIC:
             lx_stroker_cubic_to(stroker, &item->points[1], &item->points[2], &item->points[3]);
             break;
-        case LX_PATH_CODE_CLOS:
-            lx_stroker_clos(stroker);
+        case LX_PATH_CODE_CLOSE:
+            lx_stroker_close(stroker);
             break;
         default:
             // trace
@@ -1693,7 +1693,7 @@ lx_void_t lx_stroker_add_rect(lx_stroker_ref_t stroker, lx_rect_ref_t rect)
     lx_check_return(radius > 0);
 
     // the width
-    lx_float_t width = lx_lsh(radius, 1);
+    lx_float_t width = radius * 2.0f;
 
     // init the inner rect
     lx_rect_t rect_inner = *rect;
@@ -1762,7 +1762,7 @@ lx_void_t lx_stroker_add_rect(lx_stroker_ref_t stroker, lx_rect_ref_t rect)
             lx_path_line2_to(impl->path_other, x + w,           y + radius);
             lx_path_line2_to(impl->path_other, x + w - radius,  y);
             lx_path_line2_to(impl->path_other, x + radius,      y);
-            lx_path_clos(impl->path_other);
+            lx_path_close(impl->path_other);
         }
         break;
     case LX_PAINT_STROKE_JOIN_ROUND:
@@ -1873,7 +1873,7 @@ lx_void_t lx_stroker_add_points(lx_stroker_ref_t stroker, lx_point_ref_t points,
             lx_rect_t       rect;
             lx_size_t       index;
             lx_point_ref_t  point;
-            lx_float_t      width = lx_lsh(radius, 1);
+            lx_float_t      width = radius * 2.0f;
             for (index = 0; index < count; index++)
             {
                 // the point
@@ -1921,7 +1921,7 @@ lx_void_t lx_stroker_add_polygon(lx_stroker_ref_t stroker, lx_polygon_ref_t poly
         if (index == count)
         {
             // close path
-            if (first && first->x == point->x && first->y == point->y) lx_stroker_clos(stroker);
+            if (first && first->x == point->x && first->y == point->y) lx_stroker_close(stroker);
 
             // next
             count = *counts++;
@@ -1939,7 +1939,7 @@ lx_path_ref_t lx_stroker_done(lx_stroker_ref_t stroker, lx_bool_t convex)
     if (impl->segment_count > 0) lx_stroker_finish(impl, lx_false);
 
     // exists the other path? merge it
-    if (impl->path_other && !lx_path_null(impl->path_other))
+    if (impl->path_other && !lx_path_empty(impl->path_other))
     {
         // add the other path
         lx_path_add_path(impl->path_outer, impl->path_other);

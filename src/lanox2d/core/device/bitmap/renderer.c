@@ -23,6 +23,10 @@
  * includes
  */
 #include "renderer.h"
+#include "renderer/rect.h"
+#include "renderer/lines.h"
+#include "renderer/points.h"
+#include "renderer/polygon.h"
 #include "biltter.h"
 #include "../../private/stroker.h"
 
