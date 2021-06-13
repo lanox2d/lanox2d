@@ -19,17 +19,29 @@ static lx_path_ref_t    g_path = lx_null;
 #include "shape/arc.c"
 #include "shape/line.c"
 #include "shape/rect.c"
+#include "shape/path.c"
+#include "shape/point.c"
+#include "shape/points.c"
+#include "shape/circle.c"
+#include "shape/ellipse.c"
 #include "shape/triangle.c"
 #include "shape/bezier2.c"
 #include "shape/bezier3.c"
+#include "shape/round_rect.c"
 
 static lx_entry_t g_entries[] = {
-    {"line",     on_draw_line,     on_event_line},
-    {"arc",      on_draw_arc,      lx_null},
-    {"rect",     on_draw_rect,     lx_null},
-    {"bezier2",  on_draw_bezier2,  on_event_bezier2},
-    {"bezier3",  on_draw_bezier3,  on_event_bezier3},
-    {"triangle", on_draw_triangle, lx_null}
+    {"line",       on_draw_line,       on_event_line},
+    {"arc",        on_draw_arc,        lx_null},
+    {"rect",       on_draw_rect,       lx_null},
+    {"path",       on_draw_path,       on_event_path},
+    {"point",      on_draw_point,      lx_null},
+    {"points",     on_draw_points,     lx_null},
+    {"circle",     on_draw_circle,     lx_null},
+    {"ellipse",    on_draw_ellipse,    lx_null},
+    {"bezier2",    on_draw_bezier2,    on_event_bezier2},
+    {"bezier3",    on_draw_bezier3,    on_event_bezier3},
+    {"triangle",   on_draw_triangle,   lx_null},
+    {"round_rect", on_draw_round_rect, lx_null}
 };
 
 static lx_void_t on_draw(lx_window_ref_t window, lx_canvas_ref_t canvas) {
