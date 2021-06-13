@@ -23,6 +23,32 @@ static lx_void_t on_draw_line(lx_window_ref_t window, lx_canvas_ref_t canvas) {
     lx_canvas_draw_line2i(canvas, -g_line_dx, -g_line_dy, g_line_dx, g_line_dy);
 }
 
+static lx_void_t on_draw_rect(lx_window_ref_t window, lx_canvas_ref_t canvas) {
+    lx_rect_t rect;
+    lx_rect_imake(&rect, -100, -100, 200, 200);
+
+    lx_canvas_color_set(canvas, LX_COLOR_RED);
+    lx_canvas_mode_set(canvas, LX_PAINT_MODE_FILL);
+    lx_canvas_draw_rect(canvas, &rect);
+
+    lx_canvas_color_set(canvas, LX_COLOR_BLUE);
+    lx_canvas_mode_set(canvas, LX_PAINT_MODE_STROKE);
+    lx_canvas_draw_rect(canvas, &rect);
+}
+
+static lx_void_t on_draw_triangle(lx_window_ref_t window, lx_canvas_ref_t canvas) {
+    lx_triangle_t triangle;
+    lx_triangle_imake(&triangle, -100, 100, 0, -100, 100, 100);
+
+    lx_canvas_color_set(canvas, LX_COLOR_RED);
+    lx_canvas_mode_set(canvas, LX_PAINT_MODE_FILL);
+    lx_canvas_draw_triangle(canvas, &triangle);
+
+    lx_canvas_color_set(canvas, LX_COLOR_BLUE);
+    lx_canvas_mode_set(canvas, LX_PAINT_MODE_STROKE);
+    lx_canvas_draw_triangle(canvas, &triangle);
+}
+
 static lx_void_t on_event_line(lx_window_ref_t window, lx_event_ref_t event) {
     if (event->type == LX_EVENT_TYPE_MOUSE && event->u.mouse.code == LX_MOUSE_MOVE &&
             event->u.mouse.button == LX_MOUSE_BUTTON_LEFT) {
@@ -36,7 +62,9 @@ static lx_void_t on_event_line(lx_window_ref_t window, lx_event_ref_t event) {
 }
 
 static lx_entry_t g_entries[] = {
-    {"line", on_draw_line, on_event_line}
+    {"line",     on_draw_line,     on_event_line},
+    {"rect",     on_draw_rect,     lx_null},
+    {"triangle", on_draw_triangle, lx_null}
 };
 
 static lx_void_t on_draw(lx_window_ref_t window, lx_canvas_ref_t canvas) {
@@ -118,7 +146,9 @@ static lx_void_t on_event(lx_window_ref_t window, lx_event_ref_t event) {
             }
         }
     }
-    g_entry->on_event(window, event);
+    if (g_entry->on_event) {
+        g_entry->on_event(window, event);
+    }
 }
 
 static lx_void_t on_resize(lx_window_ref_t window, lx_canvas_ref_t canvas) {
