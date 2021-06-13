@@ -28,6 +28,7 @@
 #include "../../path.h"
 #include "../../paint.h"
 #include "../../private/stroker.h"
+#include "../../private/polygon_raster.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * types
@@ -67,6 +68,7 @@ typedef struct lx_bitmap_device_t_ {
     lx_rect_t               bounds;
     lx_array_ref_t          points;
     lx_array_ref_t          counts;
+    lx_polygon_raster_ref_t raster;
     lx_stroker_ref_t        stroker;
     lx_bitmap_writter_t     writter;
 }lx_bitmap_device_t;

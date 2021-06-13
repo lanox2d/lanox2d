@@ -128,6 +128,10 @@ static lx_void_t lx_device_bitmap_exit(lx_device_ref_t self) {
             lx_stroker_exit(device->stroker);
             device->stroker = lx_null;
         }
+        if (device->raster) {
+            lx_polygon_raster_exit(device->raster);
+            device->raster = lx_null;
+        }
         lx_free(device);
     }
 }
@@ -166,6 +170,10 @@ lx_device_ref_t lx_device_init_from_bitmap(lx_bitmap_ref_t bitmap) {
         // init pixmap
         device->pixmap = lx_pixmap(lx_bitmap_pixfmt(bitmap), 0xff);
         lx_assert_and_check_break(device->pixmap);
+
+        // init raster
+        device->raster = lx_polygon_raster_init();
+        lx_assert_and_check_break(device->raster);
 
         // init stroker
         device->stroker = lx_stroker_init();

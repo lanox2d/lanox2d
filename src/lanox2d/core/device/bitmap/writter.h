@@ -50,7 +50,7 @@ lx_bool_t               lx_bitmap_writter_init(lx_bitmap_writter_t* writter, lx_
  */
 lx_void_t               lx_bitmap_writter_exit(lx_bitmap_writter_t* writter);
 
-/* done writter by pixel
+/* draw pixel
  *
  * @param writter       the writter
  * @param x             the x-coordinate
@@ -58,7 +58,7 @@ lx_void_t               lx_bitmap_writter_exit(lx_bitmap_writter_t* writter);
  */
 lx_void_t               lx_bitmap_writter_draw_pixel(lx_bitmap_writter_t* writter, lx_long_t x, lx_long_t y);
 
-/* done writter by horizontal
+/* draw horizontal line
  *
  * @param writter       the writter
  * @param x             the start x-coordinate
@@ -67,7 +67,7 @@ lx_void_t               lx_bitmap_writter_draw_pixel(lx_bitmap_writter_t* writte
  */
 lx_void_t               lx_bitmap_writter_draw_hline(lx_bitmap_writter_t* writter, lx_long_t x, lx_long_t y, lx_long_t w);
 
-/* done writter by vertical
+/* draw vertical line
  *
  * @param writter       the writter
  * @param x             the start x-coordinate
@@ -76,7 +76,7 @@ lx_void_t               lx_bitmap_writter_draw_hline(lx_bitmap_writter_t* writte
  */
 lx_void_t               lx_bitmap_writter_draw_vline(lx_bitmap_writter_t* writter, lx_long_t x, lx_long_t y, lx_long_t h);
 
-/* done writter by rect
+/* draw rect
  *
  * @param writter       the writter
  * @param x             the start x-coordinate
