@@ -23,7 +23,9 @@
  * includes
  */
 #include "object_stack.h"
+#include "../path.h"
 #include "../paint.h"
+#include "../clipper.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * types
@@ -45,13 +47,13 @@ static lx_handle_t lx_object_stack_object_init(lx_size_t type) {
     lx_handle_t object = lx_null;
     switch (type) {
     case LX_OBJECT_STACK_TYPE_PATH:
-        //object = (lx_handle_t)lx_path_init();
+        object = (lx_handle_t)lx_path_init();
         break;
     case LX_OBJECT_STACK_TYPE_PAINT:
         object = (lx_handle_t)lx_paint_init();
         break;
     case LX_OBJECT_STACK_TYPE_CLIPPER:
-        //object = (lx_handle_t)lx_clipper_init();
+        object = (lx_handle_t)lx_clipper_init();
         break;
     default:
         break;
@@ -176,7 +178,7 @@ lx_handle_t lx_object_stack_save(lx_object_stack_ref_t self) {
     // get a new object from cache first
     lx_handle_t object = lx_null;
     if (lx_stack_size(stack->cache)) {
-        lx_handle_t* pobject = (lx_handle_t*)lx_stack_top(stack->stack);
+        lx_handle_t* pobject = (lx_handle_t*)lx_stack_top(stack->cache);
         if (pobject) {
             object = *pobject;
         }

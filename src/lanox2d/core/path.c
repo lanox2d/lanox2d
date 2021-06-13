@@ -463,7 +463,8 @@ static lx_bool_t lx_path_make_polygon(lx_path_t* path) {
         // init polygon counts
         lx_uint16_t count = 0;
         lx_array_clear(path->polygon_counts);
-        lx_for_all (lx_long_t, code, path->codes) {
+        lx_for_all (lx_uint8_t*, pcode, path->codes) {
+            lx_uint8_t code = *pcode;
             lx_assert(code >= 0 && code < LX_PATH_CODE_MAXN);
             if (code == LX_PATH_CODE_MOVE) {
                 if (count) lx_array_insert_tail(path->polygon_counts, &count);

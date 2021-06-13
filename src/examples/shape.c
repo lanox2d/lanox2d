@@ -16,6 +16,7 @@ static lx_bool_t        g_transform = lx_false;
 static lx_entry_t*      g_entry = lx_null;
 static lx_path_ref_t    g_path = lx_null;
 
+#include "shape/arc.c"
 #include "shape/line.c"
 #include "shape/rect.c"
 #include "shape/triangle.c"
@@ -24,6 +25,7 @@ static lx_path_ref_t    g_path = lx_null;
 
 static lx_entry_t g_entries[] = {
     {"line",     on_draw_line,     on_event_line},
+    {"arc",      on_draw_arc,      lx_null},
     {"rect",     on_draw_rect,     lx_null},
     {"bezier2",  on_draw_bezier2,  on_event_bezier2},
     {"bezier3",  on_draw_bezier3,  on_event_bezier3},
