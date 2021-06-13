@@ -124,6 +124,10 @@ static lx_void_t lx_device_bitmap_exit(lx_device_ref_t self) {
             lx_array_exit(device->counts);
             device->counts = lx_null;
         }
+        if (device->stroker) {
+            lx_stroker_exit(device->stroker);
+            device->stroker = lx_null;
+        }
         lx_free(device);
     }
 }
@@ -162,6 +166,10 @@ lx_device_ref_t lx_device_init_from_bitmap(lx_bitmap_ref_t bitmap) {
         // init pixmap
         device->pixmap = lx_pixmap(lx_bitmap_pixfmt(bitmap), 0xff);
         lx_assert_and_check_break(device->pixmap);
+
+        // init stroker
+        device->stroker = lx_stroker_init();
+        lx_assert_and_check_break(device->stroker);
 
         // init points
         device->points = lx_array_init(LX_DEVICE_BITMAP_POINTS_GROW, sizeof(lx_point_t), lx_null);

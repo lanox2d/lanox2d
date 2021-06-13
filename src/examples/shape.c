@@ -2,6 +2,8 @@
 
 typedef struct lx_entry_t_ {
     lx_char_t const*    name;
+    lx_void_t           (*on_init)(lx_window_ref_t window);
+    lx_void_t           (*on_exit)(lx_window_ref_t window);
     lx_void_t           (*on_draw)(lx_window_ref_t window, lx_canvas_ref_t canvas);
     lx_void_t           (*on_event)(lx_window_ref_t window, lx_event_ref_t event);
 }lx_entry_t;
@@ -14,7 +16,6 @@ static lx_float_t       g_width = 1.0f;
 static lx_byte_t        g_alpha = 255;
 static lx_bool_t        g_transform = lx_false;
 static lx_entry_t*      g_entry = lx_null;
-static lx_path_ref_t    g_path = lx_null;
 
 #include "shape/arc.c"
 #include "shape/line.c"
@@ -30,18 +31,18 @@ static lx_path_ref_t    g_path = lx_null;
 #include "shape/round_rect.c"
 
 static lx_entry_t g_entries[] = {
-    {"line",       on_draw_line,       on_event_line},
-    {"arc",        on_draw_arc,        lx_null},
-    {"rect",       on_draw_rect,       lx_null},
-    {"path",       on_draw_path,       on_event_path},
-    {"point",      on_draw_point,      lx_null},
-    {"points",     on_draw_points,     lx_null},
-    {"circle",     on_draw_circle,     lx_null},
-    {"ellipse",    on_draw_ellipse,    lx_null},
-    {"bezier2",    on_draw_bezier2,    on_event_bezier2},
-    {"bezier3",    on_draw_bezier3,    on_event_bezier3},
-    {"triangle",   on_draw_triangle,   lx_null},
-    {"round_rect", on_draw_round_rect, lx_null}
+    {"line",       lx_null,         lx_null,         on_draw_line,       on_event_line},
+    {"arc",        lx_null,         lx_null,         on_draw_arc,        lx_null},
+    {"rect",       lx_null,         lx_null,         on_draw_rect,       lx_null},
+    {"path",       on_init_path,    on_exit_path,    on_draw_path,       on_event_path},
+    {"point",      lx_null,         lx_null,         on_draw_point,      lx_null},
+    {"points",     lx_null,         lx_null,         on_draw_points,     lx_null},
+    {"circle",     lx_null,         lx_null,         on_draw_circle,     lx_null},
+    {"ellipse",    lx_null,         lx_null,         on_draw_ellipse,    lx_null},
+    {"bezier2",    on_init_bezier2, on_exit_bezier2, on_draw_bezier2,    on_event_bezier2},
+    {"bezier3",    on_init_bezier3, on_exit_bezier3, on_draw_bezier3,    on_event_bezier3},
+    {"triangle",   lx_null,         lx_null,         on_draw_triangle,   lx_null},
+    {"round_rect", lx_null,         lx_null,         on_draw_round_rect, lx_null}
 };
 
 static lx_void_t on_draw(lx_window_ref_t window, lx_canvas_ref_t canvas) {
@@ -157,12 +158,14 @@ static lx_void_t window_init(lx_window_ref_t window) {
     lx_quality_set(g_quality);
     lx_matrix_init_translate(&g_matrix, x0, y0);
 
-    g_path = lx_path_init();
+    if (g_entry->on_init) {
+        g_entry->on_init(window);
+    }
 }
 
 static lx_void_t window_exit(lx_window_ref_t window) {
-    if (g_path) {
-        lx_path_exit(g_path);
+    if (g_entry->on_exit) {
+        g_entry->on_exit(window);
     }
     lx_window_exit(window);
 }

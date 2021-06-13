@@ -27,6 +27,7 @@
 #include "../prefix.h"
 #include "../../path.h"
 #include "../../paint.h"
+#include "../../private/stroker.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * types
@@ -66,7 +67,7 @@ typedef struct lx_bitmap_device_t_ {
     lx_rect_t               bounds;
     lx_array_ref_t          points;
     lx_array_ref_t          counts;
-    lx_pointer_t            stroker;
+    lx_stroker_ref_t        stroker;
     lx_bitmap_biltter_t     biltter;
 }lx_bitmap_device_t;
 
