@@ -15,57 +15,57 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        biltter.c
+ * @file        writter.c
  */
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "biltter.h"
-#include "biltter/solid.h"
+#include "writter.h"
+#include "writter/solid.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_bool_t lx_bitmap_biltter_init(lx_bitmap_biltter_t* biltter, lx_bitmap_ref_t bitmap, lx_paint_ref_t paint) {
-    return lx_bitmap_biltter_solid_init(biltter, bitmap, paint);
+lx_bool_t lx_bitmap_writter_init(lx_bitmap_writter_t* writter, lx_bitmap_ref_t bitmap, lx_paint_ref_t paint) {
+    return lx_bitmap_writter_solid_init(writter, bitmap, paint);
 }
 
-lx_void_t lx_bitmap_biltter_exit(lx_bitmap_biltter_t* biltter) {
-    if (biltter && biltter->exit) {
-        biltter->exit(biltter);
+lx_void_t lx_bitmap_writter_exit(lx_bitmap_writter_t* writter) {
+    if (writter && writter->exit) {
+        writter->exit(writter);
     }
 }
 
-lx_void_t lx_bitmap_biltter_draw_pixel(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y) {
-    lx_assert(biltter && biltter->draw_pixel);
-    biltter->draw_pixel(biltter, x, y);
+lx_void_t lx_bitmap_writter_draw_pixel(lx_bitmap_writter_t* writter, lx_long_t x, lx_long_t y) {
+    lx_assert(writter && writter->draw_pixel);
+    writter->draw_pixel(writter, x, y);
 }
 
-lx_void_t lx_bitmap_biltter_draw_hline(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y, lx_long_t w) {
-    lx_assert(biltter && biltter->draw_hline);
-    biltter->draw_hline(biltter, x, y, w);
+lx_void_t lx_bitmap_writter_draw_hline(lx_bitmap_writter_t* writter, lx_long_t x, lx_long_t y, lx_long_t w) {
+    lx_assert(writter && writter->draw_hline);
+    writter->draw_hline(writter, x, y, w);
 }
 
-lx_void_t lx_bitmap_biltter_draw_vline(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y, lx_long_t h) {
-    lx_assert(biltter && biltter->draw_vline);
-    biltter->draw_vline(biltter, x, y, h);
+lx_void_t lx_bitmap_writter_draw_vline(lx_bitmap_writter_t* writter, lx_long_t x, lx_long_t y, lx_long_t h) {
+    lx_assert(writter && writter->draw_vline);
+    writter->draw_vline(writter, x, y, h);
 }
 
-lx_void_t lx_bitmap_biltter_draw_rect(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y, lx_long_t w, lx_long_t h) {
-    lx_assert(biltter);
+lx_void_t lx_bitmap_writter_draw_rect(lx_bitmap_writter_t* writter, lx_long_t x, lx_long_t y, lx_long_t w, lx_long_t h) {
+    lx_assert(writter);
     if (h == 1) {
-        lx_assert(biltter->draw_hline);
-        biltter->draw_hline(biltter, x, y, w);
+        lx_assert(writter->draw_hline);
+        writter->draw_hline(writter, x, y, w);
         return ;
     } else if (w == 1) {
-        lx_assert(biltter->draw_vline);
-        biltter->draw_vline(biltter, x, y, h);
+        lx_assert(writter->draw_vline);
+        writter->draw_vline(writter, x, y, h);
         return ;
-    } else if (biltter->draw_rect) {
-        biltter->draw_rect(biltter, x, y, w, h);
+    } else if (writter->draw_rect) {
+        writter->draw_rect(writter, x, y, w, h);
     } else {
-        lx_assert(biltter->draw_hline);
-        while (h--) biltter->draw_hline(biltter, x, y++, w);
+        lx_assert(writter->draw_hline);
+        while (h--) writter->draw_hline(writter, x, y++, w);
     }
 }

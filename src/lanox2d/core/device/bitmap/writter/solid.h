@@ -18,8 +18,8 @@
  * @file        solid.h
  *
  */
-#ifndef LX_CORE_DEVICE_BITMAP_BILTTER_SOLID_H
-#define LX_CORE_DEVICE_BITMAP_BILTTER_SOLID_H
+#ifndef LX_CORE_DEVICE_BITMAP_WRITTER_SOLID_H
+#define LX_CORE_DEVICE_BITMAP_WRITTER_SOLID_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
@@ -35,15 +35,15 @@ lx_extern_c_enter
  * interface
  */
 
-/* init the solid biltter
+/* init the solid writter
  *
- * @param biltter       the biltter
+ * @param writter       the writter
  * @param bitmap        the bitmap
  * @param paint         the paint
  *
  * @return              lx_true or lx_false
  */
-lx_bool_t               lx_bitmap_biltter_solid_init(lx_bitmap_biltter_t* biltter, lx_bitmap_ref_t bitmap, lx_paint_ref_t paint);
+lx_bool_t               lx_bitmap_writter_solid_init(lx_bitmap_writter_t* writter, lx_bitmap_ref_t bitmap, lx_paint_ref_t paint);
 
 
 /* //////////////////////////////////////////////////////////////////////////////////////

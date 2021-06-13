@@ -33,27 +33,27 @@
  * types
  */
 
-// the bitmap biltter solid type
-typedef struct lx_bitmap_biltter_solid_t_ {
+// the bitmap writter solid type
+typedef struct lx_bitmap_writter_solid_t_ {
     lx_pixel_t                pixel;
     lx_byte_t                 alpha;
-}lx_bitmap_biltter_solid_t;
+}lx_bitmap_writter_solid_t;
 
-// the bitmap biltter type
-typedef struct lx_bitmap_biltter_t_ {
+// the bitmap writter type
+typedef struct lx_bitmap_writter_t_ {
     union {
-        lx_bitmap_biltter_solid_t    solid;
+        lx_bitmap_writter_solid_t    solid;
     }u;
     lx_bitmap_ref_t          bitmap;
     lx_pixmap_ref_t          pixmap;
     lx_size_t                btp;
     lx_size_t                row_bytes;
-    lx_void_t                (*exit)(struct lx_bitmap_biltter_t_* biltter);
-    lx_void_t                (*draw_pixel)(struct lx_bitmap_biltter_t_* biltter, lx_long_t x, lx_long_t y);
-    lx_void_t                (*draw_hline)(struct lx_bitmap_biltter_t_* biltter, lx_long_t x, lx_long_t y, lx_long_t w);
-    lx_void_t                (*draw_vline)(struct lx_bitmap_biltter_t_* biltter, lx_long_t x, lx_long_t y, lx_long_t h);
-    lx_void_t                (*draw_rect)(struct lx_bitmap_biltter_t_* biltter, lx_long_t x, lx_long_t y, lx_long_t w, lx_long_t h);
-}lx_bitmap_biltter_t;
+    lx_void_t                (*exit)(struct lx_bitmap_writter_t_* writter);
+    lx_void_t                (*draw_pixel)(struct lx_bitmap_writter_t_* writter, lx_long_t x, lx_long_t y);
+    lx_void_t                (*draw_hline)(struct lx_bitmap_writter_t_* writter, lx_long_t x, lx_long_t y, lx_long_t w);
+    lx_void_t                (*draw_vline)(struct lx_bitmap_writter_t_* writter, lx_long_t x, lx_long_t y, lx_long_t h);
+    lx_void_t                (*draw_rect)(struct lx_bitmap_writter_t_* writter, lx_long_t x, lx_long_t y, lx_long_t w, lx_long_t h);
+}lx_bitmap_writter_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * types
@@ -68,7 +68,7 @@ typedef struct lx_bitmap_device_t_ {
     lx_array_ref_t          points;
     lx_array_ref_t          counts;
     lx_stroker_ref_t        stroker;
-    lx_bitmap_biltter_t     biltter;
+    lx_bitmap_writter_t     writter;
 }lx_bitmap_device_t;
 
 #endif

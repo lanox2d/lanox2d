@@ -15,7 +15,7 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        biltter.h
+ * @file        writter.h
  */
 #ifndef LX_CORE_DEVICE_BITMAP_BILLTER_H
 #define LX_CORE_DEVICE_BITMAP_BILLTER_H
@@ -34,57 +34,57 @@ lx_extern_c_enter
  * interface
  */
 
-/* init biltter
+/* init writter
  *
- * @param biltter       the biltter
+ * @param writter       the writter
  * @param bitmap        the bitmap
  * @param paint         the paint
  *
  * @return              lx_true or lx_false
  */
-lx_bool_t               lx_bitmap_biltter_init(lx_bitmap_biltter_t* biltter, lx_bitmap_ref_t bitmap, lx_paint_ref_t paint);
+lx_bool_t               lx_bitmap_writter_init(lx_bitmap_writter_t* writter, lx_bitmap_ref_t bitmap, lx_paint_ref_t paint);
 
-/* exit biltter
+/* exit writter
  *
- * @param biltter       the biltter
+ * @param writter       the writter
  */
-lx_void_t               lx_bitmap_biltter_exit(lx_bitmap_biltter_t* biltter);
+lx_void_t               lx_bitmap_writter_exit(lx_bitmap_writter_t* writter);
 
-/* done biltter by pixel
+/* done writter by pixel
  *
- * @param biltter       the biltter
+ * @param writter       the writter
  * @param x             the x-coordinate
  * @param y             the y-coordinate
  */
-lx_void_t               lx_bitmap_biltter_draw_pixel(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y);
+lx_void_t               lx_bitmap_writter_draw_pixel(lx_bitmap_writter_t* writter, lx_long_t x, lx_long_t y);
 
-/* done biltter by horizontal
+/* done writter by horizontal
  *
- * @param biltter       the biltter
+ * @param writter       the writter
  * @param x             the start x-coordinate
  * @param y             the start y-coordinate
  * @param w             the width
  */
-lx_void_t               lx_bitmap_biltter_draw_hline(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y, lx_long_t w);
+lx_void_t               lx_bitmap_writter_draw_hline(lx_bitmap_writter_t* writter, lx_long_t x, lx_long_t y, lx_long_t w);
 
-/* done biltter by vertical
+/* done writter by vertical
  *
- * @param biltter       the biltter
+ * @param writter       the writter
  * @param x             the start x-coordinate
  * @param y             the start y-coordinate
  * @param h             the height
  */
-lx_void_t               lx_bitmap_biltter_draw_vline(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y, lx_long_t h);
+lx_void_t               lx_bitmap_writter_draw_vline(lx_bitmap_writter_t* writter, lx_long_t x, lx_long_t y, lx_long_t h);
 
-/* done biltter by rect
+/* done writter by rect
  *
- * @param biltter       the biltter
+ * @param writter       the writter
  * @param x             the start x-coordinate
  * @param y             the start y-coordinate
  * @param w             the width
  * @param h             the height
  */
-lx_void_t               lx_bitmap_biltter_draw_rect(lx_bitmap_biltter_t* biltter, lx_long_t x, lx_long_t y, lx_long_t w, lx_long_t h);
+lx_void_t               lx_bitmap_writter_draw_rect(lx_bitmap_writter_t* writter, lx_long_t x, lx_long_t y, lx_long_t w, lx_long_t h);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

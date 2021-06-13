@@ -29,5 +29,5 @@
  */
 lx_void_t lx_bitmap_renderer_fill_rect(lx_bitmap_device_t* device, lx_rect_ref_t rect) {
     lx_assert(device && rect);
-    lx_bitmap_biltter_draw_rect(&device->biltter, (lx_long_t)rect->x, (lx_long_t)rect->y, (lx_long_t)rect->w, (lx_long_t)rect->h);
+    lx_bitmap_writter_draw_rect(&device->writter, (lx_long_t)rect->x, (lx_long_t)rect->y, (lx_long_t)rect->w, (lx_long_t)rect->h);
 }

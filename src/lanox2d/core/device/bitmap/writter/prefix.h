@@ -18,13 +18,13 @@
  * @file        prefix.h
  *
  */
-#ifndef LX_CORE_DEVICE_BITMAP_BILTTER_PREFIX_H
-#define LX_CORE_DEVICE_BITMAP_BILTTER_PREFIX_H
+#ifndef LX_CORE_DEVICE_BITMAP_WRITTER_PREFIX_H
+#define LX_CORE_DEVICE_BITMAP_WRITTER_PREFIX_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
 #include "../prefix.h"
-#include "../biltter.h"
+#include "../writter.h"
 
 #endif
