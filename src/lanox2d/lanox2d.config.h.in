@@ -48,6 +48,8 @@ ${define LX_CONFIG_LIBM_HAVE_EXP}
 ${define LX_CONFIG_LIBM_HAVE_EXPF}
 
 // libc functions
+${define LX_CONFIG_LIBC_HAVE_STRTOL}
 ${define LX_CONFIG_LIBC_HAVE_STRNLEN}
+${define LX_CONFIG_LIBC_HAVE_STRNCASECMP}
 
 #endif

@@ -66,5 +66,7 @@ function check_interfaces()
 
     -- add the interfaces for libc
     check_module_cfuncs("libc", {"string.h", "stdlib.h"},
-        "strnlen")
+        "strtol",
+        "strnlen",
+        "strncasecmp")
 end

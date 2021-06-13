@@ -209,6 +209,26 @@ lx_size_t           lx_strnlen(lx_char_t const* s, lx_size_t n);
  */
 lx_int_t            lx_strcmp(lx_char_t const* s1, lx_char_t const* s2);
 
+/*! strnicmp
+ *
+ * @param s1        the c-string
+ * @param s2        the c-string
+ * @param n         the max length
+ *
+ * @return          >0, 0, <0
+ */
+lx_int_t            lx_strnicmp(lx_char_t const* s1, lx_char_t const* s2, lx_size_t n);
+
+/*! strtol
+ *
+ * @param s         the c-string
+ * @param endptr    the end pointer
+ * @param base      the base, 10, 16, ..
+ *
+ * @return          the long value
+ */
+lx_long_t           lx_strtol(lx_char_t const* s, lx_char_t** endptr, lx_int_t base);
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */

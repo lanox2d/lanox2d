@@ -29,6 +29,7 @@ static lx_entry_t*      g_entry = lx_null;
 #include "shape/bezier2.c"
 #include "shape/bezier3.c"
 #include "shape/round_rect.c"
+#include "shape/tiger.c"
 
 static lx_entry_t g_entries[] = {
     {"line",       lx_null,         lx_null,         on_draw_line,       on_event_line},
@@ -42,7 +43,8 @@ static lx_entry_t g_entries[] = {
     {"bezier2",    on_init_bezier2, on_exit_bezier2, on_draw_bezier2,    on_event_bezier2},
     {"bezier3",    on_init_bezier3, on_exit_bezier3, on_draw_bezier3,    on_event_bezier3},
     {"triangle",   lx_null,         lx_null,         on_draw_triangle,   lx_null},
-    {"round_rect", lx_null,         lx_null,         on_draw_round_rect, lx_null}
+    {"round_rect", lx_null,         lx_null,         on_draw_round_rect, lx_null},
+    {"tiger",      on_init_tiger,   on_exit_tiger,   on_draw_tiger,      lx_null}
 };
 
 static lx_void_t on_draw(lx_window_ref_t window, lx_canvas_ref_t canvas) {
@@ -172,7 +174,7 @@ static lx_void_t window_exit(lx_window_ref_t window) {
 
 int main(int argc, char** argv) {
     g_entry = get_entry(argv[1]? argv[1] : "rect");
-    lx_window_ref_t window = lx_window_init(640, 480, "lanox2d");
+    lx_window_ref_t window = lx_window_init(640, 640, "lanox2d");
     if (window) {
         window_init(window);
         lx_window_runloop(window);
