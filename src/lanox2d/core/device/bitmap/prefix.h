@@ -56,10 +56,6 @@ typedef struct lx_bitmap_writter_t_ {
     lx_void_t                (*draw_rect)(struct lx_bitmap_writter_t_* writter, lx_long_t x, lx_long_t y, lx_long_t w, lx_long_t h);
 }lx_bitmap_writter_t;
 
-/* //////////////////////////////////////////////////////////////////////////////////////
- * types
- */
-
 // the bitmap device type
 typedef struct lx_bitmap_device_t_ {
     lx_device_t             base;

@@ -63,12 +63,11 @@ static lx_inline lx_window_glut_t* lx_window_glut_get() {
 
 static lx_void_t lx_window_glut_display() {
     lx_window_glut_t* window = lx_window_glut_get();
-    lx_assert(window);// && window->base.canvas && window->base.on_draw);
-
-    lx_hong_t starttime = lx_mclock();
+    lx_assert(window && window->base.canvas && window->base.on_draw);
 
     // draw
-//    window->base.on_draw((lx_window_ref_t)window, window->base.canvas);
+    lx_hong_t starttime = lx_mclock();
+    window->base.on_draw((lx_window_ref_t)window, window->base.canvas);
 
     // flush
     glutSwapBuffers();
@@ -224,7 +223,7 @@ static lx_void_t lx_window_glut_motion(lx_int_t x, lx_int_t y) {
 
 static lx_void_t lx_window_glut_visibility(lx_int_t state) {
     lx_window_glut_t* window = lx_window_glut_get();
-    lx_assert_and_check_return(window);// && window->base.canvas);
+    lx_assert_and_check_return(window && window->base.canvas);
 
     lx_event_t event = {0};
     event.type          = LX_EVENT_TYPE_ACTIVE;
@@ -360,15 +359,14 @@ static lx_bool_t lx_window_glut_start(lx_window_glut_t* window) {
             lx_window_glut_fullscreen((lx_window_ref_t)window, lx_true);
         }
 
-#if 0
         // init device
-        window->base.device = lx_device_init_from_bitmap(window->bitmap);
+        window->base.device = lx_device_init_from_opengl((lx_window_ref_t)window);
         lx_assert_and_check_break(window->base.device);
 
         // init canvas
         window->base.canvas = lx_canvas_init(window->base.device);
         lx_assert_and_check_break(window->base.canvas);
-#endif
+
         // ok
         ok = lx_true;
     } while (0);

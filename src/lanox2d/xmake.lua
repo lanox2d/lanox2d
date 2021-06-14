@@ -59,3 +59,8 @@ target("lanox2d")
         add_files("core/device/bitmap/**.c")
     end
 
+    -- add opengl device
+    if is_config("window", "glut") then
+        set_configvar("LX_CONFIG_DEVICE_HAVE_OPENGL", 1)
+        add_files("core/device/opengl/**.c")
+    end

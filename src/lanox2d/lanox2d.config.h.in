@@ -19,6 +19,7 @@ ${define LX_CONFIG_WINDOW_HAVE_GLUT}
 
 // devices
 ${define LX_CONFIG_DEVICE_HAVE_BITMAP}
+${define LX_CONFIG_DEVICE_HAVE_OPENGL}
 
 // libm functions
 ${define LX_CONFIG_LIBM_HAVE_SINCOS}

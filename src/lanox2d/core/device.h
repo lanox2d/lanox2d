@@ -43,6 +43,14 @@ lx_extern_c_enter
  */
 lx_device_ref_t     lx_device_init_from_bitmap(lx_bitmap_ref_t bitmap);
 
+/*! init device from opengl
+ *
+ * @param window    the window
+ *
+ * @return          the device
+ */
+lx_device_ref_t     lx_device_init_from_opengl(lx_window_ref_t window);
+
 /*! exit device
  *
  * @param device    the device

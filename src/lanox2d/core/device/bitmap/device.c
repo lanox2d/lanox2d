@@ -45,8 +45,6 @@ static lx_void_t lx_device_bitmap_resize(lx_device_ref_t self, lx_size_t width, 
 }
 
 static lx_void_t lx_device_bitmap_draw_clear(lx_device_ref_t self, lx_color_t color) {
-
-    // check
     lx_bitmap_device_t* device = (lx_bitmap_device_t*)self;
     lx_assert(device && device->bitmap);
 
@@ -140,11 +138,8 @@ static lx_void_t lx_device_bitmap_exit(lx_device_ref_t self) {
  * includes
  */
 lx_device_ref_t lx_device_init_from_bitmap(lx_bitmap_ref_t bitmap) {
-
-    // check
     lx_assert_and_check_return_val(bitmap, lx_null);
 
-    // done
     lx_bool_t           ok = lx_false;
     lx_bitmap_device_t* device = lx_null;
     do {
