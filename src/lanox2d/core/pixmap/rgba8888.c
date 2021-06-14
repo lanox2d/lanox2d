@@ -122,6 +122,7 @@ static lx_pixmap_t const g_pixmap_lo_rgba8888 = {
 ,   32
 ,   4
 ,   LX_PIXFMT_RGBA8888
+#ifdef LX_CONFIG_DEVICE_HAVE_BITMAP
 ,   lx_pixmap_rgba8888_pixel
 ,   lx_pixmap_rgba8888_color
 ,   lx_pixmap_rgb32_pixel_get_l
@@ -130,6 +131,7 @@ static lx_pixmap_t const g_pixmap_lo_rgba8888 = {
 ,   lx_pixmap_rgba8888_color_get_l
 ,   lx_pixmap_rgba8888_color_set_lo
 ,   lx_pixmap_rgb32_pixels_fill_lo
+#endif
 };
 
 static lx_pixmap_t const g_pixmap_bo_rgba8888 = {
@@ -137,6 +139,7 @@ static lx_pixmap_t const g_pixmap_bo_rgba8888 = {
 ,   32
 ,   4
 ,   LX_PIXFMT_RGBA8888 | LX_PIXFMT_BENDIAN
+#ifdef LX_CONFIG_DEVICE_HAVE_BITMAP
 ,   lx_pixmap_rgba8888_pixel
 ,   lx_pixmap_rgba8888_color
 ,   lx_pixmap_rgb32_pixel_get_b
@@ -145,6 +148,7 @@ static lx_pixmap_t const g_pixmap_bo_rgba8888 = {
 ,   lx_pixmap_rgba8888_color_get_b
 ,   lx_pixmap_rgba8888_color_set_bo
 ,   lx_pixmap_rgb32_pixels_fill_bo
+#endif
 };
 
 static lx_pixmap_t const g_pixmap_la_rgba8888 = {
@@ -152,6 +156,7 @@ static lx_pixmap_t const g_pixmap_la_rgba8888 = {
 ,   32
 ,   4
 ,   LX_PIXFMT_RGBA8888
+#ifdef LX_CONFIG_DEVICE_HAVE_BITMAP
 ,   lx_pixmap_rgba8888_pixel
 ,   lx_pixmap_rgba8888_color
 ,   lx_pixmap_rgb32_pixel_get_l
@@ -160,6 +165,7 @@ static lx_pixmap_t const g_pixmap_la_rgba8888 = {
 ,   lx_pixmap_rgba8888_color_get_l
 ,   lx_pixmap_rgba8888_color_set_la
 ,   lx_pixmap_rgba8888_pixels_fill_la
+#endif
 };
 
 static lx_pixmap_t const g_pixmap_ba_rgba8888 = {
@@ -167,6 +173,7 @@ static lx_pixmap_t const g_pixmap_ba_rgba8888 = {
 ,   32
 ,   4
 ,   LX_PIXFMT_RGBA8888 | LX_PIXFMT_BENDIAN
+#ifdef LX_CONFIG_DEVICE_HAVE_BITMAP
 ,   lx_pixmap_rgba8888_pixel
 ,   lx_pixmap_rgba8888_color
 ,   lx_pixmap_rgb32_pixel_get_b
@@ -175,5 +182,6 @@ static lx_pixmap_t const g_pixmap_ba_rgba8888 = {
 ,   lx_pixmap_rgba8888_color_get_b
 ,   lx_pixmap_rgba8888_color_set_ba
 ,   lx_pixmap_rgba8888_pixels_fill_ba
+#endif
 };
 

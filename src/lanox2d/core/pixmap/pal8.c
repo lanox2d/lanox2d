@@ -28,54 +28,54 @@
  * interfaces
  */
 
-static lx_pixel_t lx_pixmap_pal8_pixel(lx_color_t color) {
+static lx_inline lx_pixel_t lx_pixmap_pal8_pixel(lx_color_t color) {
     lx_trace_noimpl();
     return 0;
 }
 
-static lx_color_t lx_pixmap_pal8_color(lx_pixel_t pixel) {
+static lx_inline lx_color_t lx_pixmap_pal8_color(lx_pixel_t pixel) {
     lx_trace_noimpl();
     return LX_COLOR_DEFAULT;
 }
 
-static lx_pixel_t lx_pixmap_pal8_pixel_get(lx_cpointer_t data) {
+static lx_inline lx_pixel_t lx_pixmap_pal8_pixel_get(lx_cpointer_t data) {
     return ((lx_byte_t*)data)[0];
 }
 
-static lx_void_t lx_pixmap_pal8_pixel_set_o(lx_pointer_t data, lx_pixel_t pixel, lx_byte_t alpha) {
+static lx_inline lx_void_t lx_pixmap_pal8_pixel_set_o(lx_pointer_t data, lx_pixel_t pixel, lx_byte_t alpha) {
     ((lx_byte_t*)data)[0] = (lx_byte_t)(pixel & 0xff);
 }
 
-static lx_void_t lx_pixmap_pal8_pixel_set_a(lx_pointer_t data, lx_pixel_t pixel, lx_byte_t alpha) {
+static lx_inline lx_void_t lx_pixmap_pal8_pixel_set_a(lx_pointer_t data, lx_pixel_t pixel, lx_byte_t alpha) {
     ((lx_byte_t*)data)[0] = (lx_byte_t)(pixel & 0xff);
 }
 
-static lx_void_t lx_pixmap_pal8_pixel_copy_o(lx_pointer_t data, lx_cpointer_t source, lx_byte_t alpha) {
+static lx_inline lx_void_t lx_pixmap_pal8_pixel_copy_o(lx_pointer_t data, lx_cpointer_t source, lx_byte_t alpha) {
     ((lx_byte_t*)data)[0] = ((lx_byte_t*)source)[0];
 }
 
-static lx_void_t lx_pixmap_pal8_pixel_copy_a(lx_pointer_t data, lx_cpointer_t source, lx_byte_t alpha) {
+static lx_inline lx_void_t lx_pixmap_pal8_pixel_copy_a(lx_pointer_t data, lx_cpointer_t source, lx_byte_t alpha) {
     ((lx_byte_t*)data)[0] = ((lx_byte_t*)source)[0];
 }
 
-static lx_color_t lx_pixmap_pal8_color_get(lx_cpointer_t data) {
+static lx_inline lx_color_t lx_pixmap_pal8_color_get(lx_cpointer_t data) {
     lx_trace_noimpl();
     return LX_COLOR_DEFAULT;
 }
 
-static lx_void_t lx_pixmap_pal8_color_set_o(lx_pointer_t data, lx_color_t color) {
+static lx_inline lx_void_t lx_pixmap_pal8_color_set_o(lx_pointer_t data, lx_color_t color) {
     lx_trace_noimpl();
 }
 
-static lx_void_t lx_pixmap_pal8_color_set_a(lx_pointer_t data, lx_color_t color) {
+static lx_inline lx_void_t lx_pixmap_pal8_color_set_a(lx_pointer_t data, lx_color_t color) {
     lx_trace_noimpl();
 }
 
-static lx_void_t lx_pixmap_pal8_pixels_fill_o(lx_pointer_t data, lx_pixel_t pixel, lx_size_t count, lx_byte_t alpha) {
+static lx_inline lx_void_t lx_pixmap_pal8_pixels_fill_o(lx_pointer_t data, lx_pixel_t pixel, lx_size_t count, lx_byte_t alpha) {
     lx_memset(data, (lx_byte_t)pixel, count);
 }
 
-static lx_void_t lx_pixmap_pal8_pixels_fill_a(lx_pointer_t data, lx_pixel_t pixel, lx_size_t count, lx_byte_t alpha) {
+static lx_inline lx_void_t lx_pixmap_pal8_pixels_fill_a(lx_pointer_t data, lx_pixel_t pixel, lx_size_t count, lx_byte_t alpha) {
     lx_memset(data, (lx_byte_t)pixel, count);
 }
 
@@ -88,6 +88,7 @@ static lx_pixmap_t const g_pixmap_o_pal8 = {
 ,   8
 ,   1
 ,   LX_PIXFMT_PAL8
+#ifdef LX_CONFIG_DEVICE_HAVE_BITMAP
 ,   lx_pixmap_pal8_pixel
 ,   lx_pixmap_pal8_color
 ,   lx_pixmap_pal8_pixel_get
@@ -96,6 +97,7 @@ static lx_pixmap_t const g_pixmap_o_pal8 = {
 ,   lx_pixmap_pal8_color_get
 ,   lx_pixmap_pal8_color_set_o
 ,   lx_pixmap_pal8_pixels_fill_o
+#endif
 };
 
 static lx_pixmap_t const g_pixmap_a_pal8 = {
@@ -103,6 +105,7 @@ static lx_pixmap_t const g_pixmap_a_pal8 = {
 ,   8
 ,   1
 ,   LX_PIXFMT_PAL8
+#ifdef LX_CONFIG_DEVICE_HAVE_BITMAP
 ,   lx_pixmap_pal8_pixel
 ,   lx_pixmap_pal8_color
 ,   lx_pixmap_pal8_pixel_get
@@ -111,6 +114,7 @@ static lx_pixmap_t const g_pixmap_a_pal8 = {
 ,   lx_pixmap_pal8_color_get
 ,   lx_pixmap_pal8_color_set_a
 ,   lx_pixmap_pal8_pixels_fill_a
+#endif
 };
 
 
