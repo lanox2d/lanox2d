@@ -34,29 +34,19 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
-static lx_void_t lx_gl_renderer_apply_vertices(lx_opengl_device_t* device, lx_point_ref_t points)
-{
-    // check
+static lx_void_t lx_gl_renderer_apply_vertices(lx_opengl_device_t* device, lx_point_ref_t points) {
     lx_assert(device && points);
 
     // apply vertices
-    if (device->glversion >= 0x20)
-    {
-        // check
+    if (device->glversion >= 0x20) {
         lx_assert(device->program);
-
-        // apply it
         lx_glVertexAttribPointer(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_VERTICES), 2, LX_GL_FLOAT, LX_GL_FALSE, 0, points);
-    }
-    else
-    {
-        // apply it
+    } else {
         lx_glVertexPointer(2, LX_GL_FLOAT, 0, points);
     }
 }
-static lx_void_t lx_gl_renderer_enter_solid(lx_opengl_device_t* device)
-{
-    // check
+
+static lx_void_t lx_gl_renderer_enter_solid(lx_opengl_device_t* device) {
     lx_assert(device);
 
     // the paint
@@ -73,97 +63,73 @@ static lx_void_t lx_gl_renderer_enter_solid(lx_opengl_device_t* device)
     lx_glDisable(LX_GL_TEXTURE_2D);
 
     // exists alpha?
-    if (alpha != 0xff)
-    {
-        // enable blend
+    if (alpha != 0xff) {
         lx_glEnable(LX_GL_BLEND);
         lx_glBlendFunc(LX_GL_SRC_ALPHA, LX_GL_ONE_MINUS_SRC_ALPHA);
-
-        // apply the alpha
         color.a = alpha;
-    }
-    else
-    {
-        // disable blend
+    } else {
         lx_glDisable(LX_GL_BLEND);
     }
 
     // apply color
-    if (device->glversion >= 0x20)
-    {
-        // check
+    if (device->glversion >= 0x20) {
         lx_assert(device->program);
-
-        // apply it
         lx_glVertexAttrib4f(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_COLORS), (lx_GLfloat_t)color.r / 0xff, (lx_GLfloat_t)color.g / 0xff, (lx_GLfloat_t)color.b / 0xff, (lx_GLfloat_t)color.a / 0xff);
-    }
-    else
-    {
-        // apply it
+    } else {
         lx_glColor4f((lx_GLfloat_t)color.r / 0xff, (lx_GLfloat_t)color.g / 0xff, (lx_GLfloat_t)color.b / 0xff, (lx_GLfloat_t)color.a / 0xff);
     }
 }
-static lx_void_t lx_gl_renderer_leave_solid(lx_opengl_device_t* device)
-{
-    // check
-    lx_assert(device);
 
-    // disable blend
+static lx_void_t lx_gl_renderer_leave_solid(lx_opengl_device_t* device) {
+    lx_assert(device);
     lx_glDisable(LX_GL_BLEND);
 }
+
 #if 0
-static lx_void_t lx_gl_renderer_enter_shader(lx_opengl_device_t* device)
-{
-    // check
+static lx_void_t lx_gl_renderer_enter_shader(lx_opengl_device_t* device) {
     lx_assert(device && device->base.paint);
 
-    // disable blend
     lx_glDisable(LX_GL_BLEND);
-
-    // enable texture
     lx_glEnable(LX_GL_TEXTURE_2D);
 }
-static lx_void_t lx_gl_renderer_leave_shader(lx_opengl_device_t* device)
-{
-    // check
-    lx_assert(device);
 
-    // disable texture
+static lx_void_t lx_gl_renderer_leave_shader(lx_opengl_device_t* device) {
+    lx_assert(device);
     lx_glDisable(LX_GL_TEXTURE_2D);
 }
 #endif
-static lx_void_t lx_gl_renderer_enter_paint(lx_opengl_device_t* device)
-{
-    // check
+
+static lx_void_t lx_gl_renderer_enter_paint(lx_opengl_device_t* device) {
     lx_assert(device);
 
 #if 0 // TODO
-    // enter shader
-    if (device->shader) lx_gl_renderer_enter_shader(device);
-    // enter solid
-    else lx_gl_renderer_enter_solid(device);
+    if (device->shader) {
+        lx_gl_renderer_enter_shader(device);
+    }
+    } else {
+        lx_gl_renderer_enter_solid(device);
+    }
 #else
     lx_gl_renderer_enter_solid(device);
 #endif
 }
-static lx_void_t lx_gl_renderer_leave_paint(lx_opengl_device_t* device)
-{
-    // check
+
+static lx_void_t lx_gl_renderer_leave_paint(lx_opengl_device_t* device) {
     lx_assert(device);
 
 #if 0
-    // leave shader
-    if (device->shader) lx_gl_renderer_leave_shader(device);
-    // leave solid
-    else lx_gl_renderer_leave_solid(device);
+    if (device->shader) {
+        lx_gl_renderer_leave_shader(device);
+    } else {
+        lx_gl_renderer_leave_solid(device);
+    }
 #else
     lx_gl_renderer_leave_solid(device);
 #endif
 }
+
 #if 0
-static lx_void_t lx_gl_renderer_fill_convex(lx_point_ref_t points, lx_uint16_t count, lx_cpointer_t priv)
-{
-    // check
+static lx_void_t lx_gl_renderer_fill_convex(lx_point_ref_t points, lx_uint16_t count, lx_cpointer_t priv) {
     lx_assert(priv && points && count);
 
     // apply it
@@ -202,9 +168,8 @@ static lx_void_t lx_gl_renderer_fill_convex(lx_point_ref_t points, lx_uint16_t c
 #endif
 }
 #endif
-static lx_void_t lx_gl_renderer_fill_polygon(lx_opengl_device_t* device, lx_polygon_ref_t polygon, lx_rect_ref_t bounds, lx_size_t rule)
-{
-    // check
+
+static lx_void_t lx_gl_renderer_fill_polygon(lx_opengl_device_t* device, lx_polygon_ref_t polygon, lx_rect_ref_t bounds, lx_size_t rule) {
     lx_assert(device && device->tessellator);
 
 #if 0 // TODO
@@ -224,51 +189,37 @@ static lx_void_t lx_gl_renderer_fill_polygon(lx_opengl_device_t* device, lx_poly
     lx_tessellator_done(device->tessellator, polygon, bounds);
 #endif
 }
-static lx_void_t lx_gl_renderer_stroke_lines(lx_opengl_device_t* device, lx_point_ref_t points, lx_size_t count)
-{
-    // check
+
+static lx_void_t lx_gl_renderer_stroke_lines(lx_opengl_device_t* device, lx_point_ref_t points, lx_size_t count) {
     lx_assert(device && points && count);
 
-    // apply vertices
     lx_gl_renderer_apply_vertices(device, points);
-
-    // done
     lx_glDrawArrays(LX_GL_LINES, 0, (lx_GLint_t)count);
 }
-static lx_void_t lx_gl_renderer_stroke_points(lx_opengl_device_t* device, lx_point_ref_t points, lx_size_t count)
-{
-    // check
+
+static lx_void_t lx_gl_renderer_stroke_points(lx_opengl_device_t* device, lx_point_ref_t points, lx_size_t count) {
     lx_assert(device && points && count);
 
-    // apply vertices
     lx_gl_renderer_apply_vertices(device, points);
-
-    // done
     lx_glDrawArrays(LX_GL_POINTS, 0, (lx_GLint_t)count);
 }
-static lx_void_t lx_gl_renderer_stroke_polygon(lx_opengl_device_t* device, lx_point_ref_t points, lx_uint16_t const* counts)
-{
-    // check
+
+static lx_void_t lx_gl_renderer_stroke_polygon(lx_opengl_device_t* device, lx_point_ref_t points, lx_uint16_t const* counts) {
     lx_assert(device && points && counts);
 
     // apply vertices
     lx_gl_renderer_apply_vertices(device, points);
 
-    // done
     lx_uint16_t count;
     lx_size_t   index = 0;
-    while ((count = *counts++))
-    {
+    while ((count = *counts++)) {
         lx_glDrawArrays(LX_GL_LINE_STRIP, (lx_GLint_t)index, (lx_GLint_t)count);
         index += count;
     }
 }
-static lx_void_t lx_gl_renderer_stroke_fill(lx_opengl_device_t* device, lx_path_ref_t path)
-{
-    // check
-    lx_assert(device && device->stroker && device->base.paint && path);
 
-    // null?
+static lx_void_t lx_gl_renderer_stroke_fill(lx_opengl_device_t* device, lx_path_ref_t path) {
+    lx_assert(device && device->stroker && device->base.paint && path);
     lx_check_return(!lx_path_empty(path));
 
     // the mode
@@ -292,9 +243,8 @@ static lx_void_t lx_gl_renderer_stroke_fill(lx_opengl_device_t* device, lx_path_
     // restore the fill mode
     lx_paint_fill_rule_set(device->base.paint, rule);
 }
-static lx_inline lx_bool_t lx_gl_renderer_stroke_only(lx_opengl_device_t* device)
-{
-    // check
+
+static lx_inline lx_bool_t lx_gl_renderer_stroke_only(lx_opengl_device_t* device) {
     lx_assert(device && device->base.paint && device->base.matrix);
 
     // width == 1 and solid? only stroke it
@@ -307,15 +257,11 @@ static lx_inline lx_bool_t lx_gl_renderer_stroke_only(lx_opengl_device_t* device
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_bool_t lx_gl_renderer_init(lx_opengl_device_t* device)
-{
-    // check
+lx_bool_t lx_gl_renderer_init(lx_opengl_device_t* device) {
     lx_assert_and_check_return_val(device && device->base.matrix && device->base.paint, lx_false);
 
-    // done
     lx_bool_t ok = lx_false;
-    do
-    {
+    do {
         // init shader
 //        device->shader = lx_paint_shader(device->base.paint);
 
@@ -323,23 +269,22 @@ lx_bool_t lx_gl_renderer_init(lx_opengl_device_t* device)
         lx_gl_matrix_convert(device->matrix_vertex, device->base.matrix);
 
         // init antialiasing
-        if (lx_paint_flags(device->base.paint) & LX_PAINT_FLAG_ANTIALIASING)
-        {
+        if (lx_paint_flags(device->base.paint) & LX_PAINT_FLAG_ANTIALIASING) {
             lx_glEnable(LX_GL_MULTISAMPLE);
 #if 0
             lx_glEnable(LX_GL_LINE_SMOOTH);
             lx_glHint(LX_GL_LINE_SMOOTH_HINT, LX_GL_NICEST);
 #endif
+        } else {
+            lx_glDisable(LX_GL_MULTISAMPLE);
         }
-        else lx_glDisable(LX_GL_MULTISAMPLE);
 
         // init vertex and matrix
-        if (device->glversion >= 0x20)
-        {
+        if (device->glversion >= 0x20) {
             // the program type
             lx_size_t program_type = device->shader? LX_GL_PROGRAM_TYPE_BITMAP : LX_GL_PROGRAM_TYPE_COLOR;
 
-            // program
+            // get program
             device->program = device->programs[program_type];
             lx_assert_and_check_break(device->program);
 
@@ -354,9 +299,8 @@ lx_bool_t lx_gl_renderer_init(lx_opengl_device_t* device)
 
             // apply vertex matrix
             lx_glUniformMatrix4fv(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_MATRIX_MODEL), 1, LX_GL_FALSE, device->matrix_vertex);
-        }
-        else
-        {
+
+        } else {
             // enable vertex
             lx_glEnableClientState(LX_GL_VERTEX_ARRAY);
 
@@ -371,154 +315,100 @@ lx_bool_t lx_gl_renderer_init(lx_opengl_device_t* device)
         ok = lx_true;
 
     } while (0);
-
-    // ok?
     return ok;
 }
-lx_void_t lx_gl_renderer_exit(lx_opengl_device_t* device)
-{
-    // check
+
+lx_void_t lx_gl_renderer_exit(lx_opengl_device_t* device) {
     lx_assert_and_check_return(device);
 
     // exit vertex and matrix
-    if (device->glversion >= 0x20)
-    {
-        // check
+    if (device->glversion >= 0x20) {
         lx_assert_and_check_return(device->program);
-
-        // disable vertex
         lx_glDisableVertexAttribArray(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_VERTICES));
-
-        // disable texcoord
         lx_glDisableVertexAttribArray(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_TEXCOORDS));
-    }
-    else
-    {
-        // restore vertex matrix
+    } else {
         lx_glMatrixMode(LX_GL_MODELVIEW);
         lx_glPopMatrix();
-
-        // disable vertex
         lx_glDisableClientState(LX_GL_VERTEX_ARRAY);
-
-        // disable texcoord
         lx_glDisableClientState(LX_GL_TEXTURE_COORD_ARRAY);
     }
 
     // disable antialiasing
     lx_glDisable(LX_GL_MULTISAMPLE);
 }
-lx_void_t lx_gl_renderer_draw_path(lx_opengl_device_t* device, lx_path_ref_t path)
-{
-    // check
+
+lx_void_t lx_gl_renderer_draw_path(lx_opengl_device_t* device, lx_path_ref_t path) {
     lx_assert(device && device->base.paint && path);
 
-    // the mode
     lx_size_t mode = lx_paint_mode(device->base.paint);
-
-    // fill it
-    if (mode & LX_PAINT_MODE_FILL)
-    {
+    if (mode & LX_PAINT_MODE_FILL) {
         lx_gl_renderer_draw_polygon(device, lx_path_polygon(path), lx_path_hint(path), lx_path_bounds(path));
     }
 
-    // stroke it
-    if ((mode & LX_PAINT_MODE_STROKE) && (lx_paint_stroke_width(device->base.paint) > 0))
-    {
-        // only stroke?
-        if (lx_gl_renderer_stroke_only(device)) lx_gl_renderer_draw_polygon(device, lx_path_polygon(path), lx_path_hint(path), lx_path_bounds(path));
-        // fill the stroked path
-        else lx_gl_renderer_stroke_fill(device, lx_stroker_make_from_path(device->stroker, device->base.paint, path));
+    if ((mode & LX_PAINT_MODE_STROKE) && (lx_paint_stroke_width(device->base.paint) > 0)) {
+        if (lx_gl_renderer_stroke_only(device)) {
+            lx_gl_renderer_draw_polygon(device, lx_path_polygon(path), lx_path_hint(path), lx_path_bounds(path));
+        } else {
+            lx_gl_renderer_stroke_fill(device, lx_stroker_make_from_path(device->stroker, device->base.paint, path));
+        }
     }
 }
-lx_void_t lx_gl_renderer_draw_lines(lx_opengl_device_t* device, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds)
-{
-    // check
+
+lx_void_t lx_gl_renderer_draw_lines(lx_opengl_device_t* device, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds) {
     lx_assert(device && device->base.paint && points && count);
-
-    // check mode
     lx_check_return(lx_paint_mode(device->base.paint) & LX_PAINT_MODE_STROKE);
-
-    // check width
     lx_check_return((lx_paint_stroke_width(device->base.paint) > 0));
 
-    // enter paint
     lx_gl_renderer_enter_paint(device);
-
-    // only stroke?
-    if (lx_gl_renderer_stroke_only(device)) lx_gl_renderer_stroke_lines(device, points, count);
-    // fill the stroked lines
-    else lx_gl_renderer_stroke_fill(device, lx_stroker_make_from_lines(device->stroker, device->base.paint, points, count));
-
-    // leave paint
+    if (lx_gl_renderer_stroke_only(device)) {
+        lx_gl_renderer_stroke_lines(device, points, count);
+    } else {
+        lx_gl_renderer_stroke_fill(device, lx_stroker_make_from_lines(device->stroker, device->base.paint, points, count));
+    }
     lx_gl_renderer_leave_paint(device);
 }
-lx_void_t lx_gl_renderer_draw_points(lx_opengl_device_t* device, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds)
-{
-    // check
+
+lx_void_t lx_gl_renderer_draw_points(lx_opengl_device_t* device, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds) {
     lx_assert(device && device->base.paint && points && count);
-
-    // check mode
     lx_check_return(lx_paint_mode(device->base.paint) & LX_PAINT_MODE_STROKE);
-
-    // check width
     lx_check_return((lx_paint_stroke_width(device->base.paint) > 0));
 
-    // enter paint
     lx_gl_renderer_enter_paint(device);
-
-    // only stroke?
-    if (lx_gl_renderer_stroke_only(device)) lx_gl_renderer_stroke_points(device, points, count);
-    // fill the stroked points
-    else lx_gl_renderer_stroke_fill(device, lx_stroker_make_from_points(device->stroker, device->base.paint, points, count));
-
-    // leave paint
+    if (lx_gl_renderer_stroke_only(device)) {
+        lx_gl_renderer_stroke_points(device, points, count);
+    } else {
+        lx_gl_renderer_stroke_fill(device, lx_stroker_make_from_points(device->stroker, device->base.paint, points, count));
+    }
     lx_gl_renderer_leave_paint(device);
 }
-lx_void_t lx_gl_renderer_draw_polygon(lx_opengl_device_t* device, lx_polygon_ref_t polygon, lx_shape_ref_t hint, lx_rect_ref_t bounds)
-{
-    // check
+
+lx_void_t lx_gl_renderer_draw_polygon(lx_opengl_device_t* device, lx_polygon_ref_t polygon, lx_shape_ref_t hint, lx_rect_ref_t bounds) {
     lx_assert(device && device->base.paint && polygon && polygon->points && polygon->counts);
 
-    // line?
-    if (hint && hint->type == LX_SHAPE_TYPE_LINE)
-    {
+    if (hint && hint->type == LX_SHAPE_TYPE_LINE) {
         lx_point_t points[2];
         points[0] = hint->u.line.p0;
         points[1] = hint->u.line.p1;
         lx_gl_renderer_draw_lines(device, points, 2, bounds);
         return ;
-    }
-    // point?
-    else if (hint && hint->type == LX_SHAPE_TYPE_POINT)
-    {
+    } else if (hint && hint->type == LX_SHAPE_TYPE_POINT) {
         lx_gl_renderer_draw_points(device, &hint->u.point, 1, bounds);
         return ;
     }
 
-    // enter paint
     lx_gl_renderer_enter_paint(device);
-
-    // the mode
     lx_size_t mode = lx_paint_mode(device->base.paint);
-
-    // fill it
-    if (mode & LX_PAINT_MODE_FILL)
-    {
-        // fill polygon
+    if (mode & LX_PAINT_MODE_FILL) {
         lx_gl_renderer_fill_polygon(device, polygon, bounds, lx_paint_fill_rule(device->base.paint));
     }
 
-    // stroke it
-    if ((mode & LX_PAINT_MODE_STROKE) && (lx_paint_stroke_width(device->base.paint) > 0))
-    {
-        // only stroke?
-        if (lx_gl_renderer_stroke_only(device)) lx_gl_renderer_stroke_polygon(device, polygon->points, polygon->counts);
-        // fill the stroked polygon
-        else lx_gl_renderer_stroke_fill(device, lx_stroker_make_from_polygon(device->stroker, device->base.paint, polygon, hint));
+    if ((mode & LX_PAINT_MODE_STROKE) && (lx_paint_stroke_width(device->base.paint) > 0)) {
+        if (lx_gl_renderer_stroke_only(device)) {
+            lx_gl_renderer_stroke_polygon(device, polygon->points, polygon->counts);
+        } else {
+            lx_gl_renderer_stroke_fill(device, lx_stroker_make_from_polygon(device->stroker, device->base.paint, polygon, hint));
+        }
     }
-
-    // leave paint
     lx_gl_renderer_leave_paint(device);
 }
 
