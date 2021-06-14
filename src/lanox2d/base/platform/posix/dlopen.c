@@ -23,22 +23,28 @@
  * includes
  */
 #include "prefix.h"
+#include <dlfcn.h>
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
 lx_dlimage_ref_t lx_dlopen(lx_char_t const* filename, lx_int_t flag) {
-    lx_trace_noimpl();
-    return lx_null;
+    lx_assert_and_check_return_val(filename, lx_null);
+    dlerror();
+    lx_handle_t dlimage = dlopen(filename, flag == LX_RTLD_LAZY? RTLD_LAZY : RTLD_NOW);
+    if (dlerror()) {
+        if (dlimage) dlclose(dlimage);
+        dlimage = lx_null;
+    }
+    return (lx_dlimage_ref_t)dlimage;
 }
 
 lx_pointer_t lx_dlsym(lx_dlimage_ref_t dlimage, lx_char_t const* symbol) {
-    lx_trace_noimpl();
-    return lx_null;
+    lx_assert_and_check_return_val(dlimage && symbol, lx_null);
+    return (lx_pointer_t)dlsym((lx_handle_t)dlimage, symbol);
 }
 
 lx_int_t lx_dlclose(lx_dlimage_ref_t dlimage) {
-    lx_trace_noimpl();
-    return 0;
+    return dlclose((lx_handle_t)dlimage);
 }
 
