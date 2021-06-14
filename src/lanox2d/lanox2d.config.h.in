@@ -15,6 +15,7 @@ ${define LX_CONFIG_TYPE_HAVE_WCHAR}
 
 // windows
 ${define LX_CONFIG_WINDOW_HAVE_SDL}
+${define LX_CONFIG_WINDOW_HAVE_GLUT}
 
 // devices
 ${define LX_CONFIG_DEVICE_HAVE_BITMAP}

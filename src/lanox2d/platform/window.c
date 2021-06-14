@@ -25,6 +25,8 @@
 #include "window.h"
 #if defined(LX_CONFIG_WINDOW_HAVE_SDL)
 #   include "windows/sdl.c"
+#elif defined(LX_CONFIG_WINDOW_HAVE_GLUT)
+#   include "windows/glut.c"
 #endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -33,6 +35,8 @@
 lx_window_ref_t lx_window_init(lx_size_t width, lx_size_t height, lx_char_t const* title) {
 #if defined(LX_CONFIG_WINDOW_HAVE_SDL)
     return lx_window_init_sdl(width, height, title);
+#elif defined(LX_CONFIG_WINDOW_HAVE_GLUT)
+    return lx_window_init_glut(width, height, title);
 #else
     return lx_null;
 #endif

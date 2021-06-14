@@ -37,13 +37,23 @@ target("lanox2d")
     check_interfaces()
 
     -- add sdl package
-    if has_package("libsdl") then
+    if is_config("window", "sdl") then
         add_packages("libsdl")
         set_configvar("LX_CONFIG_WINDOW_HAVE_SDL", 1)
     end
 
+    -- add glut package
+    if is_config("window", "glut") then
+        if is_plat("macosx") then
+            add_frameworks("GLUT")
+        else
+            add_packages("freeglut")
+        end
+        set_configvar("LX_CONFIG_WINDOW_HAVE_GLUT", 1)
+    end
+
     -- add bitmap device
-    if has_package("libsdl") then
+    if is_config("window", "sdl") then
         set_configvar("LX_CONFIG_DEVICE_HAVE_BITMAP", 1)
         add_files("core/device/bitmap/**.c")
     end
