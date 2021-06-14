@@ -17,6 +17,7 @@ if is_mode("releasedbg", "release", "minsizerel") then
     elseif not is_plat("windows", "mingw") then
         add_cxflags("-flto")
         add_shflags("-flto")
+        add_ldflags("-flto")
     end
 end
 
