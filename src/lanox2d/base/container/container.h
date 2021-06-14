@@ -27,6 +27,7 @@
 #include "stack.h"
 #include "array.h"
 #include "iterator.h"
+#include "list_entry.h"
 
 #endif
 
