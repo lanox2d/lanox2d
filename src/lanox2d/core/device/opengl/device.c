@@ -23,6 +23,7 @@
  * includes
  */
 #include "device.h"
+#include "renderer.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
@@ -36,15 +37,43 @@ static lx_void_t lx_device_opengl_draw_clear(lx_device_ref_t self, lx_color_t co
 }
 
 static lx_void_t lx_device_opengl_draw_lines(lx_device_ref_t self, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds) {
+    lx_opengl_device_t* device = (lx_opengl_device_t*)self;
+    lx_assert(device && points && count);
+
+    if (lx_gl_renderer_init(device)) {
+        lx_gl_renderer_draw_lines(device, points, count, bounds);
+        lx_gl_renderer_exit(device);
+    }
 }
 
 static lx_void_t lx_device_opengl_draw_points(lx_device_ref_t self, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds) {
+    lx_opengl_device_t* device = (lx_opengl_device_t*)self;
+    lx_assert(device && points && count);
+
+    if (lx_gl_renderer_init(device)) {
+        lx_gl_renderer_draw_points(device, points, count, bounds);
+        lx_gl_renderer_exit(device);
+    }
 }
 
 static lx_void_t lx_device_opengl_draw_polygon(lx_device_ref_t self, lx_polygon_ref_t polygon, lx_shape_ref_t hint, lx_rect_ref_t bounds) {
+    lx_opengl_device_t* device = (lx_opengl_device_t*)self;
+    lx_assert(device && polygon);
+
+    if (lx_gl_renderer_init(device)) {
+        lx_gl_renderer_draw_polygon(device, polygon, hint, bounds);
+        lx_gl_renderer_exit(device);
+    }
 }
 
 static lx_void_t lx_device_opengl_draw_path(lx_device_ref_t self, lx_path_ref_t path) {
+    lx_opengl_device_t* device = (lx_opengl_device_t*)self;
+    lx_assert(device && path);
+
+    if (lx_gl_renderer_init(device)) {
+        lx_gl_renderer_draw_path(device, path);
+        lx_gl_renderer_exit(device);
+    }
 }
 
 static lx_void_t lx_device_opengl_exit(lx_device_ref_t self) {

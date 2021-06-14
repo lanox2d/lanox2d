@@ -39,8 +39,12 @@ typedef struct lx_opengl_device_t_ {
     lx_window_ref_t         window;
     lx_stroker_ref_t        stroker;
     lx_size_t               glversion;
+    lx_gl_program_ref_t     program;
     lx_gl_program_ref_t     programs[LX_GL_PROGRAM_LOCATION_MAXN];
     lx_gl_matrix_t          matrix_project;
+    lx_gl_matrix_t          matrix_vertex;
+    lx_pointer_t            tessellator;
+    lx_pointer_t            shader;
 }lx_opengl_device_t;
 
 #endif
