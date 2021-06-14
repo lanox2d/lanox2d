@@ -18,17 +18,15 @@
  * @file        prefix.h
  *
  */
-#ifndef LX_CORE_DEVICE_OPENGL_PREFIX_H
-#define LX_CORE_DEVICE_OPENGL_PREFIX_H
+#ifndef LX_CORE_DEVICE_OPENGL_PROGRAM_PREFIX_H
+#define LX_CORE_DEVICE_OPENGL_PROGRAM_PREFIX_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
 #include "../prefix.h"
-#include "../../path.h"
-#include "../../paint.h"
-#include "../../private/stroker.h"
-#include "../../../platform/window.h"
+#include "../program.h"
+
 
 #endif
 

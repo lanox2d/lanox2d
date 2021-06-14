@@ -22,8 +22,7 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "api.h"
-#include "matrix.h"
+#include "device.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
@@ -32,6 +31,8 @@ static lx_void_t lx_device_opengl_resize(lx_device_ref_t self, lx_size_t width, 
 }
 
 static lx_void_t lx_device_opengl_draw_clear(lx_device_ref_t self, lx_color_t color) {
+    lx_glClearColor((lx_GLfloat_t)color.r / 0xff, (lx_GLfloat_t)color.g / 0xff, (lx_GLfloat_t)color.b / 0xff, (lx_GLfloat_t)color.a / 0xff);
+    lx_glClear(LX_GL_COLOR_BUFFER_BIT);
 }
 
 static lx_void_t lx_device_opengl_draw_lines(lx_device_ref_t self, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds) {
@@ -52,6 +53,13 @@ static lx_void_t lx_device_opengl_exit(lx_device_ref_t self) {
         if (device->stroker) {
             lx_stroker_exit(device->stroker);
             device->stroker = lx_null;
+        }
+        lx_size_t i = 0;
+        for (i = 0; i < LX_GL_PROGRAM_TYPE_MAXN; i++) {
+            if (device->programs[i]) {
+                lx_gl_program_exit(device->programs[i]);
+                device->programs[i] = 0;
+            }
         }
         lx_free(device);
     }
@@ -98,6 +106,32 @@ lx_device_ref_t lx_device_init_from_opengl(lx_window_ref_t window) {
 
         // init viewport
         lx_glViewport(0, 0, width, height);
+
+        // init gl >= 2.0
+        if (device->glversion >= 0x20) {
+
+            // init color program
+            device->programs[LX_GL_PROGRAM_TYPE_COLOR] = lx_gl_program_init_color();
+            lx_assert_and_check_break(device->programs[LX_GL_PROGRAM_TYPE_COLOR]);
+
+            // init bitmap program
+            device->programs[LX_GL_PROGRAM_TYPE_BITMAP] = lx_gl_program_init_bitmap();
+            lx_assert_and_check_break(device->programs[LX_GL_PROGRAM_TYPE_BITMAP]);
+
+            // init the projection matrix
+            lx_gl_matrix_orthof(device->matrix_project, 0.0f, (lx_GLfloat_t)width, (lx_GLfloat_t)height, 0.0f, -1.0f, 1.0f);
+
+        } else { // init gl 1.x
+
+            // init the projection matrix
+            lx_glMatrixMode(LX_GL_PROJECTION);
+            lx_glLoadIdentity();
+            lx_glOrthof(0.0f, (lx_GLfloat_t)width, (lx_GLfloat_t)height, 0.0f, -1.0f, 1.0f);
+
+            // init the model matrix
+            lx_glMatrixMode(LX_GL_MODELVIEW);
+            lx_glLoadIdentity();
+        }
 
         // ok
         ok = lx_true;
