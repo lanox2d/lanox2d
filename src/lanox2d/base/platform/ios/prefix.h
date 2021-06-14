@@ -15,17 +15,16 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        platform.h
+ * @file        prefix.h
  *
  */
-#ifndef LX_BASE_PLATFORM_H
-#define LX_BASE_PLATFORM_H
+#ifndef LX_BASE_PLATFORM_IOS_PREFIX_H
+#define LX_BASE_PLATFORM_IOS_PREFIX_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "time.h"
-#include "dlopen.h"
+#include "../prefix.h"
 
 #endif
 

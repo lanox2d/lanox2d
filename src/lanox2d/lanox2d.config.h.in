@@ -54,4 +54,7 @@ ${define LX_CONFIG_LIBC_HAVE_STRTOL}
 ${define LX_CONFIG_LIBC_HAVE_STRNLEN}
 ${define LX_CONFIG_LIBC_HAVE_STRNCASECMP}
 
+// posix functions
+${define LX_CONFIG_POSIX_HAVE_DLOPEN}
+
 #endif

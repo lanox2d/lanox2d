@@ -15,18 +15,36 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        platform.h
+ * @file        dlopen.c
  *
  */
-#ifndef LX_BASE_PLATFORM_H
-#define LX_BASE_PLATFORM_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "time.h"
 #include "dlopen.h"
 
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * implementation
+ */
+#ifdef LX_CONFIG_OS_WINDOWS
+#   include "windows/dlopen.c"
+#elif defined(LX_CONFIG_POSIX_HAVE_DLOPEN)
+#   include "posix/dlopen.c"
+#else
+lx_dlimage_ref_t lx_dlopen(lx_char_t const* filename, lx_int_t flag) {
+    lx_trace_noimpl();
+    return lx_null;
+}
+
+lx_pointer_t lx_dlsym(lx_dlimage_ref_t dlimage, lx_char_t const* symbol) {
+    lx_trace_noimpl();
+    return lx_null;
+}
+
+lx_int_t lx_dlclose(lx_dlimage_ref_t dlimage) {
+    lx_trace_noimpl();
+    return 0;
+}
+
 #endif
-
-

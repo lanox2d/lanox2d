@@ -69,4 +69,9 @@ function check_interfaces()
         "strtol",
         "strnlen",
         "strncasecmp")
+
+    -- add the interfaces for posix
+    if not is_plat("windows") then
+        check_module_cfuncs("posix", "dlfcn.h", "dlopen")
+    end
 end

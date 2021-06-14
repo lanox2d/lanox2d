@@ -26,7 +26,8 @@ target("lanox2d")
 
     -- add source files
     add_files("*.c")
-    add_files("base/**.c|libc/arch/**.c")
+    add_files("base/**.c|libc/arch/**.c|platform/**.c")
+    add_files("base/platform/*.c")
     add_files("core/**.c|pixmap/*.c|device/**.c")
     add_files("platform/**.c|windows/*.c")
 
