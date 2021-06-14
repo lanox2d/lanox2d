@@ -235,8 +235,6 @@ static lx_void_t lx_window_sdl_event(lx_window_sdl_t* window, SDL_Event* sdleven
 }
 
 static lx_void_t lx_window_sdl_runloop(lx_window_ref_t self) {
-
-    // check
     lx_window_sdl_t* window = (lx_window_sdl_t*)self;
     lx_assert_and_check_return(window);
 
