@@ -39,6 +39,7 @@ typedef struct lx_opengl_device_t_ {
     lx_device_t             base;
     lx_window_ref_t         window;
     lx_stroker_ref_t        stroker;
+    lx_size_t               glversion;
 }lx_opengl_device_t;
 
 #endif

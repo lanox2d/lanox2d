@@ -46,7 +46,7 @@ target("lanox2d")
     -- add glut package
     if is_config("window", "glut") then
         if is_plat("macosx") then
-            add_frameworks("GLUT")
+            add_frameworks("GLUT", "OpenGL")
             add_cxflags("-Wno-error=deprecated-declarations")
         else
             add_packages("freeglut")
