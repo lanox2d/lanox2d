@@ -28,6 +28,7 @@
 #include "../../path.h"
 #include "../../paint.h"
 #include "../../private/stroker.h"
+#include "../../../platform/window.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * types
@@ -36,7 +37,8 @@
 // the opengl device type
 typedef struct lx_opengl_device_t_ {
     lx_device_t             base;
-    lx_pixmap_ref_t         pixmap;
+    lx_window_ref_t         window;
+    lx_stroker_ref_t        stroker;
 }lx_opengl_device_t;
 
 #endif

@@ -23,7 +23,6 @@
  * includes
  */
 #include "prefix.h"
-#include "../../../platform/window.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
@@ -49,6 +48,10 @@ static lx_void_t lx_device_opengl_draw_path(lx_device_ref_t self, lx_path_ref_t 
 static lx_void_t lx_device_opengl_exit(lx_device_ref_t self) {
     lx_opengl_device_t* device = (lx_opengl_device_t*)self;
     if (device) {
+        if (device->stroker) {
+            lx_stroker_exit(device->stroker);
+            device->stroker = lx_null;
+        }
         lx_free(device);
     }
 }
@@ -79,6 +82,11 @@ lx_device_ref_t lx_device_init_from_opengl(lx_window_ref_t window) {
         device->base.draw_polygon = lx_device_opengl_draw_polygon;
         device->base.draw_path    = lx_device_opengl_draw_path;
         device->base.exit         = lx_device_opengl_exit;
+        device->window            = window;
+
+        // init stroker
+        device->stroker = lx_stroker_init();
+        lx_assert_and_check_break(device->stroker);
 
         // ok
         ok = lx_true;
