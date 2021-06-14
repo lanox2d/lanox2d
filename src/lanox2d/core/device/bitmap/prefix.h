@@ -28,7 +28,6 @@
 #include "../../path.h"
 #include "../../paint.h"
 #include "../../private/stroker.h"
-#include "../../private/polygon_raster.h"
 
 #endif
 

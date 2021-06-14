@@ -18,14 +18,13 @@
  * @file        polygon_raster.h
  *
  */
-#ifndef LX_CORE_PRIVATE_POLYGON_RASTER_H
-#define LX_CORE_PRIVATE_POLYGON_RASTER_H
+#ifndef LX_CORE_DEVICE_BITMAP_POLYGON_RASTER_H
+#define LX_CORE_DEVICE_BITMAP_POLYGON_RASTER_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
 #include "prefix.h"
-#include "../paint.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
