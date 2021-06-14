@@ -41,7 +41,7 @@ int main(int argc, char** argv) {
     lx_trace_i("entry: %lu", entry->data);
     lx_trace_i("");
     lx_trace_i("insert: %lu", lx_list_entry_size(&list));
-    lx_for_all_if(lx_demo_entry_t*, item0, lx_list_entry_itor(&list), item0) {
+    lx_for_all(lx_demo_entry_t*, item0, lx_list_entry_itor(&list)) {
         lx_trace_i("%lu", item0->data);
     }
     lx_trace_i("");
@@ -50,7 +50,7 @@ int main(int argc, char** argv) {
     lx_list_entry_replace_head(&list, &entries[10].entry);
     lx_list_entry_replace_last(&list, &entries[11].entry);
     lx_trace_i("replace: %lu", lx_list_entry_size(&list));
-    lx_for_all_if(lx_demo_entry_t*, item1, lx_list_entry_itor(&list), item1) {
+    lx_for_all(lx_demo_entry_t*, item1, lx_list_entry_itor(&list)) {
         lx_trace_i("%lu", item1->data);
     }
     lx_trace_i("");
@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
     lx_list_entry_remove_head(&list);
     lx_list_entry_remove_last(&list);
     lx_trace_i("remove: %lu", lx_list_entry_size(&list));
-    lx_for_all_if(lx_demo_entry_t*, item2, lx_list_entry_itor(&list), item2) {
+    lx_for_all(lx_demo_entry_t*, item2, lx_list_entry_itor(&list)) {
         lx_trace_i("%lu", item2->data);
     }
     lx_trace_i("");
@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
     lx_list_entry_moveto_head(&list, lx_list_entry_last(&list));
     lx_list_entry_moveto_tail(&list, head);
     lx_trace_i("moveto: %lu", lx_list_entry_size(&list));
-    lx_for_all_if(lx_demo_entry_t*, item3, lx_list_entry_itor(&list), item3) {
+    lx_for_all(lx_demo_entry_t*, item3, lx_list_entry_itor(&list)) {
         lx_trace_i("%lu", item3->data);
     }
     lx_trace_i("");
@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
     // clear entries
     lx_list_entry_clear(&list);
     lx_trace_i("clear: %lu", lx_list_entry_size(&list));
-    lx_for_all_if(lx_demo_entry_t*, item5, lx_list_entry_itor(&list), item5) {
+    lx_for_all(lx_demo_entry_t*, item5, lx_list_entry_itor(&list)) {
         lx_trace_i("%lu", item5->data);
     }
 
