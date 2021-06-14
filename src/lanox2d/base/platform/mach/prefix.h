@@ -18,8 +18,8 @@
  * @file        prefix.h
  *
  */
-#ifndef LX_BASE_PLATFORM_IOS_PREFIX_H
-#define LX_BASE_PLATFORM_IOS_PREFIX_H
+#ifndef LX_BASE_PLATFORM_MACH_PREFIX_H
+#define LX_BASE_PLATFORM_MACH_PREFIX_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
