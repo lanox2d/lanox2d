@@ -25,6 +25,7 @@
  */
 #include "../prefix.h"
 #include "../writter.h"
+#include "../device.h"
 
 #endif
 

@@ -15,20 +15,33 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        prefix.h
+ * @file        device.h
  *
  */
-#ifndef LX_CORE_DEVICE_BITMAP_PREFIX_H
-#define LX_CORE_DEVICE_BITMAP_PREFIX_H
+#ifndef LX_CORE_DEVICE_BITMAP_DEVICE_H
+#define LX_CORE_DEVICE_BITMAP_DEVICE_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "../prefix.h"
-#include "../../path.h"
-#include "../../paint.h"
-#include "../../private/stroker.h"
-#include "../../private/polygon_raster.h"
+#include "writter.h"
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * types
+ */
+
+// the bitmap device type
+typedef struct lx_bitmap_device_t_ {
+    lx_device_t             base;
+    lx_bitmap_ref_t         bitmap;
+    lx_pixmap_ref_t         pixmap;
+    lx_rect_t               bounds;
+    lx_array_ref_t          points;
+    lx_array_ref_t          counts;
+    lx_polygon_raster_ref_t raster;
+    lx_stroker_ref_t        stroker;
+    lx_bitmap_writter_t     writter;
+}lx_bitmap_device_t;
 
 #endif
 
