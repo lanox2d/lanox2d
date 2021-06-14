@@ -39,6 +39,8 @@ typedef struct lx_window_glut_t_ {
     lx_bool_t       is_quit;
     lx_int_t        id;
     lx_size_t       button;
+    lx_uint16_t     normal_width;
+    lx_uint16_t     normal_height;
     lx_hong_t       fps_drawtime;
     lx_hong_t       fps_time;
     lx_hong_t       fps_count;
@@ -285,6 +287,25 @@ static lx_void_t lx_window_glut_reshape(lx_int_t width, lx_int_t height) {
 #endif
 }
 
+static lx_void_t lx_window_glut_fullscreen(lx_window_ref_t self, lx_bool_t is_fullscreen) {
+    lx_window_glut_t* window = (lx_window_glut_t*)self;
+    if (window) {
+        if (is_fullscreen && !(window->base.flags & LX_WINDOW_FLAG_FULLSCREEN)) {
+            window->normal_width  = window->base.width;
+            window->normal_height = window->base.height;
+            glutFullScreen();
+            window->base.flags |= LX_WINDOW_FLAG_FULLSCREEN;
+        } else if (window->base.flags & LX_WINDOW_FLAG_FULLSCREEN) {
+            lx_size_t screen_width  = glutGet(GLUT_SCREEN_WIDTH);
+            lx_size_t screen_height = glutGet(GLUT_SCREEN_HEIGHT);
+            lx_assert(screen_width && screen_height && screen_width >= window->normal_width && screen_height >= window->normal_height);
+            glutPositionWindow((screen_width - window->normal_width) >> 1, (screen_height - window->normal_height) >> 1);
+            glutReshapeWindow(window->normal_width, window->normal_height);
+            window->base.flags &= ~LX_WINDOW_FLAG_FULLSCREEN;
+        }
+    }
+}
+
 static lx_bool_t lx_window_glut_start(lx_window_glut_t* window) {
     lx_bool_t ok = lx_false;
     do {
@@ -319,6 +340,16 @@ static lx_bool_t lx_window_glut_start(lx_window_glut_t* window) {
 #ifdef LX_CONFIG_OS_MACOSX
         glutWMCloseFunc(lx_window_glut_close);
 #endif
+
+        // hide window cursor
+        if (window->base.flags & LX_WINDOW_FLAG_HIDE_CURSOR) {
+            glutSetCursor(GLUT_CURSOR_NONE);
+        }
+
+        // fullscreen
+        if (window->base.flags & LX_WINDOW_FLAG_FULLSCREEN) {
+            lx_window_glut_fullscreen((lx_window_ref_t)window, lx_true);
+        }
 
 #if 0
         // init device
@@ -355,12 +386,6 @@ static lx_void_t lx_window_glut_runloop(lx_window_ref_t self) {
 #endif
 }
 
-static lx_void_t lx_window_glut_fullscreen(lx_window_ref_t self, lx_bool_t is_fullscreen) {
-    lx_window_glut_t* window = (lx_window_glut_t*)self;
-    if (window) {
-    }
-}
-
 static lx_void_t lx_window_glut_show(lx_window_ref_t self, lx_bool_t is_show) {
     lx_window_glut_t* window = (lx_window_glut_t*)self;
     if (window) {
@@ -368,6 +393,7 @@ static lx_void_t lx_window_glut_show(lx_window_ref_t self, lx_bool_t is_show) {
 }
 
 static lx_void_t lx_window_glut_show_cursor(lx_window_ref_t self, lx_bool_t is_show) {
+    glutSetCursor(is_show? GLUT_CURSOR_INHERIT : GLUT_CURSOR_NONE);
 }
 
 static lx_void_t lx_window_glut_quit(lx_window_ref_t self) {
