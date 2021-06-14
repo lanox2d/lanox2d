@@ -182,11 +182,13 @@ typedef enum lx_active_code_e_ {
     LX_ACTIVE_NONE          = 0     //!< none
 ,   LX_ACTIVE_BACKGROUND    = 1     //!< enter background
 ,   LX_ACTIVE_FOREGROUND    = 2     //!< enter foreground
+,   LX_ACTIVE_RESIZE_WINDOW = 3     //!< resize window
 }lx_active_code_e;
 
 /// the active event type
 typedef struct lx_event_active_t_ {
     lx_uint8_t              code;
+    lx_size_t               data[2];
 }lx_event_active_t;
 
 /// the event type

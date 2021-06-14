@@ -54,7 +54,6 @@ typedef struct lx_window_t_ {
     // notification functions
     lx_void_t           (*on_draw)(lx_window_ref_t window, lx_canvas_ref_t canvas);
     lx_void_t           (*on_event)(lx_window_ref_t window, lx_event_ref_t event);
-    lx_void_t           (*on_resize)(lx_window_ref_t window, lx_canvas_ref_t canvas);
 
     // inner functions
     lx_void_t           (*runloop)(lx_window_ref_t window);

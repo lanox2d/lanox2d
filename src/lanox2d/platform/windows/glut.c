@@ -285,6 +285,15 @@ static lx_void_t lx_window_glut_reshape(lx_int_t width, lx_int_t height) {
     // resize the device
     lx_device_resize(device, width, height);
 #endif
+
+    lx_event_t event = {0};
+    event.type = LX_EVENT_TYPE_ACTIVE;
+    event.u.active.code = LX_ACTIVE_RESIZE_WINDOW;
+    event.u.active.data[0] = (lx_size_t)width;
+    event.u.active.data[1] = (lx_size_t)height;
+    if (window->base.on_event) {
+        window->base.on_event((lx_window_ref_t)window, &event);
+    }
 }
 
 static lx_void_t lx_window_glut_fullscreen(lx_window_ref_t self, lx_bool_t is_fullscreen) {

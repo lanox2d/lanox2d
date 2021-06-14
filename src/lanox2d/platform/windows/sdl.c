@@ -226,6 +226,16 @@ static lx_void_t lx_window_sdl_event(lx_window_sdl_t* window, SDL_Event* sdleven
     case SDL_TEXTINPUT:
         break;
     case SDL_WINDOWEVENT:
+        if (sdlevent->window.event == SDL_WINDOWEVENT_RESIZED) {
+            lx_event_t event = {0};
+            event.type = LX_EVENT_TYPE_ACTIVE;
+            event.u.active.code = LX_ACTIVE_RESIZE_WINDOW;
+            event.u.active.data[0] = (lx_size_t)sdlevent->window.data1;
+            event.u.active.data[1] = (lx_size_t)sdlevent->window.data2;
+            if (window->base.on_event) {
+                window->base.on_event((lx_window_ref_t)window, &event);
+            }
+        }
         break;
     default:
         // trace

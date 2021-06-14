@@ -143,9 +143,14 @@ lx_void_t lx_event_dump(lx_event_ref_t event) {
             "none"
         ,   "background"
         ,   "foreground"
+        ,   "resize_window"
         };
         lx_assert_and_check_break(event->u.active.code < lx_arrayn(code_cstr));
-        lx_trace_i("active: %s", code_cstr[event->u.active.code]);
+        if (event->u.active.code == LX_ACTIVE_RESIZE_WINDOW) {
+            lx_trace_i("resize: %lux%lu", event->u.active.data[0], event->u.active.data[1]);
+        } else {
+            lx_trace_i("active: %s", code_cstr[event->u.active.code]);
+        }
         break;
     }
     default:
