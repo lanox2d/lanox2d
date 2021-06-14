@@ -24,7 +24,7 @@
  * includes
  */
 #include "../prefix.h"
-#include "../writter.h"
+#include "../writer.h"
 #include "../device.h"
 
 #endif

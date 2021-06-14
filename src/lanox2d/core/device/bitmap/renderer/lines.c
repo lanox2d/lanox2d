@@ -27,7 +27,7 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
-static lx_size_t lx_bitmap_renderer_stroke_line_generic(lx_bitmap_writter_t* writter, lx_fixed6_t xb, lx_fixed6_t yb, lx_fixed6_t xe, lx_fixed6_t ye) {
+static lx_size_t lx_bitmap_renderer_stroke_line_generic(lx_bitmap_writer_t* writer, lx_fixed6_t xb, lx_fixed6_t yb, lx_fixed6_t xe, lx_fixed6_t ye) {
     // round coordinates
     lx_long_t ixb = lx_fixed6_round(xb);
     lx_long_t iyb = lx_fixed6_round(yb);
@@ -77,7 +77,7 @@ static lx_size_t lx_bitmap_renderer_stroke_line_generic(lx_bitmap_writter_t* wri
 
         // draw
         do {
-            lx_bitmap_writter_draw_pixel(writter, ixb, lx_fixed_round(start_y));
+            lx_bitmap_writer_draw_pixel(writer, ixb, lx_fixed_round(start_y));
             start_y += slope;
         } while (++ixb < ixe);
 
@@ -118,27 +118,27 @@ static lx_size_t lx_bitmap_renderer_stroke_line_generic(lx_bitmap_writter_t* wri
 
         // draw
         do {
-            lx_bitmap_writter_draw_pixel(writter, lx_fixed_round(start_x), iyb);
+            lx_bitmap_writer_draw_pixel(writer, lx_fixed_round(start_x), iyb);
             start_x += slope;
         } while (++iyb < iye);
     }
     return 0;
 }
 
-static lx_void_t lx_bitmap_renderer_stroke_line_vertical(lx_bitmap_writter_t* writter, lx_fixed6_t xb, lx_fixed6_t yb, lx_fixed6_t xe, lx_fixed6_t ye) {
+static lx_void_t lx_bitmap_renderer_stroke_line_vertical(lx_bitmap_writer_t* writer, lx_fixed6_t xb, lx_fixed6_t yb, lx_fixed6_t xe, lx_fixed6_t ye) {
     // ensure the order
     if (yb > ye) {
         lx_swap(lx_long_t, yb, ye);
     }
-    lx_bitmap_writter_draw_vline(writter, lx_fixed6_round(xb), lx_fixed6_round(yb), lx_fixed6_round(ye - yb + LX_FIXED6_ONE));
+    lx_bitmap_writer_draw_vline(writer, lx_fixed6_round(xb), lx_fixed6_round(yb), lx_fixed6_round(ye - yb + LX_FIXED6_ONE));
 }
 
-static lx_void_t lx_bitmap_renderer_stroke_line_horizontal(lx_bitmap_writter_t* writter, lx_fixed6_t xb, lx_fixed6_t yb, lx_fixed6_t xe, lx_fixed6_t ye) {
+static lx_void_t lx_bitmap_renderer_stroke_line_horizontal(lx_bitmap_writer_t* writer, lx_fixed6_t xb, lx_fixed6_t yb, lx_fixed6_t xe, lx_fixed6_t ye) {
     // ensure the order
     if (xb > xe) {
         lx_swap(lx_long_t, xb, xe);
     }
-    lx_bitmap_writter_draw_hline(writter, lx_fixed6_round(xb), lx_fixed6_round(yb), lx_fixed6_round(xe - xb + LX_FIXED6_ONE));
+    lx_bitmap_writer_draw_hline(writer, lx_fixed6_round(xb), lx_fixed6_round(yb), lx_fixed6_round(xe - xb + LX_FIXED6_ONE));
 }
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -167,12 +167,12 @@ lx_void_t lx_bitmap_renderer_stroke_lines(lx_bitmap_device_t* device, lx_point_r
         ye = lx_float_to_fixed6(pe->y);
 
         // draw line
-        if ((ok = lx_bitmap_renderer_stroke_line_generic(&device->writter, xb, yb, xe, ye))) {
+        if ((ok = lx_bitmap_renderer_stroke_line_generic(&device->writer, xb, yb, xe, ye))) {
             lx_assert(ok == 'h' || ok == 'v');
             if (ok == 'h') {
-                lx_bitmap_renderer_stroke_line_horizontal(&device->writter, xb, yb, xe, ye);
+                lx_bitmap_renderer_stroke_line_horizontal(&device->writer, xb, yb, xe, ye);
             } else {
-                lx_bitmap_renderer_stroke_line_vertical(&device->writter, xb, yb, xe, ye);
+                lx_bitmap_renderer_stroke_line_vertical(&device->writer, xb, yb, xe, ye);
             }
         }
     }

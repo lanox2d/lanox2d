@@ -30,7 +30,7 @@
  */
 static lx_void_t lx_bitmap_renderer_fill_raster(lx_long_t lx, lx_long_t rx, lx_long_t yb, lx_long_t ye, lx_cpointer_t udata) {
     lx_assert(udata && rx >= lx && ye > yb);
-    lx_bitmap_writter_draw_rect((lx_bitmap_writter_t*)udata, lx, yb, rx - lx, ye - yb);
+    lx_bitmap_writer_draw_rect((lx_bitmap_writer_t*)udata, lx, yb, rx - lx, ye - yb);
 }
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -38,7 +38,7 @@ static lx_void_t lx_bitmap_renderer_fill_raster(lx_long_t lx, lx_long_t rx, lx_l
  */
 lx_void_t lx_bitmap_renderer_fill_polygon(lx_bitmap_device_t* device, lx_polygon_ref_t polygon, lx_rect_ref_t bounds) {
     lx_assert(device && device->base.paint);
-    lx_polygon_raster_make(device->raster, polygon, bounds, lx_paint_fill_rule(device->base.paint), lx_bitmap_renderer_fill_raster, &device->writter);
+    lx_polygon_raster_make(device->raster, polygon, bounds, lx_paint_fill_rule(device->base.paint), lx_bitmap_renderer_fill_raster, &device->writer);
 }
 
 lx_void_t lx_bitmap_renderer_stroke_polygon(lx_bitmap_device_t* device, lx_polygon_ref_t polygon) {

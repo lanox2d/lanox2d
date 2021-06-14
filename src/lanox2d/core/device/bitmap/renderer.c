@@ -27,7 +27,7 @@
 #include "renderer/lines.h"
 #include "renderer/points.h"
 #include "renderer/polygon.h"
-#include "writter.h"
+#include "writer.h"
 #include "../../private/stroker.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -130,11 +130,11 @@ static lx_inline lx_bool_t lx_bitmap_renderer_stroke_only(lx_bitmap_device_t* de
  * implementation
  */
 lx_bool_t lx_bitmap_renderer_init(lx_bitmap_device_t* device) {
-    return lx_bitmap_writter_init(&device->writter, device->bitmap, device->base.paint);
+    return lx_bitmap_writer_init(&device->writer, device->bitmap, device->base.paint);
 }
 
 lx_void_t lx_bitmap_renderer_exit(lx_bitmap_device_t* device) {
-    lx_bitmap_writter_exit(&device->writter);
+    lx_bitmap_writer_exit(&device->writer);
 }
 
 lx_void_t lx_bitmap_renderer_draw_path(lx_bitmap_device_t* device, lx_path_ref_t path) {

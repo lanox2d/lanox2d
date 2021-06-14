@@ -24,7 +24,7 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "writter.h"
+#include "writer.h"
 #include "polygon_raster.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -40,8 +40,8 @@ typedef struct lx_bitmap_device_t_ {
     lx_array_ref_t          points;
     lx_array_ref_t          counts;
     lx_polygon_raster_ref_t raster;
+    lx_bitmap_writer_t      writer;
     lx_stroker_ref_t        stroker;
-    lx_bitmap_writter_t     writter;
 }lx_bitmap_device_t;
 
 #endif

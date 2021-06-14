@@ -15,10 +15,10 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        writter.h
+ * @file        writer.h
  */
-#ifndef LX_CORE_DEVICE_BITMAP_BILLTER_H
-#define LX_CORE_DEVICE_BITMAP_BILLTER_H
+#ifndef LX_CORE_DEVICE_BITMAP_WRITER_H
+#define LX_CORE_DEVICE_BITMAP_WRITER_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
@@ -34,83 +34,83 @@ lx_extern_c_enter
  * types
  */
 
-// the bitmap writter solid type
-typedef struct lx_bitmap_writter_solid_t_ {
+// the bitmap writer solid type
+typedef struct lx_bitmap_writer_solid_t_ {
     lx_pixel_t                pixel;
     lx_byte_t                 alpha;
-}lx_bitmap_writter_solid_t;
+}lx_bitmap_writer_solid_t;
 
-// the bitmap writter type
-typedef struct lx_bitmap_writter_t_ {
+// the bitmap writer type
+typedef struct lx_bitmap_writer_t_ {
     union {
-        lx_bitmap_writter_solid_t    solid;
+        lx_bitmap_writer_solid_t    solid;
     }u;
     lx_bitmap_ref_t          bitmap;
     lx_pixmap_ref_t          pixmap;
     lx_size_t                btp;
     lx_size_t                row_bytes;
-    lx_void_t                (*exit)(struct lx_bitmap_writter_t_* writter);
-    lx_void_t                (*draw_pixel)(struct lx_bitmap_writter_t_* writter, lx_long_t x, lx_long_t y);
-    lx_void_t                (*draw_hline)(struct lx_bitmap_writter_t_* writter, lx_long_t x, lx_long_t y, lx_long_t w);
-    lx_void_t                (*draw_vline)(struct lx_bitmap_writter_t_* writter, lx_long_t x, lx_long_t y, lx_long_t h);
-    lx_void_t                (*draw_rect)(struct lx_bitmap_writter_t_* writter, lx_long_t x, lx_long_t y, lx_long_t w, lx_long_t h);
-}lx_bitmap_writter_t;
+    lx_void_t                (*exit)(struct lx_bitmap_writer_t_* writer);
+    lx_void_t                (*draw_pixel)(struct lx_bitmap_writer_t_* writer, lx_long_t x, lx_long_t y);
+    lx_void_t                (*draw_hline)(struct lx_bitmap_writer_t_* writer, lx_long_t x, lx_long_t y, lx_long_t w);
+    lx_void_t                (*draw_vline)(struct lx_bitmap_writer_t_* writer, lx_long_t x, lx_long_t y, lx_long_t h);
+    lx_void_t                (*draw_rect)(struct lx_bitmap_writer_t_* writer, lx_long_t x, lx_long_t y, lx_long_t w, lx_long_t h);
+}lx_bitmap_writer_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * interface
  */
 
-/* init writter
+/* init writer
  *
- * @param writter       the writter
+ * @param writer        the writer
  * @param bitmap        the bitmap
  * @param paint         the paint
  *
  * @return              lx_true or lx_false
  */
-lx_bool_t               lx_bitmap_writter_init(lx_bitmap_writter_t* writter, lx_bitmap_ref_t bitmap, lx_paint_ref_t paint);
+lx_bool_t               lx_bitmap_writer_init(lx_bitmap_writer_t* writer, lx_bitmap_ref_t bitmap, lx_paint_ref_t paint);
 
-/* exit writter
+/* exit writer
  *
- * @param writter       the writter
+ * @param writer        the writer
  */
-lx_void_t               lx_bitmap_writter_exit(lx_bitmap_writter_t* writter);
+lx_void_t               lx_bitmap_writer_exit(lx_bitmap_writer_t* writer);
 
 /* draw pixel
  *
- * @param writter       the writter
+ * @param writer        the writer
  * @param x             the x-coordinate
  * @param y             the y-coordinate
  */
-lx_void_t               lx_bitmap_writter_draw_pixel(lx_bitmap_writter_t* writter, lx_long_t x, lx_long_t y);
+lx_void_t               lx_bitmap_writer_draw_pixel(lx_bitmap_writer_t* writer, lx_long_t x, lx_long_t y);
 
 /* draw horizontal line
  *
- * @param writter       the writter
+ * @param writer        the writer
  * @param x             the start x-coordinate
  * @param y             the start y-coordinate
  * @param w             the width
  */
-lx_void_t               lx_bitmap_writter_draw_hline(lx_bitmap_writter_t* writter, lx_long_t x, lx_long_t y, lx_long_t w);
+lx_void_t               lx_bitmap_writer_draw_hline(lx_bitmap_writer_t* writer, lx_long_t x, lx_long_t y, lx_long_t w);
 
 /* draw vertical line
  *
- * @param writter       the writter
+ * @param writer        the writer
  * @param x             the start x-coordinate
  * @param y             the start y-coordinate
  * @param h             the height
  */
-lx_void_t               lx_bitmap_writter_draw_vline(lx_bitmap_writter_t* writter, lx_long_t x, lx_long_t y, lx_long_t h);
+lx_void_t               lx_bitmap_writer_draw_vline(lx_bitmap_writer_t* writer, lx_long_t x, lx_long_t y, lx_long_t h);
 
 /* draw rect
  *
- * @param writter       the writter
+ * @param writer        the writer
  * @param x             the start x-coordinate
  * @param y             the start y-coordinate
  * @param w             the width
  * @param h             the height
  */
-lx_void_t               lx_bitmap_writter_draw_rect(lx_bitmap_writter_t* writter, lx_long_t x, lx_long_t y, lx_long_t w, lx_long_t h);
+lx_void_t               lx_bitmap_writer_draw_rect(lx_bitmap_writer_t* writer, lx_long_t x, lx_long_t y, lx_long_t w, lx_long_t h);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
