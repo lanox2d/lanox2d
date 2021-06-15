@@ -129,18 +129,18 @@ static lx_void_t lx_gl_renderer_leave_paint(lx_opengl_device_t* device) {
 }
 
 #if 0
-static lx_void_t lx_gl_renderer_fill_convex(lx_point_ref_t points, lx_uint16_t count, lx_cpointer_t priv) {
-    lx_assert(priv && points && count);
+static lx_void_t lx_gl_renderer_fill_convex(lx_point_ref_t points, lx_uint16_t count, lx_cpointer_t udata) {
+    lx_assert(udata && points && count);
 
     // apply it
-    lx_gl_renderer_apply_vertices((lx_opengl_device_t*)priv, points);
+    lx_gl_renderer_apply_vertices((lx_opengl_device_t*)udata, points);
 
 #ifndef LX_GL_TESSELLATOR_TEST_ENABLE
     // draw it
     lx_glDrawArrays(LX_GL_TRIANGLE_FAN, 0, (lx_GLint_t)count);
 #else
     // the device
-    lx_opengl_device_t* device = (lx_opengl_device_t*)priv;
+    lx_opengl_device_t* device = (lx_opengl_device_t*)udata;
 
     // make crc32
     lx_uint32_t crc32 = 0xffffffff ^ lx_crc_encode(LX_CRC_MODE_32_IEEE_LE, 0xffffffff, (lx_byte_t const*)points, count * sizeof(lx_point_t));
