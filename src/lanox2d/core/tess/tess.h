@@ -15,26 +15,17 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        core.h
+ * @file        tess.h
  *
  */
-#ifndef LX_CORE_H
-#define LX_CORE_H
+#ifndef LX_CORE_TESS_H
+#define LX_CORE_TESS_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
 #include "prefix.h"
-#include "bitmap.h"
-#include "pixmap.h"
-#include "device.h"
-#include "canvas.h"
-#include "event.h"
-#include "paint.h"
-#include "path.h"
-#include "clipper.h"
-#include "quality.h"
-#include "tess/tess.h"
+#include "geometry.h"
 
 #endif
 

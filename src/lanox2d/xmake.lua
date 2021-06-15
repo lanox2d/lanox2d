@@ -28,7 +28,7 @@ target("lanox2d")
     add_files("*.c")
     add_files("base/**.c|libc/arch/**.c|platform/**.c")
     add_files("base/platform/*.c")
-    add_files("core/**.c|pixmap/*.c|device/**.c")
+    add_files("core/**.c|pixmap/*.c|device/**.c|tess/**.c")
     add_files("platform/**.c|windows/*.c")
 
     -- add options
@@ -64,4 +64,5 @@ target("lanox2d")
     if is_config("window", "glut") then
         set_configvar("LX_CONFIG_DEVICE_HAVE_OPENGL", 1)
         add_files("core/device/opengl/**.c")
+        add_files("core/tess/**.c")
     end

@@ -29,6 +29,7 @@
 #include "abort.h"
 #include "check.h"
 #include "keyword.h"
+#include "compiler.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
@@ -57,6 +58,60 @@ lx_extern_c_enter
 #   define lx_assert_and_check_break(x)                     lx_check_break(x)
 #   define lx_assert_and_check_continue(x)                  lx_check_continue(x)
 #   define lx_assert_and_check_break_state(x, s, v)         lx_check_break_state(x, s, v)
+#endif
+
+#ifdef LX_DEBUG
+#   if defined(LX_COMPILER_IS_GCC) || defined(LX_COMPILER_IS_TINYC)
+#       define lx_assertf(x, fmt, arg...)                                   do { if (!(x)) {lx_trace_a("expr[%s]: " fmt, #x, ##arg); lx_abort(); } } while(0)
+#       define lx_assertf_and_check_abort(x, fmt, arg...)                   lx_assertf(x, fmt, ##arg)
+#       define lx_assertf_and_check_return(x, fmt, arg...)                  lx_assertf(x, fmt, ##arg)
+#       define lx_assertf_and_check_return_val(x, v, fmt, arg...)           lx_assertf(x, fmt, ##arg)
+#       define lx_assertf_and_check_goto(x, b, fmt, arg...)                 lx_assertf(x, fmt, ##arg)
+#       define lx_assertf_and_check_break(x, fmt, arg...)                   lx_assertf(x, fmt, ##arg)
+#       define lx_assertf_and_check_continue(x, fmt, arg...)                lx_assertf(x, fmt, ##arg)
+#   elif defined(LX_COMPILER_IS_MSVC) && LX_COMPILER_VERSION_BE(13, 0)
+#       define lx_assertf(x, fmt, ...)                                      do { if (!(x)) {lx_trace_a("expr[%s]: " fmt, #x, __VA_ARGS__); lx_abort(); } } while(0)
+#       define lx_assertf_and_check_abort(x, fmt, ...)                      lx_assertf(x, fmt, __VA_ARGS__)
+#       define lx_assertf_and_check_return(x, fmt, ...)                     lx_assertf(x, fmt, __VA_ARGS__)
+#       define lx_assertf_and_check_return_val(x, v, fmt, ...)              lx_assertf(x, fmt, __VA_ARGS__)
+#       define lx_assertf_and_check_goto(x, b, fmt, ...)                    lx_assertf(x, fmt, __VA_ARGS__)
+#       define lx_assertf_and_check_break(x, fmt, ...)                      lx_assertf(x, fmt, __VA_ARGS__)
+#       define lx_assertf_and_check_continue(x, fmt, ...)                   lx_assertf(x, fmt, __VA_ARGS__)
+#   else
+#       define lx_assertf
+#       define lx_assertf_and_check_abort
+#       define lx_assertf_and_check_return
+#       define lx_assertf_and_check_return_val
+#       define lx_assertf_and_check_goto
+#       define lx_assertf_and_check_break
+#       define lx_assertf_and_check_continue
+#   endif
+#else
+#   if defined(LX_COMPILER_IS_GCC) || defined(LX_COMPILER_IS_TINYC)
+#       define lx_assertf(x, fmt, arg...)
+#       define lx_assertf_and_check_abort(x, fmt, arg...)                   lx_check_abort(x)
+#       define lx_assertf_and_check_return(x, fmt, arg...)                  lx_check_return(x)
+#       define lx_assertf_and_check_return_val(x, v, fmt, arg...)           lx_check_return_val(x, v)
+#       define lx_assertf_and_check_goto(x, b, fmt, arg...)                 lx_check_goto(x, b)
+#       define lx_assertf_and_check_break(x, fmt, arg...)                   lx_check_break(x)
+#       define lx_assertf_and_check_continue(x, fmt, arg...)                lx_check_continue(x)
+#   elif defined(LX_COMPILER_IS_MSVC) && LX_COMPILER_VERSION_BE(13, 0)
+#       define lx_assertf(x, fmt, ...)
+#       define lx_assertf_and_check_abort(x, fmt, ...)                      lx_check_abort(x)
+#       define lx_assertf_and_check_return(x, fmt, ...)                     lx_check_return(x)
+#       define lx_assertf_and_check_return_val(x, v, fmt, ...)              lx_check_return_val(x, v)
+#       define lx_assertf_and_check_goto(x, b, fmt, ...)                    lx_check_goto(x, b)
+#       define lx_assertf_and_check_break(x, fmt, ...)                      lx_check_break(x)
+#       define lx_assertf_and_check_continue(x, fmt, ...)                   lx_check_continue(x)
+#   else
+#       define lx_assertf
+#       define lx_assertf_and_check_abort
+#       define lx_assertf_and_check_return
+#       define lx_assertf_and_check_return_val
+#       define lx_assertf_and_check_goto
+#       define lx_assertf_and_check_break
+#       define lx_assertf_and_check_continue
+#   endif
 #endif
 
 /*! the static assert
