@@ -30,11 +30,21 @@
  * types
  */
 
-/// the free function type of element
-typedef lx_void_t (*lx_element_free_t)(lx_pointer_t item);
+/// the element type
+typedef struct lx_element_t_ {
+    lx_size_t size;
+    lx_void_t (*free)(lx_pointer_t item);
+}lx_element_t;
 
-/// the foreach function type of element
-typedef lx_void_t (*lx_element_foreach_t)(lx_pointer_t item, lx_cpointer_t udata);
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * inline interfaces
+ */
+static lx_element_t lx_inline lx_element_mem(lx_size_t size, lx_void_t (*free)(lx_pointer_t item)) {
+    lx_element_t element;
+    element.size = size;
+    element.free = free;
+    return element;
+}
 
 #endif
 

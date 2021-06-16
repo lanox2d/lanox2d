@@ -10,7 +10,7 @@ static lx_bool_t foreach(lx_iterator_ref_t iterator, lx_pointer_t item, lx_cpoin
 }
 
 int main(int argc, char** argv) {
-    lx_stack_ref_t stack = lx_stack_init(0, sizeof(lx_size_t), itemfree);
+    lx_stack_ref_t stack = lx_stack_init(0, lx_element_mem(sizeof(lx_size_t), itemfree));
     if (stack) {
         lx_size_t val[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
         lx_trace_i("-------------------------- test push --------------------------");

@@ -50,8 +50,7 @@ typedef struct lx_array_t_ {
     lx_size_t               size;
     lx_size_t               grow;
     lx_size_t               maxn;
-    lx_size_t               itemsize;
-    lx_element_free_t       itemfree;
+    lx_element_t            element;
 }lx_array_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -103,10 +102,10 @@ static lx_void_t lx_array_iterator_of(lx_iterator_ref_t iterator, lx_cpointer_t 
  * implementation
  */
 
-lx_array_ref_t lx_array_init(lx_size_t grow, lx_size_t itemsize, lx_element_free_t itemfree) {
+lx_array_ref_t lx_array_init(lx_size_t grow, lx_element_t element) {
 
     // check
-    lx_assert_and_check_return_val(itemsize, lx_null);
+    lx_assert_and_check_return_val(element.size, lx_null);
 
     lx_bool_t   ok = lx_false;
     lx_array_t* array = lx_null;
@@ -121,8 +120,7 @@ lx_array_ref_t lx_array_init(lx_size_t grow, lx_size_t itemsize, lx_element_free
         array->size             = 0;
         array->maxn             = 0;
         array->grow             = grow;
-        array->itemsize         = itemsize;
-        array->itemfree         = itemfree;
+        array->element          = element;
         array->base.iterator_of = lx_array_iterator_of;
 
         // ok
@@ -169,7 +167,7 @@ lx_pointer_t lx_array_head(lx_array_ref_t self) {
 lx_pointer_t lx_array_last(lx_array_ref_t self) {
     lx_array_t* array = (lx_array_t*)self;
     if (array && array->data && array->size) {
-        return array->data + (array->size - 1) * array->itemsize;
+        return array->data + (array->size - 1) * array->element.size;
     }
     return lx_null;
 }
@@ -177,7 +175,7 @@ lx_pointer_t lx_array_last(lx_array_ref_t self) {
 lx_pointer_t lx_array_item(lx_array_ref_t self, lx_size_t index) {
     lx_array_t* array = (lx_array_t*)self;
     if (array && array->data && index < array->size) {
-        return array->data + index * array->itemsize;
+        return array->data + index * array->element.size;
     }
     return lx_null;
 }
@@ -187,15 +185,15 @@ lx_bool_t lx_array_resize(lx_array_ref_t self, lx_size_t size) {
     lx_assert_and_check_return_val(array, lx_false);
 
     // free items if the array is decreased
-    lx_size_t  itemsize = array->itemsize;
+    lx_size_t  itemsize = array->element.size;
     lx_byte_t* arraydata = array->data;
     lx_size_t  arraysize = array->size;
     if (size < arraysize) {
         lx_assert(arraydata);
-        if (array->itemfree) {
+        if (array->element.free) {
             lx_size_t  i;
             for (i = size; i < arraysize; i++) {
-                array->itemfree(arraydata + i * itemsize);
+                array->element.free(arraydata + i * itemsize);
             }
         }
     }
@@ -223,13 +221,13 @@ lx_bool_t lx_array_resize(lx_array_ref_t self, lx_size_t size) {
 lx_void_t lx_array_clear(lx_array_ref_t self) {
     lx_array_t* array = (lx_array_t*)self;
     if (array && array->data) {
-        if (array->itemfree) {
+        if (array->element.free) {
             lx_size_t  i;
             lx_byte_t* data = array->data;
             lx_size_t  size = array->size;
-            lx_size_t  itemsize = array->itemsize;
+            lx_size_t  itemsize = array->element.size;
             for (i = 0; i < size; i++) {
-                array->itemfree(data + i * itemsize);
+                array->element.free(data + i * itemsize);
             }
         }
         array->size = 0;
@@ -240,8 +238,8 @@ lx_void_t lx_array_copy(lx_array_ref_t self, lx_array_ref_t copied) {
     lx_array_t* array = (lx_array_t*)self;
     lx_array_t* array_copied = (lx_array_t*)copied;
     lx_assert_and_check_return(array && array_copied);
-    lx_assert_and_check_return(array->itemfree == array_copied->itemfree);
-    lx_assert_and_check_return(array->itemsize == array_copied->itemsize);
+    lx_assert_and_check_return(array->element.free == array_copied->element.free);
+    lx_assert_and_check_return(array->element.size == array_copied->element.size);
 
     // the copied array is empty? clear it directly
     if (!array_copied->size) {
@@ -259,7 +257,7 @@ lx_void_t lx_array_copy(lx_array_ref_t self, lx_array_ref_t copied) {
 
     // copy data and size
     if (array_copied->data != array->data) {
-        lx_memcpy(array->data, array_copied->data, array_copied->size * array_copied->itemsize);
+        lx_memcpy(array->data, array_copied->data, array_copied->size * array_copied->element.size);
     }
     array->size = array_copied->size;
 }
@@ -268,7 +266,7 @@ lx_void_t lx_array_insert(lx_array_ref_t self, lx_size_t index, lx_cpointer_t da
     lx_array_t* array = (lx_array_t*)self;
     if (array && lx_array_resize(self, array->size + 1)) {
         lx_byte_t* arraydata = array->data;
-        lx_size_t  itemsize  = array->itemsize;
+        lx_size_t  itemsize  = array->element.size;
         lx_size_t  oldsize   = array->size - 1;
         lx_assert_and_check_return(arraydata && index < array->size);
         if (index < oldsize) {
@@ -292,13 +290,13 @@ lx_void_t lx_array_replace(lx_array_ref_t self, lx_size_t index, lx_cpointer_t d
     if (array) {
         lx_pointer_t item = lx_array_item(self, index);
         lx_assert_and_check_return(item);
-        if (array->itemfree) {
-            array->itemfree(item);
+        if (array->element.free) {
+            array->element.free(item);
         }
-        if (array->itemsize == sizeof(lx_pointer_t)) {
+        if (array->element.size == sizeof(lx_pointer_t)) {
             *((lx_pointer_t*)item) = *((lx_pointer_t*)data);
         } else {
-            lx_memcpy(item, data, array->itemsize);
+            lx_memcpy(item, data, array->element.size);
         }
     }
 }

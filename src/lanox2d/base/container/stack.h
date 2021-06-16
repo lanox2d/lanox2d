@@ -45,12 +45,11 @@ lx_extern_c_enter
 /*! init stack
  *
  * @param grow      the grow number of elements
- * @param itemsize  the item size
- * @param itemfree  the free function of element item
+ * @param element   the element
  *
  * @return          the stack
  */
-lx_stack_ref_t      lx_stack_init(lx_size_t grow, lx_size_t itemsize, lx_element_free_t itemfree);
+lx_stack_ref_t      lx_stack_init(lx_size_t grow, lx_element_t element);
 
 /*! exit stack
  *

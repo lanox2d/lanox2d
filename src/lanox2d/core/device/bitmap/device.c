@@ -176,11 +176,11 @@ lx_device_ref_t lx_device_init_from_bitmap(lx_bitmap_ref_t bitmap) {
         lx_assert_and_check_break(device->stroker);
 
         // init points
-        device->points = lx_array_init(LX_DEVICE_BITMAP_POINTS_GROW, sizeof(lx_point_t), lx_null);
+        device->points = lx_array_init(LX_DEVICE_BITMAP_POINTS_GROW, lx_element_mem(sizeof(lx_point_t), lx_null));
         lx_assert_and_check_break(device->points);
 
         // init counts
-        device->counts = lx_array_init(8, sizeof(lx_uint16_t), lx_null);
+        device->counts = lx_array_init(8, lx_element_mem(sizeof(lx_uint16_t), lx_null));
         lx_assert_and_check_break(device->counts);
 
         // ok

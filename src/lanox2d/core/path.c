@@ -396,7 +396,7 @@ static lx_bool_t lx_path_make_polygon(lx_path_t* path) {
 
     // init polygon counts
     if (!path->polygon_counts) {
-        path->polygon_counts = lx_array_init(8, sizeof(lx_uint16_t), lx_null);
+        path->polygon_counts = lx_array_init(8, lx_element_mem(sizeof(lx_uint16_t), lx_null));
     }
     lx_assert_and_check_return_val(path->polygon_counts, lx_false);
 
@@ -405,7 +405,7 @@ static lx_bool_t lx_path_make_polygon(lx_path_t* path) {
 
         // init polygon points
         if (!path->polygon_points) {
-            path->polygon_points = lx_array_init(lx_array_size(path->points), sizeof(lx_point_t), lx_null);
+            path->polygon_points = lx_array_init(lx_array_size(path->points), lx_element_mem(sizeof(lx_point_t), lx_null));
         }
         lx_assert_and_check_return_val(path->polygon_points, lx_false);
 
@@ -593,11 +593,11 @@ lx_path_ref_t lx_path_init() {
         path->base.iterator_of = lx_path_iterator_of;
 
         // init codes
-        path->codes = lx_array_init(LX_PATH_POINTS_GROW >> 1, sizeof(lx_uint8_t), lx_null);
+        path->codes = lx_array_init(LX_PATH_POINTS_GROW >> 1, lx_element_mem(sizeof(lx_uint8_t), lx_null));
         lx_assert_and_check_break(path->codes);
 
         // init points
-        path->points = lx_array_init(LX_PATH_POINTS_GROW, sizeof(lx_point_t), lx_null);
+        path->points = lx_array_init(LX_PATH_POINTS_GROW, lx_element_mem(sizeof(lx_point_t), lx_null));
         lx_assert_and_check_break(path->points);
 
         // ok
