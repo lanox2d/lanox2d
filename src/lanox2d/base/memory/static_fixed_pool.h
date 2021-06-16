@@ -56,11 +56,10 @@ typedef lx_typeref(static_fixed_pool);
  * @param data              the data address
  * @param size              the data size
  * @param item_size         the item size
- * @param for_small         add data size field at head for the small allocator
  *
  * @return                  the pool
  */
-lx_static_fixed_pool_ref_t  lx_static_fixed_pool_init(lx_byte_t* data, lx_size_t size, lx_size_t item_size, lx_bool_t for_small);
+lx_static_fixed_pool_ref_t  lx_static_fixed_pool_init(lx_byte_t* data, lx_size_t size, lx_size_t item_size);
 
 /*! exit pool
  *
@@ -123,21 +122,21 @@ lx_pointer_t                lx_static_fixed_pool_malloc(lx_static_fixed_pool_ref
  */
 lx_bool_t                   lx_static_fixed_pool_free(lx_static_fixed_pool_ref_t pool, lx_pointer_t data);
 
-/*! walk data
+/*! foreach data
  *
  * @code
- * lx_bool_t lx_static_fixed_pool_item_func(lx_pointer_t data, lx_cpointer_t udata) {
+ * lx_bool_t lx_static_fixed_pool_item(lx_pointer_t data, lx_cpointer_t udata) {
  *      // ok or break
  *      return lx_true;
  * }
  * @endcode
  *
  * @param pool              the pool
- * @param func              the walk func
+ * @param callback          the foreach callback
  * @param udata             the user data
  *
  */
-lx_void_t                   lx_static_fixed_pool_walk(lx_static_fixed_pool_ref_t pool, lx_fixed_pool_item_walk_func_t func, lx_cpointer_t udata);
+lx_void_t                   lx_static_fixed_pool_foreach(lx_static_fixed_pool_ref_t pool, lx_fixed_pool_item_foreach_cb_t callback, lx_cpointer_t udata);
 
 #ifdef LX_DEBUG
 /*! dump pool

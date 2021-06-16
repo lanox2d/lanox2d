@@ -113,14 +113,14 @@ lx_extern_c_enter
  */
 typedef lx_typeref(fixed_pool);
 
-/// the item init func type
-typedef lx_bool_t       (*lx_fixed_pool_item_init_func_t)(lx_pointer_t data, lx_cpointer_t udata);
+/// the item init callback type
+typedef lx_bool_t       (*lx_fixed_pool_item_init_cb_t)(lx_pointer_t data, lx_cpointer_t udata);
 
-/// the item exit func type
-typedef lx_void_t       (*lx_fixed_pool_item_exit_func_t)(lx_pointer_t data, lx_cpointer_t udata);
+/// the item exit callback type
+typedef lx_void_t       (*lx_fixed_pool_item_exit_cb_t)(lx_pointer_t data, lx_cpointer_t udata);
 
-/// the item walk func type
-typedef lx_bool_t       (*lx_fixed_pool_item_walk_func_t)(lx_pointer_t data, lx_cpointer_t udata);
+/// the item foreach callback type
+typedef lx_bool_t       (*lx_fixed_pool_item_foreach_cb_t)(lx_pointer_t data, lx_cpointer_t udata);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * interfaces
@@ -131,13 +131,13 @@ typedef lx_bool_t       (*lx_fixed_pool_item_walk_func_t)(lx_pointer_t data, lx_
  * @param large_allocator   the large allocator, uses the global allocator if be null
  * @param slot_size         the item count per-slot, using the default size if be zero
  * @param item_size         the item size
- * @param item_init         the item init func
- * @param item_exit         the item exit func
+ * @param item_init         the item init callback
+ * @param item_exit         the item exit callback
  * @param udata             the user data
  *
  * @return                  the pool
  */
-lx_fixed_pool_ref_t         lx_fixed_pool_init(lx_allocator_ref_t large_allocator, lx_size_t slot_size, lx_size_t item_size, lx_fixed_pool_item_init_func_t item_init, lx_fixed_pool_item_exit_func_t item_exit, lx_cpointer_t udata);
+lx_fixed_pool_ref_t         lx_fixed_pool_init(lx_allocator_ref_t large_allocator, lx_size_t slot_size, lx_size_t item_size, lx_fixed_pool_item_init_cb_t item_init, lx_fixed_pool_item_exit_cb_t item_exit, lx_cpointer_t udata);
 
 /*! exit pool
  *
@@ -192,21 +192,20 @@ lx_pointer_t                lx_fixed_pool_malloc0(lx_fixed_pool_ref_t pool);
  */
 lx_bool_t                   lx_fixed_pool_free(lx_fixed_pool_ref_t pool, lx_pointer_t data);
 
-/*! walk item
+/*! foreach item
  *
  * @code
-    lx_bool_t lx_fixed_pool_item_func(lx_pointer_t data, lx_cpointer_t udata)
-    {
+    lx_bool_t lx_fixed_pool_item(lx_pointer_t data, lx_cpointer_t udata) {
         // ok or break
         return lx_true;
     }
  * @endcode
  *
  * @param pool              the pool
- * @param func              the walk func
+ * @param callback          the foreach callback
  * @param udata             the user data
  */
-lx_void_t                   lx_fixed_pool_walk(lx_fixed_pool_ref_t pool, lx_fixed_pool_item_walk_func_t func, lx_cpointer_t udata);
+lx_void_t                   lx_fixed_pool_foreach(lx_fixed_pool_ref_t pool, lx_fixed_pool_item_foreach_cb_t callback, lx_cpointer_t udata);
 
 #ifdef LX_DEBUG
 /*! dump pool
