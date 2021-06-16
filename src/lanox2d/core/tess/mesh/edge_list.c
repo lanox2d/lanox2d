@@ -35,13 +35,6 @@
 #   define LX_MESH_EDGE_LIST_GROW               (256)
 #endif
 
-// the mesh edge list maxn
-#ifdef LX_CONFIG_SMALL
-#   define LX_MESH_EDGE_LIST_MAXN               (1 << 16)
-#else
-#   define LX_MESH_EDGE_LIST_MAXN               (1 << 30)
-#endif
-
 // the edge user data pointer
 #define lx_mesh_edge_user(edge)                 ((lx_mesh_edge_ref_t)(edge) + 1)
 
@@ -64,23 +57,15 @@ typedef struct lx_mesh_edge_list_t {
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
-static lx_void_t lx_mesh_edge_exit(lx_pointer_t data, lx_cpointer_t udata)
-{
-    // check
+static lx_void_t lx_mesh_edge_exit(lx_pointer_t data, lx_cpointer_t udata) {
     lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)udata;
-    lx_assert_and_check_return(list && data);
-
-    // exit the user data
-    list->element.free(&list->element, (lx_pointer_t)((lx_mesh_edge_ref_t)data + 1));
-    list->element.free(&list->element, (lx_pointer_t)((lx_mesh_edge_ref_t)((lx_byte_t*)data + list->edge_size) + 1));
+    if (list && data) {
+        list->element.free(&list->element, (lx_pointer_t)((lx_mesh_edge_ref_t)data + 1));
+        list->element.free(&list->element, (lx_pointer_t)((lx_mesh_edge_ref_t)((lx_byte_t*)data + list->edge_size) + 1));
+    }
 }
 
-/* //////////////////////////////////////////////////////////////////////////////////////
- * private implementation
- */
-static lx_inline lx_void_t lx_mesh_edge_init(lx_mesh_edge_ref_t edge)
-{
-    // check
+static lx_inline lx_void_t lx_mesh_edge_init(lx_mesh_edge_ref_t edge) {
     lx_assert(edge);
 
     // the sym edge
@@ -98,9 +83,9 @@ static lx_inline lx_void_t lx_mesh_edge_init(lx_mesh_edge_ref_t edge)
     edge->next     = edge;
     edge_sym->next = edge_sym;
 }
-static lx_inline lx_void_t lx_mesh_edge_insert_prev(lx_mesh_edge_ref_t edge, lx_mesh_edge_ref_t edge_next)
-{
-    // check
+
+// insert edge in the previous position of edge_next
+static lx_inline lx_void_t lx_mesh_edge_insert(lx_mesh_edge_ref_t edge, lx_mesh_edge_ref_t edge_next) {
     lx_assert(edge && edge_next);
 
     // the sym edge
@@ -131,9 +116,8 @@ static lx_inline lx_void_t lx_mesh_edge_insert_prev(lx_mesh_edge_ref_t edge, lx_
     edge->next                  = edge_next;
     edge_next_sym->next         = edge_sym;
 }
-static lx_inline lx_void_t lx_mesh_edge_remove_done(lx_mesh_edge_ref_t edge)
-{
-    // check
+
+static lx_inline lx_void_t lx_mesh_edge_remove(lx_mesh_edge_ref_t edge) {
     lx_assert(edge);
 
     // the sym edge
@@ -162,60 +146,31 @@ static lx_inline lx_void_t lx_mesh_edge_remove_done(lx_mesh_edge_ref_t edge)
     edge_next->sym->next = edge_prev_sym;
     edge_prev_sym->sym->next = edge_next;
 }
-static lx_size_t lx_mesh_edge_itor_size(lx_iterator_ref_t iterator)
-{
-    // the size
-    return lx_mesh_edge_list_size((lx_mesh_edge_list_ref_t)iterator);
-}
-static lx_size_t lx_mesh_edge_itor_head(lx_iterator_ref_t iterator)
-{
-    // check
+
+static lx_size_t lx_mesh_edge_iterator_head(lx_iterator_ref_t iterator) {
     lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)iterator;
     lx_assert(list);
-
-    // head
     return (lx_size_t)list->head[0].next;
 }
-static lx_size_t lx_mesh_edge_itor_last(lx_iterator_ref_t iterator)
-{
-    // check
-    lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)iterator;
-    lx_assert(list && list->head[1].next);
 
-    // last
-    return (lx_size_t)(list->head[1].next->sym);
-}
-static lx_size_t lx_mesh_edge_itor_tail(lx_iterator_ref_t iterator)
-{
-    // check
+static lx_size_t lx_mesh_edge_iterator_tail(lx_iterator_ref_t iterator) {
     lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)iterator;
     lx_assert(list);
-
-    // tail
     return (lx_size_t)list->head;
 }
-static lx_size_t lx_mesh_edge_itor_next(lx_iterator_ref_t iterator, lx_size_t itor)
-{
-    // check
-    lx_assert(itor);
 
-    // next
+static lx_size_t lx_mesh_edge_iterator_next(lx_iterator_ref_t iterator, lx_size_t itor) {
+    lx_assert(itor);
     return (lx_size_t)(((lx_mesh_edge_ref_t)itor)->next);
 }
-static lx_size_t lx_mesh_edge_itor_prev(lx_iterator_ref_t iterator, lx_size_t itor)
-{
-    // check
-    lx_assert(itor && ((lx_mesh_edge_ref_t)itor)->sym && ((lx_mesh_edge_ref_t)itor)->sym->next);
 
-    // prev
+static lx_size_t lx_mesh_edge_iterator_prev(lx_iterator_ref_t iterator, lx_size_t itor) {
+    lx_assert(itor && ((lx_mesh_edge_ref_t)itor)->sym && ((lx_mesh_edge_ref_t)itor)->sym->next);
     return (lx_size_t)(((lx_mesh_edge_ref_t)itor)->sym->next->sym);
 }
-static lx_pointer_t lx_mesh_edge_itor_item(lx_iterator_ref_t iterator, lx_size_t itor)
-{
-    // check
-    lx_assert(itor);
 
-    // data
+static lx_pointer_t lx_mesh_edge_iterator_item(lx_iterator_ref_t iterator, lx_size_t itor) {
+    lx_assert(itor);
     return (lx_pointer_t)itor;
 }
 
@@ -270,61 +225,44 @@ lx_mesh_edge_list_ref_t lx_mesh_edge_list_init(lx_element_t element) {
     }
     return (lx_mesh_edge_list_ref_t)list;
 }
-lx_void_t lx_mesh_edge_list_exit(lx_mesh_edge_list_ref_t self)
-{
-    // check
+
+lx_void_t lx_mesh_edge_list_exit(lx_mesh_edge_list_ref_t self) {
     lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)self;
-    lx_assert_and_check_return(list);
-
-    // clear it first
-    lx_mesh_edge_list_clear(list);
-
-    // exit pool
-    if (list->pool) lx_fixed_pool_exit(list->pool);
-    list->pool = lx_null;
-
-    // exit it
-    lx_free(list);
+    if (list) {
+        lx_mesh_edge_list_clear(list);
+        if (list->pool) {
+            lx_fixed_pool_exit(list->pool);
+            list->pool = lx_null;
+        }
+        lx_free(list);
+    }
 }
-lx_void_t lx_mesh_edge_list_clear(lx_mesh_edge_list_ref_t self)
-{
-    // check
+
+lx_void_t lx_mesh_edge_list_clear(lx_mesh_edge_list_ref_t self) {
     lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)self;
     lx_assert_and_check_return(list);
 
     // clear pool
-    if (list->pool) lx_fixed_pool_clear(list->pool);
+    if (list->pool) {
+        lx_fixed_pool_clear(list->pool);
+    }
 
     // clear list
     lx_mesh_edge_init(list->head);
 
 #ifdef LX_DEBUG
-    // clear id
     list->id = 0;
 #endif
 }
-lx_iterator_ref_t lx_mesh_edge_list_itor(lx_mesh_edge_list_ref_t self)
-{
-    // the iterator
-    return (lx_iterator_ref_t)list;
-}
-lx_size_t lx_mesh_edge_list_size(lx_mesh_edge_list_ref_t self)
-{
-    // check
+
+lx_size_t lx_mesh_edge_list_size(lx_mesh_edge_list_ref_t self) {
     lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)self;
     lx_assert_and_check_return_val(list && list->pool, 0);
 
-    // the size
     return lx_fixed_pool_size(list->pool);
 }
-lx_size_t lx_mesh_edge_list_maxn(lx_mesh_edge_list_ref_t self)
-{
-    // the edge maxn
-    return LX_MESH_EDGE_LIST_MAXN;
-}
-lx_mesh_edge_ref_t lx_mesh_edge_list_make(lx_mesh_edge_list_ref_t self)
-{
-    // check
+
+lx_mesh_edge_ref_t lx_mesh_edge_list_make(lx_mesh_edge_list_ref_t self) {
     lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)self;
     lx_assert_and_check_return_val(list && list->pool, lx_null);
 
@@ -356,23 +294,19 @@ lx_mesh_edge_ref_t lx_mesh_edge_list_make(lx_mesh_edge_list_ref_t self)
 #endif
 
     // insert to the edge list
-    switch (list->order)
-    {
+    switch (list->order) {
     case LX_MESH_ORDER_INSERT_HEAD:
-        lx_mesh_edge_insert_prev(edge, list->head->next);
+        lx_mesh_edge_insert(edge, list->head->next);
         break;
     case LX_MESH_ORDER_INSERT_TAIL:
     default:
-        lx_mesh_edge_insert_prev(edge, list->head);
+        lx_mesh_edge_insert(edge, list->head);
         break;
     }
-
-    // ok
     return edge;
 }
-lx_mesh_edge_ref_t lx_mesh_edge_list_make_loop(lx_mesh_edge_list_ref_t self, lx_bool_t is_ccw)
-{
-    // check
+
+lx_mesh_edge_ref_t lx_mesh_edge_list_make_loop(lx_mesh_edge_list_ref_t self, lx_bool_t is_ccw) {
     lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)self;
     lx_assert_and_check_return_val(list && list->pool, lx_null);
 
@@ -404,24 +338,22 @@ lx_mesh_edge_ref_t lx_mesh_edge_list_make_loop(lx_mesh_edge_list_ref_t self, lx_
 #endif
 
     // insert to the edge list
-    switch (list->order)
-    {
+    switch (list->order) {
     case LX_MESH_ORDER_INSERT_HEAD:
-        lx_mesh_edge_insert_prev(edge, list->head->next);
+        lx_mesh_edge_insert(edge, list->head->next);
         break;
     case LX_MESH_ORDER_INSERT_TAIL:
     default:
-        lx_mesh_edge_insert_prev(edge, list->head);
+        lx_mesh_edge_insert(edge, list->head);
         break;
     }
 
     // clockwise? reverse it
     return is_ccw? edge : edge_sym;
 }
+
 #ifdef LX_DEBUG
-lx_long_t lx_mesh_edge_list_cstr(lx_mesh_edge_list_ref_t self, lx_mesh_edge_ref_t edge, lx_char_t* data, lx_size_t maxn)
-{
-    // check
+lx_long_t lx_mesh_edge_list_cstr(lx_mesh_edge_list_ref_t self, lx_mesh_edge_ref_t edge, lx_char_t* data, lx_size_t maxn) {
     lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)self;
     lx_assert_and_check_return_val(list && list->element.cstr && edge && maxn, -1);
 
@@ -439,17 +371,17 @@ lx_long_t lx_mesh_edge_list_cstr(lx_mesh_edge_list_ref_t self, lx_mesh_edge_ref_
     return lx_snprintf(data, maxn, "(%s: %{mesh_vertex} => %{mesh_vertex})", pedge_info, edge->org, edge->sym->org);
 }
 #endif
-lx_void_t lx_mesh_edge_list_kill(lx_mesh_edge_list_ref_t self, lx_mesh_edge_ref_t edge)
-{
-    // check
+
+lx_void_t lx_mesh_edge_list_kill(lx_mesh_edge_list_ref_t self, lx_mesh_edge_ref_t edge) {
     lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)self;
     lx_assert_and_check_return(list && list->pool && edge);
 
     // make sure the edge points to the first half-edge
-    if (edge->sym < edge) edge = edge->sym;
+    if (edge->sym < edge) {
+        edge = edge->sym;
+    }
 
 #ifdef LX_DEBUG
-    // check
     lx_assert(edge->id && edge->sym->id);
 
     // clear id
@@ -458,45 +390,35 @@ lx_void_t lx_mesh_edge_list_kill(lx_mesh_edge_list_ref_t self, lx_mesh_edge_ref_
 #endif
 
     // remove it from the list
-    lx_mesh_edge_remove_done(edge);
-
-    // exit it
+    lx_mesh_edge_remove(edge);
     lx_fixed_pool_free(list->pool, edge);
 }
-lx_cpointer_t lx_mesh_edge_list_data(lx_mesh_edge_list_ref_t self, lx_mesh_edge_ref_t edge)
-{
-    // check
+
+lx_cpointer_t lx_mesh_edge_list_data(lx_mesh_edge_list_ref_t self, lx_mesh_edge_ref_t edge) {
     lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)self;
     lx_assert_and_check_return_val(list && list->element.data && edge, lx_null);
 
-    // the user data
     return list->element.data(&list->element, lx_mesh_edge_user(edge));
 }
-lx_void_t lx_mesh_edge_list_data_set(lx_mesh_edge_list_ref_t self, lx_mesh_edge_ref_t edge, lx_cpointer_t data)
-{
-    // check
+
+lx_void_t lx_mesh_edge_list_data_set(lx_mesh_edge_list_ref_t self, lx_mesh_edge_ref_t edge, lx_cpointer_t data) {
     lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)self;
     lx_assert_and_check_return(list && list->element.repl && edge);
 
-    // set the user data
     list->element.repl(&list->element, lx_mesh_edge_user(edge), data);
 }
-lx_size_t lx_mesh_edge_list_order(lx_mesh_edge_list_ref_t self)
-{
-    // check
+
+lx_size_t lx_mesh_edge_list_order(lx_mesh_edge_list_ref_t self) {
     lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)self;
     lx_assert_and_check_return_val(list, LX_MESH_ORDER_INSERT_TAIL);
 
-    // the order
     return list->order;
 }
-lx_void_t lx_mesh_edge_list_order_set(lx_mesh_edge_list_ref_t self, lx_size_t order)
-{
-    // check
+
+lx_void_t lx_mesh_edge_list_order_set(lx_mesh_edge_list_ref_t self, lx_size_t order) {
     lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)self;
     lx_assert_and_check_return(list);
 
-    // set the order
     list->order = order;
 }
 

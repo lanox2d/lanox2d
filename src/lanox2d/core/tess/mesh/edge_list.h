@@ -62,14 +62,6 @@ lx_void_t                   lx_mesh_edge_list_exit(lx_mesh_edge_list_ref_t list)
  */
 lx_void_t                   lx_mesh_edge_list_clear(lx_mesh_edge_list_ref_t list);
 
-/*! the mesh edge iterator
- *
- * @param list              the list
- *
- * @return                  the mesh edge iterator
- */
-lx_iterator_ref_t           lx_mesh_edge_list_itor(lx_mesh_edge_list_ref_t list);
-
 /*! the mesh edge count
  *
  * @param list              the list
@@ -77,14 +69,6 @@ lx_iterator_ref_t           lx_mesh_edge_list_itor(lx_mesh_edge_list_ref_t list)
  * @return                  the item count
  */
 lx_size_t                   lx_mesh_edge_list_size(lx_mesh_edge_list_ref_t list);
-
-/*! the mesh edge maximum count
- *
- * @param list              the list
- *
- * @return                  the item max count
- */
-lx_size_t                   lx_mesh_edge_list_maxn(lx_mesh_edge_list_ref_t list);
 
 /*! make a unconnected edge
  *
