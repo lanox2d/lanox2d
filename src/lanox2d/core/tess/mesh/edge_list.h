@@ -44,12 +44,11 @@ typedef lx_typeref(mesh_edge_list);
 
 /* init the mesh edge list
  *
- * @param itemsize          the item size
- * @param itemfree          the free function of element item
+ * @param element           the element
  *
  * @return                  the edge list
  */
-lx_mesh_edge_list_ref_t     lx_mesh_edge_list_init(lx_size_t itemsize, lx_element_free_t itemfree);
+lx_mesh_edge_list_ref_t     lx_mesh_edge_list_init(lx_element_t element);
 
 /* exit the mesh edge list
  *

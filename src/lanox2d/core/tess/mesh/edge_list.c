@@ -22,6 +22,7 @@
  * includes
  */
 #include "edge_list.h"
+#include "../mesh.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * macros
@@ -54,8 +55,7 @@ typedef struct lx_mesh_edge_list_t {
     lx_mesh_edge_t          head[2];
     lx_size_t               edge_size;
     lx_size_t               order;
-    lx_size_t               itemsize;
-    lx_element_free_t       itemfree;
+    lx_element_t            element;
 #ifdef LX_DEBUG
     lx_size_t               id;
 #endif
@@ -235,7 +235,7 @@ static lx_void_t lx_mesh_edge_iterator_of(lx_iterator_ref_t iterator, lx_cpointe
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_mesh_edge_list_ref_t lx_mesh_edge_list_init(lx_size_t itemsize, lx_element_free_t itemfree) {
+lx_mesh_edge_list_ref_t lx_mesh_edge_list_init(lx_element_t element) {
     lx_assert_and_check_return_val(itemsize, lx_null);
 
     lx_bool_t            ok = lx_false;
@@ -245,10 +245,9 @@ lx_mesh_edge_list_ref_t lx_mesh_edge_list_init(lx_size_t itemsize, lx_element_fr
         list = lx_malloc0_type(lx_mesh_edge_list_t);
         lx_assert_and_check_break(list);
 
-        list->itemsize  = itemsize;
-        list->itemfree  = itemfree;
+        list->element   = element;
         list->order     = LX_MESH_ORDER_INSERT_TAIL;
-        list->edge_size = lx_align_cpu(sizeof(lx_mesh_edge_t) + itemsize);
+        list->edge_size = lx_align_cpu(sizeof(lx_mesh_edge_t) + element.size);
         list->base.iterator_of = lx_mesh_edge_iterator_of;
 
         // init pool, item = (edge + data) + (edge->sym + data)
