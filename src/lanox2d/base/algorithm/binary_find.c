@@ -15,23 +15,22 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        algorithm.h
- *
+ * @file        binary_find.c
  */
-#ifndef LX_BASE_ALGORITHM_H
-#define LX_BASE_ALGORITHM_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "for.h"
-#include "for_if.h"
-#include "rfor.h"
-#include "foreach.h"
-#include "rforeach.h"
 #include "binary_find.h"
 #include "binary_find_if.h"
 
-#endif
-
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * implementation
+ */
+lx_size_t lx_binary_find(lx_iterator_ref_t iterator, lx_size_t head, lx_size_t tail, lx_cpointer_t item) {
+    return lx_binary_find_if(iterator, head, tail, lx_iterator_comp, item);
+}
+lx_size_t lx_binary_find_all(lx_iterator_ref_t iterator, lx_cpointer_t item) {
+    return lx_binary_find_all_if(iterator, lx_iterator_comp, item);
+}
 

@@ -61,3 +61,8 @@ lx_pointer_t lx_iterator_item(lx_iterator_ref_t iterator, lx_size_t itor) {
     lx_assert(iterator && iterator->op && iterator->op->item);
     return iterator->op->item(iterator, itor);
 }
+
+lx_long_t lx_iterator_comp(lx_iterator_ref_t iterator, lx_cpointer_t litem, lx_cpointer_t ritem) {
+    lx_assert(iterator && iterator->op && iterator->op->comp);
+    return iterator->op->comp(iterator, litem, ritem);
+}
