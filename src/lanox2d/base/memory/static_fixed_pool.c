@@ -268,7 +268,7 @@ lx_static_fixed_pool_ref_t lx_static_fixed_pool_init(lx_byte_t* data, lx_size_t 
      * maxn < (left - (7 / 8)) / (1 / 8 + item_space)
      * maxn < (left * 8 - 7) / (1 + item_space * 8)
      */
-    pool->item_maxn = (lx_uint16_t)(((data + size - pool->used_info) << 3) - 7) / (1 + (pool->item_space << 3));
+    pool->item_maxn = (lx_uint16_t)((((data + size - pool->used_info) << 3) - 7) / (1 + (pool->item_space << 3)));
     lx_assert_and_check_return_val(pool->item_maxn, lx_null);
 
     // init the used info size
