@@ -49,27 +49,26 @@ typedef struct lx_fixed_pool_slot_t_ {
 
 // the fixed pool type
 typedef struct lx_fixed_pool_t_ {
-    lx_size_t                       slot_size;
-    lx_size_t                       item_size;
-    lx_size_t                       item_count;
-    lx_fixed_pool_item_init_cb_t    func_init;
-    lx_fixed_pool_item_exit_cb_t    func_exit;
-    lx_cpointer_t                   func_udata;
+    lx_fixed_pool_item_free_cb_t    item_free;
+    lx_cpointer_t                   udata;
     lx_fixed_pool_slot_t*           current_slot;
     lx_list_entry_head_t            partial_slots;
     lx_list_entry_head_t            full_slots;
     lx_fixed_pool_slot_t**          slot_list;
-    lx_size_t                       slot_count;
-    lx_size_t                       slot_space;
+    lx_uint32_t                     slot_space;
+    lx_uint32_t                     slot_size;
+    lx_uint16_t                     slot_count;
+    lx_uint16_t                     item_size;
+    lx_uint32_t                     item_count;
 }lx_fixed_pool_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
-static lx_bool_t lx_fixed_pool_item_exit(lx_pointer_t data, lx_cpointer_t udata) {
+static lx_bool_t lx_fixed_pool_item_free(lx_pointer_t data, lx_cpointer_t udata) {
     lx_fixed_pool_t* pool = (lx_fixed_pool_t*)udata;
-    if (pool && pool->func_exit) {
-        pool->func_exit(data, pool->func_udata);
+    if (pool && pool->item_free) {
+        pool->item_free(data, pool->udata);
     }
     return lx_true;
 }
@@ -92,7 +91,9 @@ static lx_void_t lx_fixed_pool_slot_exit(lx_fixed_pool_t* pool, lx_fixed_pool_sl
     lx_check_return(itor != lx_iterator_tail(&iterator) && itor < pool->slot_count && pool->slot_list[itor]);
 
     // remove the slot
-    if (itor + 1 < pool->slot_count) lx_memmov(pool->slot_list + itor, pool->slot_list + itor + 1, (pool->slot_count - itor - 1) * sizeof(lx_fixed_pool_slot_t*));
+    if (itor + 1 < pool->slot_count) {
+        lx_memmov(pool->slot_list + itor, pool->slot_list + itor + 1, (pool->slot_count - itor - 1) * sizeof(lx_fixed_pool_slot_t*));
+    }
     pool->slot_count--;
     lx_free(slot);
 }
@@ -192,7 +193,7 @@ static lx_fixed_pool_slot_t* lx_fixed_pool_slot_find(lx_fixed_pool_t* pool, lx_p
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_fixed_pool_ref_t lx_fixed_pool_init(lx_size_t slot_size, lx_size_t item_size, lx_fixed_pool_item_init_cb_t item_init, lx_fixed_pool_item_exit_cb_t item_exit, lx_cpointer_t udata) {
+lx_fixed_pool_ref_t lx_fixed_pool_init(lx_size_t slot_size, lx_size_t item_size, lx_fixed_pool_item_free_cb_t item_free, lx_cpointer_t udata) {
     lx_assert_and_check_return_val(item_size, lx_null);
 
     lx_bool_t           ok = lx_false;
@@ -203,11 +204,10 @@ lx_fixed_pool_ref_t lx_fixed_pool_init(lx_size_t slot_size, lx_size_t item_size,
         pool = (lx_fixed_pool_t*)lx_malloc0_type(lx_fixed_pool_t);
         lx_assert_and_check_break(pool);
 
-        pool->slot_size         = slot_size? slot_size : (lx_page_size() >> 4);
-        pool->item_size         = item_size;
-        pool->func_init         = item_init;
-        pool->func_exit         = item_exit;
-        pool->func_udata        = udata;
+        pool->slot_size = slot_size? slot_size : (lx_page_size() >> 4);
+        pool->item_size = item_size;
+        pool->item_free = item_free;
+        pool->udata     = udata;
         lx_assert_and_check_break(pool->slot_size);
 
         lx_list_entry_init(&pool->partial_slots, lx_fixed_pool_slot_t, entry);
@@ -255,8 +255,8 @@ lx_void_t lx_fixed_pool_clear(lx_fixed_pool_ref_t self) {
     lx_assert_and_check_return(pool);
 
     // exit items
-    if (pool->func_exit) {
-        lx_fixed_pool_foreach(self, lx_fixed_pool_item_exit, (lx_pointer_t)pool);
+    if (pool->item_free) {
+        lx_fixed_pool_foreach(self, lx_fixed_pool_item_free, (lx_pointer_t)pool);
     }
 
     // exit the partial slots
@@ -331,10 +331,6 @@ lx_pointer_t lx_fixed_pool_malloc(lx_fixed_pool_ref_t self) {
         // make data from the current slot
         data = lx_static_fixed_pool_malloc(pool->current_slot->pool);
         lx_assert_and_check_break(data);
-
-        if (pool->func_init && !pool->func_init(data, pool->func_udata)) {
-            break;
-        }
         pool->item_count++;
 
         // ok
@@ -381,8 +377,8 @@ lx_bool_t lx_fixed_pool_free(lx_fixed_pool_ref_t self, lx_pointer_t data) {
         lx_bool_t full = lx_static_fixed_pool_full(slot->pool);
 
         // free it
-        if (pool->func_exit) {
-            pool->func_exit(data, pool->func_udata);
+        if (pool->item_free) {
+            pool->item_free(data, pool->udata);
         }
         if (!lx_static_fixed_pool_free(slot->pool, data)) {
             break;

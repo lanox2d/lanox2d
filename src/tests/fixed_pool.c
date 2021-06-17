@@ -4,7 +4,7 @@
 static lx_void_t lx_test_fixed_pool_leak() {
     lx_fixed_pool_ref_t pool = lx_null;
     do {
-        pool = lx_fixed_pool_init(0, sizeof(lx_size_t), lx_null, lx_null, lx_null);
+        pool = lx_fixed_pool_init(0, sizeof(lx_size_t), lx_null, lx_null);
         lx_assert_and_check_break(pool);
 
         lx_pointer_t data0 = lx_fixed_pool_malloc(pool);
@@ -27,7 +27,7 @@ static lx_void_t lx_test_fixed_pool_leak() {
 static lx_void_t lx_test_fixed_pool_free2() {
     lx_fixed_pool_ref_t pool = lx_null;
     do {
-        pool = lx_fixed_pool_init(0, sizeof(lx_size_t), lx_null, lx_null, lx_null);
+        pool = lx_fixed_pool_init(0, sizeof(lx_size_t), lx_null, lx_null);
         lx_assert_and_check_break(pool);
 
         lx_pointer_t data = lx_fixed_pool_malloc(pool);
@@ -49,7 +49,7 @@ static lx_void_t lx_test_fixed_pool_free2() {
 static lx_void_t lx_test_fixed_pool_underflow() {
     lx_fixed_pool_ref_t pool = lx_null;
     do {
-        pool = lx_fixed_pool_init(0, sizeof(lx_size_t), lx_null, lx_null, lx_null);
+        pool = lx_fixed_pool_init(0, sizeof(lx_size_t), lx_null, lx_null);
         lx_assert_and_check_break(pool);
 
         lx_pointer_t data = lx_fixed_pool_malloc(pool);
@@ -72,7 +72,7 @@ static lx_void_t lx_test_fixed_pool_underflow() {
 static lx_void_t lx_test_fixed_pool_underflow2() {
     lx_fixed_pool_ref_t pool = lx_null;
     do {
-        pool = lx_fixed_pool_init(0, sizeof(lx_size_t), lx_null, lx_null, lx_null);
+        pool = lx_fixed_pool_init(0, sizeof(lx_size_t), lx_null, lx_null);
         lx_assert_and_check_break(pool);
 
         lx_pointer_t data = lx_fixed_pool_malloc(pool);
@@ -95,7 +95,7 @@ static lx_void_t lx_test_fixed_pool_underflow2() {
 static lx_void_t lx_test_fixed_pool_perf(lx_size_t item_size) {
     lx_fixed_pool_ref_t pool = lx_null;
     do {
-        pool = lx_fixed_pool_init(0, item_size, lx_null, lx_null, lx_null);
+        pool = lx_fixed_pool_init(0, item_size, lx_null, lx_null);
         lx_assert_and_check_break(pool);
 
         lx_size_t       maxn = 10000;
