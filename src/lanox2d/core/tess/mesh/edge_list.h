@@ -134,23 +134,6 @@ lx_long_t                   lx_mesh_edge_list_cstr(lx_mesh_edge_list_ref_t list,
  */
 lx_void_t                   lx_mesh_edge_list_kill(lx_mesh_edge_list_ref_t list, lx_mesh_edge_ref_t edge);
 
-/*! the user data
- *
- * @param list              the list
- * @param edge              the edge
- *
- * @return                  the user data
- */
-lx_cpointer_t               lx_mesh_edge_list_data(lx_mesh_edge_list_ref_t list, lx_mesh_edge_ref_t edge);
-
-/*! set the user private data
- *
- * @param list              the list
- * @param edge              the edge
- * @param data              the user data
- */
-lx_void_t                   lx_mesh_edge_list_data_set(lx_mesh_edge_list_ref_t list, lx_mesh_edge_ref_t edge, lx_cpointer_t data);
-
 /*! the list order
  *
  * @param list              the list

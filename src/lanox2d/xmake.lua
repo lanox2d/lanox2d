@@ -64,5 +64,5 @@ target("lanox2d")
     if is_config("window", "glut") then
         set_configvar("LX_CONFIG_DEVICE_HAVE_OPENGL", 1)
         add_files("core/device/opengl/**.c")
---        add_files("core/tess/**.c")
+        add_files("core/tess/**.c")
     end
