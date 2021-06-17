@@ -15,11 +15,11 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        array_iterator.h
+ * @file        fixed_array.h
  *
  */
-#ifndef LX_BASE_CONTAINER_ARRAY_ITERATOR_H
-#define LX_BASE_CONTAINER_ARRAY_ITERATOR_H
+#ifndef LX_BASE_CONTAINER_FIXED_ARRAY_H
+#define LX_BASE_CONTAINER_FIXED_ARRAY_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
@@ -36,23 +36,23 @@ lx_extern_c_enter
  */
 
 /// the array iterator type
-typedef struct lx_array_iterator_t_ {
+typedef struct lx_fixed_array_t_ {
     lx_iterator_base_t      base;
     lx_pointer_t            items;
     lx_size_t               count;
-}lx_array_iterator_t, *lx_array_iterator_ref_t;
+}lx_fixed_array_t, *lx_fixed_array_ref_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * interfaces
  */
 
-/*! init array iterator for pointer element
+/*! init pointer fixed array
  *
- * @param iterator  the array iterator
+ * @param array     the array
  * @param items     the items
  * @param count     the count
  */
-lx_void_t           lx_array_iterator_init_ptr(lx_array_iterator_ref_t iterator, lx_pointer_t* items, lx_size_t count);
+lx_void_t           lx_fixed_array_init_ptr(lx_fixed_array_ref_t array, lx_pointer_t* items, lx_size_t count);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

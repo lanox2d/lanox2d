@@ -72,6 +72,7 @@ function check_interfaces()
 
     -- add the interfaces for posix
     if not is_plat("windows") then
-        check_module_cfuncs("posix", "dlfcn.h", "dlopen")
+        check_module_cfuncs("posix", "dlfcn.h",  "dlopen")
+        check_module_cfuncs("posix", "unistd.h", "getpagesize", "sysconf")
     end
 end

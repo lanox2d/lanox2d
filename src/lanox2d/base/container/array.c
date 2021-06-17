@@ -56,42 +56,42 @@ typedef struct lx_array_t_ {
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
-static lx_size_t lx_array_iterator_head(lx_iterator_ref_t iterator) {
+static lx_size_t lx_fixed_array_head(lx_iterator_ref_t iterator) {
     return 0;
 }
 
-static lx_size_t lx_array_iterator_tail(lx_iterator_ref_t iterator) {
+static lx_size_t lx_fixed_array_tail(lx_iterator_ref_t iterator) {
     lx_assert(iterator && iterator->container);
     lx_array_t* array = (lx_array_t*)iterator->container;
     return array->size;
 }
 
-static lx_size_t lx_array_iterator_next(lx_iterator_ref_t iterator, lx_size_t itor) {
+static lx_size_t lx_fixed_array_next(lx_iterator_ref_t iterator, lx_size_t itor) {
     lx_assert(iterator && iterator->container);
     lx_array_t* array = (lx_array_t*)iterator->container;
     lx_assert_and_check_return_val(itor < array->size, array->size);
     return itor + 1;
 }
 
-static lx_size_t lx_array_iterator_prev(lx_iterator_ref_t iterator, lx_size_t itor) {
+static lx_size_t lx_fixed_array_prev(lx_iterator_ref_t iterator, lx_size_t itor) {
     lx_assert(iterator && iterator->container);
     lx_array_t* array = (lx_array_t*)iterator->container;
     lx_assert_and_check_return_val(itor && itor <= array->size, 0);
     return itor - 1;
 }
 
-static lx_pointer_t lx_array_iterator_item(lx_iterator_ref_t iterator, lx_size_t itor) {
+static lx_pointer_t lx_fixed_array_item(lx_iterator_ref_t iterator, lx_size_t itor) {
     lx_assert(iterator && iterator->container);
     return lx_array_item((lx_array_ref_t)iterator->container, itor);
 }
 
-static lx_void_t lx_array_iterator_of(lx_iterator_ref_t iterator, lx_cpointer_t container) {
+static lx_void_t lx_fixed_array_of(lx_iterator_ref_t iterator, lx_cpointer_t container) {
     static lx_iterator_op_t op = {
-        lx_array_iterator_head,
-        lx_array_iterator_tail,
-        lx_array_iterator_prev,
-        lx_array_iterator_next,
-        lx_array_iterator_item
+        lx_fixed_array_head,
+        lx_fixed_array_tail,
+        lx_fixed_array_prev,
+        lx_fixed_array_next,
+        lx_fixed_array_item
     };
     iterator->container = container;
     iterator->mode      = LX_ITERATOR_MODE_FORWARD | LX_ITERATOR_MODE_REVERSE | LX_ITERATOR_MODE_RACCESS | LX_ITERATOR_MODE_MUTABLE;
@@ -121,7 +121,7 @@ lx_array_ref_t lx_array_init(lx_size_t grow, lx_element_t element) {
         array->maxn             = 0;
         array->grow             = grow;
         array->element          = element;
-        array->base.iterator_of = lx_array_iterator_of;
+        array->base.iterator_of = lx_fixed_array_of;
 
         // ok
         ok = lx_true;

@@ -91,13 +91,13 @@ lx_size_t                   lx_static_fixed_pool_maxn(lx_static_fixed_pool_ref_t
  */
 lx_bool_t                   lx_static_fixed_pool_full(lx_static_fixed_pool_ref_t pool);
 
-/*! is null?
+/*! is empty?
  *
  * @param pool              the pool
  *
  * @return                  lx_true or lx_false
  */
-lx_bool_t                   lx_static_fixed_pool_null(lx_static_fixed_pool_ref_t pool);
+lx_bool_t                   lx_static_fixed_pool_empty(lx_static_fixed_pool_ref_t pool);
 
 /*! clear pool
  *

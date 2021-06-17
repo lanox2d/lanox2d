@@ -25,6 +25,8 @@
  * includes
  */
 #include "allocator.h"
+#include "fixed_pool.h"
+#include "static_fixed_pool.h"
 
 #endif
 

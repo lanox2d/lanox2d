@@ -25,6 +25,7 @@
  * includes
  */
 #include "time.h"
+#include "page.h"
 #include "dlopen.h"
 
 #endif

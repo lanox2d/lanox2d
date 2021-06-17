@@ -15,21 +15,35 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        container.h
+ * @file        page.h
  *
  */
-#ifndef LX_BASE_CONTAINER_H
-#define LX_BASE_CONTAINER_H
+#ifndef LX_BASE_PLATFORM_PAGE_H
+#define LX_BASE_PLATFORM_PAGE_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "stack.h"
-#include "array.h"
-#include "list_entry.h"
-#include "iterator.h"
-#include "fixed_array.h"
+#include "prefix.h"
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * extern
+ */
+lx_extern_c_enter
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * interfaces
+ */
+
+/*! get page size
+ *
+ * @return              the page size
+ */
+lx_size_t               lx_page_size(lx_noarg_t);
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * extern
+ */
+lx_extern_c_leave
 
 #endif
-
-

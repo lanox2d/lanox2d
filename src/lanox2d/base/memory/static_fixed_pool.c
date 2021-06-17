@@ -316,7 +316,7 @@ lx_bool_t lx_static_fixed_pool_full(lx_static_fixed_pool_ref_t self) {
     return pool && pool->item_count == pool->item_maxn;
 }
 
-lx_bool_t lx_static_fixed_pool_null(lx_static_fixed_pool_ref_t self) {
+lx_bool_t lx_static_fixed_pool_empty(lx_static_fixed_pool_ref_t self) {
     lx_static_fixed_pool_t* pool = (lx_static_fixed_pool_t*)self;
     return !(pool && pool->item_count);
 }

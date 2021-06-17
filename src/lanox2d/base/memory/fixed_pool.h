@@ -128,7 +128,6 @@ typedef lx_bool_t       (*lx_fixed_pool_item_foreach_cb_t)(lx_pointer_t data, lx
 
 /*! init fixed pool
  *
- * @param large_allocator   the large allocator, uses the global allocator if be null
  * @param slot_size         the item count per-slot, using the default size if be zero
  * @param item_size         the item size
  * @param item_init         the item init callback
@@ -137,7 +136,7 @@ typedef lx_bool_t       (*lx_fixed_pool_item_foreach_cb_t)(lx_pointer_t data, lx
  *
  * @return                  the pool
  */
-lx_fixed_pool_ref_t         lx_fixed_pool_init(lx_allocator_ref_t large_allocator, lx_size_t slot_size, lx_size_t item_size, lx_fixed_pool_item_init_cb_t item_init, lx_fixed_pool_item_exit_cb_t item_exit, lx_cpointer_t udata);
+lx_fixed_pool_ref_t         lx_fixed_pool_init(lx_size_t slot_size, lx_size_t item_size, lx_fixed_pool_item_init_cb_t item_init, lx_fixed_pool_item_exit_cb_t item_exit, lx_cpointer_t udata);
 
 /*! exit pool
  *
@@ -152,14 +151,6 @@ lx_void_t                   lx_fixed_pool_exit(lx_fixed_pool_ref_t pool);
  * @return                  the item count
  */
 lx_size_t                   lx_fixed_pool_size(lx_fixed_pool_ref_t pool);
-
-/*! the item size
- *
- * @param pool              the pool
- *
- * @return                  the item size
- */
-lx_size_t                   lx_fixed_pool_item_size(lx_fixed_pool_ref_t pool);
 
 /*! clear pool
  *
