@@ -157,22 +157,6 @@ lx_mesh_vertex_ref_t lx_mesh_vertex_list_make(lx_mesh_vertex_list_ref_t self) {
     return vertex;
 }
 
-#ifdef LX_DEBUG
-lx_long_t lx_mesh_vertex_list_cstr(lx_mesh_vertex_list_ref_t self, lx_mesh_vertex_ref_t vertex, lx_char_t* data, lx_size_t maxn) {
-#if 0
-    lx_mesh_vertex_list_t* list = (lx_mesh_vertex_list_t*)self;
-    lx_assert_and_check_return_val(list && list->element.cstr && vertex && maxn, -1);
-
-    // make it
-    lx_char_t       vertex_info[256] = {0};
-    lx_cpointer_t   vertex_data = lx_mesh_vertex_list_data(list, vertex);
-    return vertex_data? lx_snprintf(data, maxn, "(%s)", list->element.cstr(&list->element, vertex_data, vertex_info, sizeof(vertex_info))) : lx_snprintf(data, maxn, "(v%lu)", vertex->id);
-#else
-    return -1;
-#endif
-}
-#endif
-
 lx_void_t lx_mesh_vertex_list_kill(lx_mesh_vertex_list_ref_t self, lx_mesh_vertex_ref_t vertex) {
     lx_mesh_vertex_list_t* list = (lx_mesh_vertex_list_t*)self;
     lx_assert_and_check_return(list && list->pool && vertex);

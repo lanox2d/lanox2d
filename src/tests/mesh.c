@@ -1,19 +1,62 @@
 #include "lanox2d/lanox2d.h"
 
-static lx_void_t lx_test_utils_mesh_listener(lx_mesh_event_ref_t event) {
+#define lx_test_mesh_edge_cstr(edge)            *((lx_char_t const**)lx_mesh_edge_data(edge))
+#define lx_test_mesh_edge_cstr_set(edge, s)     *((lx_char_t const**)lx_mesh_edge_data(edge)) = (s)
+
+#define lx_test_mesh_face_cstr(face)            *((lx_char_t const**)lx_mesh_face_data(face))
+#define lx_test_mesh_face_cstr_set(face, s)     *((lx_char_t const**)lx_mesh_face_data(face)) = (s)
+
+#define lx_test_mesh_vertex_cstr(vertex)            *((lx_char_t const**)lx_mesh_vertex_data(vertex))
+#define lx_test_mesh_vertex_cstr_set(vertex, s)     *((lx_char_t const**)lx_mesh_vertex_data(vertex)) = (s)
+
+static lx_void_t lx_test_mesh_dump(lx_mesh_ref_t self) {
+    lx_trace_i("");
+    lx_trace_i("edges:");
+    lx_for_all_if (lx_mesh_edge_ref_t, edge, lx_mesh_edge_list(self), edge) {
+        lx_trace_i("    %s", lx_test_mesh_edge_cstr(edge));
+    }
+
+    lx_trace_i("faces:");
+    lx_for_all_if (lx_mesh_face_ref_t, face, lx_mesh_face_list(self), face) {
+        lx_trace_i("    face: %s", lx_test_mesh_face_cstr(face));
+        lx_mesh_edge_ref_t head = lx_mesh_face_edge(face);
+        lx_mesh_edge_ref_t edge = head;
+        do {
+            lx_trace_i("        %s", lx_test_mesh_edge_cstr(edge));
+            edge = lx_mesh_edge_lnext(edge);
+        } while (edge != head);
+    }
+
+    lx_trace_i("vertices:");
+    lx_for_all_if (lx_mesh_vertex_ref_t, vertex, lx_mesh_vertex_list(self), vertex) {
+        lx_trace_i("    vertex: %s", lx_test_mesh_edge_cstr(vertex));
+        lx_mesh_edge_ref_t head = lx_mesh_vertex_edge(vertex);
+        lx_mesh_edge_ref_t edge = head;
+        do {
+            lx_trace_i("        %s", lx_test_mesh_edge_cstr(edge));
+            edge = lx_mesh_edge_onext(edge);
+        } while (edge != head);
+    }
+}
+
+static lx_void_t lx_test_mesh_listener(lx_mesh_event_ref_t event) {
     lx_assert(event);
     switch (event->type) {
     case LX_MESH_EVENT_FACE_MERGE:
-        lx_trace_d("face.merge(%{mesh_face}, %{mesh_face}) => %{mesh_face}", event->org, event->dst, event->dst);
+        lx_trace_d("face.merge(%s, %s) => %s",
+            lx_test_mesh_face_cstr(event->org), lx_test_mesh_edge_cstr(event->dst), lx_test_mesh_edge_cstr(event->dst));
         break;
     case LX_MESH_EVENT_FACE_SPLIT:
-        lx_trace_d("face.split(%{mesh_face}) => (%{mesh_face}, %{mesh_face})", event->org, event->org, event->dst);
+        lx_trace_d("face.split(%s) => (%s, %s)",
+            lx_test_mesh_face_cstr(event->org), lx_test_mesh_face_cstr(event->org), lx_test_mesh_face_cstr(event->dst));
         break;
     case LX_MESH_EVENT_EDGE_MERGE:
-        lx_trace_d("edge.merge(%{mesh_edge}, %{mesh_edge}) => %{mesh_edge}", event->org, event->dst, event->dst);
+        lx_trace_d("edge.merge(%s, %s) => %s",
+            lx_test_mesh_edge_cstr(event->org), lx_test_mesh_edge_cstr(event->dst), lx_test_mesh_edge_cstr(event->dst));
         break;
     case LX_MESH_EVENT_EDGE_SPLIT:
-        lx_trace_d("edge.split(%{mesh_edge}) => (%{mesh_edge}, %{mesh_edge})", event->org, event->org, event->dst);
+        lx_trace_d("edge.split(%s) => (%s, %s)",
+            lx_test_mesh_edge_cstr(event->org), lx_test_mesh_edge_cstr(event->org), lx_test_mesh_edge_cstr(event->dst));
         break;
     default:
         lx_assert(0);
@@ -21,13 +64,13 @@ static lx_void_t lx_test_utils_mesh_listener(lx_mesh_event_ref_t event) {
     }
 }
 
-static lx_void_t lx_test_utils_mesh_split() {
+static lx_void_t lx_test_mesh_split() {
     lx_trace_i("==========================================================================");
 
     lx_element_t  element = lx_element_mem(sizeof(lx_char_t const*), lx_null);
     lx_mesh_ref_t mesh = lx_mesh_init(element, element, element);
     if (mesh) {
-        lx_mesh_listener_set(mesh, lx_test_utils_mesh_listener, mesh);
+        lx_mesh_listener_set(mesh, lx_test_mesh_listener, mesh);
         lx_mesh_listener_event_add(mesh, LX_MESH_EVENT_FACE_MERGE | LX_MESH_EVENT_FACE_SPLIT | LX_MESH_EVENT_EDGE_MERGE | LX_MESH_EVENT_EDGE_SPLIT);
 
         // make a clockwise self-loop edge
@@ -49,21 +92,20 @@ static lx_void_t lx_test_utils_mesh_split() {
             lx_mesh_edge_ref_t edge3 = lx_mesh_edge_insert(mesh, edge2, edge0);
 
             // save face name
-            *((lx_char_t const**)lx_mesh_face_data_fastly(lx_mesh_edge_lface(edge0))) = "lface";
-            lx_mesh_face_data_set(mesh, lx_mesh_edge_lface(edge0), "lface");
-            lx_mesh_face_data_set(mesh, lx_mesh_edge_rface(edge0), "rface");
+            lx_test_mesh_face_cstr_set(lx_mesh_edge_lface(edge0), "lface");
+            lx_test_mesh_face_cstr_set(lx_mesh_edge_rface(edge0), "rface");
 
             // save edge name
-            lx_mesh_edge_data_set(mesh, edge0, "e0");
-            lx_mesh_edge_data_set(mesh, edge1, "e1");
-            lx_mesh_edge_data_set(mesh, edge2, "e2");
-            lx_mesh_edge_data_set(mesh, edge3, "e3");
+            lx_test_mesh_edge_cstr_set(edge0, "e0");
+            lx_test_mesh_edge_cstr_set(edge1, "e1");
+            lx_test_mesh_edge_cstr_set(edge2, "e2");
+            lx_test_mesh_edge_cstr_set(edge3, "e3");
 
             // save vertex name
-            lx_mesh_vertex_data_set(mesh, lx_mesh_edge_dst(edge0), "v0");
-            lx_mesh_vertex_data_set(mesh, lx_mesh_edge_dst(edge1), "v1");
-            lx_mesh_vertex_data_set(mesh, lx_mesh_edge_dst(edge2), "v2");
-            lx_mesh_vertex_data_set(mesh, lx_mesh_edge_dst(edge3), "v3");
+            lx_test_mesh_vertex_cstr_set(lx_mesh_edge_dst(edge0), "v0");
+            lx_test_mesh_vertex_cstr_set(lx_mesh_edge_dst(edge1), "v1");
+            lx_test_mesh_vertex_cstr_set(lx_mesh_edge_dst(edge2), "v2");
+            lx_test_mesh_vertex_cstr_set(lx_mesh_edge_dst(edge3), "v3");
 
 #ifdef LX_DEBUG
             // trace
@@ -74,7 +116,7 @@ static lx_void_t lx_test_utils_mesh_split() {
             lx_mesh_check(mesh);
 
             // dump mesh
-            lx_mesh_dump(mesh);
+            lx_test_mesh_dump(mesh);
 #endif
             /* split a quadrangle
              *
@@ -91,18 +133,18 @@ static lx_void_t lx_test_utils_mesh_split() {
             lx_mesh_edge_ref_t edge5 = lx_mesh_edge_split(mesh, edge3);
 
             // save edge name
-            lx_mesh_edge_data_set(mesh, edge4, "e4");
-            lx_mesh_edge_data_set(mesh, edge5, "e5");
+            lx_test_mesh_edge_cstr_set(edge4, "e4");
+            lx_test_mesh_edge_cstr_set(edge5, "e5");
 
             // save vertex name
-            lx_mesh_vertex_data_set(mesh, lx_mesh_edge_org(edge4), "v4");
-            lx_mesh_vertex_data_set(mesh, lx_mesh_edge_org(edge5), "v5");
+            lx_test_mesh_vertex_cstr_set(lx_mesh_edge_org(edge4), "v4");
+            lx_test_mesh_vertex_cstr_set(lx_mesh_edge_org(edge5), "v5");
 
 #ifdef LX_DEBUG
             lx_trace_i("");
             lx_trace_i("split: done");
             lx_mesh_check(mesh);
-            lx_mesh_dump(mesh);
+            lx_test_mesh_dump(mesh);
 #endif
         }
 
@@ -110,13 +152,13 @@ static lx_void_t lx_test_utils_mesh_split() {
     }
 }
 
-static lx_void_t lx_test_utils_mesh_splice() {
+static lx_void_t lx_test_mesh_splice() {
     lx_trace_i("==========================================================================");
 
     lx_element_t  element = lx_element_mem(sizeof(lx_char_t const*), lx_null);
     lx_mesh_ref_t mesh = lx_mesh_init(element, element, element);
     if (mesh) {
-        lx_mesh_listener_set(mesh, lx_test_utils_mesh_listener, mesh);
+        lx_mesh_listener_set(mesh, lx_test_mesh_listener, mesh);
         lx_mesh_listener_event_add(mesh, LX_MESH_EVENT_FACE_MERGE | LX_MESH_EVENT_FACE_SPLIT | LX_MESH_EVENT_EDGE_MERGE | LX_MESH_EVENT_EDGE_SPLIT);
 
         /* make a edge
@@ -131,11 +173,11 @@ static lx_void_t lx_test_utils_mesh_splice() {
         if (edge) {
 
             // save face name
-            lx_mesh_face_data_set(mesh, lx_mesh_edge_lface(edge), "lface");
+            lx_test_mesh_face_cstr_set(lx_mesh_edge_lface(edge), "lface");
 
             // save vertex name
-            lx_mesh_vertex_data_set(mesh, lx_mesh_edge_org(edge), "org");
-            lx_mesh_vertex_data_set(mesh, lx_mesh_edge_dst(edge), "dst");
+            lx_test_mesh_vertex_cstr_set(lx_mesh_edge_org(edge), "org");
+            lx_test_mesh_vertex_cstr_set(lx_mesh_edge_dst(edge), "dst");
 
 #ifdef LX_DEBUG
             // trace
@@ -143,7 +185,7 @@ static lx_void_t lx_test_utils_mesh_splice() {
             lx_trace_i("splice: make");
 
             lx_mesh_check(mesh);
-            lx_mesh_dump(mesh);
+            lx_test_mesh_dump(mesh);
 #endif
 
             /* splice
@@ -165,7 +207,7 @@ static lx_void_t lx_test_utils_mesh_splice() {
             lx_trace_i("splice: done");
 
             lx_mesh_check(mesh);
-            lx_mesh_dump(mesh);
+            lx_test_mesh_dump(mesh);
 #endif
 
             /* splice
@@ -185,20 +227,20 @@ static lx_void_t lx_test_utils_mesh_splice() {
             lx_trace_i("splice: done");
 
             lx_mesh_check(mesh);
-            lx_mesh_dump(mesh);
+            lx_test_mesh_dump(mesh);
 #endif
         }
         lx_mesh_exit(mesh);
     }
 }
 
-static lx_void_t lx_test_utils_mesh_radiation() {
+static lx_void_t lx_test_mesh_radiation() {
     lx_trace_i("==========================================================================");
 
     lx_element_t  element = lx_element_mem(sizeof(lx_char_t const*), lx_null);
     lx_mesh_ref_t mesh = lx_mesh_init(element, element, element);
     if (mesh) {
-        lx_mesh_listener_set(mesh, lx_test_utils_mesh_listener, mesh);
+        lx_mesh_listener_set(mesh, lx_test_mesh_listener, mesh);
         lx_mesh_listener_event_add(mesh, LX_MESH_EVENT_FACE_MERGE | LX_MESH_EVENT_FACE_SPLIT | LX_MESH_EVENT_EDGE_MERGE | LX_MESH_EVENT_EDGE_SPLIT);
 
         // make a edge
@@ -210,7 +252,7 @@ static lx_void_t lx_test_utils_mesh_radiation() {
             lx_assert(face == lx_mesh_edge_rface(edge1));
 
             // save face name
-            lx_mesh_face_data_set(mesh, face, "face");
+            lx_test_mesh_face_cstr_set(face, "face");
 
             /* make a radiation
              *
@@ -237,17 +279,17 @@ static lx_void_t lx_test_utils_mesh_radiation() {
             lx_mesh_edge_ref_t edge4 = lx_mesh_edge_append(mesh, lx_mesh_edge_sym(edge1));
 
             // save edge name
-            lx_mesh_edge_data_set(mesh, edge1, "e1");
-            lx_mesh_edge_data_set(mesh, edge2, "e2");
-            lx_mesh_edge_data_set(mesh, edge3, "e3");
-            lx_mesh_edge_data_set(mesh, edge4, "e4");
+            lx_test_mesh_edge_cstr_set(edge1, "e1");
+            lx_test_mesh_edge_cstr_set(edge2, "e2");
+            lx_test_mesh_edge_cstr_set(edge3, "e3");
+            lx_test_mesh_edge_cstr_set(edge4, "e4");
 
             // save vertex name
-            lx_mesh_vertex_data_set(mesh, lx_mesh_edge_org(edge1), "v0");
-            lx_mesh_vertex_data_set(mesh, lx_mesh_edge_dst(edge1), "v1");
-            lx_mesh_vertex_data_set(mesh, lx_mesh_edge_dst(edge2), "v2");
-            lx_mesh_vertex_data_set(mesh, lx_mesh_edge_dst(edge3), "v3");
-            lx_mesh_vertex_data_set(mesh, lx_mesh_edge_dst(edge4), "v4");
+            lx_test_mesh_vertex_cstr_set(lx_mesh_edge_org(edge1), "v0");
+            lx_test_mesh_vertex_cstr_set(lx_mesh_edge_dst(edge1), "v1");
+            lx_test_mesh_vertex_cstr_set(lx_mesh_edge_dst(edge2), "v2");
+            lx_test_mesh_vertex_cstr_set(lx_mesh_edge_dst(edge3), "v3");
+            lx_test_mesh_vertex_cstr_set(lx_mesh_edge_dst(edge4), "v4");
 
 #ifdef LX_DEBUG
             // trace
@@ -255,7 +297,7 @@ static lx_void_t lx_test_utils_mesh_radiation() {
             lx_trace_i("radiation: make");
 
             lx_mesh_check(mesh);
-            lx_mesh_dump(mesh);
+            lx_test_mesh_dump(mesh);
 #endif
 
             /* remove one
@@ -284,7 +326,7 @@ static lx_void_t lx_test_utils_mesh_radiation() {
             lx_trace_i("");
             lx_trace_i("radiation: kill");
             lx_mesh_check(mesh);
-            lx_mesh_dump(mesh);
+            lx_test_mesh_dump(mesh);
 #endif
 
             // remove all
@@ -299,13 +341,13 @@ static lx_void_t lx_test_utils_mesh_radiation() {
     }
 }
 
-static lx_void_t lx_test_utils_mesh_quadrangle() {
+static lx_void_t lx_test_mesh_quadrangle() {
     lx_trace_i("==========================================================================");
 
     lx_element_t  element = lx_element_mem(sizeof(lx_char_t const*), lx_null);
     lx_mesh_ref_t mesh = lx_mesh_init(element, element, element);
     if (mesh) {
-        lx_mesh_listener_set(mesh, lx_test_utils_mesh_listener, mesh);
+        lx_mesh_listener_set(mesh, lx_test_mesh_listener, mesh);
         lx_mesh_listener_event_add(mesh, LX_MESH_EVENT_FACE_MERGE | LX_MESH_EVENT_FACE_SPLIT | LX_MESH_EVENT_EDGE_MERGE | LX_MESH_EVENT_EDGE_SPLIT);
 
         // make a counter-clockwise self-loop edge
@@ -327,20 +369,20 @@ static lx_void_t lx_test_utils_mesh_quadrangle() {
             lx_mesh_edge_ref_t edge3 = lx_mesh_edge_insert(mesh, edge2, edge0);
 
             // save face name
-            lx_mesh_face_data_set(mesh, lx_mesh_edge_lface(edge0), "lface");
-            lx_mesh_face_data_set(mesh, lx_mesh_edge_rface(edge0), "rface");
+            lx_test_mesh_face_cstr_set(lx_mesh_edge_lface(edge0), "lface");
+            lx_test_mesh_face_cstr_set(lx_mesh_edge_rface(edge0), "rface");
 
             // save edge name
-            lx_mesh_edge_data_set(mesh, edge0, "e0");
-            lx_mesh_edge_data_set(mesh, edge1, "e1");
-            lx_mesh_edge_data_set(mesh, edge2, "e2");
-            lx_mesh_edge_data_set(mesh, edge3, "e3");
+            lx_test_mesh_edge_cstr_set(edge0, "e0");
+            lx_test_mesh_edge_cstr_set(edge1, "e1");
+            lx_test_mesh_edge_cstr_set(edge2, "e2");
+            lx_test_mesh_edge_cstr_set(edge3, "e3");
 
             // save vertex name
-            lx_mesh_vertex_data_set(mesh, lx_mesh_edge_dst(edge0), "v0");
-            lx_mesh_vertex_data_set(mesh, lx_mesh_edge_dst(edge1), "v1");
-            lx_mesh_vertex_data_set(mesh, lx_mesh_edge_dst(edge2), "v2");
-            lx_mesh_vertex_data_set(mesh, lx_mesh_edge_dst(edge3), "v3");
+            lx_test_mesh_vertex_cstr_set(lx_mesh_edge_dst(edge0), "v0");
+            lx_test_mesh_vertex_cstr_set(lx_mesh_edge_dst(edge1), "v1");
+            lx_test_mesh_vertex_cstr_set(lx_mesh_edge_dst(edge2), "v2");
+            lx_test_mesh_vertex_cstr_set(lx_mesh_edge_dst(edge3), "v3");
 
 #ifdef LX_DEBUG
             // trace
@@ -351,7 +393,7 @@ static lx_void_t lx_test_utils_mesh_quadrangle() {
             lx_mesh_check(mesh);
 
             // dump mesh
-            lx_mesh_dump(mesh);
+            lx_test_mesh_dump(mesh);
 #endif
 
             /* remove one
@@ -370,7 +412,7 @@ static lx_void_t lx_test_utils_mesh_quadrangle() {
             lx_trace_i("");
             lx_trace_i("quadrangle: kill");
             lx_mesh_check(mesh);
-            lx_mesh_dump(mesh);
+            lx_test_mesh_dump(mesh);
 #endif
 
             // remove all
@@ -385,13 +427,13 @@ static lx_void_t lx_test_utils_mesh_quadrangle() {
     }
 }
 
-static lx_void_t lx_test_utils_mesh_tetrahedron() {
+static lx_void_t lx_test_mesh_tetrahedron() {
     lx_trace_i("==========================================================================");
 
     lx_element_t  element = lx_element_mem(sizeof(lx_char_t const*), lx_null);
     lx_mesh_ref_t mesh = lx_mesh_init(element, element, element);
     if (mesh) {
-        lx_mesh_listener_set(mesh, lx_test_utils_mesh_listener, mesh);
+        lx_mesh_listener_set(mesh, lx_test_mesh_listener, mesh);
         lx_mesh_listener_event_add(mesh, LX_MESH_EVENT_FACE_MERGE | LX_MESH_EVENT_FACE_SPLIT | LX_MESH_EVENT_EDGE_MERGE | LX_MESH_EVENT_EDGE_SPLIT);
 
         // make a clockwise self-loop edge
@@ -415,40 +457,40 @@ static lx_void_t lx_test_utils_mesh_tetrahedron() {
             lx_mesh_edge_ref_t edge3 = lx_mesh_edge_insert(mesh, edge2, edge0);
 
             // save face name
-            lx_mesh_face_data_set(mesh, lx_mesh_edge_lface(edge0), "lface");
-            lx_mesh_face_data_set(mesh, lx_mesh_edge_rface(edge0), "rface");
+            lx_test_mesh_face_cstr_set(lx_mesh_edge_lface(edge0), "lface");
+            lx_test_mesh_face_cstr_set(lx_mesh_edge_rface(edge0), "rface");
 
             lx_mesh_edge_ref_t edge4 = lx_mesh_edge_connect(mesh, edge1, edge0);
             lx_mesh_edge_ref_t edge5 = lx_mesh_edge_connect(mesh, lx_mesh_edge_sym(edge3), lx_mesh_edge_sym(edge0));
 
             // save face name
-            lx_mesh_face_data_set(mesh, lx_mesh_edge_lface(edge4), "face0");
-            lx_mesh_face_data_set(mesh, lx_mesh_edge_lface(edge5), "face1");
+            lx_test_mesh_face_cstr_set(lx_mesh_edge_lface(edge4), "face0");
+            lx_test_mesh_face_cstr_set(lx_mesh_edge_lface(edge5), "face1");
 
             // save edge name
-            lx_mesh_edge_data_set(mesh, edge0, "e0");
-            lx_mesh_edge_data_set(mesh, edge1, "e1");
-            lx_mesh_edge_data_set(mesh, edge2, "e2");
-            lx_mesh_edge_data_set(mesh, edge3, "e3");
-            lx_mesh_edge_data_set(mesh, edge4, "e4");
-            lx_mesh_edge_data_set(mesh, edge5, "e5");
+            lx_test_mesh_edge_cstr_set(edge0, "e0");
+            lx_test_mesh_edge_cstr_set(edge1, "e1");
+            lx_test_mesh_edge_cstr_set(edge2, "e2");
+            lx_test_mesh_edge_cstr_set(edge3, "e3");
+            lx_test_mesh_edge_cstr_set(edge4, "e4");
+            lx_test_mesh_edge_cstr_set(edge5, "e5");
 
             // save vertex name
-            lx_mesh_vertex_data_set(mesh, lx_mesh_edge_dst(edge0), "v0");
-            lx_mesh_vertex_data_set(mesh, lx_mesh_edge_dst(edge1), "v1");
-            lx_mesh_vertex_data_set(mesh, lx_mesh_edge_dst(edge2), "v2");
-            lx_mesh_vertex_data_set(mesh, lx_mesh_edge_dst(edge3), "v3");
+            lx_test_mesh_vertex_cstr_set(lx_mesh_edge_dst(edge0), "v0");
+            lx_test_mesh_vertex_cstr_set(lx_mesh_edge_dst(edge1), "v1");
+            lx_test_mesh_vertex_cstr_set(lx_mesh_edge_dst(edge2), "v2");
+            lx_test_mesh_vertex_cstr_set(lx_mesh_edge_dst(edge3), "v3");
 
 #ifdef LX_DEBUG
             lx_trace_i("");
             lx_trace_i("tetrahedron: make");
             lx_mesh_check(mesh);
-            lx_mesh_dump(mesh);
+            lx_test_mesh_dump(mesh);
 #endif
 
-            // delete two
-            lx_mesh_edge_delete(mesh, edge4);
-            lx_mesh_edge_delete(mesh, edge5);
+            // disconnect two
+            lx_mesh_edge_disconnect(mesh, edge4);
+            lx_mesh_edge_disconnect(mesh, edge5);
 
 #ifdef LX_DEBUG
             // trace
@@ -459,7 +501,7 @@ static lx_void_t lx_test_utils_mesh_tetrahedron() {
             lx_mesh_check(mesh);
 
             // dump mesh
-            lx_mesh_dump(mesh);
+            lx_test_mesh_dump(mesh);
 #endif
 
             // remove all
@@ -476,10 +518,10 @@ static lx_void_t lx_test_utils_mesh_tetrahedron() {
 }
 
 int main(int argc, char** argv) {
-    lx_test_utils_mesh_split();
-    lx_test_utils_mesh_splice();
-    lx_test_utils_mesh_radiation();
-    lx_test_utils_mesh_quadrangle();
-    lx_test_utils_mesh_tetrahedron();
+    lx_test_mesh_split();
+    lx_test_mesh_splice();
+    lx_test_mesh_radiation();
+    lx_test_mesh_quadrangle();
+    lx_test_mesh_tetrahedron();
     return 0;
 }

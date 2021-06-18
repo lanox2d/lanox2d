@@ -71,19 +71,6 @@ lx_size_t                   lx_mesh_vertex_list_size(lx_mesh_vertex_list_ref_t l
  */
 lx_mesh_vertex_ref_t        lx_mesh_vertex_list_make(lx_mesh_vertex_list_ref_t list);
 
-#ifdef LX_DEBUG
-/*! make the vertex info string
- *
- * @param list              the list
- * @param vertex            the vertex
- * @param data              the string data
- * @param maxn              the string maxn
- *
- * @return                  the string size
- */
-lx_long_t                   lx_mesh_vertex_list_cstr(lx_mesh_vertex_list_ref_t list, lx_mesh_vertex_ref_t vertex, lx_char_t* data, lx_size_t maxn);
-#endif
-
 /*! kill the vertex, release the storage
  *
  * @param list              the list

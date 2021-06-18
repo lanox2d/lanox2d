@@ -315,26 +315,6 @@ static lx_bool_t lx_mesh_kill_isolated_edge(lx_mesh_t* mesh, lx_mesh_edge_ref_t 
     return lx_false;
 }
 
-#if 0//def LX_DEBUG
-static lx_long_t lx_mesh_printf_edge(lx_cpointer_t object, lx_char_t* cstr, lx_size_t maxn) {
-    lx_assert_and_check_return_val(object && cstr && maxn, -1);
-    lx_mesh_edge_ref_t edge = (lx_mesh_edge_ref_t)object;
-    return lx_mesh_edge_list_cstr((lx_mesh_edge_list_ref_t)edge->list, edge, cstr, maxn);
-}
-
-static lx_long_t lx_mesh_printf_face(lx_cpointer_t object, lx_char_t* cstr, lx_size_t maxn) {
-    lx_assert_and_check_return_val(object && cstr && maxn, -1);
-    lx_mesh_face_ref_t face = (lx_mesh_face_ref_t)object;
-    return lx_mesh_face_list_cstr((lx_mesh_face_list_ref_t)face->list, face, cstr, maxn);
-}
-
-static lx_long_t lx_mesh_printf_vertex(lx_cpointer_t object, lx_char_t* cstr, lx_size_t maxn) {
-    lx_assert_and_check_return_val(object && cstr && maxn, -1);
-    lx_mesh_vertex_ref_t vertex = (lx_mesh_vertex_ref_t)object;
-    return lx_mesh_vertex_list_cstr((lx_mesh_vertex_list_ref_t)vertex->list, vertex, cstr, maxn);
-}
-#endif
-
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
@@ -357,20 +337,6 @@ lx_mesh_ref_t lx_mesh_init(lx_element_t edge_element, lx_element_t face_element,
         // init vertices
         mesh->vertices = lx_mesh_vertex_list_init(vertex_element);
         lx_assert_and_check_break(mesh->vertices);
-
-#if 0//def LX_DEBUG
-        /* register printf("%{mesh_face}",      face);
-         * register printf("%{mesh_edge}",      edge);
-         * register printf("%{mesh_vertex}",    vertex);
-         */
-        static lx_bool_t s_is_registered = lx_false;
-        if (!s_is_registered) {
-            lx_printf_object_register("mesh_edge",      lx_mesh_printf_edge);
-            lx_printf_object_register("mesh_face",      lx_mesh_printf_face);
-            lx_printf_object_register("mesh_vertex",    lx_mesh_printf_vertex);
-            s_is_registered = lx_true;
-        }
-#endif
 
         // ok
         ok = lx_true;
@@ -1484,36 +1450,6 @@ lx_void_t lx_mesh_edge_disconnect(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_re
 }
 
 #ifdef LX_DEBUG
-lx_void_t lx_mesh_dump(lx_mesh_ref_t self) {
-    lx_trace_i("");
-    lx_trace_i("edges:");
-    lx_for_all_if (lx_mesh_edge_ref_t, edge, lx_mesh_edge_list(self), edge) {
-        lx_trace_i("    %{mesh_edge}", edge);
-    }
-
-    lx_trace_i("faces:");
-    lx_for_all_if (lx_mesh_face_ref_t, face, lx_mesh_face_list(self), face) {
-        lx_trace_i("    face: %{mesh_face}", face);
-        lx_mesh_edge_ref_t head = lx_mesh_face_edge(face);
-        lx_mesh_edge_ref_t edge = head;
-        do {
-            lx_trace_i("        %{mesh_edge}", edge);
-            edge = lx_mesh_edge_lnext(edge);
-        } while (edge != head);
-    }
-
-    lx_trace_i("vertices:");
-    lx_for_all_if (lx_mesh_vertex_ref_t, vertex, lx_mesh_vertex_list(self), vertex) {
-        lx_trace_i("    vertex: %{mesh_vertex}", vertex);
-        lx_mesh_edge_ref_t head = lx_mesh_vertex_edge(vertex);
-        lx_mesh_edge_ref_t edge = head;
-        do {
-            lx_trace_i("        %{mesh_edge}", edge);
-            edge = lx_mesh_edge_onext(edge);
-        } while (edge != head);
-    }
-}
-
 lx_void_t lx_mesh_check(lx_mesh_ref_t self) {
     lx_for_all_if (lx_mesh_edge_ref_t, edge, lx_mesh_edge_list(self), edge) {
         lx_mesh_check_edge(edge);

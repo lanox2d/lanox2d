@@ -70,19 +70,6 @@ lx_size_t                   lx_mesh_face_list_size(lx_mesh_face_list_ref_t list)
  */
 lx_mesh_face_ref_t          lx_mesh_face_list_make(lx_mesh_face_list_ref_t list);
 
-#ifdef __lx_debug__
-/*! make the face string
- *
- * @param list              the list
- * @param face              the face
- * @param data              the string data
- * @param maxn              the string maxn
- *
- * @return                  the string size
- */
-lx_long_t                   lx_mesh_face_list_cstr(lx_mesh_face_list_ref_t list, lx_mesh_face_ref_t face, lx_char_t* data, lx_size_t maxn);
-#endif
-
 /*! kill the face, release the storage
  *
  * @param list              the list

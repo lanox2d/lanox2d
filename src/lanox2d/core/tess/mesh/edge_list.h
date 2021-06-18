@@ -107,19 +107,6 @@ lx_mesh_edge_ref_t          lx_mesh_edge_list_make(lx_mesh_edge_list_ref_t list)
  */
 lx_mesh_edge_ref_t          lx_mesh_edge_list_make_loop(lx_mesh_edge_list_ref_t list, lx_bool_t is_ccw);
 
-#ifdef LX_DEBUG
-/*! make the edge info string
- *
- * @param list              the list
- * @param edge              the edge
- * @param data              the string data
- * @param maxn              the string maxn
- *
- * @return                  the string size
- */
-lx_long_t                   lx_mesh_edge_list_cstr(lx_mesh_edge_list_ref_t list, lx_mesh_edge_ref_t edge, lx_char_t* data, lx_size_t maxn);
-#endif
-
 /*! kill the edge, release the storage
  *
  * @param list              the list

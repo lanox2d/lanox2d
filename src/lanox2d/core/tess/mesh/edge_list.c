@@ -352,30 +352,6 @@ lx_mesh_edge_ref_t lx_mesh_edge_list_make_loop(lx_mesh_edge_list_ref_t self, lx_
     return is_ccw? edge : edge_sym;
 }
 
-#ifdef LX_DEBUG
-lx_long_t lx_mesh_edge_list_cstr(lx_mesh_edge_list_ref_t self, lx_mesh_edge_ref_t edge, lx_char_t* data, lx_size_t maxn) {
-#if 0
-    lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)self;
-    lx_assert_and_check_return_val(list && list->element.cstr && edge && maxn, -1);
-
-    // make the edge info
-    lx_char_t           edge_info[4096] = {0};
-    lx_char_t const*    pedge_info = list->element.cstr(&list->element, lx_mesh_edge_list_data(list, edge), edge_info, sizeof(edge_info));
-    if (!pedge_info) pedge_info = list->element.cstr(&list->element, lx_mesh_edge_list_data(list, edge->sym), edge_info, sizeof(edge_info));
-    if (!pedge_info)
-    {
-        lx_snprintf(edge_info, sizeof(edge_info) - 1, "<e%lu>", edge->id);
-        pedge_info = edge_info;
-    }
-
-    // make it, @note only for the debug mode
-    return lx_snprintf(data, maxn, "(%s: %{mesh_vertex} => %{mesh_vertex})", pedge_info, edge->org, edge->sym->org);
-#else
-    return -1;
-#endif
-}
-#endif
-
 lx_void_t lx_mesh_edge_list_kill(lx_mesh_edge_list_ref_t self, lx_mesh_edge_ref_t edge) {
     lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)self;
     lx_assert_and_check_return(list && list->pool && edge);

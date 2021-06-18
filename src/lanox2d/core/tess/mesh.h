@@ -39,13 +39,13 @@ lx_extern_c_enter
 #define lx_mesh_face_edge(face)                 (lx_assert(face), (face)->edge)
 
 /// get the face user data fastly if the item type is lx_element_mem()
-#define lx_mesh_face_data_fastly(face)          (lx_assert(face), (lx_cpointer_t)((lx_mesh_face_ref_t)(face) + 1))
+#define lx_mesh_face_data(face)                 (lx_assert(face), (lx_cpointer_t)((lx_mesh_face_ref_t)(face) + 1))
 
 /// get the vertex edge
 #define lx_mesh_vertex_edge(vertex)             (lx_assert(vertex), (vertex)->edge)
 
 /// get the vertex user data fastly if the item type is lx_element_mem()
-#define lx_mesh_vertex_data_fastly(vertex)      (lx_assert(vertex), (lx_cpointer_t)((lx_mesh_vertex_ref_t)(vertex) + 1))
+#define lx_mesh_vertex_data(vertex)             (lx_assert(vertex), (lx_cpointer_t)((lx_mesh_vertex_ref_t)(vertex) + 1))
 
 /// get the edge sym
 #define lx_mesh_edge_sym(edge)                  (lx_assert(edge), (edge)->sym)
@@ -90,7 +90,7 @@ lx_extern_c_enter
 #define lx_mesh_edge_dprev(edge)                (lx_assert((edge) && (edge)->lnext), (edge)->lnext->sym)
 
 /// get the edge user data fastly if the item type is lx_element_mem()
-#define lx_mesh_edge_data_fastly(edge)          (lx_assert(edge), (lx_cpointer_t)((lx_mesh_edge_ref_t)(edge) + 1))
+#define lx_mesh_edge_data(edge)                 (lx_assert(edge), (lx_cpointer_t)((lx_mesh_edge_ref_t)(edge) + 1))
 
 /// the edge is isolated?
 #define lx_mesh_edge_is_isolated(edge)          (lx_assert((edge) && (edge->sym)), (edge)->onext == (edge) && (edge)->sym->onext == (edge)->sym && (edge)->lnext == (edge->sym) && (edge)->sym->lnext == (edge))
@@ -849,11 +849,6 @@ lx_mesh_edge_ref_t              lx_mesh_edge_connect(lx_mesh_ref_t mesh, lx_mesh
 lx_void_t                       lx_mesh_edge_disconnect(lx_mesh_ref_t mesh, lx_mesh_edge_ref_t edge_removed);
 
 #ifdef LX_DEBUG
-/*! dump mesh
- * @param mesh                  the mesh
- */
-lx_void_t                       lx_mesh_dump(lx_mesh_ref_t mesh);
-
 /*! check mesh
  * @param mesh                  the mesh
  */

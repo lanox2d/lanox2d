@@ -158,21 +158,6 @@ lx_mesh_face_ref_t lx_mesh_face_list_make(lx_mesh_face_list_ref_t self) {
     return face;
 }
 
-#ifdef LX_DEBUG
-lx_long_t lx_mesh_face_list_cstr(lx_mesh_face_list_ref_t self, lx_mesh_face_ref_t face, lx_char_t* data, lx_size_t maxn) {
-#if 0
-    lx_mesh_face_list_t* list = (lx_mesh_face_list_t*)self;
-    lx_assert_and_check_return_val(list && list->element.cstr && face && maxn, -1);
-
-    lx_char_t       face_info[256] = {0};
-    lx_cpointer_t   face_data = lx_mesh_face_list_data(list, face);
-    return face_data? lx_snprintf(data, maxn, "(%s)", list->element.cstr(&list->element, face_data, face_info, sizeof(face_info))) : lx_snprintf(data, maxn, "(f%lu)", face->id);
-#else
-    return -1;
-#endif
-}
-#endif
-
 lx_void_t lx_mesh_face_list_kill(lx_mesh_face_list_ref_t self, lx_mesh_face_ref_t face) {
     lx_mesh_face_list_t* list = (lx_mesh_face_list_t*)self;
     lx_assert_and_check_return(list && list->pool && face);
