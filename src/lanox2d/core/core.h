@@ -34,7 +34,7 @@
 #include "path.h"
 #include "clipper.h"
 #include "quality.h"
-//#include "tess/tess.h"
+#include "tess/tess.h"
 
 #endif
 
