@@ -402,14 +402,6 @@ lx_void_t                       lx_mesh_listener_event_add(lx_mesh_ref_t mesh, l
  */
 lx_void_t                       lx_mesh_listener_event_del(lx_mesh_ref_t mesh, lx_size_t events);
 
-/*! the vertex iterator
- *
- * @param mesh                  the mesh
- *
- * @return                      the mesh vertex iterator
- */
-lx_iterator_ref_t               lx_mesh_vertex_itor(lx_mesh_ref_t mesh);
-
 /*! the head vertex
  *
  * @param mesh                  the mesh
@@ -426,25 +418,6 @@ lx_mesh_vertex_ref_t            lx_mesh_vertex_head(lx_mesh_ref_t mesh);
  */
 lx_mesh_vertex_ref_t            lx_mesh_vertex_last(lx_mesh_ref_t mesh);
 
-/*! the vertex user data
- *
- * @note please uses lx_mesh_vertex_data_fastly to get the user data more fastly if the item type is lx_element_mem()
- *
- * @param mesh                  the mesh
- * @param vertex                the vertex
- *
- * @return                      the vertex user data
- */
-lx_cpointer_t                   lx_mesh_vertex_data(lx_mesh_ref_t mesh, lx_mesh_vertex_ref_t vertex);
-
-/*! set the vertex user data
- *
- * @param mesh                  the mesh
- * @param vertex                the vertex
- * @param data                  the vertex user data
- */
-lx_void_t                       lx_mesh_vertex_data_set(lx_mesh_ref_t mesh, lx_mesh_vertex_ref_t vertex, lx_cpointer_t data);
-
 /*! the vertex order
  *
  * @param mesh                  the mesh
@@ -459,14 +432,6 @@ lx_size_t                       lx_mesh_vertex_order(lx_mesh_ref_t mesh);
  * @param order                 the order
  */
 lx_void_t                       lx_mesh_vertex_order_set(lx_mesh_ref_t mesh, lx_size_t order);
-
-/*! the face iterator
- *
- * @param mesh                  the mesh
- *
- * @return                      the face iterator
- */
-lx_iterator_ref_t               lx_mesh_face_itor(lx_mesh_ref_t mesh);
 
 /*! the head face
  *
@@ -484,25 +449,6 @@ lx_mesh_face_ref_t              lx_mesh_face_head(lx_mesh_ref_t mesh);
  */
 lx_mesh_face_ref_t              lx_mesh_face_last(lx_mesh_ref_t mesh);
 
-/*! the face user data
- *
- * @note please uses lx_mesh_face_data_fastly to get the user data more fastly if the item type is lx_element_mem()
- *
- * @param mesh                  the mesh
- * @param face                  the face
- *
- * @return                      the face user data
- */
-lx_cpointer_t                   lx_mesh_face_data(lx_mesh_ref_t mesh, lx_mesh_face_ref_t face);
-
-/*! set the face user data
- *
- * @param mesh                  the mesh
- * @param face                  the face
- * @param data                  the face user data
- */
-lx_void_t                       lx_mesh_face_data_set(lx_mesh_ref_t mesh, lx_mesh_face_ref_t face, lx_cpointer_t data);
-
 /*! the face order
  *
  * @param mesh                  the mesh
@@ -517,14 +463,6 @@ lx_size_t                       lx_mesh_face_order(lx_mesh_ref_t mesh);
  * @param order                 the order
  */
 lx_void_t                       lx_mesh_face_order_set(lx_mesh_ref_t mesh, lx_size_t order);
-
-/*! the edge iterator
- *
- * @param mesh                  the mesh
- *
- * @return                      the edge iterator
- */
-lx_iterator_ref_t               lx_mesh_edge_itor(lx_mesh_ref_t mesh);
 
 /*! the head edge
  *
@@ -557,25 +495,6 @@ lx_mesh_edge_ref_t              lx_mesh_edge_last(lx_mesh_ref_t mesh);
  * @return                      the edge, it's members are invalid and cannot modify them
  */
 lx_mesh_edge_ref_t              lx_mesh_edge_tail(lx_mesh_ref_t mesh);
-
-/*! the edge user data
- *
- * @note please uses lx_mesh_edge_data_fastly to get the user data more fastly if the item type is lx_element_mem()
- *
- * @param mesh                  the mesh
- * @param edge                  the edge
- *
- * @return                      the edge user data
- */
-lx_cpointer_t                   lx_mesh_edge_data(lx_mesh_ref_t mesh, lx_mesh_edge_ref_t edge);
-
-/*! set the edge user data
- *
- * @param mesh                  the mesh
- * @param edge                  the edge
- * @param data                  the edge user data
- */
-lx_void_t                       lx_mesh_edge_data_set(lx_mesh_ref_t mesh, lx_mesh_edge_ref_t edge, lx_cpointer_t data);
 
 /*! the edge order
  *

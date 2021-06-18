@@ -24,7 +24,8 @@ static lx_void_t lx_test_utils_mesh_listener(lx_mesh_event_ref_t event) {
 static lx_void_t lx_test_utils_mesh_split() {
     lx_trace_i("==========================================================================");
 
-    lx_mesh_ref_t mesh = lx_mesh_init(lx_element_str(lx_true), lx_element_str(lx_true), lx_element_str(lx_true));
+    lx_element_t  element = lx_element_mem(sizeof(lx_char_t const*), lx_null);
+    lx_mesh_ref_t mesh = lx_mesh_init(element, element, element);
     if (mesh) {
         lx_mesh_listener_set(mesh, lx_test_utils_mesh_listener, mesh);
         lx_mesh_listener_event_add(mesh, LX_MESH_EVENT_FACE_MERGE | LX_MESH_EVENT_FACE_SPLIT | LX_MESH_EVENT_EDGE_MERGE | LX_MESH_EVENT_EDGE_SPLIT);
@@ -48,6 +49,7 @@ static lx_void_t lx_test_utils_mesh_split() {
             lx_mesh_edge_ref_t edge3 = lx_mesh_edge_insert(mesh, edge2, edge0);
 
             // save face name
+            *((lx_char_t const**)lx_mesh_face_data_fastly(lx_mesh_edge_lface(edge0))) = "lface";
             lx_mesh_face_data_set(mesh, lx_mesh_edge_lface(edge0), "lface");
             lx_mesh_face_data_set(mesh, lx_mesh_edge_rface(edge0), "rface");
 
@@ -111,7 +113,8 @@ static lx_void_t lx_test_utils_mesh_split() {
 static lx_void_t lx_test_utils_mesh_splice() {
     lx_trace_i("==========================================================================");
 
-    lx_mesh_ref_t mesh = lx_mesh_init(lx_element_str(lx_true), lx_element_str(lx_true), lx_element_str(lx_true));
+    lx_element_t  element = lx_element_mem(sizeof(lx_char_t const*), lx_null);
+    lx_mesh_ref_t mesh = lx_mesh_init(element, element, element);
     if (mesh) {
         lx_mesh_listener_set(mesh, lx_test_utils_mesh_listener, mesh);
         lx_mesh_listener_event_add(mesh, LX_MESH_EVENT_FACE_MERGE | LX_MESH_EVENT_FACE_SPLIT | LX_MESH_EVENT_EDGE_MERGE | LX_MESH_EVENT_EDGE_SPLIT);
@@ -192,7 +195,8 @@ static lx_void_t lx_test_utils_mesh_splice() {
 static lx_void_t lx_test_utils_mesh_radiation() {
     lx_trace_i("==========================================================================");
 
-    lx_mesh_ref_t mesh = lx_mesh_init(lx_element_str(lx_true), lx_element_str(lx_true), lx_element_str(lx_true));
+    lx_element_t  element = lx_element_mem(sizeof(lx_char_t const*), lx_null);
+    lx_mesh_ref_t mesh = lx_mesh_init(element, element, element);
     if (mesh) {
         lx_mesh_listener_set(mesh, lx_test_utils_mesh_listener, mesh);
         lx_mesh_listener_event_add(mesh, LX_MESH_EVENT_FACE_MERGE | LX_MESH_EVENT_FACE_SPLIT | LX_MESH_EVENT_EDGE_MERGE | LX_MESH_EVENT_EDGE_SPLIT);
@@ -298,7 +302,8 @@ static lx_void_t lx_test_utils_mesh_radiation() {
 static lx_void_t lx_test_utils_mesh_quadrangle() {
     lx_trace_i("==========================================================================");
 
-    lx_mesh_ref_t mesh = lx_mesh_init(lx_element_str(lx_true), lx_element_str(lx_true), lx_element_str(lx_true));
+    lx_element_t  element = lx_element_mem(sizeof(lx_char_t const*), lx_null);
+    lx_mesh_ref_t mesh = lx_mesh_init(element, element, element);
     if (mesh) {
         lx_mesh_listener_set(mesh, lx_test_utils_mesh_listener, mesh);
         lx_mesh_listener_event_add(mesh, LX_MESH_EVENT_FACE_MERGE | LX_MESH_EVENT_FACE_SPLIT | LX_MESH_EVENT_EDGE_MERGE | LX_MESH_EVENT_EDGE_SPLIT);
@@ -383,7 +388,8 @@ static lx_void_t lx_test_utils_mesh_quadrangle() {
 static lx_void_t lx_test_utils_mesh_tetrahedron() {
     lx_trace_i("==========================================================================");
 
-    lx_mesh_ref_t mesh = lx_mesh_init(lx_element_str(lx_true), lx_element_str(lx_true), lx_element_str(lx_true));
+    lx_element_t  element = lx_element_mem(sizeof(lx_char_t const*), lx_null);
+    lx_mesh_ref_t mesh = lx_mesh_init(element, element, element);
     if (mesh) {
         lx_mesh_listener_set(mesh, lx_test_utils_mesh_listener, mesh);
         lx_mesh_listener_event_add(mesh, LX_MESH_EVENT_FACE_MERGE | LX_MESH_EVENT_FACE_SPLIT | LX_MESH_EVENT_EDGE_MERGE | LX_MESH_EVENT_EDGE_SPLIT);
