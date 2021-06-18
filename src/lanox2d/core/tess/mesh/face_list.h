@@ -15,11 +15,10 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        vertex_list.h
- *
+ * @file        face_list.h
  */
-#ifndef LX_CORE_TESS_MESH_VERTEX_LIST_H
-#define LX_CORE_TESS_MESH_VERTEX_LIST_H
+#ifndef LX_CORE_TESS_MESH_FACE_LIST_H
+#define LX_CORE_TESS_MESH_FACE_LIST_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
@@ -35,68 +34,68 @@ lx_extern_c_enter
  * types
  */
 
-// the mesh vertex list type
-typedef lx_typeref(mesh_vertex_list);
+// the mesh face list type
+typedef lx_typeref(mesh_face_list);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * intervertexs
+ * interfaces
  */
 
-/* init the mesh vertex list
+/* init the mesh face list
  *
  * @param element           the element
  *
- * @returned                the vertex list
+ * @return                  the face list
  */
-lx_mesh_vertex_list_ref_t   lx_mesh_vertex_list_init(lx_element_t element);
+lx_mesh_face_list_ref_t     lx_mesh_face_list_init(lx_element_t element);
 
-/* exit the mesh vertex list
+/* exit the mesh face list
  *
- * @param list              the vertex list
+ * @param list              the face list
  */
-lx_void_t                   lx_mesh_vertex_list_exit(lx_mesh_vertex_list_ref_t list);
+lx_void_t                   lx_mesh_face_list_exit(lx_mesh_face_list_ref_t list);
 
-/* clear the mesh vertex list
+/* clear the mesh face list
  *
- * @param list              the vertex list
+ * @param list              the face list
  */
-lx_void_t                   lx_mesh_vertex_list_clear(lx_mesh_vertex_list_ref_t list);
+lx_void_t                   lx_mesh_face_list_clear(lx_mesh_face_list_ref_t list);
 
-/*! the mesh vertex count
+/*! the mesh face count
  *
  * @param list              the list
  *
  * @return                  the item count
  */
-lx_size_t                   lx_mesh_vertex_list_size(lx_mesh_vertex_list_ref_t list);
+lx_size_t                   lx_mesh_face_list_size(lx_mesh_face_list_ref_t list);
 
-/*! make a bare vertex without edges
+/*! make a bare face without faces
  *
  * @param list              the list
  *
- * @return                  the new vertex
+ * @return                  the new face
  */
-lx_mesh_vertex_ref_t        lx_mesh_vertex_list_make(lx_mesh_vertex_list_ref_t list);
+lx_mesh_face_ref_t          lx_mesh_face_list_make(lx_mesh_face_list_ref_t list);
 
-#ifdef LX_DEBUG
-/*! make the vertex info string
+#ifdef __lx_debug__
+/*! make the face string
  *
  * @param list              the list
- * @param vertex            the vertex
+ * @param face              the face
  * @param data              the string data
  * @param maxn              the string maxn
  *
  * @return                  the string size
  */
-lx_long_t                   lx_mesh_vertex_list_cstr(lx_mesh_vertex_list_ref_t list, lx_mesh_vertex_ref_t vertex, lx_char_t* data, lx_size_t maxn);
+lx_long_t                   lx_mesh_face_list_cstr(lx_mesh_face_list_ref_t list, lx_mesh_face_ref_t face, lx_char_t* data, lx_size_t maxn);
 #endif
 
-/*! kill the vertex, release the storage
+/*! kill the face, release the storage
  *
  * @param list              the list
- * @param vertex            the vertex
+ * @param face              the face
  */
-lx_void_t                   lx_mesh_vertex_list_kill(lx_mesh_vertex_list_ref_t list, lx_mesh_vertex_ref_t vertex);
+lx_void_t                   lx_mesh_face_list_kill(lx_mesh_face_list_ref_t list, lx_mesh_face_ref_t face);
 
 /*! the list order
  *
@@ -104,14 +103,14 @@ lx_void_t                   lx_mesh_vertex_list_kill(lx_mesh_vertex_list_ref_t l
  *
  * @return                  the order
  */
-lx_size_t                   lx_mesh_vertex_list_order(lx_mesh_vertex_list_ref_t list);
+lx_size_t                   lx_mesh_face_list_order(lx_mesh_face_list_ref_t list);
 
 /*! set the list order
  *
  * @param list              the list
  * @param order             the order
  */
-lx_void_t                   lx_mesh_vertex_list_order_set(lx_mesh_vertex_list_ref_t list, lx_size_t order);
+lx_void_t                   lx_mesh_face_list_order_set(lx_mesh_face_list_ref_t list, lx_size_t order);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

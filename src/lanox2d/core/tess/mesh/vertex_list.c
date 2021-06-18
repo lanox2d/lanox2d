@@ -48,7 +48,7 @@
  * types
  */
 
-// the mesh vertex list list type
+// the mesh vertex list type
 typedef struct lx_mesh_vertex_list_t_ {
     lx_iterator_base_t          base;
     lx_fixed_pool_ref_t         pool;
@@ -74,8 +74,6 @@ static lx_void_t lx_mesh_vertex_exit(lx_pointer_t data, lx_cpointer_t udata) {
  * implementation
  */
 lx_mesh_vertex_list_ref_t lx_mesh_vertex_list_init(lx_element_t element) {
-    lx_assert_and_check_return_val(element.data && element.dupl && element.repl, lx_null);
-
     lx_bool_t              ok = lx_false;
     lx_mesh_vertex_list_t* list = lx_null;
     do {
@@ -85,7 +83,7 @@ lx_mesh_vertex_list_ref_t lx_mesh_vertex_list_init(lx_element_t element) {
 
         list->element = element;
         list->order = LX_MESH_ORDER_INSERT_TAIL;
-        lx_list_entry_init_(&list->head, 0, sizeof(lx_mesh_vertex_t) + element.size, lx_null);
+        lx_list_entry_init_(&list->head, 0, sizeof(lx_mesh_vertex_t) + element.size);
 
         // init pool, item = vertex + data
         list->pool = lx_fixed_pool_init(LX_MESH_VERTEX_LIST_GROW, sizeof(lx_mesh_vertex_t) + element.size, lx_mesh_vertex_exit, (lx_cpointer_t)list);
@@ -117,25 +115,15 @@ lx_void_t lx_mesh_vertex_list_exit(lx_mesh_vertex_list_ref_t self) {
 
 lx_void_t lx_mesh_vertex_list_clear(lx_mesh_vertex_list_ref_t self) {
     lx_mesh_vertex_list_t* list = (lx_mesh_vertex_list_t*)self;
-    lx_assert_and_check_return(list);
-
-    // clear pool
-    if (list->pool) lx_fixed_pool_clear(list->pool);
-
-    // clear head
-    lx_list_entry_clear(&list->head);
-
+    if (list) {
+        if (list->pool) {
+            lx_fixed_pool_clear(list->pool);
+        }
+        lx_list_entry_clear(&list->head);
 #ifdef LX_DEBUG
-    // clear id
-    list->id = 0;
+        list->id = 0;
 #endif
-}
-
-lx_iterator_ref_t lx_mesh_vertex_list_itor(lx_mesh_vertex_list_ref_t self) {
-    lx_mesh_vertex_list_t* list = (lx_mesh_vertex_list_t*)self;
-    lx_assert_and_check_return_val(list, lx_null);
-
-    return lx_list_entry_itor(&list->head);
+    }
 }
 
 lx_size_t lx_mesh_vertex_list_size(lx_mesh_vertex_list_ref_t self) {
@@ -150,21 +138,15 @@ lx_mesh_vertex_ref_t lx_mesh_vertex_list_make(lx_mesh_vertex_list_ref_t self) {
     lx_mesh_vertex_list_t* list = (lx_mesh_vertex_list_t*)self;
     lx_assert_and_check_return_val(list && list->pool, lx_null);
 
-    // make it
     lx_mesh_vertex_ref_t vertex = (lx_mesh_vertex_ref_t)lx_fixed_pool_malloc0(list->pool);
     lx_assert_and_check_return_val(vertex, lx_null);
 
 #ifdef LX_DEBUG
-    // init id
     vertex->id = ++list->id;
-
-    // save list
     vertex->list = (lx_pointer_t)list;
 #endif
 
-    // insert to the vertex list
-    switch (list->order)
-    {
+    switch (list->order) {
     case LX_MESH_ORDER_INSERT_HEAD:
         lx_list_entry_insert_head(&list->head, &vertex->entry);
         break;
@@ -173,14 +155,12 @@ lx_mesh_vertex_ref_t lx_mesh_vertex_list_make(lx_mesh_vertex_list_ref_t self) {
         lx_list_entry_insert_tail(&list->head, &vertex->entry);
         break;
     }
-
-    // ok
     return vertex;
 }
+
 #ifdef LX_DEBUG
-lx_long_t lx_mesh_vertex_list_cstr(lx_mesh_vertex_list_ref_t self, lx_mesh_vertex_ref_t vertex, lx_char_t* data, lx_size_t maxn)
-{
-    // check
+lx_long_t lx_mesh_vertex_list_cstr(lx_mesh_vertex_list_ref_t self, lx_mesh_vertex_ref_t vertex, lx_char_t* data, lx_size_t maxn) {
+#if 0
     lx_mesh_vertex_list_t* list = (lx_mesh_vertex_list_t*)self;
     lx_assert_and_check_return_val(list && list->element.cstr && vertex && maxn, -1);
 
@@ -188,44 +168,37 @@ lx_long_t lx_mesh_vertex_list_cstr(lx_mesh_vertex_list_ref_t self, lx_mesh_verte
     lx_char_t       vertex_info[256] = {0};
     lx_cpointer_t   vertex_data = lx_mesh_vertex_list_data(list, vertex);
     return vertex_data? lx_snprintf(data, maxn, "(%s)", list->element.cstr(&list->element, vertex_data, vertex_info, sizeof(vertex_info))) : lx_snprintf(data, maxn, "(v%lu)", vertex->id);
+#else
+    return -1;
+#endif
 }
 #endif
-lx_void_t lx_mesh_vertex_list_kill(lx_mesh_vertex_list_ref_t self, lx_mesh_vertex_ref_t vertex)
-{
-    // check
+
+lx_void_t lx_mesh_vertex_list_kill(lx_mesh_vertex_list_ref_t self, lx_mesh_vertex_ref_t vertex) {
     lx_mesh_vertex_list_t* list = (lx_mesh_vertex_list_t*)self;
     lx_assert_and_check_return(list && list->pool && vertex);
 
 #ifdef LX_DEBUG
-    // check
     lx_assert(vertex->id);
-
-    // clear id
     vertex->id = 0;
 #endif
 
     // remove from the vertex list
     lx_list_entry_remove(&list->head, &vertex->entry);
-
-    // exit it
     lx_fixed_pool_free(list->pool, vertex);
 }
-lx_size_t lx_mesh_vertex_list_order(lx_mesh_vertex_list_ref_t self)
-{
-    // check
+
+lx_size_t lx_mesh_vertex_list_order(lx_mesh_vertex_list_ref_t self) {
     lx_mesh_vertex_list_t* list = (lx_mesh_vertex_list_t*)self;
     lx_assert_and_check_return_val(list, LX_MESH_ORDER_INSERT_TAIL);
 
-    // the order
     return list->order;
 }
-lx_void_t lx_mesh_vertex_list_order_set(lx_mesh_vertex_list_ref_t self, lx_size_t order)
-{
-    // check
+
+lx_void_t lx_mesh_vertex_list_order_set(lx_mesh_vertex_list_ref_t self, lx_size_t order) {
     lx_mesh_vertex_list_t* list = (lx_mesh_vertex_list_t*)self;
     lx_assert_and_check_return(list);
 
-    // set the order
     list->order = order;
 }
 

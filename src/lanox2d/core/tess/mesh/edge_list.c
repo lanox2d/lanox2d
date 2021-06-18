@@ -41,7 +41,7 @@
  * types
  */
 
-// the mesh edge list list type
+// the mesh edge list type
 typedef struct lx_mesh_edge_list_t {
     lx_iterator_base_t      base;
     lx_fixed_pool_ref_t     pool;
