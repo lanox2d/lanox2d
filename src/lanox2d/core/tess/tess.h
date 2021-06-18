@@ -25,6 +25,7 @@
  * includes
  */
 #include "prefix.h"
+#include "mesh.h"
 #include "geometry.h"
 
 #endif
