@@ -346,6 +346,15 @@ typedef lx_void_t               (*lx_mesh_listener_t)(lx_mesh_event_ref_t event)
  */
 typedef lx_typeref(mesh);
 
+// the mesh edge list ref type
+typedef lx_typeref(mesh_edge_list);
+
+// the mesh face list type
+typedef lx_typeref(mesh_face_list);
+
+// the mesh vertex list type
+typedef lx_typeref(mesh_vertex_list);
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * interfaces
  */
@@ -395,28 +404,20 @@ lx_void_t                       lx_mesh_listener_set(lx_mesh_ref_t mesh, lx_mesh
  */
 lx_void_t                       lx_mesh_listener_event_add(lx_mesh_ref_t mesh, lx_size_t events);
 
-/*! delete the mesh listener event
+/*! remove the mesh listener event
  *
  * @param mesh                  the mesh
  * @param events                the observed events
  */
 lx_void_t                       lx_mesh_listener_event_remove(lx_mesh_ref_t mesh, lx_size_t events);
 
-/*! the head vertex
+/*! get vertex list
  *
  * @param mesh                  the mesh
  *
  * @return                      the vertex
  */
-lx_mesh_vertex_ref_t            lx_mesh_vertex_head(lx_mesh_ref_t mesh);
-
-/*! the last vertex
- *
- * @param mesh                  the mesh
- *
- * @return                      the vertex
- */
-lx_mesh_vertex_ref_t            lx_mesh_vertex_last(lx_mesh_ref_t mesh);
+lx_mesh_vertex_list_ref_t       lx_mesh_vertex_list(lx_mesh_ref_t mesh);
 
 /*! the vertex order
  *
@@ -433,21 +434,13 @@ lx_size_t                       lx_mesh_vertex_order(lx_mesh_ref_t mesh);
  */
 lx_void_t                       lx_mesh_vertex_order_set(lx_mesh_ref_t mesh, lx_size_t order);
 
-/*! the head face
+/*! get face list
  *
  * @param mesh                  the mesh
  *
  * @return                      the face
  */
-lx_mesh_face_ref_t              lx_mesh_face_head(lx_mesh_ref_t mesh);
-
-/*! the last face
- *
- * @param mesh                  the mesh
- *
- * @return                      the face
- */
-lx_mesh_face_ref_t              lx_mesh_face_last(lx_mesh_ref_t mesh);
+lx_mesh_face_list_ref_t         lx_mesh_face_list(lx_mesh_ref_t mesh);
 
 /*! the face order
  *
@@ -464,37 +457,13 @@ lx_size_t                       lx_mesh_face_order(lx_mesh_ref_t mesh);
  */
 lx_void_t                       lx_mesh_face_order_set(lx_mesh_ref_t mesh, lx_size_t order);
 
-/*! the head edge
+/*! get edge list
  *
  * @param mesh                  the mesh
  *
  * @return                      the edge
  */
-lx_mesh_edge_ref_t              lx_mesh_edge_head(lx_mesh_ref_t mesh);
-
-/*! the last edge
- *
- * @param mesh                  the mesh
- *
- * @return                      the edge
- */
-lx_mesh_edge_ref_t              lx_mesh_edge_last(lx_mesh_ref_t mesh);
-
-/*! the tail edge for walking edges more flexible and faster than iterator
- *
- * @code
- * lx_mesh_edge_ref_t edge = lx_mesh_edge_head(mesh);
- * lx_mesh_edge_ref_t tail = lx_mesh_edge_tail(mesh);
- * for (; edge != tail; edge = lx_mesh_edge_next(edge))
- * {
- * }
- * @endcode
- *
- * @param mesh                  the mesh
- *
- * @return                      the edge, it's members are invalid and cannot modify them
- */
-lx_mesh_edge_ref_t              lx_mesh_edge_tail(lx_mesh_ref_t mesh);
+lx_mesh_edge_list_ref_t         lx_mesh_edge_list(lx_mesh_ref_t mesh);
 
 /*! the edge order
  *
@@ -740,7 +709,7 @@ lx_mesh_edge_ref_t              lx_mesh_edge_insert(lx_mesh_ref_t mesh, lx_mesh_
  *             .                            edge_dst.lface
  *                  .
  *      edge_org         .       edge_removed                       edge_dst
- *  -----------------> vertex ----------------> vertex_remove ------------------->
+ *  -----------------> vertex ----------------> vertex_removed ------------------->
  *                                                .    .
  *                  edge_org.rface            .             .
  *                                        .                      .
@@ -830,12 +799,12 @@ lx_void_t                       lx_mesh_edge_remove(lx_mesh_ref_t mesh, lx_mesh_
  */
 lx_mesh_edge_ref_t              lx_mesh_edge_connect(lx_mesh_ref_t mesh, lx_mesh_edge_ref_t edge_org, lx_mesh_edge_ref_t edge_dst);
 
-/*! delete edge
+/*! disconnect edge
  *
  * the operation will disconnect the edge e from the rest of the structure
  * (this may cause the rest of the structure to fall apart in two separate components).
  *
- * in a sense, the delete operation is the inverse of the connect operation.
+ * in a sense, the disconnect operation is the inverse of the connect operation.
  *
  * <pre>
  *
@@ -849,7 +818,7 @@ lx_mesh_edge_ref_t              lx_mesh_edge_connect(lx_mesh_ref_t mesh, lx_mesh
  *  ---------------------->                   ---------------------->
  * |                                         |                       |
  * |                                         |                       |
- * |         face             <= delete <=   |         face          | edge_removed      face_remove
+ * |         face         <= disconnect <=   |         face          | edge_removed      face_remove
  * |                                         |                       |
  * |                                         |                      \|/
  *  <---------------------                    <----------------------
@@ -863,10 +832,10 @@ lx_mesh_edge_ref_t              lx_mesh_edge_connect(lx_mesh_ref_t mesh, lx_mesh
  *
  *         edge_dst                                                     edge_dst
  *  <----------------------                                     <-----------------------.
- * |                       |       edge_org                    |            edge_removed .  |
+ * |                       |       edge_org                    |        edge_removed .  |
  * |                       |    ------------->                 |     ------------->.    |
  * |                       |   |              |                |    |   edge_org   |    |
- * |       face_new        |   |              | <= delete <=   |    |              |    |
+ * |       face_new        |   |              | <= remove <=   |    |              |    |
  * |                       |   |              |                |    |              |    |
  * |                       |    <-------------                 |     <-------------     |
  * |                       |       face_org                    |        face_org        |
@@ -875,9 +844,9 @@ lx_mesh_edge_ref_t              lx_mesh_edge_connect(lx_mesh_ref_t mesh, lx_mesh
  * </pre>
  *
  * @param mesh                  the mesh
- * @param edge_removed          the deleted edge
+ * @param edge_removed          the removed edge
  */
-lx_void_t                       lx_mesh_edge_delete(lx_mesh_ref_t mesh, lx_mesh_edge_ref_t edge_removed);
+lx_void_t                       lx_mesh_edge_disconnect(lx_mesh_ref_t mesh, lx_mesh_edge_ref_t edge_removed);
 
 #ifdef LX_DEBUG
 /*! dump mesh

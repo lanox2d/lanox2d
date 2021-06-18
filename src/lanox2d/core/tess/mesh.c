@@ -22,7 +22,9 @@
  * includes
  */
 #include "mesh.h"
-#include "mesh/mesh.h"
+#include "mesh/edge_list.h"
+#include "mesh/face_list.h"
+#include "mesh/vertex_list.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * macros
@@ -257,7 +259,7 @@ static lx_inline lx_void_t lx_mesh_kill_face(lx_mesh_t* mesh, lx_mesh_face_ref_t
 static lx_inline lx_void_t lx_mesh_kill_face_at_orbit(lx_mesh_t* mesh, lx_mesh_face_ref_t face, lx_mesh_face_ref_t face_new) {
     lx_assert_and_check_return(mesh && face);
 
-    // update lface for all edges leaving the deleted face
+    // update lface for all edges leaving the removed face
     lx_mesh_save_face_at_orbit(lx_mesh_face_edge(face), face_new);
     lx_mesh_kill_face(mesh, face);
 }
@@ -272,7 +274,7 @@ static lx_inline lx_void_t lx_mesh_kill_vertex(lx_mesh_t* mesh, lx_mesh_vertex_r
 static lx_inline lx_void_t lx_mesh_kill_vertex_at_orbit(lx_mesh_t* mesh, lx_mesh_vertex_ref_t vertex, lx_mesh_vertex_ref_t org_new) {
     lx_assert_and_check_return(mesh && vertex);
 
-    // update origin for all edges leaving the deleted vertex
+    // update origin for all edges leaving the removed vertex
     lx_mesh_save_vertex_at_orbit(lx_mesh_vertex_edge(vertex), org_new);
     lx_mesh_kill_vertex(mesh, vertex);
 }
@@ -383,7 +385,7 @@ lx_mesh_ref_t lx_mesh_init(lx_element_t edge_element, lx_element_t face_element,
 }
 
 lx_void_t lx_mesh_exit(lx_mesh_ref_t self) {
-    lx_mesh_t* mesh = (lx_mesh_t*)mesh;
+    lx_mesh_t* mesh = (lx_mesh_t*)self;
     if (mesh) {
         if (mesh->edges) {
             lx_mesh_edge_list_exit(mesh->edges);
@@ -402,7 +404,7 @@ lx_void_t lx_mesh_exit(lx_mesh_ref_t self) {
 }
 
 lx_void_t lx_mesh_clear(lx_mesh_ref_t self) {
-    lx_mesh_t* mesh = (lx_mesh_t*)mesh;
+    lx_mesh_t* mesh = (lx_mesh_t*)self;
     if (mesh) {
         if (mesh->edges) {
             lx_mesh_edge_list_clear(mesh->edges);
@@ -417,139 +419,101 @@ lx_void_t lx_mesh_clear(lx_mesh_ref_t self) {
 }
 
 lx_bool_t lx_mesh_is_empty(lx_mesh_ref_t self) {
-    if (lx_iterator_size(lx_mesh_edge_itor(mesh))) {
+    lx_mesh_t* mesh = (lx_mesh_t*)self;
+    lx_assert_and_check_return_val(mesh, lx_true);
+    if (lx_mesh_edge_list_size(mesh->edges)) {
         return lx_false;
     }
-    if (lx_iterator_size(lx_mesh_face_itor(mesh))) {
+    if (lx_mesh_face_list_size(mesh->faces)) {
         return lx_false;
     }
-    if (lx_iterator_size(lx_mesh_vertex_itor(mesh))) {
+    if (lx_mesh_vertex_list_size(mesh->vertices)) {
         return lx_false;
     }
     return lx_true;
 }
 
 lx_void_t lx_mesh_listener_set(lx_mesh_ref_t self, lx_mesh_listener_t listener, lx_cpointer_t udata) {
-    lx_mesh_t* mesh = (lx_mesh_t*)mesh;
-    lx_assert_and_check_return(mesh);
-
-    mesh->listener       = listener;
-    mesh->listener_udata = udata;
+    lx_mesh_t* mesh = (lx_mesh_t*)self;
+    if (mesh) {
+        mesh->listener       = listener;
+        mesh->listener_udata = udata;
+    }
 }
 
 lx_void_t lx_mesh_listener_event_add(lx_mesh_ref_t self, lx_size_t events) {
-    lx_mesh_t* mesh = (lx_mesh_t*)mesh;
-    lx_assert_and_check_return(mesh);
-
-    mesh->listener_events |= events;
+    lx_mesh_t* mesh = (lx_mesh_t*)self;
+    if (mesh) {
+        mesh->listener_events |= events;
+    }
 }
 
 lx_void_t lx_mesh_listener_event_remove(lx_mesh_ref_t self, lx_size_t events) {
-    lx_mesh_t* mesh = (lx_mesh_t*)mesh;
-    lx_assert_and_check_return(mesh);
-
-    mesh->listener_events &= ~events;
+    lx_mesh_t* mesh = (lx_mesh_t*)self;
+    if (mesh) {
+        mesh->listener_events &= ~events;
+    }
 }
 
-#if 0
-lx_mesh_vertex_ref_t lx_mesh_vertex_head(lx_mesh_ref_t self) {
-    lx_iterator_ref_t iterator = lx_mesh_vertex_itor(mesh);
-    lx_assert_and_check_return_val(iterator, lx_null);
-
-    return (lx_mesh_vertex_ref_t)lx_iterator_item(iterator, lx_iterator_head(iterator));
+lx_mesh_vertex_list_ref_t lx_mesh_vertex_list(lx_mesh_ref_t self) {
+    lx_mesh_t* mesh = (lx_mesh_t*)self;
+    return mesh? mesh->vertices : lx_null;
 }
-
-lx_mesh_vertex_ref_t lx_mesh_vertex_last(lx_mesh_ref_t self) {
-    lx_iterator_ref_t iterator = lx_mesh_vertex_itor(mesh);
-    lx_assert_and_check_return_val(iterator, lx_null);
-
-    return (lx_mesh_vertex_ref_t)lx_iterator_item(iterator, lx_iterator_last(iterator));
-}
-#endif
 
 lx_size_t lx_mesh_vertex_order(lx_mesh_ref_t self) {
-    lx_mesh_t* mesh = (lx_mesh_t*)mesh;
+    lx_mesh_t* mesh = (lx_mesh_t*)self;
     lx_assert_and_check_return_val(mesh && mesh->vertices, LX_MESH_ORDER_INSERT_TAIL);
 
     return lx_mesh_vertex_list_order(mesh->vertices);
 }
 
 lx_void_t lx_mesh_vertex_order_set(lx_mesh_ref_t self, lx_size_t order) {
-    lx_mesh_t* mesh = (lx_mesh_t*)mesh;
+    lx_mesh_t* mesh = (lx_mesh_t*)self;
     lx_assert_and_check_return(mesh && mesh->vertices);
 
     lx_mesh_vertex_list_order_set(mesh->vertices, order);
 }
 
-#if 0
-lx_mesh_face_ref_t lx_mesh_face_head(lx_mesh_ref_t self) {
-    lx_iterator_ref_t iterator = lx_mesh_face_itor(mesh);
-    lx_assert_and_check_return_val(iterator, lx_null);
-
-    return (lx_mesh_face_ref_t)lx_iterator_item(iterator, lx_iterator_head(iterator));
+lx_mesh_face_list_ref_t lx_mesh_face_list(lx_mesh_ref_t self) {
+    lx_mesh_t* mesh = (lx_mesh_t*)self;
+    return mesh? mesh->faces : lx_null;
 }
-
-lx_mesh_face_ref_t lx_mesh_face_last(lx_mesh_ref_t self) {
-    lx_iterator_ref_t iterator = lx_mesh_face_itor(mesh);
-    lx_assert_and_check_return_val(iterator, lx_null);
-
-    return (lx_mesh_face_ref_t)lx_iterator_item(iterator, lx_iterator_last(iterator));
-}
-#endif
 
 lx_size_t lx_mesh_face_order(lx_mesh_ref_t self) {
-    lx_mesh_t* mesh = (lx_mesh_t*)mesh;
+    lx_mesh_t* mesh = (lx_mesh_t*)self;
     lx_assert_and_check_return_val(mesh && mesh->faces, LX_MESH_ORDER_INSERT_TAIL);
 
     return lx_mesh_face_list_order(mesh->faces);
 }
 
 lx_void_t lx_mesh_face_order_set(lx_mesh_ref_t self, lx_size_t order) {
-    lx_mesh_t* mesh = (lx_mesh_t*)mesh;
+    lx_mesh_t* mesh = (lx_mesh_t*)self;
     lx_assert_and_check_return(mesh && mesh->faces);
 
     lx_mesh_face_list_order_set(mesh->faces, order);
 }
 
-#if 0
-lx_mesh_edge_ref_t lx_mesh_edge_head(lx_mesh_ref_t self) {
-    lx_iterator_ref_t iterator = lx_mesh_edge_itor(mesh);
-    lx_assert_and_check_return_val(iterator, lx_null);
-
-    return (lx_mesh_edge_ref_t)lx_iterator_item(iterator, lx_iterator_head(iterator));
+lx_mesh_edge_list_ref_t lx_mesh_edge_list(lx_mesh_ref_t self) {
+    lx_mesh_t* mesh = (lx_mesh_t*)self;
+    return mesh? mesh->edges : lx_null;
 }
-
-lx_mesh_edge_ref_t lx_mesh_edge_last(lx_mesh_ref_t self) {
-    lx_iterator_ref_t iterator = lx_mesh_edge_itor(mesh);
-    lx_assert_and_check_return_val(iterator, lx_null);
-
-    return (lx_mesh_edge_ref_t)lx_iterator_item(iterator, lx_iterator_last(iterator));
-}
-
-lx_mesh_edge_ref_t lx_mesh_edge_tail(lx_mesh_ref_t self) {
-    lx_iterator_ref_t iterator = lx_mesh_edge_itor(mesh);
-    lx_assert_and_check_return_val(iterator, lx_null);
-
-    return (lx_mesh_edge_ref_t)lx_iterator_item(iterator, lx_iterator_tail(iterator));
-}
-#endif
 
 lx_size_t lx_mesh_edge_order(lx_mesh_ref_t self) {
-    lx_mesh_t* mesh = (lx_mesh_t*)mesh;
+    lx_mesh_t* mesh = (lx_mesh_t*)self;
     lx_assert_and_check_return_val(mesh && mesh->edges, LX_MESH_ORDER_INSERT_TAIL);
 
     return lx_mesh_edge_list_order(mesh->edges);
 }
 
 lx_void_t lx_mesh_edge_order_set(lx_mesh_ref_t self, lx_size_t order) {
-    lx_mesh_t* mesh = (lx_mesh_t*)mesh;
+    lx_mesh_t* mesh = (lx_mesh_t*)self;
     lx_assert_and_check_return(mesh && mesh->edges);
 
     lx_mesh_edge_list_order_set(mesh->edges, order);
 }
 
 lx_mesh_edge_ref_t lx_mesh_edge_make(lx_mesh_ref_t self) {
-    lx_mesh_t* mesh = (lx_mesh_t*)mesh;
+    lx_mesh_t* mesh = (lx_mesh_t*)self;
     lx_assert_and_check_return_val(mesh, lx_null);
 
     lx_bool_t               ok = lx_false;
@@ -557,8 +521,7 @@ lx_mesh_edge_ref_t lx_mesh_edge_make(lx_mesh_ref_t self) {
     lx_mesh_face_ref_t      face = lx_null;
     lx_mesh_vertex_ref_t    org = lx_null;
     lx_mesh_vertex_ref_t    dst = lx_null;
-    do
-    {
+    do {
         // make the org
         org = lx_mesh_make_vertex(mesh);
         lx_assert_and_check_break(org);
@@ -592,43 +555,37 @@ lx_mesh_edge_ref_t lx_mesh_edge_make(lx_mesh_ref_t self) {
 
     } while (0);
 
-    // failed?
-    if (!ok)
-    {
-        // kill the org
-        if (org) lx_mesh_kill_vertex(mesh, org);
-        org = lx_null;
-
-        // kill the dst
-        if (dst) lx_mesh_kill_vertex(mesh, dst);
-        dst = lx_null;
-
-        // kill the face
-        if (face) lx_mesh_kill_face(mesh, face);
-        face = lx_null;
-
-        // kill the edge
-        if (edge) lx_mesh_kill_edge(mesh, edge);
-        edge = lx_null;
+    if (!ok) {
+        if (org) {
+            lx_mesh_kill_vertex(mesh, org);
+            org = lx_null;
+        }
+        if (dst) {
+            lx_mesh_kill_vertex(mesh, dst);
+            dst = lx_null;
+        }
+        if (face) {
+            lx_mesh_kill_face(mesh, face);
+            face = lx_null;
+        }
+        if (edge) {
+            lx_mesh_kill_edge(mesh, edge);
+            edge = lx_null;
+        }
     }
-
-    // ok?
     return edge;
 }
-lx_mesh_edge_ref_t lx_mesh_edge_make_loop(lx_mesh_ref_t self, lx_bool_t is_ccw)
-{
-    // check
-    lx_mesh_t* mesh = (lx_mesh_t*)mesh;
+
+lx_mesh_edge_ref_t lx_mesh_edge_make_loop(lx_mesh_ref_t self, lx_bool_t is_ccw) {
+    lx_mesh_t* mesh = (lx_mesh_t*)self;
     lx_assert_and_check_return_val(mesh, lx_null);
 
-    // done
     lx_bool_t               ok = lx_false;
     lx_mesh_edge_ref_t      edge = lx_null;
     lx_mesh_face_ref_t      lface = lx_null;
     lx_mesh_face_ref_t      rface = lx_null;
     lx_mesh_vertex_ref_t    vertex = lx_null;
-    do
-    {
+    do {
         // make the vertex
         vertex = lx_mesh_make_vertex(mesh);
         lx_assert_and_check_break(vertex);
@@ -662,33 +619,29 @@ lx_mesh_edge_ref_t lx_mesh_edge_make_loop(lx_mesh_ref_t self, lx_bool_t is_ccw)
 
     } while (0);
 
-    // failed?
-    if (!ok)
-    {
-        // kill the vertex
-        if (vertex) lx_mesh_kill_vertex(mesh, vertex);
-        vertex = lx_null;
-
-        // kill the left face
-        if (lface) lx_mesh_kill_face(mesh, lface);
-        lface = lx_null;
-
-        // kill the right face
-        if (rface) lx_mesh_kill_face(mesh, rface);
-        rface = lx_null;
-
-        // kill the edge
-        if (edge) lx_mesh_kill_edge(mesh, edge);
-        edge = lx_null;
+    if (!ok) {
+        if (vertex) {
+            lx_mesh_kill_vertex(mesh, vertex);
+            vertex = lx_null;
+        }
+        if (lface) {
+            lx_mesh_kill_face(mesh, lface);
+            lface = lx_null;
+        }
+        if (rface) {
+            lx_mesh_kill_face(mesh, rface);
+            rface = lx_null;
+        }
+        if (edge) {
+            lx_mesh_kill_edge(mesh, edge);
+            edge = lx_null;
+        }
     }
-
-    // ok?
     return edge;
 }
-lx_mesh_edge_ref_t lx_mesh_edge_split(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_org)
-{
-    // check
-    lx_mesh_t* mesh = (lx_mesh_t*)mesh;
+
+lx_mesh_edge_ref_t lx_mesh_edge_split(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_org) {
+    lx_mesh_t* mesh = (lx_mesh_t*)self;
     lx_assert_and_check_return_val(mesh && edge_org, lx_null);
 
     // check edge
@@ -709,8 +662,7 @@ lx_mesh_edge_ref_t lx_mesh_edge_split(lx_mesh_ref_t self, lx_mesh_edge_ref_t edg
      */
     lx_mesh_edge_ref_t edge_new = lx_null;
     lx_mesh_edge_ref_t edge_org_dprev = lx_mesh_edge_dprev(edge_org);
-    if (edge_org_dprev != edge_org)
-    {
+    if (edge_org_dprev != edge_org) {
         /* insert a new edge
          *
          * before:
@@ -735,7 +687,7 @@ lx_mesh_edge_ref_t lx_mesh_edge_split(lx_mesh_ref_t self, lx_mesh_edge_ref_t edg
          *                .                                                    .              .
          *              .                                                                         .
          */
-        lx_mesh_edge_ref_t edge_new_sym = lx_mesh_edge_insert(mesh, edge_org_dprev, lx_mesh_edge_sym(edge_org));
+        lx_mesh_edge_ref_t edge_new_sym = lx_mesh_edge_insert(self, edge_org_dprev, lx_mesh_edge_sym(edge_org));
         lx_assert(edge_new_sym);
 
         /* reverse the new edge
@@ -751,17 +703,16 @@ lx_mesh_edge_ref_t lx_mesh_edge_split(lx_mesh_ref_t self, lx_mesh_edge_ref_t edg
          */
         edge_new = lx_mesh_edge_sym(edge_new_sym);
         lx_assert(edge_new);
-    }
-    /* the special case
-     *
-     *       .
-     *         .        edge_org
-     * . . . . . org ---------------> dst
-     *       .
-     *     .
-     */
-    else
-    {
+    } else {
+        /* the special case
+         *
+         *       .
+         *         .        edge_org
+         * . . . . . org ---------------> dst
+         *       .
+         *     .
+         */
+
         /* append a new edge
          *                             lface
          *       .
@@ -770,7 +721,7 @@ lx_mesh_edge_ref_t lx_mesh_edge_split(lx_mesh_ref_t self, lx_mesh_edge_ref_t edg
          *       .
          *     .                       rface
          */
-        lx_mesh_edge_ref_t edge_new_sym = lx_mesh_edge_append(mesh, edge_org);
+        lx_mesh_edge_ref_t edge_new_sym = lx_mesh_edge_append(self, edge_org);
         lx_assert(edge_new_sym);
 
         // the new edge
@@ -841,27 +792,24 @@ lx_mesh_edge_ref_t lx_mesh_edge_split(lx_mesh_ref_t self, lx_mesh_edge_ref_t edg
     // ok
     return edge_new;
 }
-lx_void_t lx_mesh_edge_splice(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_org, lx_mesh_edge_ref_t edge_dst)
-{
-    // check
-    lx_mesh_t* mesh = (lx_mesh_t*)mesh;
+
+lx_void_t lx_mesh_edge_splice(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_org, lx_mesh_edge_ref_t edge_dst) {
+    lx_mesh_t* mesh = (lx_mesh_t*)self;
     lx_assert_and_check_return(mesh && edge_org && edge_dst);
 
     // check edges
     lx_mesh_check_edge(edge_org);
     lx_mesh_check_edge(edge_dst);
 
-    // done
     lx_bool_t joining_faces = lx_false;
     lx_bool_t joining_vertices = lx_false;
-    do
-    {
+    do {
         // is same? ok
         lx_check_break(edge_org != edge_dst);
 
         // two vertices are disjoint?
-        if (lx_mesh_edge_org(edge_org) != lx_mesh_edge_org(edge_dst))
-        {
+        if (lx_mesh_edge_org(edge_org) != lx_mesh_edge_org(edge_dst)) {
+
             // joins the two vertices
             joining_vertices = lx_true;
 
@@ -870,8 +818,8 @@ lx_void_t lx_mesh_edge_splice(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_org, l
         }
 
         // two faces are disjoint?
-        if (lx_mesh_edge_lface(edge_org) != lx_mesh_edge_lface(edge_dst))
-        {
+        if (lx_mesh_edge_lface(edge_org) != lx_mesh_edge_lface(edge_dst)) {
+
             // joins the two faces
             joining_faces = lx_true;
 
@@ -886,21 +834,19 @@ lx_void_t lx_mesh_edge_splice(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_org, l
         lx_mesh_splice_edge(edge_dst, edge_org);
 
         // two vertices are disjoint?
-        if (!joining_vertices)
-        {
+        if (!joining_vertices) {
             /* make new vertex at edge_dst.org
              * and update origin for all edges leaving the origin orbit of the edge_dst
              */
             lx_mesh_vertex_ref_t vertex_new = lx_mesh_make_vertex_at_orbit(mesh, edge_dst);
             lx_assert_and_check_break(vertex_new);
 
-            // update the reference edge, the old reference edge may have been deleted
+            // update the reference edge, the old reference edge may have been removed
             lx_mesh_vertex_edge_set(lx_mesh_edge_org(edge_org), edge_org);
         }
 
         // two faces are disjoint?
-        if (!joining_faces)
-        {
+        if (!joining_faces) {
             /* make new face at edge_dst.lface
              * and update lface for all edges leaving the left orbit of the edge_dst
              */
@@ -910,23 +856,20 @@ lx_void_t lx_mesh_edge_splice(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_org, l
             // post the split event, split(edge_org.lface) => (edge_org.lface, face_new)
             lx_mesh_post_event(mesh, LX_MESH_EVENT_FACE_SPLIT, lx_mesh_edge_lface(edge_org), face_new);
 
-            // update the reference edge, the old reference edge may have been deleted
+            // update the reference edge, the old reference edge may have been removed
             lx_mesh_face_edge_set(lx_mesh_edge_lface(edge_org), edge_org);
         }
 
     } while (0);
 }
-lx_mesh_edge_ref_t lx_mesh_edge_append(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_org)
-{
-    // check
-    lx_mesh_t* mesh = (lx_mesh_t*)mesh;
+
+lx_mesh_edge_ref_t lx_mesh_edge_append(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_org) {
+    lx_mesh_t* mesh = (lx_mesh_t*)self;
     lx_assert_and_check_return_val(mesh && edge_org, lx_null);
 
-    // done
     lx_bool_t           ok = lx_false;
     lx_mesh_edge_ref_t  edge_new = lx_null;
-    do
-    {
+    do {
         // check edge
         lx_mesh_check_edge(edge_org);
 
@@ -977,35 +920,27 @@ lx_mesh_edge_ref_t lx_mesh_edge_append(lx_mesh_ref_t self, lx_mesh_edge_ref_t ed
         /* make the new vertex
          * and update origin for all edges leaving the destination orbit of the new edge
          */
-        if (!lx_mesh_make_vertex_at_orbit(mesh, edge_sym_new)) break;
-
-        // ok
+        if (!lx_mesh_make_vertex_at_orbit(mesh, edge_sym_new)) {
+            break;
+        }
         ok = lx_true;
 
     } while (0);
 
-    // failed
-    if (!ok)
-    {
-        // kill the new edge
-        if (edge_new) lx_mesh_kill_edge(mesh, edge_new);
+    if (!ok && edge_new) {
+        lx_mesh_kill_edge(mesh, edge_new);
         edge_new = lx_null;
     }
-
-    // ok?
     return edge_new;
 }
-lx_mesh_edge_ref_t lx_mesh_edge_insert(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_org, lx_mesh_edge_ref_t edge_dst)
-{
-    // check
-    lx_mesh_t* mesh = (lx_mesh_t*)mesh;
+
+lx_mesh_edge_ref_t lx_mesh_edge_insert(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_org, lx_mesh_edge_ref_t edge_dst) {
+    lx_mesh_t* mesh = (lx_mesh_t*)self;
     lx_assert_and_check_return_val(mesh && edge_org && edge_dst, lx_null);
 
-    // done
     lx_bool_t           ok = lx_false;
     lx_mesh_edge_ref_t  edge_new = lx_null;
-    do
-    {
+    do {
         // check edges
         lx_mesh_check_edge(edge_org);
         lx_mesh_check_edge(edge_dst);
@@ -1090,35 +1025,31 @@ lx_mesh_edge_ref_t lx_mesh_edge_insert(lx_mesh_ref_t self, lx_mesh_edge_ref_t ed
         /* make the new vertex
          * and update origin for all edges leaving the destination orbit of the new edge
          */
-        if (!lx_mesh_make_vertex_at_orbit(mesh, edge_sym_new)) break;
-
-        // ok
+        if (!lx_mesh_make_vertex_at_orbit(mesh, edge_sym_new)) {
+            break;
+        }
         ok = lx_true;
 
     } while (0);
 
-    // failed
-    if (!ok)
-    {
-        // kill the new edge
-        if (edge_new) lx_mesh_kill_edge(mesh, edge_new);
+    if (!ok && edge_new) {
+        lx_mesh_kill_edge(mesh, edge_new);
         edge_new = lx_null;
     }
-
-    // ok?
     return edge_new;
 }
-lx_void_t lx_mesh_edge_remove(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_removed)
-{
-    // check
-    lx_mesh_t* mesh = (lx_mesh_t*)mesh;
+
+lx_void_t lx_mesh_edge_remove(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_removed) {
+    lx_mesh_t* mesh = (lx_mesh_t*)self;
     lx_assert_and_check_return(mesh && edge_removed);
 
     // check edge
     lx_mesh_check_edge(edge_removed);
 
     // isolated edge? kill it directly
-    if (lx_mesh_kill_isolated_edge(mesh, edge_removed)) return ;
+    if (lx_mesh_kill_isolated_edge(mesh, edge_removed)) {
+        return ;
+    }
 
     // get the destinate edge
     lx_mesh_edge_ref_t edge_dst = lx_mesh_edge_lnext(edge_removed);
@@ -1142,19 +1073,20 @@ lx_void_t lx_mesh_edge_remove(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_remove
      *    edge_sym_org      edge_dst'
      *      edge_dst
      */
-    if (edge_dst == edge_sym) edge_dst = edge_sym_org;
-    /* use edge_dst for edge_sym_org if the original vertex is isolated
-     *
-     * before:
-     *
-     *    edge_sym_org'   edge_sym_org
-     *    edge_removed'   edge_dst
-     * ----------------> --------------->
-     * <---------------- <---------------
-     *    edge_removed
-     */
-    else if (edge_sym_org == edge_removed)
-    {
+    if (edge_dst == edge_sym) {
+        edge_dst = edge_sym_org;
+    } else if (edge_sym_org == edge_removed) {
+        /* use edge_dst for edge_sym_org if the original vertex is isolated
+         *
+         * before:
+         *
+         *    edge_sym_org'   edge_sym_org
+         *    edge_removed'   edge_dst
+         * ----------------> --------------->
+         * <---------------- <---------------
+         *    edge_removed
+         */
+
         // reverse edge
         lx_swap(lx_mesh_edge_ref_t, edge_removed, edge_sym);
 
@@ -1163,7 +1095,7 @@ lx_void_t lx_mesh_edge_remove(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_remove
     }
 
     /* kill the destination vertex of the edge
-     * and update origin for all edges leaving the destination orbit of the deleted edge
+     * and update origin for all edges leaving the destination orbit of the removed edge
      */
     lx_mesh_kill_vertex_at_orbit(mesh, lx_mesh_edge_dst(edge_removed), lx_mesh_edge_org(edge_sym_org));
 
@@ -1234,7 +1166,7 @@ lx_void_t lx_mesh_edge_remove(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_remove
     lx_mesh_splice_edge(edge_sym_org,   edge_sym);
     lx_mesh_splice_edge(edge_dst,       edge_removed);
 
-    // update the reference edge, the old reference edge may have been deleted
+    // update the reference edge, the old reference edge may have been removed
     lx_mesh_vertex_edge_set(lx_mesh_edge_org(edge_sym_org),     edge_sym_org);
     lx_mesh_face_edge_set  (lx_mesh_edge_lface(edge_sym_org),   edge_sym_org);
     lx_mesh_face_edge_set  (lx_mesh_edge_lface(edge_dst),       edge_dst);
@@ -1242,22 +1174,19 @@ lx_void_t lx_mesh_edge_remove(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_remove
     // kill the edge
     lx_mesh_kill_edge(mesh, edge_removed);
 }
-lx_mesh_edge_ref_t lx_mesh_edge_connect(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_org, lx_mesh_edge_ref_t edge_dst)
-{
-    // check
-    lx_mesh_t* mesh = (lx_mesh_t*)mesh;
+
+lx_mesh_edge_ref_t lx_mesh_edge_connect(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_org, lx_mesh_edge_ref_t edge_dst) {
+    lx_mesh_t* mesh = (lx_mesh_t*)self;
     lx_assert_and_check_return_val(mesh && edge_org && edge_dst, lx_null);
 
     // check edges
     lx_mesh_check_edge(edge_org);
     lx_mesh_check_edge(edge_dst);
 
-    // done
     lx_bool_t           ok = lx_false;
     lx_mesh_edge_ref_t  edge_new = lx_null;
     lx_bool_t           joining_faces = lx_false;
-    do
-    {
+    do {
         // make the new non-loop edge
         edge_new = lx_mesh_make_edge(mesh, lx_false, lx_false);
         lx_assert_and_check_break(edge_new);
@@ -1267,8 +1196,8 @@ lx_mesh_edge_ref_t lx_mesh_edge_connect(lx_mesh_ref_t self, lx_mesh_edge_ref_t e
         lx_assert_and_check_break(edge_sym_new);
 
         // two faces are disjoint?
-        if (lx_mesh_edge_lface(edge_org) != lx_mesh_edge_lface(edge_dst))
-        {
+        if (lx_mesh_edge_lface(edge_org) != lx_mesh_edge_lface(edge_dst)) {
+
             // joins the two faces
             joining_faces = lx_true;
 
@@ -1324,8 +1253,7 @@ lx_mesh_edge_ref_t lx_mesh_edge_connect(lx_mesh_ref_t self, lx_mesh_edge_ref_t e
         lx_mesh_edge_lface_set(edge_sym_new,    lx_mesh_edge_lface(edge_org));
 
         // two faces are disjoint?
-        if (!joining_faces)
-        {
+        if (!joining_faces) {
             // save the old face first, edge_org.lface may have been modified after making new face
             lx_mesh_face_ref_t face_old = lx_mesh_edge_lface(edge_org);
 
@@ -1337,14 +1265,10 @@ lx_mesh_edge_ref_t lx_mesh_edge_connect(lx_mesh_ref_t self, lx_mesh_edge_ref_t e
 
             // post the split event, split(edge_org.lface) => (edge_org.lface, face_new)
             lx_mesh_post_event(mesh, LX_MESH_EVENT_FACE_SPLIT, face_old, face_new);
-        }
-        else
-        {
+        } else {
             // init the edge_new.lface
             lx_mesh_edge_lface_set(edge_new, lx_mesh_edge_lface(edge_org));
         }
-
-        // ok
         ok = lx_true;
 
     } while (0);
@@ -1352,33 +1276,24 @@ lx_mesh_edge_ref_t lx_mesh_edge_connect(lx_mesh_ref_t self, lx_mesh_edge_ref_t e
     // check
     lx_assert(ok);
 
-    // failed
-    if (!ok)
-    {
-        // kill the new edge
-        if (edge_new) lx_mesh_kill_edge(mesh, edge_new);
+    if (!ok && edge_new) {
+        lx_mesh_kill_edge(mesh, edge_new);
         edge_new = lx_null;
     }
-
-    // ok?
     return edge_new;
 }
-lx_void_t lx_mesh_edge_delete(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_removed)
-{
-    // check
-    lx_mesh_t* mesh = (lx_mesh_t*)mesh;
+
+lx_void_t lx_mesh_edge_disconnect(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_removed) {
+    lx_mesh_t* mesh = (lx_mesh_t*)self;
     lx_assert_and_check_return(mesh && edge_removed);
 
     // check edge
     lx_mesh_check_edge(edge_removed);
 
-    // done
     lx_bool_t joining_faces = lx_false;
-    do
-    {
+    do {
         // two faces are disjoint?
-        if (lx_mesh_edge_lface(edge_removed) != lx_mesh_edge_rface(edge_removed))
-        {
+        if (lx_mesh_edge_lface(edge_removed) != lx_mesh_edge_rface(edge_removed)) {
             // joins the two faces
             joining_faces = lx_true;
 
@@ -1430,8 +1345,7 @@ lx_void_t lx_mesh_edge_delete(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_remove
          *  <----------------------
          *
          */
-        if (lx_mesh_edge_onext(edge_removed) == edge_removed)
-        {
+        if (lx_mesh_edge_onext(edge_removed) == edge_removed) {
             /* remove the edge_removed.org
              *
              * after:
@@ -1442,9 +1356,7 @@ lx_void_t lx_mesh_edge_delete(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_remove
              *  <----------------------
              */
             lx_mesh_kill_vertex_at_orbit(mesh, lx_mesh_edge_org(edge_removed), lx_null);
-        }
-        else
-        {
+        } else {
             // update the reference edge, the old reference edge may have been invalid
             lx_mesh_face_edge_set  (lx_mesh_edge_rface(edge_removed),   lx_mesh_edge_oprev(edge_removed));
             lx_mesh_vertex_edge_set(lx_mesh_edge_org(edge_removed),     lx_mesh_edge_onext(edge_removed));
@@ -1485,8 +1397,7 @@ lx_void_t lx_mesh_edge_delete(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_remove
             lx_mesh_splice_edge(edge_removed, lx_mesh_edge_oprev(edge_removed));
 
             // two faces are disjoint?
-            if (!joining_faces)
-            {
+            if (!joining_faces) {
                 // save the old face first, edge_removed.lface may have been modified after making new face
                 lx_mesh_face_ref_t face_old = lx_mesh_edge_lface(edge_removed);
 
@@ -1505,9 +1416,8 @@ lx_void_t lx_mesh_edge_delete(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_remove
         lx_mesh_edge_ref_t edge_sym = lx_mesh_edge_sym(edge_removed);
         lx_assert_and_check_break(edge_sym);
 
-        // the deleted edge is isolated now?
-        if (lx_mesh_edge_onext(edge_sym) == edge_sym)
-        {
+        // the removed edge is isolated now?
+        if (lx_mesh_edge_onext(edge_sym) == edge_sym) {
             /* remove the edge_removed directly
              *
              * before:
@@ -1526,12 +1436,10 @@ lx_void_t lx_mesh_edge_delete(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_remove
              */
             lx_mesh_kill_vertex_at_orbit(mesh, lx_mesh_edge_org(edge_sym), lx_null);
             lx_mesh_kill_face_at_orbit(mesh, lx_mesh_edge_lface(edge_sym), lx_null);
-        }
-        else
-        {
+        } else {
             // update the reference edge, the old reference edge may have been invalid
-            lx_mesh_face_edge_set  (lx_mesh_edge_lface(edge_removed),   lx_mesh_edge_oprev(edge_sym));
-            lx_mesh_vertex_edge_set(lx_mesh_edge_org(edge_sym),     lx_mesh_edge_onext(edge_sym));
+            lx_mesh_face_edge_set(lx_mesh_edge_lface(edge_removed), lx_mesh_edge_oprev(edge_sym));
+            lx_mesh_vertex_edge_set(lx_mesh_edge_org(edge_sym), lx_mesh_edge_onext(edge_sym));
 
             /* disjoining edges at the edge_removed.dst
              *
@@ -1574,72 +1482,40 @@ lx_void_t lx_mesh_edge_delete(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_remove
 
     } while (0);
 }
+
 #ifdef LX_DEBUG
-lx_void_t lx_mesh_dump(lx_mesh_ref_t self)
-{
-    // trace
+lx_void_t lx_mesh_dump(lx_mesh_ref_t self) {
     lx_trace_i("");
     lx_trace_i("edges:");
-
-    // dump edges
-    lx_for_all_if (lx_mesh_edge_ref_t, edge, lx_mesh_edge_itor(mesh), edge)
-    {
-        // trace
+    lx_for_all_if (lx_mesh_edge_ref_t, edge, lx_mesh_edge_list(self), edge) {
         lx_trace_i("    %{mesh_edge}", edge);
     }
 
-    // trace
     lx_trace_i("faces:");
-
-    // dump faces
-    lx_for_all_if (lx_mesh_face_ref_t, face, lx_mesh_face_itor(mesh), face)
-    {
-        // trace
+    lx_for_all_if (lx_mesh_face_ref_t, face, lx_mesh_face_list(self), face) {
         lx_trace_i("    face: %{mesh_face}", face);
-
-        // dump face.edges
         lx_mesh_edge_ref_t head = lx_mesh_face_edge(face);
         lx_mesh_edge_ref_t edge = head;
-        do
-        {
-            // trace
+        do {
             lx_trace_i("        %{mesh_edge}", edge);
-
-            // the next edge
             edge = lx_mesh_edge_lnext(edge);
-
         } while (edge != head);
     }
 
-    // trace
     lx_trace_i("vertices:");
-
-    // dump vertices
-    lx_for_all_if (lx_mesh_vertex_ref_t, vertex, lx_mesh_vertex_itor(mesh), vertex)
-    {
-        // trace
+    lx_for_all_if (lx_mesh_vertex_ref_t, vertex, lx_mesh_vertex_list(self), vertex) {
         lx_trace_i("    vertex: %{mesh_vertex}", vertex);
-
-        // dump vertex.edges
         lx_mesh_edge_ref_t head = lx_mesh_vertex_edge(vertex);
         lx_mesh_edge_ref_t edge = head;
-        do
-        {
-            // trace
+        do {
             lx_trace_i("        %{mesh_edge}", edge);
-
-            // the next edge
             edge = lx_mesh_edge_onext(edge);
-
         } while (edge != head);
     }
 }
-lx_void_t lx_mesh_check(lx_mesh_ref_t self)
-{
-    // check edges
-    lx_for_all_if (lx_mesh_edge_ref_t, edge, lx_mesh_edge_itor(mesh), edge)
-    {
-        // check edge
+
+lx_void_t lx_mesh_check(lx_mesh_ref_t self) {
+    lx_for_all_if (lx_mesh_edge_ref_t, edge, lx_mesh_edge_list(self), edge) {
         lx_mesh_check_edge(edge);
         lx_assert(lx_mesh_edge_sym(edge) != edge);
         lx_assert(lx_mesh_edge_sym(lx_mesh_edge_sym(edge)) == edge);
@@ -1649,53 +1525,34 @@ lx_void_t lx_mesh_check(lx_mesh_ref_t self)
         lx_assert(lx_mesh_edge_lnext(lx_mesh_edge_sym(lx_mesh_edge_onext(edge))) == edge);
     }
 
-    // check faces
-    lx_for_all_if (lx_mesh_face_ref_t, face, lx_mesh_face_itor(mesh), face)
-    {
-        // check face
+    lx_for_all_if (lx_mesh_face_ref_t, face, lx_mesh_face_list(self), face) {
         lx_mesh_check_face(face);
-
-        // check face.edges
         lx_mesh_edge_ref_t head = lx_mesh_face_edge(face);
         lx_mesh_edge_ref_t edge = head;
-        do
-        {
-            // check edge
+        do {
             lx_mesh_check_edge(edge);
             lx_assert(lx_mesh_edge_sym(edge) != edge);
             lx_assert(lx_mesh_edge_sym(lx_mesh_edge_sym(edge)) == edge);
             lx_assert(lx_mesh_edge_sym(lx_mesh_edge_onext(lx_mesh_edge_lnext(edge))) == edge);
             lx_assert(lx_mesh_edge_lnext(lx_mesh_edge_sym(lx_mesh_edge_onext(edge))) == edge);
             lx_assert(lx_mesh_edge_lface(edge) == face);
-
-            // the next edge
             edge = lx_mesh_edge_lnext(edge);
-
         } while (edge != head);
     }
 
-    // check vertices
-    lx_for_all_if (lx_mesh_vertex_ref_t, vertex, lx_mesh_vertex_itor(mesh), vertex)
-    {
-        // check vertex
+    lx_for_all_if (lx_mesh_vertex_ref_t, vertex, lx_mesh_vertex_list(self), vertex) {
         lx_mesh_check_vertex(vertex);
 
-        // check vertex.edges
         lx_mesh_edge_ref_t head = lx_mesh_vertex_edge(vertex);
         lx_mesh_edge_ref_t edge = head;
-        do
-        {
-            // check edge
+        do {
             lx_mesh_check_edge(edge);
             lx_assert(lx_mesh_edge_sym(edge) != edge);
             lx_assert(lx_mesh_edge_sym(lx_mesh_edge_sym(edge)) == edge);
             lx_assert(lx_mesh_edge_sym(lx_mesh_edge_onext(lx_mesh_edge_lnext(edge))) == edge);
             lx_assert(lx_mesh_edge_lnext(lx_mesh_edge_sym(lx_mesh_edge_onext(edge))) == edge);
             lx_assert(lx_mesh_edge_org(edge) == vertex);
-
-            // the next edge
             edge = lx_mesh_edge_onext(edge);
-
         } while (edge != head);
     }
 }

@@ -148,14 +148,14 @@ static lx_inline lx_void_t lx_mesh_edge_remove_self(lx_mesh_edge_ref_t edge) {
 }
 
 static lx_size_t lx_mesh_edge_iterator_head(lx_iterator_ref_t iterator) {
-    lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)iterator;
-    lx_assert(list);
+    lx_assert(iterator && iterator->container);
+    lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)iterator->container;
     return (lx_size_t)list->head[0].next;
 }
 
 static lx_size_t lx_mesh_edge_iterator_tail(lx_iterator_ref_t iterator) {
-    lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)iterator;
-    lx_assert(list);
+    lx_assert(iterator && iterator->container);
+    lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)iterator->container;
     return (lx_size_t)list->head;
 }
 

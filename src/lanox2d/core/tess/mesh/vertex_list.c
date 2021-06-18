@@ -50,9 +50,8 @@
 
 // the mesh vertex list type
 typedef struct lx_mesh_vertex_list_t_ {
-    lx_iterator_base_t          base;
+    lx_list_entry_head_t        head; // it must be at the beginning, because we need iterator
     lx_fixed_pool_ref_t         pool;
-    lx_list_entry_head_t        head;
     lx_element_t                element;
     lx_size_t                   order;
 #ifdef LX_DEBUG

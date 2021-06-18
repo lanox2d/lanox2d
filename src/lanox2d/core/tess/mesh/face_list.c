@@ -50,9 +50,8 @@
 
 // the mesh face list type
 typedef struct lx_mesh_face_list_t_ {
-    lx_iterator_base_t          base; // TODO itor?
+    lx_list_entry_head_t        head; // it must be at the beginning, because we need iterator
     lx_fixed_pool_ref_t         pool;
-    lx_list_entry_head_t        head; // itor
     lx_element_t                element;
     lx_size_t                   order;
 #ifdef LX_DEBUG
