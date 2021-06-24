@@ -1451,7 +1451,7 @@ lx_void_t lx_mesh_edge_disconnect(lx_mesh_ref_t self, lx_mesh_edge_ref_t edge_re
 
 #ifdef LX_DEBUG
 lx_void_t lx_mesh_check(lx_mesh_ref_t self) {
-    lx_for_all_if (lx_mesh_edge_ref_t, edge, lx_mesh_edge_list(self), edge) {
+    lx_for_all (lx_mesh_edge_ref_t, edge, lx_mesh_edge_list(self)) {
         lx_mesh_check_edge(edge);
         lx_assert(lx_mesh_edge_sym(edge) != edge);
         lx_assert(lx_mesh_edge_sym(lx_mesh_edge_sym(edge)) == edge);
@@ -1461,7 +1461,7 @@ lx_void_t lx_mesh_check(lx_mesh_ref_t self) {
         lx_assert(lx_mesh_edge_lnext(lx_mesh_edge_sym(lx_mesh_edge_onext(edge))) == edge);
     }
 
-    lx_for_all_if (lx_mesh_face_ref_t, face, lx_mesh_face_list(self), face) {
+    lx_for_all (lx_mesh_face_ref_t, face, lx_mesh_face_list(self)) {
         lx_mesh_check_face(face);
         lx_mesh_edge_ref_t head = lx_mesh_face_edge(face);
         lx_mesh_edge_ref_t edge = head;
@@ -1476,7 +1476,7 @@ lx_void_t lx_mesh_check(lx_mesh_ref_t self) {
         } while (edge != head);
     }
 
-    lx_for_all_if (lx_mesh_vertex_ref_t, vertex, lx_mesh_vertex_list(self), vertex) {
+    lx_for_all (lx_mesh_vertex_ref_t, vertex, lx_mesh_vertex_list(self)) {
         lx_mesh_check_vertex(vertex);
 
         lx_mesh_edge_ref_t head = lx_mesh_vertex_edge(vertex);

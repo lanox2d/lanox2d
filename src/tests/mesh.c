@@ -1,39 +1,40 @@
 #include "lanox2d/lanox2d.h"
 
 #define lx_test_mesh_edge_cstr(edge)            *((lx_char_t const**)lx_mesh_edge_data(edge))
-#define lx_test_mesh_edge_cstr_set(edge, s)     *((lx_char_t const**)lx_mesh_edge_data(edge)) = (s)
+#define lx_test_mesh_edge_cstr_set(edge, s)     (*((lx_char_t const**)lx_mesh_edge_data(edge)) = (s), \
+                                                *((lx_char_t const**)lx_mesh_edge_data(lx_mesh_edge_sym(edge))) = (s "_sym"))
 
 #define lx_test_mesh_face_cstr(face)            *((lx_char_t const**)lx_mesh_face_data(face))
 #define lx_test_mesh_face_cstr_set(face, s)     *((lx_char_t const**)lx_mesh_face_data(face)) = (s)
 
-#define lx_test_mesh_vertex_cstr(vertex)            *((lx_char_t const**)lx_mesh_vertex_data(vertex))
-#define lx_test_mesh_vertex_cstr_set(vertex, s)     *((lx_char_t const**)lx_mesh_vertex_data(vertex)) = (s)
+#define lx_test_mesh_vertex_cstr(vertex)        *((lx_char_t const**)lx_mesh_vertex_data(vertex))
+#define lx_test_mesh_vertex_cstr_set(vertex, s) *((lx_char_t const**)lx_mesh_vertex_data(vertex)) = (s)
 
 static lx_void_t lx_test_mesh_dump(lx_mesh_ref_t self) {
     lx_trace_i("");
     lx_trace_i("edges:");
-    lx_for_all_if (lx_mesh_edge_ref_t, edge, lx_mesh_edge_list(self), edge) {
-        lx_trace_i("    %s", lx_test_mesh_edge_cstr(edge));
+    lx_for_all (lx_mesh_edge_ref_t, edge, lx_mesh_edge_list(self)) {
+        lx_trace_i("    %s, %s", lx_test_mesh_edge_cstr(edge), lx_test_mesh_edge_cstr(lx_mesh_edge_sym(edge)));
     }
 
     lx_trace_i("faces:");
-    lx_for_all_if (lx_mesh_face_ref_t, face, lx_mesh_face_list(self), face) {
+    lx_for_all (lx_mesh_face_ref_t, face, lx_mesh_face_list(self)) {
         lx_trace_i("    face: %s", lx_test_mesh_face_cstr(face));
         lx_mesh_edge_ref_t head = lx_mesh_face_edge(face);
         lx_mesh_edge_ref_t edge = head;
         do {
-            lx_trace_i("        %s", lx_test_mesh_edge_cstr(edge));
+            lx_trace_i("        %s, %s", lx_test_mesh_edge_cstr(edge), lx_test_mesh_edge_cstr(lx_mesh_edge_sym(edge)));
             edge = lx_mesh_edge_lnext(edge);
         } while (edge != head);
     }
 
     lx_trace_i("vertices:");
-    lx_for_all_if (lx_mesh_vertex_ref_t, vertex, lx_mesh_vertex_list(self), vertex) {
-        lx_trace_i("    vertex: %s", lx_test_mesh_edge_cstr(vertex));
+    lx_for_all (lx_mesh_vertex_ref_t, vertex, lx_mesh_vertex_list(self)) {
+        lx_trace_i("    vertex: %s", lx_test_mesh_vertex_cstr(vertex));
         lx_mesh_edge_ref_t head = lx_mesh_vertex_edge(vertex);
         lx_mesh_edge_ref_t edge = head;
         do {
-            lx_trace_i("        %s", lx_test_mesh_edge_cstr(edge));
+            lx_trace_i("        %s, %s", lx_test_mesh_edge_cstr(edge), lx_test_mesh_edge_cstr(lx_mesh_edge_sym(edge)));
             edge = lx_mesh_edge_onext(edge);
         } while (edge != head);
     }
