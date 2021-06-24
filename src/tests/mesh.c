@@ -10,6 +10,7 @@
 #define lx_test_mesh_vertex_cstr(vertex)        *((lx_char_t const**)lx_mesh_vertex_data(vertex))
 #define lx_test_mesh_vertex_cstr_set(vertex, s) *((lx_char_t const**)lx_mesh_vertex_data(vertex)) = (s)
 
+#ifdef LX_DEBUG
 static lx_void_t lx_test_mesh_dump(lx_mesh_ref_t self) {
     lx_trace_i("");
     lx_trace_i("edges:");
@@ -39,6 +40,7 @@ static lx_void_t lx_test_mesh_dump(lx_mesh_ref_t self) {
         } while (edge != head);
     }
 }
+#endif
 
 static lx_void_t lx_test_mesh_listener(lx_mesh_event_ref_t event) {
     lx_assert(event);

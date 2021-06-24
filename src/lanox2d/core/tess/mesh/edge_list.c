@@ -59,7 +59,7 @@ typedef struct lx_mesh_edge_list_t {
  */
 static lx_void_t lx_mesh_edge_exit(lx_pointer_t data, lx_cpointer_t udata) {
     lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)udata;
-    if (list && data) {
+    if (list && list->element.free && data) {
         list->element.free((lx_pointer_t)((lx_mesh_edge_ref_t)data + 1));
         list->element.free((lx_pointer_t)((lx_mesh_edge_ref_t)((lx_byte_t*)data + list->edge_size) + 1));
     }
@@ -240,19 +240,15 @@ lx_void_t lx_mesh_edge_list_exit(lx_mesh_edge_list_ref_t self) {
 
 lx_void_t lx_mesh_edge_list_clear(lx_mesh_edge_list_ref_t self) {
     lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)self;
-    lx_assert_and_check_return(list);
-
-    // clear pool
-    if (list->pool) {
-        lx_fixed_pool_clear(list->pool);
-    }
-
-    // clear list
-    lx_mesh_edge_init(list->head);
-
+    if (list) {
+        if (list->pool) {
+            lx_fixed_pool_clear(list->pool);
+        }
+        lx_mesh_edge_init(list->head);
 #ifdef LX_DEBUG
-    list->id = 0;
+        list->id = 0;
 #endif
+    }
 }
 
 lx_size_t lx_mesh_edge_list_size(lx_mesh_edge_list_ref_t self) {
