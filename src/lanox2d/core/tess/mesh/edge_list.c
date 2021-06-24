@@ -284,13 +284,8 @@ lx_mesh_edge_ref_t lx_mesh_edge_list_make(lx_mesh_edge_list_ref_t self) {
     edge_sym->lnext = edge;
 
 #ifdef LX_DEBUG
-    // init id
     edge->id        = ++list->id;
     edge_sym->id    = edge->id;
-
-    // save list
-    edge->list      = (lx_pointer_t)list;
-    edge_sym->list  = (lx_pointer_t)list;
 #endif
 
     // insert to the edge list
@@ -316,6 +311,7 @@ lx_mesh_edge_ref_t lx_mesh_edge_list_make_loop(lx_mesh_edge_list_ref_t self, lx_
 
     // the sym edge
     lx_mesh_edge_ref_t edge_sym = (lx_mesh_edge_ref_t)((lx_byte_t*)edge + list->edge_size);
+    lx_trace_i("make: %p %p, is_ccw: %d", edge, edge_sym, is_ccw);
 
     // init edge
     edge->sym       = edge_sym;
@@ -328,13 +324,8 @@ lx_mesh_edge_ref_t lx_mesh_edge_list_make_loop(lx_mesh_edge_list_ref_t self, lx_
     edge_sym->lnext = edge_sym;
 
 #ifdef LX_DEBUG
-    // init id
     edge->id        = ++list->id;
     edge_sym->id    = edge->id;
-
-    // save list
-    edge->list      = (lx_pointer_t)list;
-    edge_sym->list  = (lx_pointer_t)list;
 #endif
 
     // insert to the edge list

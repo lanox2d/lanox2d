@@ -150,7 +150,6 @@ lx_mesh_face_ref_t lx_mesh_face_list_make(lx_mesh_face_list_ref_t self) {
 
 #ifdef LX_DEBUG
     face->id = ++list->id;
-    face->list = (lx_pointer_t)list;
 #endif
 
     // insert to the face list

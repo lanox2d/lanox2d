@@ -150,7 +150,6 @@ lx_mesh_vertex_ref_t lx_mesh_vertex_list_make(lx_mesh_vertex_list_ref_t self) {
 
 #ifdef LX_DEBUG
     vertex->id = ++list->id;
-    vertex->list = (lx_pointer_t)list;
 #endif
 
     switch (list->order) {

@@ -113,42 +113,26 @@ typedef enum lx_mesh_order_e_ {
 
 /// the mesh vertex type
 typedef struct lx_mesh_vertex_t_ {
-    /// the list entry
-    lx_list_entry_t            entry;
+    lx_list_entry_t             entry;
 
     /// an arbitrary edge of the vertex
-    struct lx_mesh_edge_t_*    edge;
+    struct lx_mesh_edge_t_*     edge;
 
 #ifdef LX_DEBUG
-    /// the id
     lx_size_t                   id;
-
-    /*! the vertex list for dumping it in the debug mode
-     *
-     * format: %{mesh_vertex}
-     */
-    lx_pointer_t                list;
 #endif
 
 }lx_mesh_vertex_t, *lx_mesh_vertex_ref_t;
 
 /// the mesh face type
 typedef struct lx_mesh_face_t_ {
-    /// the list entry
     lx_list_entry_t             entry;
 
     /// an arbitrary edge of the face
-    struct lx_mesh_edge_t_*    edge;
+    struct lx_mesh_edge_t_*     edge;
 
 #ifdef LX_DEBUG
-    /// the id
     lx_size_t                   id;
-
-    /*! the face list for dumping it in the debug mode
-     *
-     * format: %{mesh_face}
-     */
-    lx_pointer_t                list;
 #endif
 
 }lx_mesh_face_t, *lx_mesh_face_ref_t;
@@ -267,14 +251,7 @@ typedef struct lx_mesh_edge_t_ {
     lx_mesh_face_ref_t          lface;
 
 #ifdef LX_DEBUG
-    /// the id
     lx_size_t                   id;
-
-    /*! the edge list for dumping it in the debug mode
-     *
-     * format: %{mesh_edge}
-     */
-    lx_pointer_t                list;
 #endif
 
 }lx_mesh_edge_t, *lx_mesh_edge_ref_t;
