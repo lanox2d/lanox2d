@@ -50,7 +50,8 @@
 
 // the mesh face list type
 typedef struct lx_mesh_face_list_t_ {
-    lx_list_entry_head_t        head; // it must be at the beginning, because we need iterator
+    lx_iterator_base_t          base;
+    lx_list_entry_head_t        head;
     lx_fixed_pool_ref_t         pool;
     lx_element_t                element;
     lx_size_t                   order;
@@ -62,11 +63,17 @@ typedef struct lx_mesh_face_list_t_ {
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
-static lx_void_t lx_mesh_face_exit(lx_pointer_t data, lx_cpointer_t priv) {
-    lx_mesh_face_list_t* list = (lx_mesh_face_list_t*)priv;
+static lx_void_t lx_mesh_face_exit(lx_pointer_t data, lx_cpointer_t udata) {
+    lx_mesh_face_list_t* list = (lx_mesh_face_list_t*)udata;
     if (list && data) {
         list->element.free((lx_pointer_t)((lx_mesh_face_ref_t)data + 1));
     }
+}
+
+static lx_void_t lx_mesh_face_iterator_of(lx_iterator_ref_t iterator, lx_cpointer_t container) {
+    lx_mesh_face_list_t* list = (lx_mesh_face_list_t*)container;
+    lx_assert(list);
+    lx_iterator_of(iterator, lx_list_entry_itor(&list->head));
 }
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -83,6 +90,7 @@ lx_mesh_face_list_ref_t lx_mesh_face_list_init(lx_element_t element) {
         list->element = element;
         list->order = LX_MESH_ORDER_INSERT_TAIL;
         lx_list_entry_init_(&list->head, 0, sizeof(lx_mesh_face_t) + element.size);
+        list->base.iterator_of = lx_mesh_face_iterator_of;
 
         // init pool, item = face + data
         list->pool = lx_fixed_pool_init(LX_MESH_FACE_LIST_GROW, sizeof(lx_mesh_face_t) + element.size, lx_mesh_face_exit, (lx_cpointer_t)list);
