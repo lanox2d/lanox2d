@@ -15,19 +15,16 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        tess.h
+ * @file        prefix.h
  *
  */
-#ifndef LX_CORE_TESS_H
-#define LX_CORE_TESS_H
+#ifndef LX_CORE_TESS_TESSELLATOR_PREFIX_H
+#define LX_CORE_TESS_TESSELLATOR_PREFIX_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "prefix.h"
-#include "mesh.h"
-#include "geometry.h"
-#include "tessellator.h"
+#include "../prefix.h"
 
 #endif
 
