@@ -20,7 +20,7 @@ static lx_void_t lx_test_mesh_dump(lx_mesh_ref_t self) {
 
     lx_trace_i("faces:");
     lx_for_all (lx_mesh_face_ref_t, face, lx_mesh_face_list(self)) {
-        lx_trace_i("    face: %s", lx_test_mesh_face_cstr(face));
+        lx_trace_i("    %s:", lx_test_mesh_face_cstr(face));
         lx_mesh_edge_ref_t head = lx_mesh_face_edge(face);
         lx_mesh_edge_ref_t edge = head;
         do {
@@ -31,7 +31,7 @@ static lx_void_t lx_test_mesh_dump(lx_mesh_ref_t self) {
 
     lx_trace_i("vertices:");
     lx_for_all (lx_mesh_vertex_ref_t, vertex, lx_mesh_vertex_list(self)) {
-        lx_trace_i("    vertex: %s", lx_test_mesh_vertex_cstr(vertex));
+        lx_trace_i("    %s:", lx_test_mesh_vertex_cstr(vertex));
         lx_mesh_edge_ref_t head = lx_mesh_vertex_edge(vertex);
         lx_mesh_edge_ref_t edge = head;
         do {
@@ -47,7 +47,7 @@ static lx_void_t lx_test_mesh_listener(lx_mesh_event_ref_t event) {
     switch (event->type) {
     case LX_MESH_EVENT_FACE_MERGE:
         lx_trace_d("face.merge(%s, %s) => %s",
-            lx_test_mesh_face_cstr(event->org), lx_test_mesh_edge_cstr(event->dst), lx_test_mesh_edge_cstr(event->dst));
+            lx_test_mesh_face_cstr(event->org), lx_test_mesh_face_cstr(event->dst), lx_test_mesh_face_cstr(event->dst));
         break;
     case LX_MESH_EVENT_FACE_SPLIT:
         lx_trace_d("face.split(%s) => (%s, %s)",
