@@ -24,7 +24,7 @@
  * includes
  */
 #include "prefix.h"
-#include "../../geometry.h"
+#include "../geometry.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
