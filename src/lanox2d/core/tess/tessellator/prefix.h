@@ -141,8 +141,13 @@ typedef struct lx_tessellator_vertex_t_ {
     lx_point_t                          point;
 } lx_tessellator_vertex_t, *lx_tessellator_vertex_ref_t;
 
+// TODO
+typedef lx_typeref(list);
+typedef lx_typeref(priority_queue);
+
 // the tessellator type
 typedef struct lx_tessellator_t_ {
+
     // the mode
     lx_size_t                           mode;
 
@@ -165,10 +170,11 @@ typedef struct lx_tessellator_t_ {
     lx_vector_ref_t                     outputs;
 
     // the event queue for vertex
-//    lx_priority_queue_ref_t             event_queue;
+    lx_priority_queue_ref_t             event_queue;
 
     // the active regions
-//    lx_list_ref_t                       active_regions;
+    lx_list_ref_t                       active_regions;
+
 }lx_tessellator_t;
 
 #endif

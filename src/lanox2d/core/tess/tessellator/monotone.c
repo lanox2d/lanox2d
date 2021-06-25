@@ -65,7 +65,7 @@ static lx_void_t lx_tessellator_fix_region_edge(lx_tessellator_t* tessellator, l
     lx_trace_d("fix a temporary edge: %{tess_region} => %{mesh_edge}", region, edge);
 
     // remove the temporary edge
-    lx_mesh_edge_delete(tessellator->mesh, region->edge);
+    lx_mesh_edge_disconnect(tessellator->mesh, region->edge);
 
     // replace the new edge
     region->edge = edge;
@@ -2216,7 +2216,7 @@ static lx_void_t lx_tessellator_fix_all_dirty_regions(lx_tessellator_t* tessella
                 lx_tessellator_active_regions_remove(tessellator, region_left);
 
                 // delete the left fixable edge
-                lx_mesh_edge_delete(tessellator->mesh, edge_left);
+                lx_mesh_edge_disconnect(tessellator->mesh, edge_left);
 
                 // update the left region
                 region_left = lx_tessellator_active_regions_left(tessellator, region_right);
@@ -2232,7 +2232,7 @@ static lx_void_t lx_tessellator_fix_all_dirty_regions(lx_tessellator_t* tessella
                 lx_tessellator_active_regions_remove(tessellator, region_right);
 
                 // delete the right fixable edge
-                lx_mesh_edge_delete(tessellator->mesh, edge_right);
+                lx_mesh_edge_disconnect(tessellator->mesh, edge_right);
 
                 // update the right region
                 region_right = lx_tessellator_active_regions_right(tessellator, region_left);
@@ -2357,7 +2357,7 @@ static lx_void_t lx_tessellator_fix_all_dirty_regions(lx_tessellator_t* tessella
             lx_tessellator_active_regions_remove(tessellator, region_left);
 
             // delete the left edge
-            lx_mesh_edge_delete(tessellator->mesh, edge_left);
+            lx_mesh_edge_disconnect(tessellator->mesh, edge_left);
 
             // update the left region
             region_left = lx_tessellator_active_regions_left(tessellator, region_right);
@@ -2715,7 +2715,7 @@ static lx_void_t lx_tessellator_insert_down_going_edges(lx_tessellator_t* tessel
             lx_tessellator_active_regions_remove(tessellator, region_prev);
 
             // remove the previous edge
-            lx_mesh_edge_delete(tessellator->mesh, edge_prev);
+            lx_mesh_edge_disconnect(tessellator->mesh, edge_prev);
         }
 
         // update the first state
@@ -2814,7 +2814,7 @@ static lx_void_t lx_tessellator_remove_degenerate_edges(lx_tessellator_t* tessel
                     edge_next = lx_mesh_edge_next(edge_next);
 
                 // delete the lnext edge
-                lx_mesh_edge_delete(mesh, edge_lnext);
+                lx_mesh_edge_disconnect(mesh, edge_lnext);
             }
 
             // the next edge will be deleted? update the next edge
@@ -2823,7 +2823,7 @@ static lx_void_t lx_tessellator_remove_degenerate_edges(lx_tessellator_t* tessel
             }
 
             // delete this edge
-            lx_mesh_edge_delete(mesh, edge);
+            lx_mesh_edge_disconnect(mesh, edge);
         }
     }
 }
@@ -2847,7 +2847,7 @@ static lx_void_t lx_tessellator_remove_degenerate_faces(lx_tessellator_t* tessel
     lx_assert(mesh);
 
     lx_mesh_edge_ref_t edge = lx_null;
-    lx_for_all_if (lx_mesh_face_ref_t, face, lx_mesh_face_itor(mesh), face) {
+    lx_for_all (lx_mesh_face_ref_t, face, lx_mesh_face_list(mesh)) {
         edge = lx_mesh_face_edge(face);
         lx_assert(edge && lx_mesh_edge_lnext(edge) != edge);
 
@@ -3226,7 +3226,7 @@ static lx_void_t lx_tessellator_connect_top_event_degenerate(lx_tessellator_t* t
             lx_tessellator_active_regions_remove(tessellator, region_first);
 
             // remove the first edge
-            lx_mesh_edge_delete(tessellator->mesh, edge_first);
+            lx_mesh_edge_disconnect(tessellator->mesh, edge_first);
 
             // update the first edge
             edge_first = lx_mesh_edge_onext(edge_left_top);
@@ -3342,7 +3342,7 @@ static lx_void_t lx_tessellator_connect_top_event_degenerate(lx_tessellator_t* t
             lx_trace_d("fix the degenerate top edge: %{mesh_edge}", edge);
 
             // delete the new edge which was created recently
-            lx_mesh_edge_delete(tessellator->mesh, edge_new);
+            lx_mesh_edge_disconnect(tessellator->mesh, edge_new);
             region->fixedge = 0;
         }
 
