@@ -258,6 +258,24 @@ lx_size_t lx_mesh_edge_list_size(lx_mesh_edge_list_ref_t self) {
     return lx_fixed_pool_size(list->pool);
 }
 
+lx_mesh_edge_ref_t lx_mesh_edge_list_head(lx_mesh_edge_list_ref_t self) {
+    lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)self;
+    lx_assert(list);
+    return list->head[0].next;
+}
+
+lx_mesh_edge_ref_t lx_mesh_edge_list_last(lx_mesh_edge_list_ref_t self) {
+    lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)self;
+    lx_assert(list && list->head[1].next);
+    return list->head[1].next->sym;
+}
+
+lx_mesh_edge_ref_t lx_mesh_edge_list_tail(lx_mesh_edge_list_ref_t self) {
+    lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)self;
+    lx_assert(list);
+    return list->head;
+}
+
 lx_mesh_edge_ref_t lx_mesh_edge_list_make(lx_mesh_edge_list_ref_t self) {
     lx_mesh_edge_list_t* list = (lx_mesh_edge_list_t*)self;
     lx_assert_and_check_return_val(list && list->pool, lx_null);

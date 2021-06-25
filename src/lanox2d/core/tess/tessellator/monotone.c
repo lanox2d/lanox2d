@@ -25,6 +25,7 @@
 #include "geometry.h"
 #include "event_queue.h"
 #include "active_region.h"
+#include "../mesh/edge_list.h"
 #ifdef LX_DEBUG
 //#   include "profiler.h"
 #endif
@@ -2769,12 +2770,12 @@ static lx_void_t lx_tessellator_remove_degenerate_edges(lx_tessellator_t* tessel
     lx_mesh_ref_t mesh = tessellator->mesh;
     lx_assert(mesh);
 
-    lx_mesh_edge_ref_t edge_next    = lx_null;
-    lx_mesh_edge_ref_t edge_lnext   = lx_null;
-    lx_mesh_edge_ref_t edge         = lx_mesh_edge_head(mesh);
-    lx_mesh_edge_ref_t tail         = lx_mesh_edge_tail(mesh);
+    lx_mesh_edge_ref_t      edge_next  = lx_null;
+    lx_mesh_edge_ref_t      edge_lnext = lx_null;
+    lx_mesh_edge_list_ref_t edge_list  = lx_mesh_edge_list(mesh);
+    lx_mesh_edge_ref_t      edge       = lx_mesh_edge_list_head(edge_list);
+    lx_mesh_edge_ref_t      tail       = lx_mesh_edge_list_tail(edge_list);
     for (; edge != tail; edge = edge_next) {
-        // the next edge
         edge_next = lx_mesh_edge_next(edge);
         edge_lnext = lx_mesh_edge_lnext(edge);
 

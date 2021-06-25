@@ -63,6 +63,38 @@ lx_void_t                   lx_mesh_edge_list_clear(lx_mesh_edge_list_ref_t list
  */
 lx_size_t                   lx_mesh_edge_list_size(lx_mesh_edge_list_ref_t list);
 
+/*! the head edge
+ *
+ * @param list              the list
+ *
+ * @return                  the edge
+ */
+lx_mesh_edge_ref_t          lx_mesh_edge_list_head(lx_mesh_edge_list_ref_t list);
+
+/*! the last edge
+ *
+ * @param list              the list
+ *
+ * @return                  the edge
+ */
+lx_mesh_edge_ref_t          lx_mesh_edge_list_last(lx_mesh_edge_list_ref_t list);
+
+/*! the tail edge for walking edges more flexible and faster than iterator
+ *
+ * @code
+ * lx_mesh_edge_ref_t edge = lx_mesh_edge_list_head(list);
+ * lx_mesh_edge_ref_t tail = lx_mesh_edge_list_tail(list);
+ * for (; edge != tail; edge = lx_mesh_edge_next(edge))
+ * {
+ * }
+ * @endcode
+ *
+ * @param list              the list
+ *
+ * @return                  the edge, it's members are invalid and cannot modify them
+ */
+lx_mesh_edge_ref_t          lx_mesh_edge_list_tail(lx_mesh_edge_list_ref_t list);
+
 /*! make a unconnected edge
  *
  * <pre>
