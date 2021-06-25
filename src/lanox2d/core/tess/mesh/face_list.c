@@ -141,6 +141,18 @@ lx_size_t lx_mesh_face_list_size(lx_mesh_face_list_ref_t self) {
     return lx_list_entry_size(&list->head);
 }
 
+lx_mesh_face_ref_t lx_mesh_face_list_head(lx_mesh_face_list_ref_t self) {
+    lx_mesh_face_list_t* list = (lx_mesh_face_list_t*)self;
+    lx_assert(list);
+    return (lx_mesh_face_ref_t)lx_list_entry(&list->head, lx_list_entry_head(&list->head));
+}
+
+lx_mesh_face_ref_t lx_mesh_face_list_last(lx_mesh_face_list_ref_t self) {
+    lx_mesh_face_list_t* list = (lx_mesh_face_list_t*)self;
+    lx_assert(list);
+    return (lx_mesh_face_ref_t)lx_list_entry(&list->head, lx_list_entry_last(&list->head));
+}
+
 lx_mesh_face_ref_t lx_mesh_face_list_make(lx_mesh_face_list_ref_t self) {
     lx_mesh_face_list_t* list = (lx_mesh_face_list_t*)self;
     lx_assert_and_check_return_val(list && list->pool, lx_null);

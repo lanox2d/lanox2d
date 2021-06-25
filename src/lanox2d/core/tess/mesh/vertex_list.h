@@ -63,6 +63,22 @@ lx_void_t                   lx_mesh_vertex_list_clear(lx_mesh_vertex_list_ref_t 
  */
 lx_size_t                   lx_mesh_vertex_list_size(lx_mesh_vertex_list_ref_t list);
 
+/*! the head vertex
+ *
+ * @param list              the list
+ *
+ * @return                  the vertex
+ */
+lx_mesh_vertex_ref_t        lx_mesh_vertex_list_head(lx_mesh_vertex_list_ref_t list);
+
+/*! the last vertex
+ *
+ * @param list              the list
+ *
+ * @return                  the vertex
+ */
+lx_mesh_vertex_ref_t        lx_mesh_vertex_list_last(lx_mesh_vertex_list_ref_t list);
+
 /*! make a bare vertex without edges
  *
  * @param list              the list

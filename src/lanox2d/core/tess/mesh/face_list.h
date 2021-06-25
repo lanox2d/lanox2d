@@ -62,6 +62,22 @@ lx_void_t                   lx_mesh_face_list_clear(lx_mesh_face_list_ref_t list
  */
 lx_size_t                   lx_mesh_face_list_size(lx_mesh_face_list_ref_t list);
 
+/*! the head face
+ *
+ * @param list              the list
+ *
+ * @return                  the face
+ */
+lx_mesh_face_ref_t          lx_mesh_face_list_head(lx_mesh_face_list_ref_t list);
+
+/*! the last face
+ *
+ * @param list              the list
+ *
+ * @return                  the face
+ */
+lx_mesh_face_ref_t          lx_mesh_face_list_last(lx_mesh_face_list_ref_t list);
+
 /*! make a bare face without faces
  *
  * @param list              the list
