@@ -29,6 +29,7 @@
 #include "list_entry.h"
 #include "iterator.h"
 #include "fixed_array.h"
+#include "priority_queue.h"
 
 #endif
 

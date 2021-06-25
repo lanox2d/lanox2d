@@ -143,7 +143,6 @@ typedef struct lx_tessellator_vertex_t_ {
 
 // TODO
 typedef lx_typeref(list);
-typedef lx_typeref(priority_queue);
 
 // the tessellator type
 typedef struct lx_tessellator_t_ {
