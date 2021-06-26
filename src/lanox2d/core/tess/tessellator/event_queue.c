@@ -45,11 +45,9 @@ static lx_long_t lx_tessellator_event_queue_comp(lx_cpointer_t ldata, lx_cpointe
 #endif
 }
 
-#if 0
 static lx_bool_t lx_tessellator_event_queue_find(lx_iterator_ref_t iterator, lx_cpointer_t item, lx_cpointer_t value) {
     return *((lx_cpointer_t*)item) == value;
 }
-#endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
@@ -80,12 +78,10 @@ lx_void_t lx_tessellator_event_queue_insert(lx_tessellator_t* tessellator, lx_me
 lx_void_t lx_tessellator_event_queue_remove(lx_tessellator_t* tessellator, lx_mesh_vertex_ref_t event) {
     lx_assert(tessellator && tessellator->event_queue && event);
 
-#if 0
     lx_iterator_t iterator;
     lx_iterator_of(&iterator, tessellator->event_queue);
     lx_size_t itor = lx_find_all_if(&iterator, lx_tessellator_event_queue_find, event);
     if (itor != lx_iterator_tail(&iterator)) {
-        lx_iterator_remove(tessellator->event_queue, itor);
+//        lx_iterator_remove(tessellator->event_queue, itor);
     }
-#endif
 }

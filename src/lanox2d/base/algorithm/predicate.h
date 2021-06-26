@@ -15,24 +15,37 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        algorithm.h
- *
+ * @file        predicate.h
  */
-#ifndef LX_BASE_ALGORITHM_H
-#define LX_BASE_ALGORITHM_H
+#ifndef LX_BASE_ALGORITHM_PREDICATE_H
+#define LX_BASE_ALGORITHM_PREDICATE_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "for.h"
-#include "for_if.h"
-#include "rfor.h"
-#include "foreach.h"
-#include "rforeach.h"
-#include "find_if.h"
-#include "binary_find.h"
-#include "binary_find_if.h"
+#include "prefix.h"
 
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * extern
+ */
+lx_extern_c_enter
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * types
+ */
+
+/*! the predicate ref type
+ *
+ * @param iterator  the iterator
+ * @param item      the inner item of the container
+ * @param value     the outer value
+ *
+ * @return          lx_true or lx_false
+ */
+typedef lx_bool_t   (*lx_predicate_ref_t)(lx_iterator_ref_t iterator, lx_cpointer_t item, lx_cpointer_t value);
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * extern
+ */
+lx_extern_c_leave
 #endif
-
-
