@@ -293,7 +293,8 @@ static lx_pointer_t lx_heap_iterator_item(lx_iterator_ref_t iterator, lx_size_t 
 }
 
 static lx_void_t lx_heap_iterator_remove(lx_iterator_ref_t iterator, lx_size_t itor) {
-    lx_heap_t* heap = (lx_heap_t*)iterator;
+    lx_assert(iterator && iterator->container);
+    lx_heap_t* heap = (lx_heap_t*)iterator->container;
     lx_assert_and_check_return(heap && heap->data && heap->size && itor < heap->size);
 
     // free the item first
