@@ -104,21 +104,6 @@ lx_void_t                   lx_priority_queue_put(lx_priority_queue_ref_t queue,
  */
 lx_void_t                   lx_priority_queue_pop(lx_priority_queue_ref_t queue);
 
-/*! remove the queue item
- *
- * @param queue             the queue
- * @param itor              the itor
- */
-lx_void_t                   lx_priority_queue_remove(lx_priority_queue_ref_t queue, lx_size_t itor);
-
-#ifdef __lx_debug__
-/*! dump queue
- *
- * @param queue             the queue
- */
-lx_void_t                   lx_priority_queue_dump(lx_priority_queue_ref_t queue);
-#endif
-
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */
