@@ -45,7 +45,7 @@ static lx_void_t lx_test_heap_min_perf() {
     lx_size_t val = 0;
     lx_volatile lx_size_t rand = 0xbeaf;
     lx_hong_t time = lx_mclock();
-    lx_volatile lx_size_t n = 100000;
+    lx_volatile lx_size_t n = 10000;
     for (i = 0; i < n; i++) {
         rand = (rand * 10807 + 1) & 0xffffffff;
         val = rand % 50;
@@ -96,7 +96,7 @@ static lx_void_t lx_test_heap_max_perf() {
     lx_size_t val = 0;
     lx_volatile lx_size_t rand = 0xbeaf;
     lx_hong_t time = lx_mclock();
-    lx_volatile lx_size_t n = 100000;
+    lx_volatile lx_size_t n = 10000;
     for (i = 0; i < n; i++) {
         rand = (rand * 10807 + 1) & 0xffffffff;
         val = rand % 50;
@@ -105,7 +105,7 @@ static lx_void_t lx_test_heap_max_perf() {
     lx_volatile lx_size_t p;
     for (i = 0; lx_heap_size(heap); i++) {
         lx_size_t val = *((lx_size_t*)lx_heap_top(heap));
-        lx_assert(!i || p <= val);
+        lx_assert(!i || p >= val);
         p = val;
         lx_heap_pop(heap);
     }
