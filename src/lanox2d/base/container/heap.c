@@ -23,6 +23,8 @@
  * includes
  */
 #include "heap.h"
+#include "iterator.h"
+#include "../libc/libc.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * macros
@@ -67,50 +69,33 @@ typedef struct lx_heap_t_ {
  * private implementation
  */
 #if LX_HEAP_CHECK_ENABLE
-static lx_void_t lx_heap_check(lx_heap_t* heap)
-{
-    // init
+static lx_void_t lx_heap_check(lx_heap_t* heap) {
     lx_byte_t*  data = heap->data;
     lx_size_t   tail = heap->size;
     lx_size_t   step = heap->element.size;
     lx_size_t   parent = 0;
+    for (; parent < tail; parent++) {
+        lx_pointer_t parent_data = data + parent * heap->element.size;
 
-    // done
-    for (; parent < tail; parent++)
-    {
-        // the left child node
+        // check left child node
         lx_size_t lchild = (parent << 1) + 1;
         lx_check_break(lchild < tail);
-
-        // the parent data
-        lx_pointer_t parent_data = heap->element.data(&heap->element, data + parent * step);
-
-        // check?
-        if (heap->element.comp(&heap->element, heap->element.data(&heap->element, data + lchild * step), parent_data) < 0)
-        {
-            // dump self
+        if (heap->element.comp(data + lchild * heap->element.size, parent_data) < 0) {
             lx_heap_dump((lx_heap_ref_t)heap);
-
-            // abort
             lx_assertf(0, "lchild[%lu]: invalid, parent: %lu, tail: %lu", lchild, parent, tail);
         }
 
-        // the right child node
+        // check right child node
         lx_size_t rchild = lchild + 1;
         lx_check_break(rchild < tail);
-
-        // check?
-        if (heap->element.comp(&heap->element, heap->element.data(&heap->element, data + rchild * step), parent_data) < 0)
-        {
-            // dump self
+        if (heap->element.comp(data + rchild * heap->element.size, parent_data) < 0) {
             lx_heap_dump((lx_heap_ref_t)heap);
-
-            // abort
             lx_assertf(0, "rchild[%lu]: invalid, parent: %lu, tail: %lu", rchild, parent, tail);
         }
     }
 }
 #endif
+
 /*! shift up the self
  *
  * <pre>
@@ -141,49 +126,38 @@ static lx_void_t lx_heap_check(lx_heap_t* heap)
  *                  10        6
  * </pre>
  */
-static lx_pointer_t lx_heap_shift_up(lx_heap_t* heap, lx_size_t hole, lx_cpointer_t data)
-{
-    // check
-    lx_assert_and_check_return_val(heap && heap->data, lx_null);
-
-    // the element function
-    lx_element_comp_func_t func_comp = heap->element.comp;
-    lx_element_data_func_t func_data = heap->element.data;
-    lx_assert(func_comp && func_data);
+static lx_pointer_t lx_heap_shift_up(lx_heap_t* heap, lx_size_t hole, lx_cpointer_t data) {
+    lx_element_comp_t comp = heap->element.comp;
+    lx_assert(heap && heap->data && comp);
 
     // (hole - 1) / 2: the parent node of the hole
     lx_size_t   parent = 0;
     lx_byte_t*  head = heap->data;
     lx_size_t   step = heap->element.size;
-    switch (step)
-    {
-    case sizeof(lx_size_t):
-        {
-            for (parent = (hole - 1) >> 1; hole && (func_comp(&heap->element, func_data(&heap->element, head + parent * step), data) > 0); parent = (hole - 1) >> 1)
-            {
+    switch (step) {
+#ifndef LX_CONFIG_SMALL
+    case sizeof(lx_size_t): {
+            for (parent = (hole - 1) >> 1; hole && (comp(head + parent * step, data) > 0); parent = (hole - 1) >> 1) {
                 // move item: parent => hole
                 *((lx_size_t*)(head + hole * step)) = *((lx_size_t*)(head + parent * step));
-
                 // move node: hole => parent
                 hole = parent;
             }
         }
         break;
+#endif
     default:
-        for (parent = (hole - 1) >> 1; hole && (func_comp(&heap->element, func_data(&heap->element, head + parent * step), data) > 0); parent = (hole - 1) >> 1)
-        {
+        for (parent = (hole - 1) >> 1; hole && (comp(head + parent * step, data) > 0); parent = (hole - 1) >> 1) {
             // move item: parent => hole
             lx_memcpy(head + hole * step, head + parent * step, step);
-
             // move node: hole => parent
             hole = parent;
         }
         break;
     }
-
-    // ok?
     return head + hole * step;
 }
+
 /*! shift down the self
  *
  * <pre>
@@ -229,15 +203,9 @@ static lx_pointer_t lx_heap_shift_up(lx_heap_t* heap, lx_size_t hole, lx_cpointe
  *
  * </pre>
  */
-static lx_pointer_t lx_heap_shift_down(lx_heap_t* heap, lx_size_t hole, lx_cpointer_t data)
-{
-    // check
-    lx_assert_and_check_return_val(heap && heap->data, lx_null);
-
-    // init element
-    lx_element_comp_func_t func_comp = heap->element.comp;
-    lx_element_data_func_t func_data = heap->element.data;
-    lx_assert(func_comp && func_data);
+static lx_pointer_t lx_heap_shift_down(lx_heap_t* heap, lx_size_t hole, lx_cpointer_t data) {
+    lx_element_comp_t comp = heap->element.comp;
+    lx_assert(heap && heap->data && comp);
 
     // 2 * hole + 1: the left child node of hole
     lx_size_t       step = heap->element.size;
@@ -247,22 +215,21 @@ static lx_pointer_t lx_heap_shift_down(lx_heap_t* heap, lx_size_t hole, lx_cpoin
     lx_byte_t*      lchild = head + ((hole << 1) + 1) * step;
     lx_pointer_t    data_lchild = lx_null;
     lx_pointer_t    data_rchild = lx_null;
-    switch (step)
-    {
-    case sizeof(lx_size_t):
-        {
-            for (; lchild < tail; lchild = head + (((lchild - head) << 1) + step))
-            {
+    switch (step) {
+#ifndef LX_CONFIG_SMALL
+    case sizeof(lx_size_t): {
+            for (; lchild < tail; lchild = head + (((lchild - head) << 1) + step)) {
                 // the smaller child node
-                data_lchild = func_data(&heap->element, lchild);
-                if (lchild + step < tail && func_comp(&heap->element, data_lchild, (data_rchild = func_data(&heap->element, lchild + step))) > 0)
-                {
+                data_lchild = lchild;
+                if (lchild + step < tail && comp(data_lchild, (data_rchild = lchild + step)) > 0) {
                     lchild += step;
                     data_lchild = data_rchild;
                 }
 
                 // end?
-                if (func_comp(&heap->element, data_lchild, data) >= 0) break;
+                if (comp(data_lchild, data) >= 0) {
+                    break;
+                }
 
                 // the smaller child node => hole
                 *((lx_size_t*)phole) = *((lx_size_t*)lchild);
@@ -272,20 +239,20 @@ static lx_pointer_t lx_heap_shift_down(lx_heap_t* heap, lx_size_t hole, lx_cpoin
             }
         }
         break;
-    default:
-        {
-            for (; lchild < tail; lchild = head + (((lchild - head) << 1) + step))
-            {
+#endif
+    default: {
+            for (; lchild < tail; lchild = head + (((lchild - head) << 1) + step)) {
                 // the smaller child node
-                data_lchild = func_data(&heap->element, lchild);
-                if (lchild + step < tail && func_comp(&heap->element, data_lchild, (data_rchild = func_data(&heap->element, lchild + step))) > 0)
-                {
+                data_lchild = lchild;
+                if (lchild + step < tail && comp(data_lchild, (data_rchild = lchild + step)) > 0) {
                     lchild += step;
                     data_lchild = data_rchild;
                 }
 
                 // end?
-                if (func_comp(&heap->element, data_lchild, data) >= 0) break;
+                if (comp(data_lchild, data) >= 0) {
+                    break;
+                }
 
                 // the smaller child node => hole
                 lx_memcpy(phole, lchild, step);
@@ -296,8 +263,6 @@ static lx_pointer_t lx_heap_shift_down(lx_heap_t* heap, lx_size_t hole, lx_cpoin
         }
         break;
     }
-
-    // ok?
     return phole;
 }
 
@@ -314,12 +279,10 @@ static lx_size_t lx_heap_iterator_tail(lx_iterator_ref_t iterator) {
 static lx_size_t lx_heap_iterator_next(lx_iterator_ref_t iterator, lx_size_t itor) {
     lx_assert(iterator && iterator->container);
     lx_heap_t* heap = (lx_heap_t*)iterator->container;
-    return itor < heap>size? itor + 1 : heap->size;
+    return itor < heap->size? itor + 1 : heap->size;
 }
 
 static lx_size_t lx_heap_iterator_prev(lx_iterator_ref_t iterator, lx_size_t itor) {
-    lx_assert(iterator && iterator->container);
-    lx_heap_t* heap = (lx_heap_t*)iterator->container;
     return itor? itor - 1 : 0;
 }
 
@@ -346,7 +309,7 @@ static lx_void_t lx_heap_iterator_of(lx_iterator_ref_t iterator, lx_cpointer_t c
  * implementation
  */
 lx_heap_ref_t lx_heap_init(lx_size_t grow, lx_element_t element) {
-    lx_assert_and_check_return_val(element.size, lx_null);
+    lx_assert_and_check_return_val(element.size && element.comp, lx_null);
 
     lx_bool_t   ok = lx_false;
     lx_heap_t*  heap = lx_null;
@@ -394,10 +357,13 @@ lx_void_t lx_heap_exit(lx_heap_ref_t self) {
 lx_void_t lx_heap_clear(lx_heap_ref_t self) {
     lx_heap_t* heap = (lx_heap_t*)self;
     if (heap) {
-#if 0 // TODO
-        if (heap->element.nfree)
-            heap->element.nfree(&heap->element, heap->data, heap->size);
-#endif
+        if (heap->element.free) {
+            lx_size_t size = heap->size;
+            lx_size_t i = 0;
+            for (i = 0; i < size; i++) {
+                heap->element.free(heap->data + i * heap->element.size);
+            }
+        }
         heap->size = 0;
     }
 }
@@ -413,12 +379,13 @@ lx_size_t lx_heap_maxn(lx_heap_ref_t self) {
 }
 
 lx_pointer_t lx_heap_top(lx_heap_ref_t self) {
-    return heap->data;
+    lx_heap_t const* heap = (lx_heap_t const*)self;
+    return heap? heap->data : lx_null;
 }
 
 lx_void_t lx_heap_put(lx_heap_ref_t self, lx_cpointer_t data) {
     lx_heap_t* heap = (lx_heap_t*)self;
-    lx_assert_and_check_return(heap && heap->element.dupl && heap->data);
+    lx_assert_and_check_return(heap && heap->data);
 
     // no enough? grow it
     if (heap->size == heap->maxn) {
@@ -441,7 +408,7 @@ lx_void_t lx_heap_put(lx_heap_ref_t self, lx_cpointer_t data) {
 
     // save data to the hole
     if (hole) {
-        heap->element.dupl(&heap->element, hole, data);
+        lx_memcpy(hole, data, heap->element.size);
     }
     heap->size++;
 #if LX_HEAP_CHECK_ENABLE
@@ -460,7 +427,6 @@ lx_void_t lx_heap_pop(lx_heap_ref_t self) {
 
     // the last item is not in top
     if (heap->size > 1) {
-        lx_assert(heap->element.data);
 
         // the step
         lx_size_t step = heap->element.size;
@@ -470,7 +436,7 @@ lx_void_t lx_heap_pop(lx_heap_ref_t self) {
         lx_pointer_t last = heap->data + (heap->size - 1) * step;
 
         // shift down the self from the top hole
-        lx_pointer_t hole = lx_heap_shift_down(heap, 0, heap->element.data(&heap->element, last));
+        lx_pointer_t hole = lx_heap_shift_down(heap, 0, last);
         lx_assert(hole);
 
         // copy the last data to the hole
