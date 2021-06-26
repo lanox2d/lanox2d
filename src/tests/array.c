@@ -13,6 +13,8 @@ int main(int argc, char** argv) {
     lx_array_ref_t array = lx_array_init(0, lx_element_mem(sizeof(lx_size_t), itemfree));
     if (array) {
         lx_size_t val[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        lx_iterator_t iterator;
+        lx_iterator_of(&iterator, array);
         lx_trace_i("-------------------------- test insert --------------------------");
         lx_array_insert_tail(array, &val[0]);
         lx_array_insert_tail(array, &val[1]);
@@ -24,17 +26,17 @@ int main(int argc, char** argv) {
         lx_array_insert_tail(array, &val[7]);
         lx_array_insert_tail(array, &val[8]);
         lx_array_insert_tail(array, &val[9]);
-        lx_foreach_all(array, foreach, lx_null);
+        lx_foreach_all(&iterator, foreach, lx_null);
         lx_assert(*((lx_size_t*)lx_array_head(array)) == val[0]);
         lx_assert(*((lx_size_t*)lx_array_last(array)) == val[9]);
         lx_trace_i("-------------------------- test remove --------------------------");
         lx_array_remove_last(array);
-        lx_foreach_all(array, foreach, lx_null);
+        lx_foreach_all(&iterator, foreach, lx_null);
         lx_assert(*((lx_size_t*)lx_array_last(array)) == val[8]);
         lx_trace_i("-------------------------- test replace ------------------------");
         lx_array_replace_head(array, &val[9]);
         lx_array_replace_last(array, &val[0]);
-        lx_foreach_all(array, foreach, lx_null);
+        lx_foreach_all(&iterator, foreach, lx_null);
         lx_assert(*((lx_size_t*)lx_array_head(array)) == val[9]);
         lx_assert(*((lx_size_t*)lx_array_last(array)) == val[0]);
         lx_for_all(lx_cpointer_t, item, array) {

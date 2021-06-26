@@ -39,9 +39,7 @@ lx_size_t lx_rforeach(lx_iterator_ref_t iterator, lx_size_t head, lx_size_t tail
     }
     return count;
 }
-lx_size_t lx_rforeach_all(lx_cpointer_t container, lx_rforeach_cb_t callback, lx_cpointer_t udata) {
-    lx_assert(container && callback);
-    lx_iterator_t iterator;
-    lx_iterator_of(&iterator, container);
-    return lx_rforeach(&iterator, lx_iterator_head(&iterator), lx_iterator_tail(&iterator), callback, udata);
+lx_size_t lx_rforeach_all(lx_iterator_ref_t iterator, lx_rforeach_cb_t callback, lx_cpointer_t udata) {
+    lx_assert(iterator && callback);
+    return lx_rforeach(iterator, lx_iterator_head(iterator), lx_iterator_tail(iterator), callback, udata);
 }

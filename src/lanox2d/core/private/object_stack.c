@@ -151,12 +151,16 @@ lx_void_t lx_object_stack_exit(lx_object_stack_ref_t self) {
             stack->object = lx_null;
         }
         if (stack->stack) {
-            lx_foreach_all(stack->stack, lx_object_stack_object_free, stack);
+            lx_iterator_t iterator;
+            lx_iterator_of(&iterator, stack->stack);
+            lx_foreach_all(&iterator, lx_object_stack_object_free, stack);
             lx_stack_exit(stack->stack);
             stack->stack = lx_null;
         }
         if (stack->cache) {
-            lx_foreach_all(stack->cache, lx_object_stack_object_free, stack);
+            lx_iterator_t iterator;
+            lx_iterator_of(&iterator, stack->cache);
+            lx_foreach_all(&iterator, lx_object_stack_object_free, stack);
             lx_stack_exit(stack->cache);
             stack->cache = lx_null;
         }

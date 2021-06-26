@@ -56,13 +56,13 @@ lx_size_t           lx_foreach(lx_iterator_ref_t iterator, lx_size_t head, lx_si
 
 /*! foreach all
  *
- * @param container the container
+ * @param iterator  the iterator
  * @param callback  the item callback
  * @param udata     the user data
  *
  * @return          the item count
  */
-lx_size_t           lx_foreach_all(lx_cpointer_t container, lx_foreach_cb_t callback, lx_cpointer_t udata);
+lx_size_t           lx_foreach_all(lx_iterator_ref_t iterator, lx_foreach_cb_t callback, lx_cpointer_t udata);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
