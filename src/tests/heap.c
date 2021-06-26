@@ -12,6 +12,10 @@ static lx_long_t lx_test_heap_max_comp(lx_cpointer_t ldata, lx_cpointer_t rdata)
     return ((lval > rval)? -1 : (lval < rval));
 }
 
+static lx_bool_t lx_test_heap_find(lx_iterator_ref_t iterator, lx_cpointer_t item, lx_cpointer_t value) {
+    return *((lx_size_t*)item) == *((lx_size_t*)value);
+}
+
 static lx_void_t lx_test_heap_min_func() {
     lx_element_t element = lx_element_mem(sizeof(lx_size_t), lx_null); element.comp = lx_test_heap_min_comp;
     lx_heap_ref_t heap = lx_heap_init(16, element);
@@ -24,6 +28,24 @@ static lx_void_t lx_test_heap_min_func() {
         rand = (rand * 10807 + 1) & 0xffffffff;
         val = rand % 50;
 //        lx_trace_i("heap_min: put: %lu", val);
+        lx_heap_put(heap, &val);
+    }
+
+    lx_iterator_t iterator;
+    lx_iterator_of(&iterator, heap);
+    for (i = 0; i < 100; i++) {
+        rand = (rand * 10807 + 1) & 0xffffffff;
+        val = rand % 50;
+        if (!(i & 3)) {
+            lx_size_t itor = lx_find_all_if(&iterator, lx_test_heap_find, &val);
+            if (itor != lx_iterator_tail(&iterator)) {
+                lx_iterator_remove(&iterator, itor);
+            }
+        }
+    }
+    for (i = 0; i < 30; i++) {
+        rand = (rand * 10807 + 1) & 0xffffffff;
+        val = rand % 50;
         lx_heap_put(heap, &val);
     }
 
@@ -75,6 +97,24 @@ static lx_void_t lx_test_heap_max_func() {
         rand = (rand * 10807 + 1) & 0xffffffff;
         val = rand % 50;
 //        lx_trace_i("heap_max: put: %lu", val);
+        lx_heap_put(heap, &val);
+    }
+
+    lx_iterator_t iterator;
+    lx_iterator_of(&iterator, heap);
+    for (i = 0; i < 100; i++) {
+        rand = (rand * 10807 + 1) & 0xffffffff;
+        val = rand % 50;
+        if (!(i & 3)) {
+            lx_size_t itor = lx_find_all_if(&iterator, lx_test_heap_find, &val);
+            if (itor != lx_iterator_tail(&iterator)) {
+                lx_iterator_remove(&iterator, itor);
+            }
+        }
+    }
+    for (i = 0; i < 30; i++) {
+        rand = (rand * 10807 + 1) & 0xffffffff;
+        val = rand % 50;
         lx_heap_put(heap, &val);
     }
 

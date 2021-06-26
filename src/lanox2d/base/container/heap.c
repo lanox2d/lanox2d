@@ -292,13 +292,58 @@ static lx_pointer_t lx_heap_iterator_item(lx_iterator_ref_t iterator, lx_size_t 
     return itor < heap->size? heap->data + itor * heap->element.size : lx_null;
 }
 
+static lx_void_t lx_heap_iterator_remove(lx_iterator_ref_t iterator, lx_size_t itor) {
+    lx_heap_t* heap = (lx_heap_t*)iterator;
+    lx_assert_and_check_return(heap && heap->data && heap->size && itor < heap->size);
+
+    // free the item first
+    lx_size_t step = heap->element.size;
+    if (heap->element.free) {
+        heap->element.free(heap->data + itor * step);
+    }
+
+    // the removed item is not the last item?
+    if (itor != heap->size - 1) {
+        lx_pointer_t last = heap->data + (heap->size - 1) * step;
+        lx_pointer_t parent = heap->data + ((itor - 1) >> 1) * step;
+
+        /* we might need to shift it upward if it is less than its parent,
+         * or downward if it is greater than one or both its children.
+         *
+         * since the children are known to be less than the parent,
+         * it can't need to shift both up and down.
+         */
+        lx_pointer_t hole = lx_null;
+        if (itor && heap->element.comp(parent, last) > 0) {
+            // shift up the self from the given hole
+            hole = lx_heap_shift_up(heap, itor, last);
+        }
+        // shift down the self from the given hole
+        else {
+            hole = lx_heap_shift_down(heap, itor, last);
+        }
+        lx_assert(hole);
+
+        // copy the last data to the hole
+        if (hole != last) {
+            lx_memcpy(hole, last, step);
+        }
+    }
+    heap->size--;
+#if LX_HEAP_CHECK_ENABLE
+    lx_heap_check(heap);
+#endif
+}
+
 static lx_void_t lx_heap_iterator_of(lx_iterator_ref_t iterator, lx_cpointer_t container) {
     static lx_iterator_op_t op = {
         lx_heap_iterator_head,
         lx_heap_iterator_tail,
         lx_heap_iterator_prev,
         lx_heap_iterator_next,
-        lx_heap_iterator_item
+        lx_heap_iterator_item,
+        lx_null,
+        lx_heap_iterator_remove
     };
     iterator->container = container;
     iterator->mode      = LX_ITERATOR_MODE_FORWARD | LX_ITERATOR_MODE_REVERSE | LX_ITERATOR_MODE_RACCESS | LX_ITERATOR_MODE_MUTABLE;

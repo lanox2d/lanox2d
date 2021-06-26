@@ -82,6 +82,6 @@ lx_void_t lx_tessellator_event_queue_remove(lx_tessellator_t* tessellator, lx_me
     lx_iterator_of(&iterator, tessellator->event_queue);
     lx_size_t itor = lx_find_all_if(&iterator, lx_tessellator_event_queue_find, event);
     if (itor != lx_iterator_tail(&iterator)) {
-//        lx_iterator_remove(tessellator->event_queue, itor);
+        lx_iterator_remove(&iterator, itor);
     }
 }

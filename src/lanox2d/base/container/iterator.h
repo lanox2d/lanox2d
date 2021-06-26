@@ -48,6 +48,7 @@ typedef struct lx_iterator_op_t_ {
     lx_size_t               (*next)(struct lx_iterator_t_* iterator, lx_size_t itor);
     lx_pointer_t            (*item)(struct lx_iterator_t_* iterator, lx_size_t itor);
     lx_long_t               (*comp)(struct lx_iterator_t_* iterator, lx_cpointer_t litem, lx_cpointer_t ritem);
+    lx_void_t               (*remove)(struct lx_iterator_t_* iterator, lx_size_t itor);
 }lx_iterator_op_t;
 
 /// the iterator operation ref type
@@ -150,6 +151,13 @@ lx_pointer_t        lx_iterator_item(lx_iterator_ref_t iterator, lx_size_t itor)
  * @return          =: 0, >: 1, <: -1
  */
 lx_long_t           lx_iterator_comp(lx_iterator_ref_t iterator, lx_cpointer_t litem, lx_cpointer_t ritem);
+
+/*! remove the iterator item
+ *
+ * @param iterator  the iterator
+ * @param itor      the item itor
+ */
+lx_void_t           lx_iterator_remove(lx_iterator_ref_t iterator, lx_size_t itor);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

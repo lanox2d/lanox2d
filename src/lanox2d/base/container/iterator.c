@@ -66,3 +66,8 @@ lx_long_t lx_iterator_comp(lx_iterator_ref_t iterator, lx_cpointer_t litem, lx_c
     lx_assert(iterator && iterator->op && iterator->op->comp);
     return iterator->op->comp(iterator, litem, ritem);
 }
+
+lx_void_t lx_iterator_remove(lx_iterator_ref_t iterator, lx_size_t itor) {
+    lx_assert(iterator && iterator->op && iterator->op->remove);
+    return iterator->op->remove(iterator, itor);
+}
