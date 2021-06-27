@@ -57,6 +57,11 @@ lx_size_t lx_iterator_next(lx_iterator_ref_t iterator, lx_size_t itor) {
     return iterator->op->next(iterator, itor);
 }
 
+lx_size_t lx_iterator_size(lx_iterator_ref_t iterator) {
+    lx_assert(iterator && iterator->op && iterator->op->size);
+    return iterator->op->size(iterator);
+}
+
 lx_pointer_t lx_iterator_item(lx_iterator_ref_t iterator, lx_size_t itor) {
     lx_assert(iterator && iterator->op && iterator->op->item);
     return iterator->op->item(iterator, itor);

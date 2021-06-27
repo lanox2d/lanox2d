@@ -15,25 +15,38 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        algorithm.h
+ * @file        distance.h
  *
  */
-#ifndef LX_BASE_ALGORITHM_H
-#define LX_BASE_ALGORITHM_H
+#ifndef LX_BASE_ALGORITHM_DISTANCE_H
+#define LX_BASE_ALGORITHM_DISTANCE_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "for.h"
-#include "for_if.h"
-#include "rfor.h"
-#include "foreach.h"
-#include "rforeach.h"
-#include "find_if.h"
-#include "distance.h"
-#include "binary_find.h"
-#include "binary_find_if.h"
+#include "prefix.h"
 
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * extern
+ */
+lx_extern_c_enter
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * interfaces
+ */
+
+/*! compute distance from head to tail
+ *
+ * @param iterator  the iterator
+ * @param head      the iterator head
+ * @param tail      the iterator tail
+ *
+ * @return          the distance
+ */
+lx_size_t           lx_distance(lx_iterator_ref_t iterator, lx_size_t head, lx_size_t tail);
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * extern
+ */
+lx_extern_c_leave
 #endif
-
-

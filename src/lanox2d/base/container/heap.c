@@ -336,6 +336,18 @@ static lx_void_t lx_heap_iterator_remove(lx_iterator_ref_t iterator, lx_size_t i
 #endif
 }
 
+static lx_size_t lx_heap_iterator_size(lx_iterator_ref_t iterator) {
+    lx_assert(iterator && iterator->container);
+    lx_heap_t* heap = (lx_heap_t*)iterator->container;
+    return heap->size;
+}
+
+static lx_long_t lx_heap_iterator_comp(lx_iterator_ref_t iterator, lx_cpointer_t litem, lx_cpointer_t ritem) {
+    lx_assert(iterator && iterator->container);
+    lx_heap_t* heap = (lx_heap_t*)iterator->container;
+    return heap->element.comp(litem, ritem);
+}
+
 static lx_void_t lx_heap_iterator_of(lx_iterator_ref_t iterator, lx_cpointer_t container) {
     static lx_iterator_op_t op = {
         lx_heap_iterator_head,
@@ -343,7 +355,8 @@ static lx_void_t lx_heap_iterator_of(lx_iterator_ref_t iterator, lx_cpointer_t c
         lx_heap_iterator_prev,
         lx_heap_iterator_next,
         lx_heap_iterator_item,
-        lx_null,
+        lx_heap_iterator_size,
+        lx_heap_iterator_comp,
         lx_heap_iterator_remove
     };
     iterator->container = container;

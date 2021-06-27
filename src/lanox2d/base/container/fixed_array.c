@@ -52,6 +52,11 @@ static lx_pointer_t lx_fixed_array_ptr_iterator_item(lx_iterator_ref_t iterator,
     return ((lx_pointer_t*)((lx_fixed_array_ref_t)iterator->container)->items)[itor];
 }
 
+static lx_size_t lx_fixed_array_ptr_iterator_size(lx_iterator_ref_t iterator) {
+    lx_assert(iterator && iterator->container);
+    return ((lx_fixed_array_ref_t)iterator->container)->count;
+}
+
 static lx_long_t lx_fixed_array_ptr_iterator_comp(lx_iterator_ref_t iterator, lx_cpointer_t litem, lx_cpointer_t ritem) {
     return (litem < ritem)? -1 : (litem > ritem);
 }
@@ -63,6 +68,7 @@ static lx_void_t lx_fixed_array_ptr_iterator_of(lx_iterator_ref_t iterator, lx_c
         lx_fixed_array_ptr_iterator_prev,
         lx_fixed_array_ptr_iterator_next,
         lx_fixed_array_ptr_iterator_item,
+        lx_fixed_array_ptr_iterator_size,
         lx_fixed_array_ptr_iterator_comp
     };
     iterator->container = container;
