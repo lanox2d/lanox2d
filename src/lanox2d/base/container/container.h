@@ -25,6 +25,7 @@
  * includes
  */
 #include "heap.h"
+#include "list.h"
 #include "stack.h"
 #include "array.h"
 #include "list_entry.h"

@@ -141,9 +141,6 @@ typedef struct lx_tessellator_vertex_t_ {
     lx_point_t                          point;
 } lx_tessellator_vertex_t, *lx_tessellator_vertex_ref_t;
 
-// TODO
-typedef lx_typeref(list);
-
 // the tessellator type
 typedef struct lx_tessellator_t_ {
 
