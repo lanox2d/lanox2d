@@ -25,6 +25,8 @@
 #include "geometry.h"
 #include "mesh.h"
 
+#if 0
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * macros
  */
@@ -196,44 +198,6 @@ static lx_long_t lx_tessellator_active_region_comp(lx_cpointer_t ldata, lx_cpoin
     // lregion <= rregion ? -1 : 1
     return (!lx_tessellator_active_region_leq((lx_tessellator_active_region_ref_t)ldata, (lx_tessellator_active_region_ref_t)rdata) << 1) - 1;
 }
-#ifdef LX_DEBUG
-static lx_char_t const* lx_tessellator_active_region_cstr(lx_element_ref_t element, lx_cpointer_t data, lx_char_t* cstr, lx_size_t maxn)
-{
-    // check
-    lx_tessellator_active_region_ref_t region = (lx_tessellator_active_region_ref_t)data;
-    lx_assert_and_check_return_val(region, lx_null);
-
-    // make info
-    lx_long_t size = lx_snprintf(cstr, maxn, "%{tess_region}.%{mesh_edge}", region, region->edge);
-    if (size >= 0) cstr[size] = '\0';
-
-    // ok?
-    return cstr;
-}
-static lx_long_t lx_tessellator_active_region_printf(lx_cpointer_t object, lx_char_t* cstr, lx_size_t maxn)
-{
-    // check
-    lx_assert_and_check_return_val(object && cstr && maxn, -1);
-
-    // the region
-    lx_tessellator_active_region_ref_t region = (lx_tessellator_active_region_ref_t)object;
-
-    // is bounds region?
-    if (region->bounds) return lx_snprintf(cstr, maxn, "(e%lu.bounds)", region->edge->id);
-
-    // is fixable edge region?
-    if (region->fixedge) return lx_snprintf(cstr, maxn, "(e%lu.fixable)", region->edge->id);
-
-    // make info
-    return lx_snprintf( cstr
-                    ,   maxn
-                    ,   "(e%lu.w%d, winding: %ld, inside: %d)"
-                    ,   region->edge->id
-                    ,   lx_tessellator_edge_winding(region->edge)
-                    ,   region->winding
-                    ,   region->inside);
-}
-#endif
 /* insert region in ascending order and save the region position
  *
  * r0 ----> r1 ------> r2 -------> r3 ---> ... ---->
@@ -404,22 +368,6 @@ lx_bool_t lx_tessellator_active_regions_make(lx_tessellator_t* tessellator, lx_r
 
         // init the comparator
         element.comp = lx_tessellator_active_region_comp;
-
-#ifdef LX_DEBUG
-        // init the c-string function for lx_list_dump
-        element.cstr = lx_tessellator_active_region_cstr;
-
-        // register printf("%{tess_region}", region);
-        static lx_bool_t s_is_registered = lx_false;
-        if (!s_is_registered)
-        {
-            // register it
-            lx_printf_object_register("tess_region", lx_tessellator_active_region_printf);
-
-            // ok
-            s_is_registered = lx_true;
-        }
-#endif
 
         // make active regions
         tessellator->active_regions = lx_list_init(0, element);
@@ -600,3 +548,4 @@ lx_void_t lx_tessellator_active_regions_check(lx_tessellator_t* tessellator)
 }
 #endif
 
+#endif
