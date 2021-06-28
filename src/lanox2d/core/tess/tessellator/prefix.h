@@ -163,7 +163,7 @@ typedef struct lx_tessellator_t_ {
     lx_mesh_vertex_ref_t                event;
 
     // the output points
-    lx_vector_ref_t                     outputs;
+    lx_array_ref_t                      outputs;
 
     // the event queue for vertex
     lx_priority_queue_ref_t             event_queue;

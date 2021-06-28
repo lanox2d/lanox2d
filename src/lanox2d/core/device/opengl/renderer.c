@@ -23,6 +23,7 @@
  * includes
  */
 #include "renderer.h"
+#include "../../tess/tess.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * macros
@@ -128,7 +129,6 @@ static lx_void_t lx_gl_renderer_leave_paint(lx_opengl_device_t* device) {
 #endif
 }
 
-#if 0
 static lx_void_t lx_gl_renderer_fill_convex(lx_point_ref_t points, lx_uint16_t count, lx_cpointer_t udata) {
     lx_assert(udata && points && count);
 
@@ -167,27 +167,18 @@ static lx_void_t lx_gl_renderer_fill_convex(lx_point_ref_t points, lx_uint16_t c
     lx_glEnable(LX_GL_BLEND);
 #endif
 }
-#endif
 
 static lx_void_t lx_gl_renderer_fill_polygon(lx_opengl_device_t* device, lx_polygon_ref_t polygon, lx_rect_ref_t bounds, lx_size_t rule) {
     lx_assert(device && device->tessellator);
 
-#if 0 // TODO
 #ifdef LX_GL_TESSELLATOR_TEST_ENABLE
-    // set mode
     lx_tessellator_mode_set(device->tessellator, LX_TESSELLATOR_MODE_TRIANGULATION);
 //    lx_tessellator_mode_set(device->tessellator, LX_TESSELLATOR_MODE_MONOTONE);
 #endif
 
-    // set rule
     lx_tessellator_rule_set(device->tessellator, rule);
-
-    // set func
-    lx_tessellator_func_set(device->tessellator, lx_gl_renderer_fill_convex, device);
-
-    // done tessellator
-    lx_tessellator_done(device->tessellator, polygon, bounds);
-#endif
+    lx_tessellator_callback_set(device->tessellator, lx_gl_renderer_fill_convex, device);
+    lx_tessellator_make(device->tessellator, polygon, bounds);
 }
 
 static lx_void_t lx_gl_renderer_stroke_lines(lx_opengl_device_t* device, lx_point_ref_t points, lx_size_t count) {
