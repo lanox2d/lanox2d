@@ -30,6 +30,7 @@
 #include "foreach.h"
 #include "rforeach.h"
 #include "find_if.h"
+#include "rfind_if.h"
 #include "distance.h"
 #include "binary_find.h"
 #include "binary_find_if.h"

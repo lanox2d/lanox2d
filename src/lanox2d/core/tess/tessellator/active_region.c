@@ -25,8 +25,6 @@
 #include "geometry.h"
 #include "mesh.h"
 
-#if 0
-
 /* //////////////////////////////////////////////////////////////////////////////////////
  * macros
  */
@@ -218,17 +216,19 @@ static lx_tessellator_active_region_ref_t lx_tessellator_active_regions_insert_d
     lx_trace_d("insert: %{mesh_edge}", region->edge);
 
     // reverse to find the inserted position
-    lx_size_t itor = lx_find_if(tessellator->active_regions, prev, lx_iterator_tail(tessellator->active_regions), lx_predicate_beq, region);
+    lx_iterator_t iterator;
+    lx_iterator_of(&iterator, tessellator->active_regions);
+    lx_size_t itor = lx_find_if(&iterator, prev, lx_iterator_tail(&iterator), lx_predicate_beq, region);
 
     // trace
-    lx_trace_d("insert: find count: %lu", lx_distance(tessellator->active_regions, prev, itor));
+    lx_trace_d("insert: find count: %lu", lx_distance(&iterator, prev, itor));
 
     // insert the region to the next position
     itor = lx_list_insert_prev(tessellator->active_regions, itor, region);
-    lx_assert(itor != lx_iterator_tail(tessellator->active_regions));
+    lx_assert(itor != lx_iterator_tail(&iterator));
 
     // get the real region reference
-    region = (lx_tessellator_active_region_ref_t)lx_iterator_item(tessellator->active_regions, itor);
+    region = (lx_tessellator_active_region_ref_t)lx_iterator_item(&iterator, itor);
     lx_assert(region);
 
     // save the region position
@@ -364,7 +364,7 @@ lx_bool_t lx_tessellator_active_regions_make(lx_tessellator_t* tessellator, lx_r
     if (!tessellator->active_regions)
     {
         // make active region element
-        lx_element_t element = lx_element_mem(sizeof(lx_tessellator_active_region_t), lx_null, lx_null);
+        lx_element_t element = lx_element_mem(sizeof(lx_tessellator_active_region_t), lx_null);
 
         // init the comparator
         element.comp = lx_tessellator_active_region_comp;
@@ -387,10 +387,10 @@ lx_bool_t lx_tessellator_active_regions_make(lx_tessellator_t* tessellator, lx_r
      *    |              .  .    .        |
      *                                 (xe, ye)
      */
-    lx_float_t xb = bounds->x - LX_ONE;
-    lx_float_t yb = bounds->y - LX_ONE;
-    lx_float_t xe = bounds->x + bounds->w + LX_ONE;
-    lx_float_t ye = bounds->y + bounds->h + LX_ONE;
+    lx_float_t xb = bounds->x - 1.0f;
+    lx_float_t yb = bounds->y - 1.0f;
+    lx_float_t xe = bounds->x + bounds->w + 1.0f;
+    lx_float_t ye = bounds->y + bounds->h + 1.0f;
     lx_tessellator_active_regions_insert_bounds(tessellator, xb, ye, yb);
     lx_tessellator_active_regions_insert_bounds(tessellator, xe, ye, yb);
 
@@ -430,40 +430,44 @@ lx_tessellator_active_region_ref_t lx_tessellator_active_regions_find(lx_tessell
      *
      *
      */
-    lx_size_t itor = lx_rfind_all_if(tessellator->active_regions, lx_predicate_le, &region_temp);
+    lx_iterator_t iterator;
+    lx_iterator_of(&iterator, tessellator->active_regions);
+    lx_size_t itor = lx_rfind_all_if(&iterator, lx_predicate_le, &region_temp);
 
     // get the found item
-    return (itor != lx_iterator_tail(tessellator->active_regions))? (lx_tessellator_active_region_ref_t)lx_iterator_item(tessellator->active_regions, itor) : lx_null;
+    return (itor != lx_iterator_tail(&iterator))? (lx_tessellator_active_region_ref_t)lx_iterator_item(&iterator, itor) : lx_null;
 }
 lx_tessellator_active_region_ref_t lx_tessellator_active_regions_left(lx_tessellator_t* tessellator, lx_tessellator_active_region_ref_t region)
 {
     // check
     lx_assert(tessellator && tessellator->active_regions);
-    lx_assert(region && region->position != lx_iterator_tail(tessellator->active_regions));
+
+    lx_iterator_t iterator;
+    lx_iterator_of(&iterator, tessellator->active_regions);
+    lx_assert(region && region->position != lx_iterator_tail(&iterator));
 
     // get the prev position
-    lx_size_t position = lx_iterator_prev(tessellator->active_regions, region->position);
+    lx_size_t position = lx_iterator_prev(&iterator, region->position);
 
     // no left region?
-    lx_check_return_val(position != lx_iterator_tail(tessellator->active_regions), lx_null);
-
-    // ok
-    return (lx_tessellator_active_region_ref_t)lx_iterator_item(tessellator->active_regions, position);
+    lx_check_return_val(position != lx_iterator_tail(&iterator), lx_null);
+    return (lx_tessellator_active_region_ref_t)lx_iterator_item(&iterator, position);
 }
 lx_tessellator_active_region_ref_t lx_tessellator_active_regions_right(lx_tessellator_t* tessellator, lx_tessellator_active_region_ref_t region)
 {
     // check
     lx_assert(tessellator && tessellator->active_regions);
-    lx_assert(region && region->position != lx_iterator_tail(tessellator->active_regions));
+
+    lx_iterator_t iterator;
+    lx_iterator_of(&iterator, tessellator->active_regions);
+    lx_assert(region && region->position != lx_iterator_tail(&iterator));
 
     // get the next position
-    lx_size_t position = lx_iterator_next(tessellator->active_regions, region->position);
+    lx_size_t position = lx_iterator_next(&iterator, region->position);
 
     // no right region?
-    lx_check_return_val(position != lx_iterator_tail(tessellator->active_regions), lx_null);
-
-    // ok
-    return (lx_tessellator_active_region_ref_t)lx_iterator_item(tessellator->active_regions, position);
+    lx_check_return_val(position != lx_iterator_tail(&iterator), lx_null);
+    return (lx_tessellator_active_region_ref_t)lx_iterator_item(&iterator, position);
 }
 lx_bool_t lx_tessellator_active_regions_in_left(lx_tessellator_t* tessellator, lx_tessellator_active_region_ref_t region1, lx_tessellator_active_region_ref_t region2)
 {
@@ -474,7 +478,10 @@ lx_void_t lx_tessellator_active_regions_remove(lx_tessellator_t* tessellator, lx
 {
     // check
     lx_assert(tessellator && tessellator->active_regions && region && region->edge);
-    lx_assert(region->position != lx_iterator_tail(tessellator->active_regions));
+
+    lx_iterator_t iterator;
+    lx_iterator_of(&iterator, tessellator->active_regions);
+    lx_assert(region->position != lx_iterator_tail(&iterator));
 
     // it can not be a real edge if the left edge need fix, then we will remove it
     lx_assert(!region->fixedge || !lx_tessellator_edge_winding(region->edge));
@@ -490,17 +497,23 @@ lx_tessellator_active_region_ref_t lx_tessellator_active_regions_insert(lx_tesse
     // check
     lx_assert(tessellator && tessellator->active_regions && region);
 
+    lx_iterator_t iterator;
+    lx_iterator_of(&iterator, tessellator->active_regions);
+
     // insert it
-    return lx_tessellator_active_regions_insert_done(tessellator, lx_iterator_head(tessellator->active_regions), region);
+    return lx_tessellator_active_regions_insert_done(tessellator, lx_iterator_head(&iterator), region);
 }
 lx_tessellator_active_region_ref_t lx_tessellator_active_regions_insert_after(lx_tessellator_t* tessellator, lx_tessellator_active_region_ref_t region_prev, lx_tessellator_active_region_ref_t region)
 {
     // check
     lx_assert(tessellator && tessellator->active_regions && region_prev && region);
-    lx_assert(region_prev->position != lx_iterator_tail(tessellator->active_regions));
+
+    lx_iterator_t iterator;
+    lx_iterator_of(&iterator, tessellator->active_regions);
+    lx_assert(region_prev->position != lx_iterator_tail(&iterator));
 
     // region_prev <= region
-    lx_assert(lx_iterator_comp(tessellator->active_regions, region_prev, region) <= 0);
+    lx_assert(lx_iterator_comp(&iterator, region_prev, region) <= 0);
 
     // insert it
     return lx_tessellator_active_regions_insert_done(tessellator, region_prev->position, region);
@@ -511,6 +524,9 @@ lx_void_t lx_tessellator_active_regions_check(lx_tessellator_t* tessellator)
     // check
     lx_assert(tessellator && tessellator->active_regions);
 
+    lx_iterator_t iterator;
+    lx_iterator_of(&iterator, tessellator->active_regions);
+
     // done
     lx_tessellator_active_region_ref_t region_prev = lx_null;
     lx_for_all_if (lx_tessellator_active_region_ref_t, region, tessellator->active_regions, region)
@@ -519,15 +535,10 @@ lx_void_t lx_tessellator_active_regions_check(lx_tessellator_t* tessellator)
         if (region_prev)
         {
             // the order is error?
-            if (lx_iterator_comp(tessellator->active_regions, region_prev, region) > 0)
+            if (lx_iterator_comp(&iterator, region_prev, region) > 0)
             {
                 // trace
                 lx_trace_i("the order of the active regions is error with event: %{mesh_vertex}", tessellator->event);
-
-                // dump it
-#           ifdef LX_DEBUG
-                lx_list_dump(tessellator->active_regions);
-#           endif
 
                 // trace
                 lx_trace_i("%{mesh_edge}", region_prev->edge);
@@ -548,4 +559,3 @@ lx_void_t lx_tessellator_active_regions_check(lx_tessellator_t* tessellator)
 }
 #endif
 
-#endif

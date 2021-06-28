@@ -44,6 +44,71 @@ lx_extern_c_enter
  */
 typedef lx_bool_t   (*lx_predicate_ref_t)(lx_iterator_ref_t iterator, lx_cpointer_t item, lx_cpointer_t value);
 
+/*! the predicate break ref type
+ *
+ * @param iterator  the iterator
+ * @param item      the inner item of the container
+ * @param value     the outer value
+ * @param is_break  is break now?
+ *
+ * @return          lx_true or lx_false
+ */
+typedef lx_bool_t   (*lx_predicate_break_ref_t)(lx_iterator_ref_t iterator, lx_cpointer_t item, lx_cpointer_t value, lx_bool_t* is_break);
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * interfaces
+ */
+
+/*! the predicate: if (item == value)?
+ *
+ * @param iterator  the iterator
+ * @param item      the inner item of the container
+ * @param value     the outer value
+ *
+ * @return          lx_true or lx_false
+ */
+lx_bool_t           lx_predicate_eq(lx_iterator_ref_t iterator, lx_cpointer_t item, lx_cpointer_t value);
+
+/*! the predicate: if (item < value)?
+ *
+ * @param iterator  the iterator
+ * @param item      the inner item of the container
+ * @param value     the outer value
+ *
+ * @return          lx_true or lx_false
+ */
+lx_bool_t           lx_predicate_le(lx_iterator_ref_t iterator, lx_cpointer_t item, lx_cpointer_t value);
+
+/*! the predicate: if (item > value)?
+ *
+ * @param iterator  the iterator
+ * @param item      the inner item of the container
+ * @param value     the outer value
+ *
+ * @return          lx_true or lx_false
+ */
+lx_bool_t           lx_predicate_be(lx_iterator_ref_t iterator, lx_cpointer_t item, lx_cpointer_t value);
+
+/*! the predicate: if (item <= value)?
+ *
+ * @param iterator  the iterator
+ * @param item      the inner item of the container
+ * @param value     the outer value
+ *
+ * @return          lx_true or lx_false
+ */
+lx_bool_t           lx_predicate_leq(lx_iterator_ref_t iterator, lx_cpointer_t item, lx_cpointer_t value);
+
+/*! the predicate: if (item >= value)?
+ *
+ * @param iterator  the iterator
+ * @param item      the inner item of the container
+ * @param value     the outer value
+ *
+ * @return          lx_true or lx_false
+ */
+lx_bool_t           lx_predicate_beq(lx_iterator_ref_t iterator, lx_cpointer_t item, lx_cpointer_t value);
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */
