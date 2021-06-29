@@ -54,7 +54,6 @@ static lx_void_t lx_tessellator_make_output(lx_tessellator_t* tessellator) {
 
     lx_for_all (lx_mesh_face_ref_t, face, lx_mesh_face_list(tessellator->mesh)) {
         if (lx_tessellator_face_inside(face)) {
-            // clear outputs
             lx_array_clear(outputs);
 
             // make contour
@@ -62,53 +61,35 @@ static lx_void_t lx_tessellator_make_output(lx_tessellator_t* tessellator) {
             lx_mesh_edge_ref_t  edge        = head;
             lx_point_ref_t      point       = lx_null;
             lx_point_ref_t      point_first = lx_null;
-            do
-            {
-                // the point
+            do {
                 point = lx_tessellator_vertex_point(lx_mesh_edge_org(edge));
                 lx_assert(point);
 
-                // append point
                 lx_array_insert_tail(outputs, point);
-
-                // save the first point
-                if (!point_first) point_first = point;
-
-                // the next edge
+                if (!point_first) {
+                    point_first = point;
+                }
                 edge = lx_mesh_edge_lnext(edge);
-
             } while (edge != head);
 
-            // exists valid contour?
-            if (lx_array_size(outputs) > 2)
-            {
-                // check
+            if (lx_array_size(outputs) > 2) {
                 lx_assert(lx_array_data(outputs));
-
-                // append the first point for closing the contour
-                lx_array_insert_tail(outputs, point_first);
-
-                // done it
+                lx_array_insert_tail(outputs, point_first); // close it
                 tessellator->callback((lx_point_ref_t)lx_array_data(outputs), (lx_uint16_t)lx_array_size(outputs), tessellator->udata);
             }
         }
     }
 }
-static lx_void_t lx_tessellator_make_convex(lx_tessellator_t* tessellator, lx_polygon_ref_t polygon, lx_rect_ref_t bounds)
-{
-    // check
+
+static lx_void_t lx_tessellator_make_convex(lx_tessellator_t* tessellator, lx_polygon_ref_t polygon, lx_rect_ref_t bounds) {
     lx_assert(tessellator && tessellator->callback && polygon && bounds);
 
     // only one convex contour
     lx_assert(polygon->convex && polygon->counts && !polygon->counts[1]);
 
     // make convex or monotone? done it directly
-    if (tessellator->mode == LX_TESSELLATOR_MODE_CONVEX || tessellator->mode == LX_TESSELLATOR_MODE_MONOTONE)
-    {
-        // done it
+    if (tessellator->mode == LX_TESSELLATOR_MODE_CONVEX || tessellator->mode == LX_TESSELLATOR_MODE_MONOTONE) {
         tessellator->callback(polygon->points, polygon->counts[0], tessellator->udata);
-
-        // ok
         return ;
     }
 
@@ -116,7 +97,9 @@ static lx_void_t lx_tessellator_make_convex(lx_tessellator_t* tessellator, lx_po
     lx_assert(tessellator->mode == LX_TESSELLATOR_MODE_TRIANGULATION);
 
     // make mesh
-    if (!lx_tessellator_mesh_make(tessellator, polygon)) return ;
+    if (!lx_tessellator_mesh_make(tessellator, polygon)) {
+        return ;
+    }
 
     // only two faces
     lx_mesh_ref_t mesh = tessellator->mesh;
@@ -128,129 +111,113 @@ static lx_void_t lx_tessellator_make_convex(lx_tessellator_t* tessellator, lx_po
     // make triangulation region
     lx_tessellator_triangulation_make(tessellator);
 
-    // done output
+    // make output
     lx_tessellator_make_output(tessellator);
 }
-static lx_void_t lx_tessellator_make_concave(lx_tessellator_t* tessellator, lx_polygon_ref_t polygon, lx_rect_ref_t bounds)
-{
-    // check
+
+static lx_void_t lx_tessellator_make_concave(lx_tessellator_t* tessellator, lx_polygon_ref_t polygon, lx_rect_ref_t bounds) {
     lx_assert(tessellator && polygon && !polygon->convex && bounds);
 
     // make mesh
-    if (!lx_tessellator_mesh_make(tessellator, polygon)) return ;
+    if (!lx_tessellator_mesh_make(tessellator, polygon)) {
+        return ;
+    }
 
     // make horizontal monotone region
     lx_tessellator_monotone_make(tessellator, bounds);
 
     // need make convex or triangulation polygon?
-    if (tessellator->mode == LX_TESSELLATOR_MODE_CONVEX || tessellator->mode == LX_TESSELLATOR_MODE_TRIANGULATION)
-    {
+    if (tessellator->mode == LX_TESSELLATOR_MODE_CONVEX || tessellator->mode == LX_TESSELLATOR_MODE_TRIANGULATION) {
+
         // make triangulation region for each horizontal monotone region
         lx_tessellator_triangulation_make(tessellator);
 
         // make convex?
-        if (tessellator->mode == LX_TESSELLATOR_MODE_CONVEX)
-        {
+        if (tessellator->mode == LX_TESSELLATOR_MODE_CONVEX) {
             // merge triangles to the convex polygon
             lx_tessellator_convex_make(tessellator);
         }
     }
 
-    // done output
+    // make output
     lx_tessellator_make_output(tessellator);
 }
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_tessellator_ref_t lx_tessellator_init()
-{
-    // init it
+lx_tessellator_ref_t lx_tessellator_init() {
     return (lx_tessellator_ref_t)lx_malloc0_type(lx_tessellator_t);
 }
-lx_void_t lx_tessellator_exit(lx_tessellator_ref_t self)
-{
-    // check
+
+lx_void_t lx_tessellator_exit(lx_tessellator_ref_t self) {
     lx_tessellator_t* tessellator = (lx_tessellator_t*)self;
-    lx_assert_and_check_return(tessellator);
-
-    // exit mesh
-    if (tessellator->mesh) lx_mesh_exit(tessellator->mesh);
-    tessellator->mesh = lx_null;
-
-    // exit outputs
-    if (tessellator->outputs) lx_array_exit(tessellator->outputs);
-    tessellator->outputs = lx_null;
-
-    // exit event queue
-    if (tessellator->event_queue) lx_priority_queue_exit(tessellator->event_queue);
-    tessellator->event_queue = lx_null;
-
-    // exit active regions
-    if (tessellator->active_regions) lx_list_exit(tessellator->active_regions);
-    tessellator->active_regions = lx_null;
-
-    // exit it
-    lx_free(tessellator);
+    if (tessellator) {
+        if (tessellator->mesh) {
+            lx_mesh_exit(tessellator->mesh);
+            tessellator->mesh = lx_null;
+        }
+        if (tessellator->outputs) {
+            lx_array_exit(tessellator->outputs);
+            tessellator->outputs = lx_null;
+        }
+        if (tessellator->event_queue) {
+            lx_priority_queue_exit(tessellator->event_queue);
+            tessellator->event_queue = lx_null;
+        }
+        if (tessellator->active_regions) {
+            lx_list_exit(tessellator->active_regions);
+            tessellator->active_regions = lx_null;
+        }
+        lx_free(tessellator);
+    }
 }
-lx_void_t lx_tessellator_mode_set(lx_tessellator_ref_t self, lx_size_t mode)
-{
-    // check
+
+lx_void_t lx_tessellator_mode_set(lx_tessellator_ref_t self, lx_size_t mode) {
     lx_tessellator_t* tessellator = (lx_tessellator_t*)self;
-    lx_assert_and_check_return(tessellator);
-
-    // set mode
-    tessellator->mode = mode;
+    if (tessellator) {
+        tessellator->mode = mode;
+    }
 }
-lx_void_t lx_tessellator_rule_set(lx_tessellator_ref_t self, lx_size_t rule)
-{
-    // check
+
+lx_void_t lx_tessellator_rule_set(lx_tessellator_ref_t self, lx_size_t rule) {
     lx_tessellator_t* tessellator = (lx_tessellator_t*)self;
-    lx_assert_and_check_return(tessellator);
-
-    // set rule
-    tessellator->rule = rule;
+    if (tessellator) {
+        tessellator->rule = rule;
+    }
 }
-lx_void_t lx_tessellator_callback_set(lx_tessellator_ref_t self, lx_tessellator_cb_t callback, lx_cpointer_t udata)
-{
-    // check
+
+lx_void_t lx_tessellator_callback_set(lx_tessellator_ref_t self, lx_tessellator_cb_t callback, lx_cpointer_t udata) {
     lx_tessellator_t* tessellator = (lx_tessellator_t*)self;
-    lx_assert_and_check_return(tessellator);
-
-    // set callback
-    tessellator->callback = callback;
-    tessellator->udata = udata;
+    if (tessellator) {
+        tessellator->callback = callback;
+        tessellator->udata = udata;
+    }
 }
-lx_void_t lx_tessellator_make(lx_tessellator_ref_t self, lx_polygon_ref_t polygon, lx_rect_ref_t bounds)
-{
-    // check
+
+lx_void_t lx_tessellator_make(lx_tessellator_ref_t self, lx_polygon_ref_t polygon, lx_rect_ref_t bounds) {
     lx_tessellator_t* tessellator = (lx_tessellator_t*)self;
     lx_assert_and_check_return(tessellator && tessellator->callback && polygon && polygon->points && polygon->counts && bounds);
 
     // is convex polygon for each contour?
-    if (polygon->convex)
-    {
-        // done
+    if (polygon->convex) {
         lx_size_t       index               = 0;
         lx_point_ref_t  points              = polygon->points;
         lx_uint16_t*    counts              = polygon->counts;
         lx_uint16_t     contour_counts[2]   = {0, 0};
         lx_polygon_t    contour             = {lx_null, contour_counts, lx_true};
-        while ((contour_counts[0] = *counts++))
-        {
+        while ((contour_counts[0] = *counts++)) {
             // init the polygon for this contour
             contour.points = points + index;
 
-            // done tessellator for the convex contour, will be faster
+            // make convex contour, will be faster
             lx_tessellator_make_convex(tessellator, &contour, bounds);
 
             // update the contour index
             index += contour_counts[0];
         }
-    }
-    else
-    {
-        // done tessellator for the concave polygon
+    } else {
+        // make the concave polygon
         lx_tessellator_make_concave(tessellator, polygon, bounds);
     }
 }
