@@ -102,11 +102,11 @@ static lx_void_t lx_tessellator_make_convex(lx_tessellator_t* tessellator, lx_po
     }
 
     // only two faces
-    lx_mesh_ref_t mesh = tessellator->mesh;
-    lx_assert(mesh && lx_mesh_face_list_size(lx_mesh_face_list(mesh)) == 2);
+    lx_mesh_face_list_ref_t fact_list = lx_mesh_face_list(tessellator->mesh);
+    lx_assert(fact_list && lx_mesh_face_list_size(fact_list) == 2);
 
     // the arbitrary face is marked "inside" and the triangulation will be not effected
-    lx_tessellator_face_inside_set(lx_mesh_face_list_head(lx_mesh_face_list(mesh)), 1);
+    lx_tessellator_face_inside_set(lx_mesh_face_list_head(fact_list), 1);
 
     // make triangulation region
     lx_tessellator_triangulation_make(tessellator);

@@ -284,16 +284,16 @@ static lx_void_t lx_tessellator_active_regions_test_insert(lx_tessellator_t* tes
     lx_assert(tessellator && tessellator->mesh && tessellator->active_regions);
 
     // init coordinates
-    lx_long_t xb = lx_random_range(lx_null, lx_float_to_long(sweep_xb), lx_float_to_long(sweep_xe));
-    lx_long_t xe = lx_random_range(lx_null, lx_float_to_long(sweep_xb), lx_float_to_long(sweep_xe));
+    lx_long_t xb = lx_random_range(lx_null, (lx_long_t)(sweep_xb), (lx_long_t)(sweep_xe));
+    lx_long_t xe = lx_random_range(lx_null, (lx_long_t)(sweep_xb), (lx_long_t)(sweep_xe));
     lx_long_t yb = lx_random_range(lx_null, 1, 200);
     lx_long_t ye = lx_random_range(lx_null, 1, 200);
 
     // init two points of the new edge
     lx_point_t org;
     lx_point_t dst;
-    lx_point_make(&org, lx_long_to_float(xb), sweep_y + lx_long_to_float(yb));
-    lx_point_make(&dst, lx_long_to_float(xe), sweep_y - lx_long_to_float(ye));
+    lx_point_make(&org, (lx_float_t)xb, sweep_y + (lx_float_t)yb);
+    lx_point_make(&dst, (lx_float_t)xe, sweep_y - (lx_float_t)ye);
 
     // make edge
     lx_mesh_edge_ref_t edge = lx_tessellator_mesh_make_edge(tessellator, &org, &dst);
@@ -319,16 +319,16 @@ static lx_void_t lx_tessellator_active_regions_test(lx_tessellator_t* tessellato
     lx_point_make(&point, lx_avg(sweep_xb, sweep_xe), sweep_y);
 
     // insert some regions
-    __lx_volatile__ lx_size_t count = 20;
+    lx_volatile lx_size_t count = 20;
     while (count--) lx_tessellator_active_regions_test_insert(tessellator, sweep_xb, sweep_xe, sweep_y);
 
     // make the codes for drawing sweep line
     lx_printf(  "    lx_canvas_color_set(canvas, LX_COLOR_BLACK);\n");
     lx_printf(  "    lx_canvas_draw_line2i(canvas, %ld, %ld, %ld, %ld);\n"
-            ,   lx_float_to_long(sweep_xb)
-            ,   lx_float_to_long(sweep_y)
-            ,   lx_float_to_long(sweep_xe)
-            ,   lx_float_to_long(sweep_y));
+            ,   (lx_long_t)(sweep_xb)
+            ,   (lx_long_t)(sweep_y)
+            ,   (lx_long_t)(sweep_xe)
+            ,   (lx_long_t)(sweep_y));
 
     // dump the codes for drawing
     lx_size_t index = 1;
@@ -344,10 +344,10 @@ static lx_void_t lx_tessellator_active_regions_test(lx_tessellator_t* tessellato
         // make the codes
         lx_printf(  "    lx_canvas_color_set(canvas, lx_color_from_index(%lu));\n", index++);
         lx_printf(  "    lx_canvas_draw_line2i(canvas, %ld, %ld, %ld, %ld);\n"
-                ,   lx_float_to_long(org->x)
-                ,   lx_float_to_long(org->y)
-                ,   lx_float_to_long(dst->x)
-                ,   lx_float_to_long(dst->y));
+                ,   (lx_long_t)(org->x)
+                ,   (lx_long_t)(org->y)
+                ,   (lx_long_t)(dst->x)
+                ,   (lx_long_t)(dst->y));
     }
 }
 #endif
