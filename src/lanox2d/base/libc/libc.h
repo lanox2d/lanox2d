@@ -229,6 +229,18 @@ lx_int_t            lx_strnicmp(lx_char_t const* s1, lx_char_t const* s2, lx_siz
  */
 lx_long_t           lx_strtol(lx_char_t const* s, lx_char_t** endptr, lx_int_t base);
 
+/*! get random value
+ *
+ * @return          the random value
+ */
+lx_int_t            lx_rand(lx_noarg_t);
+
+/*! set random seed
+ *
+ * @param seed      the random seed
+ */
+lx_void_t           lx_srand(lx_uint_t seed);
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */
