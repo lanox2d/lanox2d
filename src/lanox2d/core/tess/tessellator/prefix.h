@@ -170,6 +170,7 @@ typedef struct lx_tessellator_t_ {
 
     // the active regions
     lx_list_ref_t                       active_regions;
+    lx_iterator_t                       active_regions_iterator;
 
 }lx_tessellator_t;
 
