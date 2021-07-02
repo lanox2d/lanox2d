@@ -204,8 +204,8 @@ lx_fixed_pool_ref_t lx_fixed_pool_init(lx_size_t slot_size, lx_size_t item_size,
         pool = (lx_fixed_pool_t*)lx_malloc0_type(lx_fixed_pool_t);
         lx_assert_and_check_break(pool);
 
-        pool->slot_size = slot_size? slot_size : (lx_page_size() >> 4);
-        pool->item_size = item_size;
+        pool->slot_size = (lx_uint32_t)(slot_size? slot_size : (lx_page_size() >> 4));
+        pool->item_size = (lx_uint16_t)item_size;
         pool->item_free = item_free;
         pool->udata     = udata;
         lx_assert_and_check_break(pool->slot_size);
