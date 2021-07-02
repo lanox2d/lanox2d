@@ -31,11 +31,7 @@
 #ifdef LX_CONFIG_LIBC_HAVE_STRTOL
 lx_long_t lx_strtol(lx_char_t const* s, lx_char_t** endptr, lx_int_t base) {
     lx_assert_and_check_return_val(s, 0);
-#   ifdef LX_COMPILER_IS_MSVC
-    return _strtol(s, endptr, base);
-#   else
     return strtol(s, endptr, base);
-#   endif
 }
 #else
 lx_long_t lx_strtol(lx_char_t const* s, lx_char_t** endptr, lx_int_t base) {
