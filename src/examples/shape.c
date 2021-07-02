@@ -113,7 +113,7 @@ static lx_void_t on_event(lx_window_ref_t window, lx_event_ref_t event) {
                 dy = dy * 2;
                 if (y == y0) an = 0;
                 else if (x == x0) an = 90.0f;
-                else an = lx_atan(dy / dx) * 180 / LX_PI;
+                else an = lx_atanf(dy / dx) * 180 / LX_PI;
                 if (y < y0 && x < x0) an = 180.0f - an;
                 if (y > y0 && x < x0) an += 180.0f;
                 if (y > y0 && x > x0) an = 360.0f - an;

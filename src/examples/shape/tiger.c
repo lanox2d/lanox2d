@@ -96,7 +96,7 @@ static lx_char_t const* lx_tiger_entry_init_style_fill(lx_tiger_entry_t* entry, 
     p++;
 
     // get pixel: argb
-    lx_pixel_t pixel = lx_strtol(p, lx_null, 16);
+    lx_pixel_t pixel = (lx_pixel_t)lx_strtol(p, lx_null, 16);
 
     // skip pixel
     lx_size_t n = 0;
@@ -127,7 +127,7 @@ static lx_char_t const* lx_tiger_entry_init_style_stroke(lx_tiger_entry_t* entry
     p++;
 
     // get pixel: argb
-    lx_pixel_t pixel = lx_strtol(p, lx_null, 16);
+    lx_pixel_t pixel = (lx_pixel_t)lx_strtol(p, lx_null, 16);
 
     // skip pixel
     lx_size_t n = 0;
