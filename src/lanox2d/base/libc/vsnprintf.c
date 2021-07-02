@@ -143,7 +143,7 @@ static lx_char_t* lx_printf_string(lx_char_t* pb, lx_char_t* pe, lx_printf_entry
     if (s) {
 
         // fill space at left side, e.g. "   abcd"
-        lx_int_t n = lx_strnlen(s, e.precision);
+        lx_int_t n = (lx_int_t)lx_strnlen(s, e.precision);
         if (!(e.flags & LX_PRINTF_FLAG_LEFT)) {
             while (n < e.width--) {
                 if (pb < pe) *pb++ = ' ';
@@ -991,6 +991,6 @@ lx_int_t lx_vsnprintf(lx_char_t* s, lx_size_t n, lx_char_t const* fmt, va_list a
     if (pb < s + n) *pb = '\0';
 
     // the trailing null byte doesn't count towards the total
-    return (pb - s);
+    return (lx_int_t)(pb - s);
 }
 
