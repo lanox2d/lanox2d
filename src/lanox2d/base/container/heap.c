@@ -135,7 +135,6 @@ static lx_pointer_t lx_heap_shift_up(lx_heap_t* heap, lx_size_t hole, lx_cpointe
     lx_byte_t*  head = heap->data;
     lx_size_t   step = heap->element.size;
     switch (step) {
-#ifndef LX_CONFIG_SMALL
     case sizeof(lx_size_t): {
             for (parent = (hole - 1) >> 1; hole && (comp(head + parent * step, data) > 0); parent = (hole - 1) >> 1) {
                 // move item: parent => hole
@@ -145,7 +144,6 @@ static lx_pointer_t lx_heap_shift_up(lx_heap_t* heap, lx_size_t hole, lx_cpointe
             }
         }
         break;
-#endif
     default:
         for (parent = (hole - 1) >> 1; hole && (comp(head + parent * step, data) > 0); parent = (hole - 1) >> 1) {
             // move item: parent => hole
@@ -216,7 +214,6 @@ static lx_pointer_t lx_heap_shift_down(lx_heap_t* heap, lx_size_t hole, lx_cpoin
     lx_pointer_t    data_lchild = lx_null;
     lx_pointer_t    data_rchild = lx_null;
     switch (step) {
-#ifndef LX_CONFIG_SMALL
     case sizeof(lx_size_t): {
             for (; lchild < tail; lchild = head + (((lchild - head) << 1) + step)) {
                 // the smaller child node
@@ -239,7 +236,6 @@ static lx_pointer_t lx_heap_shift_down(lx_heap_t* heap, lx_size_t hole, lx_cpoin
             }
         }
         break;
-#endif
     default: {
             for (; lchild < tail; lchild = head + (((lchild - head) << 1) + step)) {
                 // the smaller child node
