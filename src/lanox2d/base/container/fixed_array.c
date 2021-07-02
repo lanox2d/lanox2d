@@ -105,7 +105,6 @@ lx_void_t lx_fixed_array_init_ptr(lx_fixed_array_ref_t self, lx_pointer_t* items
     self->base.iterator_of = lx_fixed_array_ptr_iterator_of;
     self->items            = items;
     self->count            = count;
-    lx_fixed_array_init_mem(self, items, count, sizeof(lx_pointer_t));
 }
 
 lx_void_t lx_fixed_array_init_mem(lx_fixed_array_ref_t self, lx_pointer_t items, lx_size_t count, lx_size_t itemsize) {
