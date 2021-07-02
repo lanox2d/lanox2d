@@ -76,7 +76,7 @@ typedef struct lx_path_t_ {
 
 static lx_inline lx_bool_t lx_path_is_last_code(lx_path_t* path, lx_uint8_t code) {
     lx_assert(path->codes);
-    lx_uint8_t* pcode = lx_array_last(path->codes);
+    lx_uint8_t* pcode = (lx_uint8_t*)lx_array_last(path->codes);
     return pcode? *pcode == code : lx_false;
 }
 
