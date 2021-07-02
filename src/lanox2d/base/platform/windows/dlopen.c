@@ -29,12 +29,12 @@
  */
 lx_dlimage_ref_t lx_dlopen(lx_char_t const* filename, lx_int_t flag) {
     lx_assert_and_check_return_val(filename, lx_null);
-    return (lx_dlimage_ref_t)LoadLibraryExA(filename, tb_null, LOAD_WITH_ALTERED_SEARCH_PATH);
+    return (lx_dlimage_ref_t)LoadLibraryExA(filename, lx_null, LOAD_WITH_ALTERED_SEARCH_PATH);
 }
 
 lx_pointer_t lx_dlsym(lx_dlimage_ref_t dlimage, lx_char_t const* symbol) {
     lx_assert_and_check_return_val(dlimage && symbol, lx_null);
-    return (tb_pointer_t)GetProcAddress((HMODULE)dlimage, symbol);
+    return (lx_pointer_t)GetProcAddress((HMODULE)dlimage, symbol);
 }
 
 lx_int_t lx_dlclose(lx_dlimage_ref_t dlimage) {
