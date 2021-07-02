@@ -56,7 +56,7 @@ static lx_size_t lx_bitmap_renderer_stroke_line_generic(lx_bitmap_writer_t* writ
         if (xb > xe) {
             lx_swap(lx_fixed6_t, xb, xe);
             lx_swap(lx_fixed6_t, yb, ye);
-            lx_swap(lx_fixed6_t, ixb, ixe);
+            lx_swap(lx_long_t, ixb, ixe);
         }
 
         // too short? ignore it
@@ -97,7 +97,7 @@ static lx_size_t lx_bitmap_renderer_stroke_line_generic(lx_bitmap_writer_t* writ
         if (yb > ye) {
             lx_swap(lx_fixed6_t, xb, xe);
             lx_swap(lx_fixed6_t, yb, ye);
-            lx_swap(lx_fixed6_t, iyb, iye);
+            lx_swap(lx_long_t, iyb, iye);
         }
 
         // too short? ignore it
@@ -128,7 +128,7 @@ static lx_size_t lx_bitmap_renderer_stroke_line_generic(lx_bitmap_writer_t* writ
 static lx_void_t lx_bitmap_renderer_stroke_line_vertical(lx_bitmap_writer_t* writer, lx_fixed6_t xb, lx_fixed6_t yb, lx_fixed6_t xe, lx_fixed6_t ye) {
     // ensure the order
     if (yb > ye) {
-        lx_swap(lx_long_t, yb, ye);
+        lx_swap(lx_fixed6_t, yb, ye);
     }
     lx_bitmap_writer_draw_vline(writer, lx_fixed6_round(xb), lx_fixed6_round(yb), lx_fixed6_round(ye - yb + LX_FIXED6_ONE));
 }
@@ -136,7 +136,7 @@ static lx_void_t lx_bitmap_renderer_stroke_line_vertical(lx_bitmap_writer_t* wri
 static lx_void_t lx_bitmap_renderer_stroke_line_horizontal(lx_bitmap_writer_t* writer, lx_fixed6_t xb, lx_fixed6_t yb, lx_fixed6_t xe, lx_fixed6_t ye) {
     // ensure the order
     if (xb > xe) {
-        lx_swap(lx_long_t, xb, xe);
+        lx_swap(lx_fixed6_t, xb, xe);
     }
     lx_bitmap_writer_draw_hline(writer, lx_fixed6_round(xb), lx_fixed6_round(yb), lx_fixed6_round(xe - xb + LX_FIXED6_ONE));
 }
