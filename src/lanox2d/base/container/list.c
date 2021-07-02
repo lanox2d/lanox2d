@@ -45,6 +45,12 @@
 #   define LX_LIST_MAXN             (1 << 30)
 #endif
 
+#define lx_list_iterator_head_(list)    (lx_size_t)lx_list_entry_head(&(list)->head)
+#define lx_list_iterator_tail_(list)    (lx_size_t)lx_list_entry_tail(&(list)->head)
+#define lx_list_iterator_next_(itor)    (lx_size_t)lx_list_entry_next((lx_list_entry_t*)(itor))
+#define lx_list_iterator_prev_(itor)    (lx_size_t)lx_list_entry_prev((lx_list_entry_t*)(itor))
+#define lx_list_iterator_item_(itor)    (lx_pointer_t)(((lx_list_entry_t*)(itor)) + 1)
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * types
  */
@@ -71,26 +77,25 @@ static lx_void_t lx_list_item_exit(lx_pointer_t data, lx_cpointer_t udata) {
 static lx_size_t lx_list_iterator_head(lx_iterator_ref_t iterator) {
     lx_assert(iterator && iterator->container);
     lx_list_t* list = (lx_list_t*)iterator->container;
-    return (lx_size_t)lx_list_entry_head(&list->head);
+    return lx_list_iterator_head_(list);
 }
 
 static lx_size_t lx_list_iterator_tail(lx_iterator_ref_t iterator) {
     lx_assert(iterator && iterator->container);
     lx_list_t* list = (lx_list_t*)iterator->container;
-    return (lx_size_t)lx_list_entry_tail(&list->head);
+    return lx_list_iterator_tail_(list);
 }
 
 static lx_size_t lx_list_iterator_next(lx_iterator_ref_t iterator, lx_size_t itor) {
-    return (lx_size_t)lx_list_entry_next((lx_list_entry_t*)itor);
+    return lx_list_iterator_next_(itor);
 }
 
 static lx_size_t lx_list_iterator_prev(lx_iterator_ref_t iterator, lx_size_t itor) {
-    return (lx_size_t)lx_list_entry_prev((lx_list_entry_t*)itor);
+    return lx_list_iterator_prev_(itor);
 }
 
 static lx_pointer_t lx_list_iterator_item(lx_iterator_ref_t iterator, lx_size_t itor) {
-    lx_assert(itor);
-    return (lx_pointer_t)(((lx_list_entry_t*)itor) + 1);
+    return lx_list_iterator_item_(itor);
 }
 
 static lx_size_t lx_list_iterator_size(lx_iterator_ref_t iterator) {
@@ -181,9 +186,10 @@ lx_void_t lx_list_clear(lx_list_ref_t self) {
 }
 
 lx_pointer_t lx_list_head(lx_list_ref_t self) {
-    lx_iterator_t iterator;
-    lx_iterator_of(&iterator, self);
-    return lx_iterator_item(&iterator, lx_iterator_head(&iterator));
+    lx_list_t* list = (lx_list_t*)self;
+    lx_assert(list);
+    lx_size_t itor = lx_list_iterator_head_(list);
+    return lx_list_iterator_item_(itor);
 }
 
 lx_size_t lx_list_size(lx_list_ref_t self) {
@@ -199,10 +205,10 @@ lx_size_t lx_list_insert_prev(lx_list_ref_t self, lx_size_t itor, lx_cpointer_t 
     lx_assert_and_check_return_val(lx_list_size(self) < LX_LIST_MAXN, (lx_size_t)lx_list_entry_tail(&list->head));
 
     lx_list_entry_ref_t node = (lx_list_entry_ref_t)itor;
-    lx_assert_and_check_return_val(node, (lx_size_t)lx_list_entry_tail(&list->head));
+    lx_assert_and_check_return_val(node, lx_list_iterator_tail_(list));
 
     lx_list_entry_ref_t entry = (lx_list_entry_ref_t)lx_fixed_pool_malloc(list->pool);
-    lx_assert_and_check_return_val(entry, (lx_size_t)lx_list_entry_tail(&list->head));
+    lx_assert_and_check_return_val(entry, lx_list_iterator_tail_(list));
 
     lx_memcpy((lx_pointer_t)(((lx_list_entry_t*)entry) + 1), data, list->element.size);
     lx_list_entry_insert_prev(&list->head, node, entry);
@@ -210,21 +216,19 @@ lx_size_t lx_list_insert_prev(lx_list_ref_t self, lx_size_t itor, lx_cpointer_t 
 }
 
 lx_size_t lx_list_insert_next(lx_list_ref_t self, lx_size_t itor, lx_cpointer_t data) {
-    lx_iterator_t iterator;
-    lx_iterator_of(&iterator, self);
-    return lx_list_insert_prev(self, lx_iterator_next(&iterator, itor), data);
+    return lx_list_insert_prev(self, lx_list_iterator_next_(itor), data);
 }
 
 lx_size_t lx_list_insert_head(lx_list_ref_t self, lx_cpointer_t data) {
     lx_list_t* list = (lx_list_t*)self;
     lx_assert(list);
-    return lx_list_insert_prev(self, (lx_size_t)lx_list_entry_head(&list->head), data);
+    return lx_list_insert_prev(self, lx_list_iterator_head_(list), data);
 }
 
 lx_size_t lx_list_insert_tail(lx_list_ref_t self, lx_cpointer_t data) {
     lx_list_t* list = (lx_list_t*)self;
     lx_assert(list);
-    return lx_list_insert_prev(self, (lx_size_t)lx_list_entry_tail(&list->head), data);
+    return lx_list_insert_prev(self, lx_list_iterator_tail_(list), data);
 }
 
 lx_void_t lx_list_replace(lx_list_ref_t self, lx_size_t itor, lx_cpointer_t data) {
@@ -246,7 +250,7 @@ lx_size_t lx_list_remove(lx_list_ref_t self, lx_size_t itor) {
     lx_assert_and_check_return_val(list && list->pool && itor, 0);
 
     lx_list_entry_ref_t node = (lx_list_entry_ref_t)itor;
-    lx_assert_and_check_return_val(node, (lx_size_t)lx_list_entry_tail(&list->head));
+    lx_assert_and_check_return_val(node, lx_list_iterator_tail_(list));
 
     lx_list_entry_ref_t next = lx_list_entry_next(node);
     lx_list_entry_remove(&list->head, node);
