@@ -39,9 +39,8 @@ typedef struct lx_vsnprintf_object_entry_t_ {
  * globals
  */
 #ifdef LX_DEBUG
-static lx_vsnprintf_object_entry_t* g_vsnprintf_entries = lx_null;
+static lx_vsnprintf_object_entry_t  g_vsnprintf_entries[16];
 static lx_size_t                    g_vsnprintf_count = 0;
-static lx_size_t                    g_vsnprintf_maxn = 16;
 #endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -62,7 +61,7 @@ static lx_long_t lx_vsnprintf_object_comp(lx_iterator_ref_t iterator, lx_cpointe
 }
 
 static lx_vsnprintf_object_cb_t lx_vsnprintf_object_find(lx_char_t const* name) {
-    lx_assert_and_check_return_val(g_vsnprintf_entries && name, lx_null);
+    lx_assert_and_check_return_val(name, lx_null);
 
     lx_fixed_array_t fixed_array;
     lx_fixed_array_init_mem(&fixed_array, g_vsnprintf_entries, g_vsnprintf_count, sizeof(lx_vsnprintf_object_entry_t));
@@ -198,20 +197,8 @@ lx_void_t lx_matrix_apply_points(lx_matrix_ref_t matrix, lx_point_ref_t points, 
 
 #ifdef LX_DEBUG
 lx_void_t lx_vsnprintf_object_register(lx_char_t const* name, lx_vsnprintf_object_cb_t callback) {
-    lx_assert_and_check_return(name && g_vsnprintf_maxn);
-
-    // init entries
-    if (!g_vsnprintf_entries) {
-        g_vsnprintf_entries = lx_nalloc_type(g_vsnprintf_maxn, lx_vsnprintf_object_entry_t);
-    }
-    lx_assert_and_check_return(g_vsnprintf_entries);
-
-    // full? grow it
-    if (g_vsnprintf_count >= g_vsnprintf_maxn) {
-        g_vsnprintf_maxn = g_vsnprintf_count + 16;
-        g_vsnprintf_entries = (lx_vsnprintf_object_entry_t*)lx_ralloc(g_vsnprintf_entries, g_vsnprintf_maxn * sizeof(lx_vsnprintf_object_entry_t));
-        lx_assert_and_check_return(g_vsnprintf_entries);
-    }
+    lx_assert_and_check_return(name);
+    lx_assert_and_check_return(g_vsnprintf_count < lx_arrayn(g_vsnprintf_entries));
 
     // find it
     lx_size_t i = 0;
@@ -234,14 +221,5 @@ lx_void_t lx_vsnprintf_object_register(lx_char_t const* name, lx_vsnprintf_objec
         g_vsnprintf_entries[i].callback = callback;
         g_vsnprintf_count++;
     }
-}
-
-lx_void_t lx_vsnprintf_object_exit() {
-    if (g_vsnprintf_entries) {
-        lx_free(g_vsnprintf_entries);
-        g_vsnprintf_entries = lx_null;
-    }
-    g_vsnprintf_count = 0;
-    g_vsnprintf_maxn = 0;
 }
 #endif

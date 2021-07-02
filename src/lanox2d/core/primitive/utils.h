@@ -110,9 +110,6 @@ static lx_inline lx_float_t lx_matrix_apply_y(lx_matrix_ref_t matrix, lx_float_t
  * @endcode
  */
 lx_void_t                   lx_vsnprintf_object_register(lx_char_t const* name, lx_vsnprintf_object_cb_t callback);
-
-/// exit the printf object
-lx_void_t                   lx_vsnprintf_object_exit(lx_noarg_t);
 #endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
