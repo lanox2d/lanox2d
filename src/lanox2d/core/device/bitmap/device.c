@@ -50,7 +50,7 @@ static lx_void_t lx_device_bitmap_draw_clear(lx_device_ref_t self, lx_color_t co
     lx_assert(device && device->bitmap);
 
     // get the bitmap data
-    lx_byte_t* data = lx_bitmap_data(device->bitmap);
+    lx_byte_t* data = (lx_byte_t*)lx_bitmap_data(device->bitmap);
     lx_assert(data);
 
     // get pixmap
