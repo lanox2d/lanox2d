@@ -43,7 +43,7 @@
 #endif
 
 // cache the predicted index
-#define lx_static_fixed_pool_cache_pred(pool, i)            do { (pool)->pred_index = ((i) >> LX_CPU_SHIFT) + 1; } while (0)
+#define lx_static_fixed_pool_cache_pred(pool, i)            do { (pool)->pred_index = (lx_uint16_t)(((i) >> LX_CPU_SHIFT) + 1); } while (0)
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * types
