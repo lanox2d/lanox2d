@@ -40,6 +40,7 @@ typedef struct lx_fixed_array_t_ {
     lx_iterator_base_t      base;
     lx_pointer_t            items;
     lx_size_t               count;
+    lx_size_t               itemsize;
 }lx_fixed_array_t, *lx_fixed_array_ref_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -53,6 +54,15 @@ typedef struct lx_fixed_array_t_ {
  * @param count     the count
  */
 lx_void_t           lx_fixed_array_init_ptr(lx_fixed_array_ref_t array, lx_pointer_t* items, lx_size_t count);
+
+/*! init memory fixed array
+ *
+ * @param array     the array
+ * @param items     the items
+ * @param count     the count
+ * @param itemsize  the item size
+ */
+lx_void_t           lx_fixed_array_init_mem(lx_fixed_array_ref_t array, lx_pointer_t items, lx_size_t count, lx_size_t itemsize);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

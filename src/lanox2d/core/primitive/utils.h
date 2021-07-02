@@ -27,6 +27,20 @@
 #include "prefix.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
+ * types
+ */
+
+/*! the vsnprintf object callback type
+ *
+ * @param s         the string buffer
+ * @param n         the string buffer size
+ * @param object    the printf object
+ *
+ * @return          the real string size
+ */
+typedef lx_int_t    (*lx_vsnprintf_object_cb_t)(lx_char_t* s, lx_size_t n, lx_cpointer_t object);
+
+/* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */
 lx_extern_c_enter
@@ -84,6 +98,22 @@ static lx_inline lx_float_t lx_matrix_apply_y(lx_matrix_ref_t matrix, lx_float_t
     lx_assert(matrix);
     return (x * matrix->ky) + (y * matrix->sy) + matrix->ty;
 }
+
+#ifdef LX_DEBUG
+/*! register the vsnprintf object callback
+ *
+ * @note non thread-safe
+ *
+ * @param name              the format name
+ * @param callback          the format callback
+ *
+ * @endcode
+ */
+lx_void_t                   lx_vsnprintf_object_register(lx_char_t const* name, lx_vsnprintf_object_cb_t callback);
+
+/// exit the printf object
+lx_void_t                   lx_vsnprintf_object_exit(lx_noarg_t);
+#endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
