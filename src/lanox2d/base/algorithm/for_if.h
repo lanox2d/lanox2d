@@ -49,7 +49,7 @@
     lx_size_t item##_itor = head; \
     lx_size_t item##_head = head; \
     lx_size_t item##_tail = tail; \
-    if (iterator && item##_head != item##_tail) \
+    if (item##_head != item##_tail) \
         for (   ; \
                 item##_itor != item##_tail && ((item = (type)lx_iterator_item(iterator, item##_itor)), 1); \
                 item##_itor = lx_iterator_next(iterator, item##_itor)) if ((cond))

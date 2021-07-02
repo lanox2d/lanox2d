@@ -49,7 +49,7 @@
     lx_size_t item##_itor; \
     lx_size_t item##_head = head; \
     lx_size_t item##_tail = tail; \
-    if (iterator && item##_head != item##_tail) \
+    if (item##_head != item##_tail) \
         for (   item##_itor = lx_iterator_prev(iterator, item##_tail); \
                 item##_itor != item##_tail && ((item = (type)lx_iterator_item(iterator, item##_itor)), item##_itor = item##_itor != item##_head? item##_itor : item##_tail, 1); \
                 item##_itor = item##_itor != item##_tail? lx_iterator_prev(iterator, item##_itor) : item##_tail)
