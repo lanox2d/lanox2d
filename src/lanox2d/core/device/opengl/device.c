@@ -79,6 +79,10 @@ static lx_void_t lx_device_opengl_draw_path(lx_device_ref_t self, lx_path_ref_t 
 static lx_void_t lx_device_opengl_exit(lx_device_ref_t self) {
     lx_opengl_device_t* device = (lx_opengl_device_t*)self;
     if (device) {
+        if (device->tessellator) {
+            lx_tessellator_exit(device->tessellator);
+            device->tessellator = lx_null;
+        }
         if (device->stroker) {
             lx_stroker_exit(device->stroker);
             device->stroker = lx_null;
@@ -132,6 +136,13 @@ lx_device_ref_t lx_device_init_from_opengl(lx_window_ref_t window) {
         // init stroker
         device->stroker = lx_stroker_init();
         lx_assert_and_check_break(device->stroker);
+
+        // init tessellator
+        device->tessellator = lx_tessellator_init();
+        lx_assert_and_check_break(device->tessellator);
+
+        // init tessellator mode
+        lx_tessellator_mode_set(device->tessellator, LX_TESSELLATOR_MODE_CONVEX);
 
         // init viewport
         lx_glViewport(0, 0, width, height);

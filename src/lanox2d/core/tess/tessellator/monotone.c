@@ -63,7 +63,7 @@ static lx_inline lx_uint8_t lx_tessellator_winding_is_inside(lx_tessellator_t* t
 
 static lx_void_t lx_tessellator_fix_region_edge(lx_tessellator_t* tessellator, lx_tessellator_active_region_ref_t region, lx_mesh_edge_ref_t edge) {
     lx_assert(tessellator && tessellator->mesh && region && region->fixedge && edge);
-    lx_trace_d("fix a temporary edge: %{tess_region} => %{mesh_edge}", region, edge);
+    lx_trace_d("fix a temporary edge: %{tess_region} => %{tess_mesh_edge}", region, edge);
 
     // remove the temporary edge
     lx_mesh_edge_disconnect(tessellator->mesh, region->edge);
@@ -749,7 +749,7 @@ static lx_bool_t lx_tessellator_fix_region_order_at_bottom(lx_tessellator_t* tes
              *               ..              ..
              *                . ------------ . ----> fixed
              */
-            lx_trace_d("splice and remove the event vertex: %{mesh_vertex}", edge_left_org);
+            lx_trace_d("splice and remove the event vertex: %{tess_mesh_vertex}", edge_left_org);
 
             /* remove the origin of the left edge first
              *
@@ -1841,7 +1841,7 @@ static lx_bool_t lx_tessellator_fix_region_intersection(lx_tessellator_t* tessel
      *
      */
     if (lx_tessellator_vertex_in_top_or_hleft(intersection, event)) {
-        lx_trace_d("fix intersection by the event: %{mesh_vertex}", event);
+        lx_trace_d("fix intersection by the event: %{tess_mesh_vertex}", event);
 
         // the points
         lx_point_ref_t point_event = lx_tessellator_vertex_point(event);
@@ -1922,7 +1922,7 @@ static lx_bool_t lx_tessellator_fix_region_intersection(lx_tessellator_t* tessel
      */
     lx_mesh_vertex_ref_t edge_org_upper = lx_tessellator_vertex_in_top_or_horizontal(edge_left_org, edge_right_org)? edge_left_org : edge_right_org;
     if (lx_tessellator_vertex_in_top_or_hleft(edge_org_upper, intersection)) {
-        lx_trace_d("fix intersection by the topmost origin: %{mesh_vertex}", edge_org_upper);
+        lx_trace_d("fix intersection by the topmost origin: %{tess_mesh_vertex}", edge_org_upper);
 
         // the points
         lx_point_ref_t point_upper = lx_tessellator_vertex_point(edge_org_upper);
@@ -2043,7 +2043,7 @@ static lx_bool_t lx_tessellator_fix_region_intersection(lx_tessellator_t* tessel
         lx_tessellator_vertex_point_set(lx_mesh_edge_org(edge_right), lx_tessellator_vertex_point(intersection));
 
         // trace
-        lx_trace_d("insert the new intersection: %{mesh_vertex}", lx_mesh_edge_org(edge_right));
+        lx_trace_d("insert the new intersection: %{tess_mesh_vertex}", lx_mesh_edge_org(edge_right));
 
         // add intersection to the profiler
 #ifdef LX_TESSELLATOR_PROFILER_ENABLE
@@ -2211,7 +2211,7 @@ static lx_void_t lx_tessellator_fix_all_dirty_regions(lx_tessellator_t* tessella
              *
              */
             if (region_left->fixedge) {
-                lx_trace_d("remove the left fixable edge: %{mesh_edge}", edge_left);
+                lx_trace_d("remove the left fixable edge: %{tess_mesh_edge}", edge_left);
 
                 // remove the left region
                 lx_tessellator_active_regions_remove(tessellator, region_left);
@@ -2227,7 +2227,7 @@ static lx_void_t lx_tessellator_fix_all_dirty_regions(lx_tessellator_t* tessella
                 edge_left = region_left->edge;
                 lx_assert(edge_left);
             } else if (region_right->fixedge) {
-                lx_trace_d("remove the right fixable edge: %{mesh_edge}", edge_right);
+                lx_trace_d("remove the right fixable edge: %{tess_mesh_edge}", edge_right);
 
                 // remove the right region
                 lx_tessellator_active_regions_remove(tessellator, region_right);
@@ -2349,7 +2349,7 @@ static lx_void_t lx_tessellator_fix_all_dirty_regions(lx_tessellator_t* tessella
          */
         if (    lx_mesh_edge_org(edge_left) == lx_mesh_edge_org(edge_right)
             &&  lx_mesh_edge_dst(edge_left) == lx_mesh_edge_dst(edge_right)) {
-            lx_trace_d("remove the edge for the degenerate loop: %{mesh_edge}", edge_left);
+            lx_trace_d("remove the edge for the degenerate loop: %{tess_mesh_edge}", edge_left);
 
             // compute the combined winding of the right edge because the left edge will be deleted
             lx_tessellator_edge_winding_merge(edge_right, edge_left);
@@ -2417,7 +2417,7 @@ static lx_tessellator_active_region_ref_t lx_tessellator_find_left_top_region(lx
      *
      */
     if (region_left->fixedge) {
-        lx_trace_d("fix the left edge: %{mesh_edge}", region_left->edge);
+        lx_trace_d("fix the left edge: %{tess_mesh_edge}", region_left->edge);
 
         // get the first region
         lx_tessellator_active_region_ref_t region_first = lx_tessellator_active_regions_right(tessellator, region_left);
@@ -2571,10 +2571,10 @@ static lx_void_t lx_tessellator_insert_down_going_edges(lx_tessellator_t* tessel
     lx_mesh_edge_ref_t edge = edge_head;
     do {
         // the edge must be down-going
-        lx_assertf(lx_tessellator_edge_go_down(edge), "invalid edge: %{mesh_edge}", edge);
+        lx_assertf(lx_tessellator_edge_go_down(edge), "invalid edge: %{tess_mesh_edge}", edge);
 
         // trace
-        lx_trace_d("insert down-going edge: %{mesh_edge}", edge);
+        lx_trace_d("insert down-going edge: %{tess_mesh_edge}", edge);
 
         // add edge to the profiler
 #ifdef LX_TESSELLATOR_PROFILER_ENABLE
@@ -2981,7 +2981,7 @@ static lx_mesh_edge_ref_t lx_tessellator_finish_top_regions(lx_tessellator_t* te
              *
              */
             if (region_next->fixedge) {
-                lx_trace_d("fix the top edge: %{mesh_edge}", edge_next);
+                lx_trace_d("fix the top edge: %{tess_mesh_edge}", edge_next);
 
                 /* create a new edge and connect the temporary edge to the event
                  *
@@ -3162,7 +3162,7 @@ static lx_void_t lx_tessellator_connect_top_event_degenerate(lx_tessellator_t* t
      *
      */
     if (lx_tessellator_vertex_eq(lx_mesh_edge_org(edge), event)) {
-        lx_trace_d("connect the event to the origin of the edge: %{mesh_edge}", edge);
+        lx_trace_d("connect the event to the origin of the edge: %{tess_mesh_edge}", edge);
 
         /* we only connect the event vertex to the origin of the left edge
          * and wait for processing at next time, because the edge.org is an unprocessed vertex
@@ -3194,7 +3194,7 @@ static lx_void_t lx_tessellator_connect_top_event_degenerate(lx_tessellator_t* t
      * .                                 edge                             .
      */
     if (lx_tessellator_vertex_eq(lx_mesh_edge_dst(edge), event)) {
-        lx_trace_d("connect the event to the destination of the edge: %{mesh_edge}", edge);
+        lx_trace_d("connect the event to the destination of the edge: %{tess_mesh_edge}", edge);
 
         // find the left region from the given bottom region
         lx_tessellator_active_region_ref_t region_left = lx_tessellator_find_left_bottom_region(tessellator, region);
@@ -3218,7 +3218,7 @@ static lx_void_t lx_tessellator_connect_top_event_degenerate(lx_tessellator_t* t
          * so we no longer need a fixable edge for connecting the bottom event now.
          */
         if (region->fixedge) {
-            lx_trace_d("fix the degenerate top edge: %{mesh_edge}", edge);
+            lx_trace_d("fix the degenerate top edge: %{tess_mesh_edge}", edge);
 
             // check
             lx_assert(edge_first != edge_left_top);
@@ -3284,7 +3284,7 @@ static lx_void_t lx_tessellator_connect_top_event_degenerate(lx_tessellator_t* t
          *  .
          *  .
          */
-        lx_trace_d("connect the event to the body of the edge: %{mesh_edge}", edge);
+        lx_trace_d("connect the event to the body of the edge: %{tess_mesh_edge}", edge);
 
         /* split the left edge and add a new edge
          *
@@ -3340,7 +3340,7 @@ static lx_void_t lx_tessellator_connect_top_event_degenerate(lx_tessellator_t* t
          *  .   .   .
          */
         if (region->fixedge) {
-            lx_trace_d("fix the degenerate top edge: %{mesh_edge}", edge);
+            lx_trace_d("fix the degenerate top edge: %{tess_mesh_edge}", edge);
 
             // delete the new edge which was created recently
             lx_mesh_edge_disconnect(tessellator->mesh, edge_new);
@@ -3637,7 +3637,7 @@ static lx_void_t lx_tessellator_connect_top_event(lx_tessellator_t* tessellator,
             region_new->inside = lx_tessellator_winding_is_inside(tessellator, region_new->winding);
 
             // trace
-            lx_trace_d("insert edge: %{mesh_edge} to region: %{tess_region}", edge_new, region_new);
+            lx_trace_d("insert edge: %{tess_mesh_edge} to region: %{tess_region}", edge_new, region_new);
         }
 
         // add split to the profiler
@@ -3803,8 +3803,8 @@ static lx_void_t lx_tessellator_connect_bottom_event(lx_tessellator_t* tessellat
      *           .
      */
     if (lx_mesh_edge_dst(edge_left) != lx_mesh_edge_dst(edge_right)) {
-        lx_trace_d("fix intersection of %{mesh_edge}", edge_left);
-        lx_trace_d("                  x %{mesh_edge}", edge_right);
+        lx_trace_d("fix intersection of %{tess_mesh_edge}", edge_left);
+        lx_trace_d("                  x %{tess_mesh_edge}", edge_right);
 
         /* fix the intersection
          *
@@ -3848,7 +3848,7 @@ static lx_void_t lx_tessellator_connect_bottom_event(lx_tessellator_t* tessellat
      */
     lx_bool_t is_degenerate = lx_false;
     if (lx_tessellator_vertex_eq(tessellator->event, lx_mesh_edge_org(edge_left))) {
-        lx_trace_d("merge the event to the origin of the left edge: %{mesh_edge}", edge_left);
+        lx_trace_d("merge the event to the origin of the left edge: %{tess_mesh_edge}", edge_left);
         lx_assert(tessellator->event != lx_mesh_edge_org(edge_left));
 
         /* merge event and edge_left.org
@@ -3971,7 +3971,7 @@ static lx_void_t lx_tessellator_connect_bottom_event(lx_tessellator_t* tessellat
      *  .                                                                              .
      */
     if (lx_tessellator_vertex_eq(tessellator->event, lx_mesh_edge_org(edge_right))) {
-        lx_trace_d("merge the event to the origin of the right edge: %{mesh_edge}", edge_right);
+        lx_trace_d("merge the event to the origin of the right edge: %{tess_mesh_edge}", edge_right);
         lx_assert(tessellator->event != lx_mesh_edge_org(edge_right));
 
         /* merge event and edge_right.org
@@ -4087,7 +4087,7 @@ static lx_void_t lx_tessellator_connect_bottom_event(lx_tessellator_t* tessellat
 #endif
 
     // trace
-    lx_trace_d("patch a temporary edge: %{mesh_edge}", lx_mesh_edge_sym(edge_new));
+    lx_trace_d("patch a temporary edge: %{tess_mesh_edge}", lx_mesh_edge_sym(edge_new));
 }
 
 /* process one event vertex at the sweep line
@@ -4113,7 +4113,7 @@ static lx_void_t lx_tessellator_sweep_event(lx_tessellator_t* tessellator, lx_me
     tessellator->event = event;
 
     // trace
-    lx_trace_d("event: sweep: %{mesh_vertex}", event);
+    lx_trace_d("event: sweep: %{tess_mesh_vertex}", event);
 
     // find an active region of all edges at this event
     lx_mesh_edge_ref_t                  edge = lx_mesh_vertex_edge(event);

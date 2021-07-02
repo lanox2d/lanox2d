@@ -51,8 +51,8 @@ static lx_bool_t lx_tessellator_active_region_leq(lx_tessellator_active_region_r
      *  / \     / \
      *   |       |
      */
-    lx_assertf(lx_tessellator_edge_go_up(lregion->edge), "%{mesh_edge}", lregion->edge);
-    lx_assertf(lx_tessellator_edge_go_up(rregion->edge), "%{mesh_edge}", rregion->edge);
+    lx_assertf(lx_tessellator_edge_go_up(lregion->edge), "%{tess_mesh_edge}", lregion->edge);
+    lx_assertf(lx_tessellator_edge_go_up(rregion->edge), "%{tess_mesh_edge}", rregion->edge);
 
     /*
      *             .
@@ -208,10 +208,10 @@ static lx_tessellator_active_region_ref_t lx_tessellator_active_regions_insert_i
     lx_assert(tessellator && tessellator->active_regions && region && region->edge);
 
     // the edge must go up
-    lx_assertf(lx_tessellator_edge_go_up(region->edge), "%{mesh_edge}", region->edge);
+    lx_assertf(lx_tessellator_edge_go_up(region->edge), "%{tess_mesh_edge}", region->edge);
 
     // trace
-    lx_trace_d("insert: %{mesh_edge}", region->edge);
+    lx_trace_d("insert: %{tess_mesh_edge}", region->edge);
 
     // reverse to find the inserted position
     lx_iterator_t iterator;
@@ -343,11 +343,26 @@ static lx_void_t lx_tessellator_active_regions_test(lx_tessellator_t* tessellato
 }
 #endif
 
+#ifdef LX_DEBUG
+static lx_int_t lx_tessellator_mesh_vsnprintf_region(lx_char_t* s, lx_size_t n, lx_cpointer_t object) {
+    return lx_snprintf(s, n, "%s", "tess_region");
+}
+#endif
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
 lx_bool_t lx_tessellator_active_regions_make(lx_tessellator_t* tessellator, lx_rect_ref_t bounds) {
     lx_assert(tessellator && bounds && bounds->w > 0 && bounds->h > 0);
+
+#ifdef LX_DEBUG
+    // register printf("%{test_region}", region);
+    static lx_bool_t s_is_registered = lx_false;
+    if (!s_is_registered) {
+        lx_vsnprintf_object_register("test_region", lx_tessellator_mesh_vsnprintf_region);
+        s_is_registered = lx_true;
+    }
+#endif
 
     // init active regions
     if (!tessellator->active_regions) {
@@ -397,7 +412,7 @@ lx_tessellator_active_region_ref_t lx_tessellator_active_regions_find(lx_tessell
     region_temp.edge = edge;
 
     // the edge must go up
-    lx_assertf(lx_tessellator_edge_go_up(edge), "%{mesh_edge}", edge);
+    lx_assertf(lx_tessellator_edge_go_up(edge), "%{tess_mesh_edge}", edge);
 
     /* reverse to find the region containing the given edge from the regions
      *
@@ -492,16 +507,16 @@ lx_void_t lx_tessellator_active_regions_check(lx_tessellator_t* tessellator) {
     lx_for_all (lx_tessellator_active_region_ref_t, region, tessellator->active_regions) {
         if (region_prev) {
             if (lx_iterator_comp(iterator, region_prev, region) > 0) {
-                lx_trace_i("the order of the active regions is error with event: %{mesh_vertex}", tessellator->event);
-                lx_trace_i("%{mesh_edge}", region_prev->edge);
+                lx_trace_i("the order of the active regions is error with event: %{tess_mesh_vertex}", tessellator->event);
+                lx_trace_i("%{tess_mesh_edge}", region_prev->edge);
                 lx_trace_i("<?=");
-                lx_trace_i("%{mesh_edge}", region->edge);
+                lx_trace_i("%{tess_mesh_edge}", region->edge);
                 lx_assert(0);
             }
         }
 
         // the edge must go up
-        lx_assertf(lx_tessellator_edge_go_up(region->edge), "%{mesh_edge}", region->edge);
+        lx_assertf(lx_tessellator_edge_go_up(region->edge), "%{tess_mesh_edge}", region->edge);
 
         // update the previous region
         region_prev = region;
