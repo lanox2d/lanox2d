@@ -3,6 +3,7 @@ set_project("lanox2d")
 set_xmakever("2.5.3")
 set_version("1.0.1", {build = "%Y%m%d%H%M"})
 set_warnings("all", "error")
+set_languages("c99")
 
 -- complation modes
 add_rules("mode.release", "mode.debug", "mode.asan", "mode.minsizerel", "mode.releasedbg")
