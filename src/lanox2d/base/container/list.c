@@ -100,7 +100,7 @@ static lx_pointer_t lx_list_iterator_item(lx_iterator_ref_t iterator, lx_size_t 
 
 static lx_size_t lx_list_iterator_size(lx_iterator_ref_t iterator) {
     lx_assert(iterator && iterator->container);
-    return lx_list_size((lx_list_ref_t)iterator);
+    return lx_list_size((lx_list_ref_t)iterator->container);
 }
 
 static lx_long_t lx_list_iterator_comp(lx_iterator_ref_t iterator, lx_cpointer_t litem, lx_cpointer_t ritem) {
