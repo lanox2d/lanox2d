@@ -21,6 +21,7 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
+#define LX_TRACE_DISABLED
 #include "mesh.h"
 #include "mesh/edge_list.h"
 #include "mesh/face_list.h"

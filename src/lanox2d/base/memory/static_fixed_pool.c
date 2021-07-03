@@ -22,6 +22,7 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
+#define LX_TRACE_DISABLED
 #include "static_fixed_pool.h"
 #include "../libc/libc.h"
 #include "../utils/utils.h"
@@ -497,7 +498,9 @@ lx_void_t lx_static_fixed_pool_dump(lx_static_fixed_pool_ref_t self) {
             lx_pool_data_empty_head_t* data_head = (lx_pool_data_empty_head_t*)(pool->data + index * pool->item_space);
             lx_static_fixed_pool_check_data(pool, data_head);
             lx_byte_t const* data = (lx_byte_t const*)data_head + pool->data_head_size;
-            lx_trace_e("leak: %p", data);
+            if (data) {
+                lx_trace_e("leak: %p", data);
+            }
         }
     }
 

@@ -21,6 +21,7 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
+#define LX_TRACE_DISABLED
 #include "active_region.h"
 #include "geometry.h"
 #include "mesh.h"
@@ -503,9 +504,8 @@ lx_tessellator_active_region_ref_t lx_tessellator_active_regions_insert_after(lx
     lx_assert(tessellator && tessellator->active_regions && region_prev && region);
 
     // region_prev <= region
-    lx_iterator_ref_t iterator = &tessellator->active_regions_iterator;
-    lx_assert(region_prev->position != lx_iterator_tail(iterator));
-    lx_assert(lx_iterator_comp(iterator, region_prev, region) <= 0);
+    lx_assert(region_prev->position != lx_iterator_tail(&tessellator->active_regions_iterator));
+    lx_assert(lx_iterator_comp(&tessellator->active_regions_iterator, region_prev, region) <= 0);
 
     // insert it
     return lx_tessellator_active_regions_insert_into(tessellator, region_prev->position, region);

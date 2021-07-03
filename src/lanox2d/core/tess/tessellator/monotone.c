@@ -21,6 +21,7 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
+#define LX_TRACE_DISABLED
 #include "monotone.h"
 #include "geometry.h"
 #include "event_queue.h"

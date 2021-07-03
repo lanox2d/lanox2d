@@ -63,7 +63,7 @@ lx_extern_c_enter
 #   define lx_trace_w
 #endif
 
-#if !defined(LX_DEBUG)
+#if !defined(LX_DEBUG) || defined(LX_TRACE_DISABLED)
 #   undef lx_trace_d
 #   undef lx_trace_e
 #   undef lx_trace_a
