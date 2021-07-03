@@ -62,15 +62,22 @@ static lx_void_t lx_tessellator_listener(lx_mesh_event_ref_t event) {
 
 #ifdef LX_DEBUG
 static lx_int_t lx_tessellator_mesh_vsnprintf_edge(lx_char_t* s, lx_size_t n, lx_cpointer_t object) {
-    return lx_snprintf(s, n, "%s", "tess_mesh_edge");
+    lx_mesh_edge_ref_t edge = (lx_mesh_edge_ref_t)object;
+    lx_assert(edge);
+    return lx_snprintf(s, n, "(e%lu.w%d: %{tess_mesh_vertex} => %{tess_mesh_vertex})",
+            edge->id, lx_tessellator_edge_winding(edge), edge->org, edge->sym->org);
 }
 
 static lx_int_t lx_tessellator_mesh_vsnprintf_face(lx_char_t* s, lx_size_t n, lx_cpointer_t object) {
-    return lx_snprintf(s, n, "%s", "tess_mesh_face");
+    lx_mesh_face_ref_t face = (lx_mesh_face_ref_t)object;
+    lx_assert(face);
+    return lx_snprintf(s, n, "(f%lu: inside: %d)", face->id, lx_tessellator_face_inside(face));
 }
 
 static lx_int_t lx_tessellator_mesh_vsnprintf_vertex(lx_char_t* s, lx_size_t n, lx_cpointer_t object) {
-    return lx_snprintf(s, n, "%s", "tess_mesh_vertex");
+    lx_mesh_vertex_ref_t vertex = (lx_mesh_vertex_ref_t)object;
+    lx_assert(vertex);
+    return lx_snprintf(s, n, "(v%lu: %{point})", vertex->id, lx_tessellator_vertex_point(vertex));
 }
 #endif
 
@@ -115,7 +122,7 @@ lx_bool_t lx_tessellator_mesh_make(lx_tessellator_t* tessellator, lx_polygon_ref
         if (!s_is_registered) {
             lx_vsnprintf_object_register("tess_mesh_edge",   lx_tessellator_mesh_vsnprintf_edge);
             lx_vsnprintf_object_register("tess_mesh_face",   lx_tessellator_mesh_vsnprintf_face);
-            lx_vsnprintf_object_register("test_mesh_vertex", lx_tessellator_mesh_vsnprintf_vertex);
+            lx_vsnprintf_object_register("tess_mesh_vertex", lx_tessellator_mesh_vsnprintf_vertex);
             s_is_registered = lx_true;
         }
 #endif

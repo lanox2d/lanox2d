@@ -344,8 +344,21 @@ static lx_void_t lx_tessellator_active_regions_test(lx_tessellator_t* tessellato
 #endif
 
 #ifdef LX_DEBUG
-static lx_int_t lx_tessellator_mesh_vsnprintf_region(lx_char_t* s, lx_size_t n, lx_cpointer_t object) {
-    return lx_snprintf(s, n, "%s", "tess_region");
+static lx_int_t lx_tessellator_active_regions_vsnprintf(lx_char_t* s, lx_size_t n, lx_cpointer_t object) {
+    lx_tessellator_active_region_ref_t region = (lx_tessellator_active_region_ref_t)object;
+    lx_assert(region);
+
+    // is bounds region?
+    if (region->bounds) {
+        return lx_snprintf(s, n, "(e%lu.bounds)", region->edge->id);
+    }
+
+    // is fixable edge region?
+    if (region->fixedge) {
+        return lx_snprintf(s, n, "(e%lu.fixable)", region->edge->id);
+    }
+    return lx_snprintf(s, n, "(e%lu.w%d, winding: %ld, inside: %d)",
+                region->edge->id, lx_tessellator_edge_winding(region->edge), region->winding, region->inside);
 }
 #endif
 
@@ -359,7 +372,7 @@ lx_bool_t lx_tessellator_active_regions_make(lx_tessellator_t* tessellator, lx_r
     // register printf("%{test_region}", region);
     static lx_bool_t s_is_registered = lx_false;
     if (!s_is_registered) {
-        lx_vsnprintf_object_register("test_region", lx_tessellator_mesh_vsnprintf_region);
+        lx_vsnprintf_object_register("test_region", lx_tessellator_active_regions_vsnprintf);
         s_is_registered = lx_true;
     }
 #endif
