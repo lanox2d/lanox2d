@@ -372,7 +372,7 @@ lx_bool_t lx_tessellator_active_regions_make(lx_tessellator_t* tessellator, lx_r
     // register printf("%{test_region}", region);
     static lx_bool_t s_is_registered = lx_false;
     if (!s_is_registered) {
-        lx_vsnprintf_object_register("test_region", lx_tessellator_active_regions_vsnprintf);
+        lx_vsnprintf_object_register("tess_region", lx_tessellator_active_regions_vsnprintf);
         s_is_registered = lx_true;
     }
 #endif

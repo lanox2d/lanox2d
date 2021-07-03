@@ -61,6 +61,14 @@ static lx_inline lx_uint8_t lx_tessellator_winding_is_inside(lx_tessellator_t* t
     return 0;
 }
 
+static lx_mesh_vertex_ref_t lx_tessellator_event_queue_get(lx_priority_queue_ref_t event_queue) {
+    lx_mesh_vertex_ref_t* pevent = (lx_mesh_vertex_ref_t*)lx_priority_queue_get(event_queue);
+    if (pevent) {
+        return *pevent;
+    }
+    return lx_null;
+}
+
 static lx_void_t lx_tessellator_fix_region_edge(lx_tessellator_t* tessellator, lx_tessellator_active_region_ref_t region, lx_mesh_edge_ref_t edge) {
     lx_assert(tessellator && tessellator->mesh && region && region->fixedge && edge);
     lx_trace_d("fix a temporary edge: %{tess_region} => %{tess_mesh_edge}", region, edge);
@@ -4244,7 +4252,7 @@ lx_void_t lx_tessellator_monotone_make(lx_tessellator_t* tessellator, lx_rect_re
     while (lx_priority_queue_size(event_queue)) {
 
         // get the minimum vertex event
-        lx_mesh_vertex_ref_t event = (lx_mesh_vertex_ref_t)lx_priority_queue_get(event_queue);
+        lx_mesh_vertex_ref_t event = (lx_mesh_vertex_ref_t)lx_tessellator_event_queue_get(event_queue);
         lx_assert(event);
 
         // pop it from the event queue first
@@ -4254,7 +4262,7 @@ lx_void_t lx_tessellator_monotone_make(lx_tessellator_t* tessellator, lx_rect_re
         while (lx_priority_queue_size(event_queue)) {
 
             // get the next vertex event
-            lx_mesh_vertex_ref_t event_next = (lx_mesh_vertex_ref_t)lx_priority_queue_get(event_queue);
+            lx_mesh_vertex_ref_t event_next = (lx_mesh_vertex_ref_t)lx_tessellator_event_queue_get(event_queue);
             lx_assert(event_next);
 
             // two vertices are exactly same?
