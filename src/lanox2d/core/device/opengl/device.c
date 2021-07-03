@@ -29,6 +29,26 @@
  * private implementation
  */
 static lx_void_t lx_device_opengl_resize(lx_device_ref_t self, lx_size_t width, lx_size_t height) {
+    lx_opengl_device_t* device = (lx_opengl_device_t*)self;
+    lx_assert(device);
+
+    // update viewport
+    lx_glViewport(0, 0, width, height);
+
+    // update matrix
+    if (device->glversion >= 0x20) {
+        // update the projection matrix
+        lx_gl_matrix_orthof(device->matrix_project, 0.0f, (lx_GLfloat_t)width, (lx_GLfloat_t)height, 0.0f, -1.0f, 1.0f);
+    } else {
+        // update the projection matrix
+        lx_glMatrixMode(LX_GL_PROJECTION);
+        lx_glLoadIdentity();
+        lx_glOrthof(0.0f, (lx_GLfloat_t)width, (lx_GLfloat_t)height, 0.0f, -1.0f, 1.0f);
+
+        // update the model matrix
+        lx_glMatrixMode(LX_GL_MODELVIEW);
+        lx_glLoadIdentity();
+    }
 }
 
 static lx_void_t lx_device_opengl_draw_clear(lx_device_ref_t self, lx_color_t color) {

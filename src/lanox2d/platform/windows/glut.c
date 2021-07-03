@@ -274,7 +274,7 @@ static lx_void_t lx_window_glut_reshape(lx_int_t width, lx_int_t height) {
 
 #if 0
     // the device
-    lx_device_ref_t device = lx_canvas_device(window->canvas);
+    lx_device_ref_t device = lx_canvas_device(window->base.canvas);
     lx_assert_and_check_return(device);
 
     // update the window width and height
