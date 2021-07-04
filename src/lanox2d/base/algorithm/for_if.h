@@ -44,7 +44,7 @@
  * @endcode
  */
 #define lx_for_if(type, item, head, tail, iterator, cond) \
-    lx_assert(!iterator || (lx_iterator_mode(iterator) & (LX_ITERATOR_MODE_FORWARD | LX_ITERATOR_MODE_RACCESS))); \
+    lx_assert((lx_iterator_mode(iterator) & (LX_ITERATOR_MODE_FORWARD | LX_ITERATOR_MODE_RACCESS))); \
     type item; \
     lx_size_t item##_itor = head; \
     lx_size_t item##_head = head; \
