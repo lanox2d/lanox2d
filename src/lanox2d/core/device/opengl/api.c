@@ -26,6 +26,10 @@
 #ifdef LX_CONFIG_OS_MACOSX
 #   include <OpenGL/gl.h>
 #   include <OpenGL/glu.h>
+#else
+#define GL_GLEXT_PROTOTYPES
+#   include <GL/glut.h>
+#   include <GL/glext.h>
 #endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
