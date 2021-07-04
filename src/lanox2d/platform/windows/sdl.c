@@ -66,6 +66,7 @@ static lx_bool_t lx_window_sdl_start(lx_window_sdl_t* window) {
 
         // init sdl
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+            lx_trace_e("init sdl failed, %s", SDL_GetError());
             break;
         }
 
