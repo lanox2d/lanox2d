@@ -41,7 +41,6 @@ typedef struct lx_device_t_ {
     lx_paint_ref_t      paint;
     lx_matrix_ref_t     matrix;
     lx_clipper_ref_t    clipper;
-    lx_void_t           (*resize)(lx_device_ref_t device, lx_size_t width, lx_size_t height);
     lx_void_t           (*draw_clear)(lx_device_ref_t device, lx_color_t color);
     lx_void_t           (*draw_path)(lx_device_ref_t device, lx_path_ref_t path);
     lx_void_t           (*draw_lines)(lx_device_ref_t device, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds);

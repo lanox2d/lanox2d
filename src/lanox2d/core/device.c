@@ -47,13 +47,6 @@ lx_size_t lx_device_height(lx_device_ref_t self) {
     return device? device->height : 0;
 }
 
-lx_void_t lx_device_resize(lx_device_ref_t self, lx_size_t width, lx_size_t height) {
-    lx_device_t* device = (lx_device_t*)self;
-    if (device && device->resize) {
-        device->resize(self, width, height);
-    }
-}
-
 lx_void_t lx_device_bind_path(lx_device_ref_t self, lx_path_ref_t path) {
     lx_device_t* device = (lx_device_t*)self;
     if (device) {

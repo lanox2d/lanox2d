@@ -38,13 +38,6 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-static lx_void_t lx_device_bitmap_resize(lx_device_ref_t self, lx_size_t width, lx_size_t height) {
-    lx_bitmap_device_t* device = (lx_bitmap_device_t*)self;
-    if (device && device->bitmap) {
-        lx_bitmap_resize(device->bitmap, width, height);
-    }
-}
-
 static lx_void_t lx_device_bitmap_draw_clear(lx_device_ref_t self, lx_color_t color) {
     lx_bitmap_device_t* device = (lx_bitmap_device_t*)self;
     lx_assert(device && device->bitmap);
@@ -154,7 +147,6 @@ lx_device_ref_t lx_device_init_from_bitmap(lx_bitmap_ref_t bitmap) {
         device = lx_malloc0_type(lx_bitmap_device_t);
         lx_assert_and_check_break(device);
 
-        device->base.resize       = lx_device_bitmap_resize;
         device->base.draw_clear   = lx_device_bitmap_draw_clear;
         device->base.draw_lines   = lx_device_bitmap_draw_lines;
         device->base.draw_points  = lx_device_bitmap_draw_points;

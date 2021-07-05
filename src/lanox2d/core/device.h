@@ -73,14 +73,6 @@ lx_size_t           lx_device_width(lx_device_ref_t device);
  */
 lx_size_t           lx_device_height(lx_device_ref_t device);
 
-/*! resize the device
- *
- * @param device    the device
- * @param width     the width
- * @param height    the height
- */
-lx_void_t           lx_device_resize(lx_device_ref_t device, lx_size_t width, lx_size_t height);
-
 /*! bind path
  *
  * @param device    the device

@@ -127,15 +127,6 @@ static lx_void_t on_event(lx_window_ref_t window, lx_event_ref_t event) {
                 lx_matrix_rotate(&g_matrix, an);
             }
         }
-    } else if (event->type == LX_EVENT_TYPE_ACTIVE && event->u.active.code == LX_ACTIVE_RESIZE_WINDOW) {
-#if 0
-        lx_uint16_t width  = (lx_uint16_t)event->u.active.data[0];
-        lx_uint16_t height = (lx_uint16_t)event->u.active.data[1];
-
-        lx_float_t x0 = width / 2.0f;
-        lx_float_t y0 = height / 2.0f;
-        lx_matrix_init_translate(&g_matrix, x0, y0);
-#endif
     }
     if (g_entry->on_event) {
         g_entry->on_event(window, event);
