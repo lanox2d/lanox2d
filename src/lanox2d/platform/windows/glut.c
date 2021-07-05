@@ -74,13 +74,24 @@ static lx_void_t lx_window_glut_display() {
     window->fps_drawtime = lx_mclock() - starttime;
 }
 
+static lx_void_t lx_window_glut_quit(lx_window_ref_t self) {
+    lx_window_glut_t* window = (lx_window_glut_t*)self;
+    if (window) {
+        window->is_quit = lx_true;
+#ifdef __FREEGLUT_EXT_H__
+        glutLeaveMainLoop();
+#endif
+    }
+}
+
+#if defined(LX_CONFIG_OS_MACOSX) || defined(__FREEGLUT_EXT_H__)
 static lx_void_t lx_window_glut_close() {
     lx_window_glut_t* window = lx_window_glut_get();
     if (window) {
-        window->is_quit = lx_true;
-        glutLeaveMainLoop();
+        lx_window_glut_quit((lx_window_ref_t)window);
     }
 }
+#endif
 
 static lx_void_t lx_window_glut_keyboard(lx_byte_t key, lx_int_t x, lx_int_t y) {
     lx_window_glut_t* window = lx_window_glut_get();
@@ -344,7 +355,9 @@ static lx_bool_t lx_window_glut_start(lx_window_glut_t* window) {
         glutPassiveMotionFunc(lx_window_glut_motion);
         glutTimerFunc(1000 / window->base.fps, lx_window_glut_timer, window->id);
         glutVisibilityFunc(lx_window_glut_visibility);
+#if defined(LX_CONFIG_OS_MACOSX) || defined(__FREEGLUT_EXT_H__)
         glutWMCloseFunc(lx_window_glut_close);
+#endif
 
         // hide window cursor
         if (window->base.flags & LX_WINDOW_FLAG_HIDE_CURSOR) {
@@ -398,14 +411,6 @@ static lx_void_t lx_window_glut_show(lx_window_ref_t self, lx_bool_t is_show) {
 
 static lx_void_t lx_window_glut_show_cursor(lx_window_ref_t self, lx_bool_t is_show) {
     glutSetCursor(is_show? GLUT_CURSOR_INHERIT : GLUT_CURSOR_NONE);
-}
-
-static lx_void_t lx_window_glut_quit(lx_window_ref_t self) {
-    lx_window_glut_t* window = (lx_window_glut_t*)self;
-    if (window) {
-        window->is_quit = lx_true;
-        glutLeaveMainLoop();
-    }
 }
 
 static lx_void_t lx_window_glut_exit(lx_window_ref_t self) {
