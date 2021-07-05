@@ -387,7 +387,7 @@ static lx_void_t lx_polygon_raster_active_scan_line_convex(lx_polygon_raster_t* 
     lx_assert(edge->x < edge_next->x || lx_fixed_abs(edge->x - edge_next->x) <= LX_FIXED_HALF);
 
     // trace
-    lx_trace_d("y: %ld, %{fixed} => %{fixed}", y, edge->x, edge_next->x);
+    lx_trace_d("y: %ld, %{fixed} => %{fixed}", y, &edge->x, &edge_next->x);
 
     // init the end y-coordinate for the only one line
     lx_long_t ye = y + 1;
@@ -513,7 +513,7 @@ static lx_void_t lx_polygon_raster_active_scan_line_concave(lx_polygon_raster_t*
         }
 
         // trace
-        lx_trace_d("y: %ld, winding: %ld, %{fixed} => %{fixed}", y, winding, edge->x, edge_next->x);
+        lx_trace_d("y: %ld, winding: %ld, %{fixed} => %{fixed}", y, winding, &edge->x, &edge_next->x);
 
 #if 0
         // do it for winding?

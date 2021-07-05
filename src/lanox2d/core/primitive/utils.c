@@ -73,10 +73,13 @@ static lx_vsnprintf_object_cb_t lx_vsnprintf_object_find(lx_char_t const* name) 
 
     return itor < g_vsnprintf_count? g_vsnprintf_entries[itor].callback : lx_null;
 }
-#endif
 
 static lx_inline lx_int_t lx_vsnprintf_float(lx_char_t* s, lx_size_t n, lx_float_t* value) {
     return lx_snprintf(s, n, "%f", *value);
+}
+
+static lx_inline lx_int_t lx_vsnprintf_fixed(lx_char_t* s, lx_size_t n, lx_fixed_t* value) {
+    return lx_snprintf(s, n, "%f", lx_fixed_to_float(*value));
 }
 
 static lx_inline lx_int_t lx_vsnprintf_point(lx_char_t* s, lx_size_t n, lx_point_ref_t point) {
@@ -123,11 +126,15 @@ static lx_inline lx_int_t lx_vsnprintf_color(lx_char_t* s, lx_size_t n, lx_color
 static lx_inline lx_int_t lx_vsnprintf_matrix(lx_char_t* s, lx_size_t n, lx_matrix_ref_t matrix) {
     return lx_snprintf(s, n, "(sx: %{float}, sy: %{float}, kx: %{float}, ky: %{float}, tx: %{float}, ty: %{float})", &matrix->sx, &matrix->sy, &matrix->kx, &matrix->ky, &matrix->tx, &matrix->ty);
 }
+#endif
 
 lx_int_t lx_vsnprintf_object(lx_char_t* s, lx_size_t n, lx_char_t const* name, lx_cpointer_t object) {
+#ifdef LX_DEBUG
     lx_check_return_val(s && n && name && object, -1);
     if (!lx_strcmp(name, "float")) {
         return lx_vsnprintf_float(s, n, (lx_float_t*)object);
+    } else if (!lx_strcmp(name, "fixed")) {
+        return lx_vsnprintf_fixed(s, n, (lx_fixed_t*)object);
     } else if (!lx_strcmp(name, "point") || !lx_strcmp(name, "vector")) {
         return lx_vsnprintf_point(s, n, (lx_point_ref_t)object);
     } else if (!lx_strcmp(name, "line")) {
@@ -148,14 +155,13 @@ lx_int_t lx_vsnprintf_object(lx_char_t* s, lx_size_t n, lx_char_t const* name, l
         return lx_vsnprintf_color(s, n, (lx_color_ref_t)object);
     } else if (!lx_strcmp(name, "matrix")) {
         return lx_vsnprintf_matrix(s, n, (lx_matrix_ref_t)object);
-#ifdef LX_DEBUG
     } else if (g_vsnprintf_count) {
         lx_vsnprintf_object_cb_t callback = lx_vsnprintf_object_find(name);
         if (callback) {
             return callback(s, n, object);
         }
-#endif
     }
+#endif
     return -1;
 }
 
