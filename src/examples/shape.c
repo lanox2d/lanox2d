@@ -62,6 +62,7 @@ static lx_void_t on_event(lx_window_ref_t window, lx_event_ref_t event) {
     if (event->type == LX_EVENT_TYPE_KEYBOARD && event->u.keyboard.pressed) {
         switch (event->u.keyboard.code) {
         case LX_KEY_ESCAPE:
+        case 'q':
             lx_window_quit(window);
             break;
         case LX_KEY_UP:
@@ -78,7 +79,8 @@ static lx_void_t on_event(lx_window_ref_t window, lx_event_ref_t event) {
                 lx_window_show_cursor(window, lx_false);
                 lx_window_fullscreen(window, lx_true);
             }
-        case 'q':
+            break;
+        case 'Q':
             g_quality = (g_quality + 1) % 3;
             lx_quality_set(g_quality);
             break;

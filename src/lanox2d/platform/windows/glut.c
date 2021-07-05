@@ -26,7 +26,7 @@
 #ifdef LX_CONFIG_OS_MACOSX
 #   include <GLUT/glut.h>
 #else
-#   include <GL/glut.h>
+#   include <GL/freeglut.h>
 #endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -74,14 +74,13 @@ static lx_void_t lx_window_glut_display() {
     window->fps_drawtime = lx_mclock() - starttime;
 }
 
-#ifdef LX_CONFIG_OS_MACOSX
 static lx_void_t lx_window_glut_close() {
     lx_window_glut_t* window = lx_window_glut_get();
     if (window) {
         window->is_quit = lx_true;
+        glutLeaveMainLoop();
     }
 }
-#endif
 
 static lx_void_t lx_window_glut_keyboard(lx_byte_t key, lx_int_t x, lx_int_t y) {
     lx_window_glut_t* window = lx_window_glut_get();
@@ -241,12 +240,12 @@ static lx_void_t lx_window_glut_timer(lx_int_t value) {
     glutPostRedisplay();
 
     // compute delay for framerate
-    lx_int_t  delay = 1;
+//    lx_int_t  delay = 1;
     lx_hong_t time = lx_mclock();
     lx_int_t  dt = (lx_int_t)window->fps_drawtime;
     lx_int_t  fps_delay = 1000 / window->base.fps;
     if (fps_delay >= dt) {
-        delay = fps_delay - dt;
+//        delay = fps_delay - dt;
     }
 
     // compute framerate
@@ -264,7 +263,7 @@ static lx_void_t lx_window_glut_timer(lx_int_t value) {
     }
 
     // next timer
-    glutTimerFunc(delay, lx_window_glut_timer, value);
+    glutTimerFunc(fps_delay, lx_window_glut_timer, value);
 }
 
 static lx_void_t lx_window_glut_reshape(lx_int_t width, lx_int_t height) {
@@ -345,9 +344,7 @@ static lx_bool_t lx_window_glut_start(lx_window_glut_t* window) {
         glutPassiveMotionFunc(lx_window_glut_motion);
         glutTimerFunc(1000 / window->base.fps, lx_window_glut_timer, window->id);
         glutVisibilityFunc(lx_window_glut_visibility);
-#ifdef LX_CONFIG_OS_MACOSX
         glutWMCloseFunc(lx_window_glut_close);
-#endif
 
         // hide window cursor
         if (window->base.flags & LX_WINDOW_FLAG_HIDE_CURSOR) {
@@ -407,6 +404,7 @@ static lx_void_t lx_window_glut_quit(lx_window_ref_t self) {
     lx_window_glut_t* window = (lx_window_glut_t*)self;
     if (window) {
         window->is_quit = lx_true;
+        glutLeaveMainLoop();
     }
 }
 
