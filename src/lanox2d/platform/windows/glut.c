@@ -251,12 +251,12 @@ static lx_void_t lx_window_glut_timer(lx_int_t value) {
     glutPostRedisplay();
 
     // compute delay for framerate
-//    lx_int_t  delay = 1;
+    lx_int_t  delay = 1;
     lx_hong_t time = lx_mclock();
     lx_int_t  dt = (lx_int_t)window->fps_drawtime;
     lx_int_t  fps_delay = 1000 / window->base.fps;
     if (fps_delay >= dt) {
-//        delay = fps_delay - dt;
+        delay = fps_delay - dt;
     }
 
     // compute framerate
@@ -274,7 +274,7 @@ static lx_void_t lx_window_glut_timer(lx_int_t value) {
     }
 
     // next timer
-    glutTimerFunc(fps_delay, lx_window_glut_timer, value);
+    glutTimerFunc(delay, lx_window_glut_timer, value);
 }
 
 static lx_void_t lx_window_glut_reshape(lx_int_t width, lx_int_t height) {
