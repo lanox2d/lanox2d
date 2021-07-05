@@ -41,9 +41,9 @@ typedef struct lx_window_glut_t_ {
     lx_size_t       button;
     lx_uint16_t     normal_width;
     lx_uint16_t     normal_height;
-    lx_hong_t       fps_drawtime;
     lx_hong_t       fps_time;
     lx_hong_t       fps_count;
+    lx_int_t        fps_delay;
 } lx_window_glut_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -61,6 +61,17 @@ static lx_inline lx_window_glut_t* lx_window_glut_get() {
     return (id < lx_arrayn(g_windows))? g_windows[id] : lx_null;
 }
 
+static lx_void_t lx_window_glut_timer(lx_int_t value) {
+    lx_window_glut_t* window = g_windows[value];
+    lx_assert_and_check_return(window);
+
+    // post to draw it
+    glutPostRedisplay();
+
+    // next timer
+    glutTimerFunc(window->fps_delay, lx_window_glut_timer, value);
+}
+
 static lx_void_t lx_window_glut_display() {
     lx_window_glut_t* window = lx_window_glut_get();
     lx_assert(window && window->base.canvas && window->base.on_draw);
@@ -71,7 +82,26 @@ static lx_void_t lx_window_glut_display() {
 
     // flush
     glutSwapBuffers();
-    window->fps_drawtime = lx_mclock() - starttime;
+
+    // compute delay for framerate
+    lx_hong_t time = lx_mclock();
+    lx_int_t  fps_drawtime = (lx_int_t)(time - starttime);
+    lx_int_t  fps_delay = 1000 / window->base.fps;
+    window->fps_delay = fps_delay >= fps_drawtime? fps_delay - fps_drawtime : 1;
+
+    // compute framerate
+    if (window->base.flags & LX_WINDOW_FLAG_SHOW_FPS) {
+        if (!window->fps_time) window->fps_time = time;
+        else window->fps_count++;
+        if (time > window->fps_time + 1000) {
+            lx_float_t framerate = (lx_float_t)(window->fps_count * 1000) / (lx_float_t)(time - window->fps_time);
+            lx_char_t title[256];
+            lx_snprintf(title, sizeof(title), "%s (%0.2f fps)", window->base.title, framerate);
+            glutSetWindowTitle(title);
+            window->fps_count = 0;
+            window->fps_time = time;
+        }
+    }
 }
 
 static lx_void_t lx_window_glut_quit(lx_window_ref_t self) {
@@ -241,40 +271,6 @@ static lx_void_t lx_window_glut_visibility(lx_int_t state) {
     if (window->base.on_event) {
         window->base.on_event((lx_window_ref_t)window, &event);
     }
-}
-
-static lx_void_t lx_window_glut_timer(lx_int_t value) {
-    lx_window_glut_t* window = g_windows[value];
-    lx_assert_and_check_return(window);
-
-    // post to draw it
-    glutPostRedisplay();
-
-    // compute delay for framerate
-    lx_int_t  delay = 1;
-    lx_hong_t time = lx_mclock();
-    lx_int_t  dt = (lx_int_t)window->fps_drawtime;
-    lx_int_t  fps_delay = 1000 / window->base.fps;
-    if (fps_delay >= dt) {
-        delay = fps_delay - dt;
-    }
-
-    // compute framerate
-    if (window->base.flags & LX_WINDOW_FLAG_SHOW_FPS) {
-        if (!window->fps_time) window->fps_time = time;
-        window->fps_count++;
-        if (time > window->fps_time + 1000) {
-            lx_float_t framerate = (lx_float_t)(window->fps_count * 1000) / (lx_float_t)(time - window->fps_time);
-            lx_char_t title[256];
-            lx_snprintf(title, sizeof(title), "%s (%0.2f fps)", window->base.title, framerate);
-            glutSetWindowTitle(title);
-            window->fps_count = 0;
-            window->fps_time = time;
-        }
-    }
-
-    // next timer
-    glutTimerFunc(delay, lx_window_glut_timer, value);
 }
 
 static lx_void_t lx_window_glut_reshape(lx_int_t width, lx_int_t height) {
@@ -458,6 +454,7 @@ lx_window_ref_t lx_window_init_glut(lx_size_t width, lx_size_t height, lx_char_t
         window->base.show        = lx_window_glut_show;
         window->base.show_cursor = lx_window_glut_show_cursor;
         window->base.exit        = lx_window_glut_exit;
+        window->fps_delay        = 1000 / window->base.fps;
 
         // init pixfmt
         window->base.pixfmt = lx_quality() < LX_QUALITY_TOP? LX_PIXFMT_RGB565 : LX_PIXFMT_XRGB8888;

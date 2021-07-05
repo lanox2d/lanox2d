@@ -297,7 +297,7 @@ static lx_void_t lx_window_sdl_runloop(lx_window_ref_t self) {
         // compute framerate
         if (window->base.flags & LX_WINDOW_FLAG_SHOW_FPS) {
             if (!window->fps_time) window->fps_time = time;
-            window->fps_count++;
+            else window->fps_count++;
             if (time > window->fps_time + 1000) {
                 lx_float_t framerate = (lx_float_t)(window->fps_count * 1000) / (lx_float_t)(time - window->fps_time);
                 lx_char_t title[256];
