@@ -23,6 +23,7 @@
  * includes
  */
 #include "device.h"
+#include "texture.h"
 #include "renderer.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -120,14 +121,17 @@ lx_device_ref_t lx_device_init_from_opengl(lx_window_ref_t window) {
         device = lx_malloc0_type(lx_opengl_device_t);
         lx_assert_and_check_break(device);
 
-        device->base.draw_clear   = lx_device_opengl_draw_clear;
-        device->base.draw_lines   = lx_device_opengl_draw_lines;
-        device->base.draw_points  = lx_device_opengl_draw_points;
-        device->base.draw_polygon = lx_device_opengl_draw_polygon;
-        device->base.draw_path    = lx_device_opengl_draw_path;
-        device->base.exit         = lx_device_opengl_exit;
-        device->window            = window;
-        device->glversion         = lx_gl_api_version();
+        device->base.draw_clear            = lx_device_opengl_draw_clear;
+        device->base.draw_lines            = lx_device_opengl_draw_lines;
+        device->base.draw_points           = lx_device_opengl_draw_points;
+        device->base.draw_polygon          = lx_device_opengl_draw_polygon;
+        device->base.draw_path             = lx_device_opengl_draw_path;
+        device->base.create_linear_texture = lx_device_opengl_create_linear_texture;
+        device->base.create_radial_texture = lx_device_opengl_create_radial_texture;
+        device->base.create_bitmap_texture = lx_device_opengl_create_bitmap_texture;
+        device->base.exit                  = lx_device_opengl_exit;
+        device->window                     = window;
+        device->glversion                  = lx_gl_api_version();
         lx_assert_and_check_break(device->glversion);
 
         // init stroker
