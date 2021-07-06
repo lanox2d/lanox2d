@@ -91,11 +91,15 @@ static lx_void_t lx_gl_renderer_enter_texture(lx_opengl_device_t* device) {
 
     lx_glDisable(LX_GL_BLEND);
     lx_glEnable(LX_GL_TEXTURE_2D);
+
+    // TODO
 }
 
 static lx_void_t lx_gl_renderer_leave_texture(lx_opengl_device_t* device) {
     lx_assert(device);
     lx_glDisable(LX_GL_TEXTURE_2D);
+
+    // TODO
 }
 
 static lx_void_t lx_gl_renderer_enter_paint(lx_opengl_device_t* device) {
