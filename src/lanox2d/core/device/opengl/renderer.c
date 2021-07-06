@@ -86,14 +86,14 @@ static lx_void_t lx_gl_renderer_leave_solid(lx_opengl_device_t* device) {
     lx_glDisable(LX_GL_BLEND);
 }
 
-static lx_void_t lx_gl_renderer_enter_shader(lx_opengl_device_t* device) {
+static lx_void_t lx_gl_renderer_enter_texture(lx_opengl_device_t* device) {
     lx_assert(device && device->base.paint);
 
     lx_glDisable(LX_GL_BLEND);
     lx_glEnable(LX_GL_TEXTURE_2D);
 }
 
-static lx_void_t lx_gl_renderer_leave_shader(lx_opengl_device_t* device) {
+static lx_void_t lx_gl_renderer_leave_texture(lx_opengl_device_t* device) {
     lx_assert(device);
     lx_glDisable(LX_GL_TEXTURE_2D);
 }
@@ -101,8 +101,8 @@ static lx_void_t lx_gl_renderer_leave_shader(lx_opengl_device_t* device) {
 static lx_void_t lx_gl_renderer_enter_paint(lx_opengl_device_t* device) {
     lx_assert(device);
 
-    if (device->shader) {
-        lx_gl_renderer_enter_shader(device);
+    if (device->texture) {
+        lx_gl_renderer_enter_texture(device);
     } else {
         lx_gl_renderer_enter_solid(device);
     }
@@ -111,8 +111,8 @@ static lx_void_t lx_gl_renderer_enter_paint(lx_opengl_device_t* device) {
 static lx_void_t lx_gl_renderer_leave_paint(lx_opengl_device_t* device) {
     lx_assert(device);
 
-    if (device->shader) {
-        lx_gl_renderer_leave_shader(device);
+    if (device->texture) {
+        lx_gl_renderer_leave_texture(device);
     } else {
         lx_gl_renderer_leave_solid(device);
     }
@@ -231,7 +231,7 @@ static lx_inline lx_bool_t lx_gl_renderer_stroke_only(lx_opengl_device_t* device
     return (    1.0f == lx_paint_stroke_width(device->base.paint)
             &&  1.0f == lx_abs(device->base.matrix->sx)
             &&  1.0f == lx_abs(device->base.matrix->sy)
-            &&  !device->shader)? lx_true : lx_false;
+            &&  !device->texture)? lx_true : lx_false;
 }
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -242,8 +242,8 @@ lx_bool_t lx_gl_renderer_init(lx_opengl_device_t* device) {
 
     lx_bool_t ok = lx_false;
     do {
-        // init shader
-//        device->shader = lx_paint_shader(device->base.paint);
+        // init texture
+//        device->texture = lx_paint_texture(device->base.paint);
 
         // init vertex matrix
         lx_gl_matrix_convert(device->matrix_vertex, device->base.matrix);
@@ -262,7 +262,7 @@ lx_bool_t lx_gl_renderer_init(lx_opengl_device_t* device) {
         // init vertex and matrix
         if (device->glversion >= 0x20) {
             // the program type
-            lx_size_t program_type = device->shader? LX_GL_PROGRAM_TYPE_BITMAP : LX_GL_PROGRAM_TYPE_COLOR;
+            lx_size_t program_type = device->texture? LX_GL_PROGRAM_TYPE_BITMAP : LX_GL_PROGRAM_TYPE_COLOR;
 
             // get program
             device->program = device->programs[program_type];

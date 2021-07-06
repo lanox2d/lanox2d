@@ -254,6 +254,21 @@ lx_size_t           lx_paint_fill_rule(lx_paint_ref_t paint);
  */
 lx_void_t           lx_paint_fill_rule_set(lx_paint_ref_t paint, lx_size_t rule);
 
+/*! get the fill texture
+ *
+ * @param paint     the paint
+ *
+ * @return          the paint texture
+ */
+lx_texture_ref_t    lx_paint_fill_texture(lx_paint_ref_t paint);
+
+/*! set the fill texture
+ *
+ * @param paint     the paint
+ * @param texture   the paint texture
+ */
+lx_void_t           lx_paint_fill_texture_set(lx_paint_ref_t paint, lx_texture_ref_t texture);
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */

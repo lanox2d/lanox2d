@@ -54,15 +54,16 @@
 
 // the paint type
 typedef struct lx_paint_t_ {
-    lx_uint32_t mode    : 4;
-    lx_uint32_t flags   : 4;
-    lx_uint32_t cap     : 4;
-    lx_uint32_t join    : 4;
-    lx_uint32_t rule    : 1;
-    lx_color_t  color;
-    lx_byte_t   alpha;
-    lx_float_t  width;
-    lx_float_t  miter;
+    lx_uint32_t      mode    : 4;
+    lx_uint32_t      flags   : 4;
+    lx_uint32_t      cap     : 4;
+    lx_uint32_t      join    : 4;
+    lx_uint32_t      rule    : 1;
+    lx_color_t       color;
+    lx_byte_t        alpha;
+    lx_float_t       width;
+    lx_float_t       miter;
+    lx_texture_ref_t texture;
 }lx_paint_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -233,3 +234,14 @@ lx_void_t lx_paint_fill_rule_set(lx_paint_ref_t self, lx_size_t rule) {
     }
 }
 
+lx_texture_ref_t lx_paint_fill_texture(lx_paint_ref_t self) {
+    lx_paint_t* paint = (lx_paint_t*)self;
+    return paint? paint->texture : lx_null;
+}
+
+lx_void_t lx_paint_fill_texture_set(lx_paint_ref_t self, lx_texture_ref_t texture) {
+    lx_paint_t* paint = (lx_paint_t*)self;
+    if (paint) {
+        paint->texture = texture;
+    }
+}
