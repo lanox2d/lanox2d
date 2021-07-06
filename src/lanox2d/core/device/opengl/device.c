@@ -151,11 +151,11 @@ lx_device_ref_t lx_device_init_from_opengl(lx_window_ref_t window) {
         // init gl >= 2.0
         if (device->glversion >= 0x20) {
 
-            // init color program
+            // init solid program
             device->programs[LX_GL_PROGRAM_TYPE_SOLID] = lx_gl_program_init_solid();
             lx_assert_and_check_break(device->programs[LX_GL_PROGRAM_TYPE_SOLID]);
 
-            // init bitmap program
+            // init texture program
             device->programs[LX_GL_PROGRAM_TYPE_TEXTURE] = lx_gl_program_init_texture();
             lx_assert_and_check_break(device->programs[LX_GL_PROGRAM_TYPE_TEXTURE]);
 
