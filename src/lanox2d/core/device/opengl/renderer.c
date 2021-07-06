@@ -86,7 +86,6 @@ static lx_void_t lx_gl_renderer_leave_solid(lx_opengl_device_t* device) {
     lx_glDisable(LX_GL_BLEND);
 }
 
-#if 0
 static lx_void_t lx_gl_renderer_enter_shader(lx_opengl_device_t* device) {
     lx_assert(device && device->base.paint);
 
@@ -98,35 +97,25 @@ static lx_void_t lx_gl_renderer_leave_shader(lx_opengl_device_t* device) {
     lx_assert(device);
     lx_glDisable(LX_GL_TEXTURE_2D);
 }
-#endif
 
 static lx_void_t lx_gl_renderer_enter_paint(lx_opengl_device_t* device) {
     lx_assert(device);
 
-#if 0 // TODO
     if (device->shader) {
         lx_gl_renderer_enter_shader(device);
-    }
     } else {
         lx_gl_renderer_enter_solid(device);
     }
-#else
-    lx_gl_renderer_enter_solid(device);
-#endif
 }
 
 static lx_void_t lx_gl_renderer_leave_paint(lx_opengl_device_t* device) {
     lx_assert(device);
 
-#if 0
     if (device->shader) {
         lx_gl_renderer_leave_shader(device);
     } else {
         lx_gl_renderer_leave_solid(device);
     }
-#else
-    lx_gl_renderer_leave_solid(device);
-#endif
 }
 
 static lx_void_t lx_gl_renderer_fill_convex(lx_point_ref_t points, lx_uint16_t count, lx_cpointer_t udata) {
