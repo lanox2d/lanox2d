@@ -59,6 +59,9 @@ typedef lx_typeref(device);
 /// the paint ref type
 typedef lx_typeref(paint);
 
+/// the texture ref type
+typedef lx_typeref(texture);
+
 /// the clipper ref type
 typedef lx_typeref(clipper);
 

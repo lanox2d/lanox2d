@@ -32,6 +32,7 @@
 #include "event.h"
 #include "paint.h"
 #include "path.h"
+#include "texture.h"
 #include "clipper.h"
 #include "quality.h"
 #include "tess/tess.h"
