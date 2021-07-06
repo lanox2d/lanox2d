@@ -266,7 +266,7 @@ lx_bool_t lx_gl_renderer_init(lx_opengl_device_t* device) {
         // init vertex and matrix
         if (device->glversion >= 0x20) {
             // the program type
-            lx_size_t program_type = device->texture? LX_GL_PROGRAM_TYPE_BITMAP : LX_GL_PROGRAM_TYPE_COLOR;
+            lx_size_t program_type = device->texture? LX_GL_PROGRAM_TYPE_TEXTURE : LX_GL_PROGRAM_TYPE_SOLID;
 
             // get program
             device->program = device->programs[program_type];

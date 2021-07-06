@@ -37,10 +37,10 @@ lx_extern_c_enter
 
 // the gl program type enum
 typedef enum lx_gl_program_type_e_ {
-    LX_GL_PROGRAM_TYPE_NONE   = 0
-,   LX_GL_PROGRAM_TYPE_COLOR  = 1
-,   LX_GL_PROGRAM_TYPE_BITMAP = 2
-,   LX_GL_PROGRAM_TYPE_MAXN   = 3
+    LX_GL_PROGRAM_TYPE_NONE    = 0
+,   LX_GL_PROGRAM_TYPE_SOLID   = 1
+,   LX_GL_PROGRAM_TYPE_TEXTURE = 2
+,   LX_GL_PROGRAM_TYPE_MAXN    = 3
 }lx_gl_program_type_e;
 
 // the gl program location id enum
@@ -72,17 +72,17 @@ typedef lx_typeref(gl_program);
  */
 lx_gl_program_ref_t     lx_gl_program_init(lx_size_t type, lx_char_t const* vshader, lx_char_t const* fshader);
 
-/* init color program
+/* init sold program
  *
  * @return              the program
  */
-lx_gl_program_ref_t     lx_gl_program_init_color(lx_noarg_t);
+lx_gl_program_ref_t     lx_gl_program_init_solid(lx_noarg_t);
 
-/* init bitmap program
+/* init texture program
  *
  * @return              the program
  */
-lx_gl_program_ref_t     lx_gl_program_init_bitmap(lx_noarg_t);
+lx_gl_program_ref_t     lx_gl_program_init_texture(lx_noarg_t);
 
 /* exit gl program
  *

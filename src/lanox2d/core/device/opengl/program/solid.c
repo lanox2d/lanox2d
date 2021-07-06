@@ -27,7 +27,7 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_gl_program_ref_t lx_gl_program_init_color() {
+lx_gl_program_ref_t lx_gl_program_init_solid() {
     // the vertex shader
     static lx_char_t const* vshader =
 #if defined(LX_CONFIG_OS_IOS) || defined(LX_CONFIG_OS_ANDROID)
@@ -62,7 +62,7 @@ lx_gl_program_ref_t lx_gl_program_init_color() {
 
 
     // init program
-    lx_gl_program_ref_t program = lx_gl_program_init(LX_GL_PROGRAM_TYPE_COLOR, vshader, fshader);
+    lx_gl_program_ref_t program = lx_gl_program_init(LX_GL_PROGRAM_TYPE_SOLID, vshader, fshader);
     lx_assert_and_check_return_val(program, lx_null);
 
     // init location

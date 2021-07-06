@@ -152,12 +152,12 @@ lx_device_ref_t lx_device_init_from_opengl(lx_window_ref_t window) {
         if (device->glversion >= 0x20) {
 
             // init color program
-            device->programs[LX_GL_PROGRAM_TYPE_COLOR] = lx_gl_program_init_color();
-            lx_assert_and_check_break(device->programs[LX_GL_PROGRAM_TYPE_COLOR]);
+            device->programs[LX_GL_PROGRAM_TYPE_SOLID] = lx_gl_program_init_solid();
+            lx_assert_and_check_break(device->programs[LX_GL_PROGRAM_TYPE_SOLID]);
 
             // init bitmap program
-            device->programs[LX_GL_PROGRAM_TYPE_BITMAP] = lx_gl_program_init_bitmap();
-            lx_assert_and_check_break(device->programs[LX_GL_PROGRAM_TYPE_BITMAP]);
+            device->programs[LX_GL_PROGRAM_TYPE_TEXTURE] = lx_gl_program_init_texture();
+            lx_assert_and_check_break(device->programs[LX_GL_PROGRAM_TYPE_TEXTURE]);
 
             // init the projection matrix
             lx_gl_matrix_orthof(device->matrix_project, 0.0f, (lx_GLfloat_t)width, (lx_GLfloat_t)height, 0.0f, -1.0f, 1.0f);
