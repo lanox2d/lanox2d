@@ -84,6 +84,10 @@ lx_bitmap_ref_t lx_bitmap_init(lx_pointer_t data, lx_size_t pixfmt, lx_size_t wi
     return (lx_bitmap_ref_t)bitmap;
 }
 
+lx_bitmap_ref_t lx_bitmap_init_from_url(lx_char_t const* url, lx_size_t pixfmt) {
+    return lx_null;
+}
+
 lx_void_t lx_bitmap_exit(lx_bitmap_ref_t self) {
     lx_bitmap_t* bitmap = (lx_bitmap_t*)self;
     if (bitmap) {

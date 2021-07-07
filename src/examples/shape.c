@@ -18,6 +18,7 @@ static lx_bool_t        g_transform = lx_false;
 static lx_entry_t*      g_entry = lx_null;
 static lx_size_t        g_shader = 0;
 static lx_shader_ref_t  g_shaders[3] = {0};
+static lx_bitmap_ref_t  g_bitmap = lx_null;
 
 #include "shape/arc.c"
 #include "shape/line.c"
@@ -149,7 +150,9 @@ static lx_entry_t* get_entry(lx_char_t const* name) {
     return lx_null;
 }
 
-static lx_void_t window_init(lx_window_ref_t window) {
+static lx_void_t window_init(lx_window_ref_t window, lx_int_t argc, lx_char_t** argv) {
+
+    g_entry = get_entry(argv[1]? argv[1] : "rect");
 
     lx_window_on_draw(window, on_draw);
     lx_window_on_event(window, on_event);
@@ -167,7 +170,12 @@ static lx_void_t window_init(lx_window_ref_t window) {
     lx_gradient_t gradent = {colors, lx_null, 3};
     g_shaders[1] = lx_shader_init2i_linear_gradient(LX_SHADER_TILE_MODE_CLAMP, &gradent, -50, -50, 50, 50);
     g_shaders[2] = lx_shader_init2i_radial_gradient(LX_SHADER_TILE_MODE_CLAMP, &gradent, 0, 0, 50);
-
+    if (argv[2]) {
+        g_bitmap = lx_bitmap_init_from_url(argv[2], lx_window_pixfmt(window));
+        if (g_bitmap) {
+            g_shaders[0] = lx_shader_init_bitmap(LX_SHADER_TILE_MODE_CLAMP, g_bitmap);
+        }
+    }
     if (g_entry->on_init) {
         g_entry->on_init(window);
     }
@@ -181,6 +189,10 @@ static lx_void_t window_exit(lx_window_ref_t window) {
             g_shaders[i] = lx_null;
         }
     }
+    if (g_bitmap) {
+        lx_bitmap_exit(g_bitmap);
+        g_bitmap = lx_null;
+    }
     if (g_entry->on_exit) {
         g_entry->on_exit(window);
     }
@@ -188,10 +200,9 @@ static lx_void_t window_exit(lx_window_ref_t window) {
 }
 
 int main(int argc, char** argv) {
-    g_entry = get_entry(argv[1]? argv[1] : "rect");
     lx_window_ref_t window = lx_window_init(640, 640, "lanox2d");
     if (window) {
-        window_init(window);
+        window_init(window, argc, argv);
         lx_window_runloop(window);
         window_exit(window);
     }
