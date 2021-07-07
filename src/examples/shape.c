@@ -171,7 +171,7 @@ static lx_void_t window_init(lx_window_ref_t window, lx_int_t argc, lx_char_t** 
     g_shaders[1] = lx_shader_init2i_linear_gradient(LX_SHADER_TILE_MODE_CLAMP, &gradent, -50, -50, 50, 50);
     g_shaders[2] = lx_shader_init2i_radial_gradient(LX_SHADER_TILE_MODE_CLAMP, &gradent, 0, 0, 50);
     if (argv[2]) {
-        g_bitmap = lx_bitmap_init_from_url(argv[2], lx_window_pixfmt(window));
+        g_bitmap = lx_bitmap_init_from_file(argv[2], lx_window_pixfmt(window));
         if (g_bitmap) {
             g_shaders[0] = lx_shader_init_bitmap(LX_SHADER_TILE_MODE_CLAMP, g_bitmap);
         }

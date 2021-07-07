@@ -52,14 +52,14 @@ lx_extern_c_enter
  */
 lx_bitmap_ref_t     lx_bitmap_init(lx_pointer_t data, lx_size_t pixfmt, lx_size_t width, lx_size_t height, lx_size_t row_bytes, lx_bool_t has_alpha);
 
-/*! init bitmap from url
+/*! init bitmap from file path
  *
  * @param url       the bitmap url
  * @param pixfmt    the pixfmt
  *
  * @return          the bitmap
  */
-lx_bitmap_ref_t     lx_bitmap_init_from_url(lx_char_t const* url, lx_size_t pixfmt);
+lx_bitmap_ref_t     lx_bitmap_init_from_file(lx_char_t const* path, lx_size_t pixfmt);
 
 /*! exit bitmap
  *
