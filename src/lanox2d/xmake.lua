@@ -37,13 +37,11 @@ target("lanox2d")
     -- check interfaces
     check_interfaces()
 
-    -- add sdl package
+    -- add packages
     if is_config("window", "sdl") then
         add_packages("libsdl")
         set_configvar("LX_CONFIG_WINDOW_HAVE_SDL", 1)
     end
-
-    -- add glut package
     if is_config("window", "glut") then
         if is_plat("macosx") then
             add_frameworks("GLUT", "OpenGL")
@@ -54,15 +52,21 @@ target("lanox2d")
         set_configvar("LX_CONFIG_WINDOW_HAVE_GLUT", 1)
     end
 
-    -- add bitmap device
+    -- add devices
     if is_config("window", "sdl") then
         set_configvar("LX_CONFIG_DEVICE_HAVE_BITMAP", 1)
         add_files("core/device/bitmap/**.c")
     end
-
-    -- add opengl device
     if is_config("window", "glut") then
         set_configvar("LX_CONFIG_DEVICE_HAVE_OPENGL", 1)
         add_files("core/device/opengl/**.c")
         add_files("core/tess/**.c")
+    end
+
+    -- add bitmaps
+    if has_config("bmp") then
+        set_configvar("LX_CONFIG_BITMAP_HAVE_BMP", 1)
+        add_files("core/bitmap/bmp/*.c")
+    else
+        del_files("core/bitmap/bmp/*.c")
     end

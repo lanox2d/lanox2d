@@ -13,13 +13,16 @@
 ${define LX_CONFIG_SMALL}
 ${define LX_CONFIG_TYPE_HAVE_WCHAR}
 
-// windows
+// window
 ${define LX_CONFIG_WINDOW_HAVE_SDL}
 ${define LX_CONFIG_WINDOW_HAVE_GLUT}
 
-// devices
+// device
 ${define LX_CONFIG_DEVICE_HAVE_BITMAP}
 ${define LX_CONFIG_DEVICE_HAVE_OPENGL}
+
+// bitmap
+${define LX_CONFIG_BITMAP_HAVE_BMP}
 
 // libm functions
 ${define LX_CONFIG_LIBM_HAVE_SINCOS}

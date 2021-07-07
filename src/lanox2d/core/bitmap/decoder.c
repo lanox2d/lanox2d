@@ -32,7 +32,9 @@
 lx_bitmap_ref_t lx_bitmap_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
     lx_assert(LX_PIXFMT_OK(pixfmt) && stream);
     static lx_bitmap_ref_t (*s_decode[])(lx_size_t, lx_stream_ref_t) = {
+#ifdef LX_CONFIG_BITMAP_HAVE_BMP
         lx_bitmap_bmp_decode
+#endif
     };
     lx_size_t i = 0;
     lx_bitmap_ref_t bitmap = lx_null;
