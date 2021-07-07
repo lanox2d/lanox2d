@@ -15,25 +15,16 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        base.h
+ * @file        file.c
  *
  */
-#ifndef LX_BASE_H
-#define LX_BASE_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "libc/libc.h"
-#include "libm/libm.h"
-#include "math/math.h"
-#include "utils/utils.h"
-#include "stream/stream.h"
-#include "memory/memory.h"
-#include "platform/platform.h"
-#include "container/container.h"
-#include "algorithm/algorithm.h"
-
+#include "stream.h"
+#ifdef LX_CONFIG_OS_WINDOWS
+#   include "../platform/windows/stream_file.c"
+#else
+#   include "../platform/posix/stream_file.c"
 #endif
-
-
