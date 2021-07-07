@@ -48,6 +48,7 @@ lx_bitmap_ref_t lx_bitmap_bmp_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
         if (!lx_bitmap_bmp_probe(stream)) {
             break;
         }
+        lx_trace_i("TODO");
         ok = lx_true;
     } while (0);
 

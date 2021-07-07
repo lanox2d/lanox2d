@@ -86,7 +86,14 @@ lx_bitmap_ref_t lx_bitmap_init(lx_pointer_t data, lx_size_t pixfmt, lx_size_t wi
 }
 
 lx_bitmap_ref_t lx_bitmap_init_from_file(lx_char_t const* path, lx_size_t pixfmt) {
-    return lx_null;
+    lx_assert_and_check_return_val(path && LX_PIXFMT_OK(pixfmt), lx_null);
+    lx_bitmap_ref_t bitmap = lx_null;
+    lx_stream_ref_t stream = lx_stream_init_file(path, "r");
+    if (stream) {
+        bitmap = lx_bitmap_decode(pixfmt, stream);
+        lx_stream_exit(stream);
+    }
+    return bitmap;
 }
 
 lx_void_t lx_bitmap_exit(lx_bitmap_ref_t self) {
