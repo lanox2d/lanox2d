@@ -312,7 +312,7 @@ lx_bitmap_ref_t lx_bitmap_bmp_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
                 lx_size_t   i = 0;
                 lx_size_t   m = linesize << 3;
                 for (i = 0; i < m; i += bpp, d += btp_dst) {
-                    //c = pals[lx_bits_get_ubits32(&row_data[i / 8], i & 7, bpp)];
+                    c = pals[lx_bits_get_ubits32(&row_data[i / 8], i & 7, bpp)];
                     dp->color_set(d, c);
                     if (!has_alpha) {
                         has_alpha = c.a <= LX_QUALITY_ALPHA_MAX;
@@ -321,8 +321,6 @@ lx_bitmap_ref_t lx_bitmap_bmp_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
                 p -= row_bytes;
             }
         }
-
-        // check
         lx_assert_and_check_break(!(height + 1));
 
         // set alpha

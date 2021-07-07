@@ -523,6 +523,30 @@ lx_extern_c_enter
 #endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
+ * interfaces
+ */
+
+/*! get ubits32 integer
+ *
+ * @param p     the data pointer
+ * @param b     the start bits
+ * @param n     the bits count
+ *
+ * @return      the ubits32 integer
+ */
+lx_uint32_t     lx_bits_get_ubits32(lx_byte_t const* p, lx_size_t b, lx_size_t n);
+
+/*! get sbits32 integer
+ *
+ * @param p     the data pointer
+ * @param b     the start bits
+ * @param n     the bits count
+ *
+ * @return      the ubits32 integer
+ */
+lx_sint32_t     lx_bits_get_sbits32(lx_byte_t const* p, lx_size_t b, lx_size_t n);
+
+/* //////////////////////////////////////////////////////////////////////////////////////
  * bits
  */
 
