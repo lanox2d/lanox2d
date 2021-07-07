@@ -20,7 +20,7 @@ target("lanox2d")
     add_headerfiles("../(lanox2d/*.h)")
     add_headerfiles("../(lanox2d/base/**.h)|libc/arch/**.h")
     add_headerfiles("../(lanox2d/prefix/**.h)")
-    add_headerfiles("../(lanox2d/core/**.h)|private/**.h|pixmap/*.h|device/**.h")
+    add_headerfiles("../(lanox2d/core/**.h)|private/**.h|pixmap/*.h|device/**.h|bitmap/*.h")
     add_headerfiles("../(lanox2d/platform/**.h)|windows/*.h")
     add_headerfiles("$(buildir)/$(plat)/$(arch)/$(mode)/lanox2d.config.h", {prefixdir = "lanox2d"})
 
