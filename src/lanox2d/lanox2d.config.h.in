@@ -23,6 +23,8 @@ ${define LX_CONFIG_DEVICE_HAVE_OPENGL}
 
 // bitmap
 ${define LX_CONFIG_BITMAP_HAVE_BMP}
+${define LX_CONFIG_BITMAP_HAVE_PNG}
+${define LX_CONFIG_BITMAP_HAVE_JPEG}
 
 // libm functions
 ${define LX_CONFIG_LIBM_HAVE_SINCOS}
