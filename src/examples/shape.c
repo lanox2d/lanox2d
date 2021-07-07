@@ -16,7 +16,8 @@ static lx_float_t       g_width = 1.0f;
 static lx_byte_t        g_alpha = 255;
 static lx_bool_t        g_transform = lx_false;
 static lx_entry_t*      g_entry = lx_null;
-static lx_shader_ref_t g_shaders[2] = {0};
+static lx_size_t        g_shader = 0;
+static lx_shader_ref_t  g_shaders[3] = {0};
 
 #include "shape/arc.c"
 #include "shape/line.c"
@@ -49,18 +50,13 @@ static lx_entry_t g_entries[] = {
 };
 
 static lx_void_t on_draw(lx_window_ref_t window, lx_canvas_ref_t canvas) {
-    if (!g_shaders[0]) {
-        lx_color_t    color[3] = {LX_COLOR_RED, LX_COLOR_GREEN, LX_COLOR_BLUE};
-        lx_gradient_t gradent = {color, lx_null, 3};
-        g_shaders[0] = lx_shader_init2i_linear(canvas, LX_SHADER_TILE_MODE_CLAMP, &gradent, -50, -50, 50, 50);
-        g_shaders[1] = lx_shader_init2i_radial(canvas, LX_SHADER_TILE_MODE_CLAMP, &gradent, 0, 0, 50);
-    }
     lx_canvas_draw_clear(canvas, LX_COLOR_DEFAULT);
     lx_matrix_copy(lx_canvas_save_matrix(canvas), &g_matrix);
     lx_canvas_stroke_cap_set(canvas, g_cap);
     lx_canvas_stroke_join_set(canvas, g_join);
     lx_canvas_stroke_width_set(canvas, g_width);
     lx_canvas_alpha_set(canvas, g_alpha);
+    lx_canvas_shader_set(canvas, g_shaders[g_shader]);
     g_entry->on_draw(window, canvas);
     lx_canvas_load_matrix(canvas);
 }
@@ -103,6 +99,8 @@ static lx_void_t on_event(lx_window_ref_t window, lx_event_ref_t event) {
         case 't':
             g_transform = !g_transform;
             break;
+        case 's':
+            g_shader = (g_shader + 1) % 3;
         default:
             break;
         }
@@ -161,6 +159,14 @@ static lx_void_t window_init(lx_window_ref_t window) {
     lx_window_flags_set(window, LX_WINDOW_FLAG_SHOW_FPS);
     lx_quality_set(g_quality);
     lx_matrix_init_translate(&g_matrix, x0, y0);
+
+    static lx_color_t colors[3];
+    colors[0] = LX_COLOR_RED;
+    colors[1] = LX_COLOR_GREEN;
+    colors[2] = LX_COLOR_BLUE;
+    lx_gradient_t gradent = {colors, lx_null, 3};
+    g_shaders[1] = lx_shader_init2i_linear_gradient(LX_SHADER_TILE_MODE_CLAMP, &gradent, -50, -50, 50, 50);
+    g_shaders[2] = lx_shader_init2i_radial_gradient(LX_SHADER_TILE_MODE_CLAMP, &gradent, 0, 0, 50);
 
     if (g_entry->on_init) {
         g_entry->on_init(window);

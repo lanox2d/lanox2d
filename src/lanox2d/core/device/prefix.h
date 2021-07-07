@@ -46,19 +46,8 @@ typedef struct lx_device_t_ {
     lx_void_t           (*draw_lines)(lx_device_ref_t device, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds);
     lx_void_t           (*draw_points)(lx_device_ref_t device, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds);
     lx_void_t           (*draw_polygon)(lx_device_ref_t device, lx_polygon_ref_t polygon, lx_shape_ref_t hint, lx_rect_ref_t bounds);
-    lx_shader_ref_t     (*create_linear_shader)(lx_device_ref_t device, lx_size_t mode, lx_gradient_ref_t gradient, lx_line_ref_t line);
-    lx_shader_ref_t     (*create_radial_shader)(lx_device_ref_t device, lx_size_t mode, lx_gradient_ref_t gradient, lx_circle_ref_t circle);
-    lx_shader_ref_t     (*create_bitmap_shader)(lx_device_ref_t device, lx_size_t mode, lx_bitmap_ref_t bitmap);
     lx_void_t           (*exit)(lx_device_ref_t device);
 }lx_device_t;
-
-// the shader type
-typedef struct lx_shader_t_ {
-    lx_uint8_t          type;
-    lx_uint8_t          tile_mode;
-    lx_matrix_t         matrix;
-    lx_void_t           (*exit)(lx_shader_ref_t shader);
-}lx_shader_t;
 
 #endif
 

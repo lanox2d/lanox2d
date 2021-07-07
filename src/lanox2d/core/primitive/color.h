@@ -62,6 +62,12 @@
 lx_extern_c_enter
 
 /* //////////////////////////////////////////////////////////////////////////////////////
+ * globals
+ */
+extern const lx_color_t g_constant_colors[];
+extern const lx_size_t  g_constant_colors_size;
+
+/* //////////////////////////////////////////////////////////////////////////////////////
  * interfaces
  */
 
@@ -113,17 +119,16 @@ static lx_inline lx_color_t lx_pixel_color(lx_pixel_t pixel) {
     return p2c.c;
 }
 
-/* //////////////////////////////////////////////////////////////////////////////////////
- * interfaces
- */
-
 /*! get color from the index
  *
  * @param index     the color index
  *
  * @return          the color
  */
-lx_color_t const    lx_color_from_index(lx_size_t index);
+static lx_inline lx_color_t const lx_color_from_index(lx_size_t index) {
+    lx_assert(index < g_named_colors);
+    return g_constant_colors[index];
+}
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

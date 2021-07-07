@@ -173,6 +173,18 @@ lx_void_t lx_paint_alpha_set(lx_paint_ref_t self, lx_byte_t alpha) {
     }
 }
 
+lx_shader_ref_t lx_paint_shader(lx_paint_ref_t self) {
+    lx_paint_t* paint = (lx_paint_t*)self;
+    return paint? paint->shader : lx_null;
+}
+
+lx_void_t lx_paint_shader_set(lx_paint_ref_t self, lx_shader_ref_t shader) {
+    lx_paint_t* paint = (lx_paint_t*)self;
+    if (paint) {
+        paint->shader = shader;
+    }
+}
+
 lx_float_t lx_paint_stroke_width(lx_paint_ref_t self) {
     lx_paint_t* paint = (lx_paint_t*)self;
     return paint? paint->width : LX_PAINT_DEFAULT_WIDTH;
@@ -234,14 +246,3 @@ lx_void_t lx_paint_fill_rule_set(lx_paint_ref_t self, lx_size_t rule) {
     }
 }
 
-lx_shader_ref_t lx_paint_fill_shader(lx_paint_ref_t self) {
-    lx_paint_t* paint = (lx_paint_t*)self;
-    return paint? paint->shader : lx_null;
-}
-
-lx_void_t lx_paint_fill_shader_set(lx_paint_ref_t self, lx_shader_ref_t shader) {
-    lx_paint_t* paint = (lx_paint_t*)self;
-    if (paint) {
-        paint->shader = shader;
-    }
-}

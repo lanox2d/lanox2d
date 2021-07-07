@@ -159,6 +159,21 @@ lx_byte_t           lx_paint_alpha(lx_paint_ref_t paint);
  */
 lx_void_t           lx_paint_alpha_set(lx_paint_ref_t paint, lx_byte_t alpha);
 
+/*! get the shader
+ *
+ * @param paint     the paint
+ *
+ * @return          the paint shader
+ */
+lx_shader_ref_t     lx_paint_shader(lx_paint_ref_t paint);
+
+/*! set the shader
+ *
+ * @param paint     the paint
+ * @param shader    the paint shader
+ */
+lx_void_t           lx_paint_shader_set(lx_paint_ref_t paint, lx_shader_ref_t shader);
+
 /*! get the paint width
  *
  * @param paint     the paint
@@ -253,21 +268,6 @@ lx_size_t           lx_paint_fill_rule(lx_paint_ref_t paint);
  * @param rule      the fill rule
  */
 lx_void_t           lx_paint_fill_rule_set(lx_paint_ref_t paint, lx_size_t rule);
-
-/*! get the fill shader
- *
- * @param paint     the paint
- *
- * @return          the paint shader
- */
-lx_shader_ref_t     lx_paint_fill_shader(lx_paint_ref_t paint);
-
-/*! set the fill shader
- *
- * @param paint     the paint
- * @param shader    the paint shader
- */
-lx_void_t           lx_paint_fill_shader_set(lx_paint_ref_t paint, lx_shader_ref_t shader);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

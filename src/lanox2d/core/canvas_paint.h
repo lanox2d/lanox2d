@@ -80,6 +80,10 @@ static lx_inline lx_void_t lx_canvas_alpha_set(lx_canvas_ref_t canvas, lx_byte_t
     lx_paint_alpha_set(lx_canvas_paint(canvas), alpha);
 }
 
+static lx_inline lx_void_t lx_canvas_shader_set(lx_canvas_ref_t canvas, lx_shader_ref_t shader) {
+    lx_paint_shader_set(lx_canvas_paint(canvas), shader);
+}
+
 static lx_inline lx_void_t lx_canvas_stroke_width_set(lx_canvas_ref_t canvas, lx_float_t width) {
     lx_paint_stroke_width_set(lx_canvas_paint(canvas), width);
 }
@@ -98,10 +102,6 @@ static lx_inline lx_void_t lx_cavas_stroke_miter_set(lx_canvas_ref_t canvas, lx_
 
 static lx_inline lx_void_t lx_canvas_fill_rule_set(lx_canvas_ref_t canvas, lx_size_t rule) {
     lx_paint_fill_rule_set(lx_canvas_paint(canvas), rule);
-}
-
-static lx_inline lx_void_t lx_canvas_fill_shader_set(lx_canvas_ref_t canvas, lx_shader_ref_t shader) {
-    lx_paint_fill_shader_set(lx_canvas_paint(canvas), shader);
 }
 
 /* //////////////////////////////////////////////////////////////////////////////////////

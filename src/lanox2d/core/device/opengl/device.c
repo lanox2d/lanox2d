@@ -23,7 +23,6 @@
  * includes
  */
 #include "device.h"
-#include "shader.h"
 #include "renderer.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -126,9 +125,6 @@ lx_device_ref_t lx_device_init_from_opengl(lx_window_ref_t window) {
         device->base.draw_points           = lx_device_opengl_draw_points;
         device->base.draw_polygon          = lx_device_opengl_draw_polygon;
         device->base.draw_path             = lx_device_opengl_draw_path;
-        device->base.create_linear_shader  = lx_device_opengl_create_linear_shader;
-        device->base.create_radial_shader  = lx_device_opengl_create_radial_shader;
-        device->base.create_bitmap_shader  = lx_device_opengl_create_bitmap_shader;
         device->base.exit                  = lx_device_opengl_exit;
         device->window                     = window;
         device->glversion                  = lx_gl_api_version();
