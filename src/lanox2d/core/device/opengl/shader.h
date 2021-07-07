@@ -15,11 +15,11 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        texture.h
+ * @file        shader.h
  *
  */
-#ifndef LX_CORE_DEVICE_OPENGL_TEXTURE_H
-#define LX_CORE_DEVICE_OPENGL_TEXTURE_H
+#ifndef LX_CORE_DEVICE_OPENGL_SHADER_H
+#define LX_CORE_DEVICE_OPENGL_SHADER_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
@@ -35,37 +35,37 @@ lx_extern_c_enter
  * interface
  */
 
-/*! create linear gradient texture
+/*! create linear gradient shader
  *
  * @param device    the device
  * @param mode      the mode
  * @param gradient  the gradient
  * @param line      the line
  *
- * @return          the texture
+ * @return          the shader
  */
-lx_texture_ref_t    lx_device_opengl_create_linear_texture(lx_device_ref_t device, lx_size_t mode, lx_gradient_ref_t gradient, lx_line_ref_t line);
+lx_shader_ref_t     lx_device_opengl_create_linear_shader(lx_device_ref_t device, lx_size_t mode, lx_gradient_ref_t gradient, lx_line_ref_t line);
 
-/*! create radial gradient texture
+/*! create radial gradient shader
  *
  * @param device    the device
  * @param mode      the mode
  * @param gradient  the gradient
  * @param circle    the circle
  *
- * @return          the texture
+ * @return          the shader
  */
-lx_texture_ref_t    lx_device_opengl_create_radial_texture(lx_device_ref_t device, lx_size_t mode, lx_gradient_ref_t gradient, lx_circle_ref_t circle);
+lx_shader_ref_t     lx_device_opengl_create_radial_shader(lx_device_ref_t device, lx_size_t mode, lx_gradient_ref_t gradient, lx_circle_ref_t circle);
 
-/*! create bitmap texture
+/*! create bitmap shader
  *
  * @param device    the device
  * @param mode      the mode
  * @param bitmap    the bitmap
  *
- * @return          the texture
+ * @return          the shader
  */
-lx_texture_ref_t    lx_device_opengl_create_bitmap_texture(lx_device_ref_t device, lx_size_t mode, lx_bitmap_ref_t bitmap);
+lx_shader_ref_t     lx_device_opengl_create_bitmap_shader(lx_device_ref_t device, lx_size_t mode, lx_bitmap_ref_t bitmap);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

@@ -100,8 +100,8 @@ static lx_inline lx_void_t lx_canvas_fill_rule_set(lx_canvas_ref_t canvas, lx_si
     lx_paint_fill_rule_set(lx_canvas_paint(canvas), rule);
 }
 
-static lx_inline lx_void_t lx_canvas_fill_texture_set(lx_canvas_ref_t canvas, lx_texture_ref_t texture) {
-    lx_paint_fill_texture_set(lx_canvas_paint(canvas), texture);
+static lx_inline lx_void_t lx_canvas_fill_shader_set(lx_canvas_ref_t canvas, lx_shader_ref_t shader) {
+    lx_paint_fill_shader_set(lx_canvas_paint(canvas), shader);
 }
 
 /* //////////////////////////////////////////////////////////////////////////////////////

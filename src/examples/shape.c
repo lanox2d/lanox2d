@@ -16,7 +16,7 @@ static lx_float_t       g_width = 1.0f;
 static lx_byte_t        g_alpha = 255;
 static lx_bool_t        g_transform = lx_false;
 static lx_entry_t*      g_entry = lx_null;
-static lx_texture_ref_t g_textures[2] = {0};
+static lx_shader_ref_t g_shaders[2] = {0};
 
 #include "shape/arc.c"
 #include "shape/line.c"
@@ -49,11 +49,11 @@ static lx_entry_t g_entries[] = {
 };
 
 static lx_void_t on_draw(lx_window_ref_t window, lx_canvas_ref_t canvas) {
-    if (!g_textures[0]) {
+    if (!g_shaders[0]) {
         lx_color_t    color[3] = {LX_COLOR_RED, LX_COLOR_GREEN, LX_COLOR_BLUE};
         lx_gradient_t gradent = {color, lx_null, 3};
-        g_textures[0] = lx_texture_init2i_linear(canvas, LX_TEXTURE_MODE_CLAMP, &gradent, -50, -50, 50, 50);
-        g_textures[1] = lx_texture_init2i_radial(canvas, LX_TEXTURE_MODE_CLAMP, &gradent, 0, 0, 50);
+        g_shaders[0] = lx_shader_init2i_linear(canvas, LX_SHADER_TILE_MODE_CLAMP, &gradent, -50, -50, 50, 50);
+        g_shaders[1] = lx_shader_init2i_radial(canvas, LX_SHADER_TILE_MODE_CLAMP, &gradent, 0, 0, 50);
     }
     lx_canvas_draw_clear(canvas, LX_COLOR_DEFAULT);
     lx_matrix_copy(lx_canvas_save_matrix(canvas), &g_matrix);
@@ -169,10 +169,10 @@ static lx_void_t window_init(lx_window_ref_t window) {
 
 static lx_void_t window_exit(lx_window_ref_t window) {
     lx_size_t i = 0;
-    for (i = 0; i < lx_arrayn(g_textures); i++) {
-        if (g_textures[i]) {
-            lx_texture_exit(g_textures[i]);
-            g_textures[i] = lx_null;
+    for (i = 0; i < lx_arrayn(g_shaders); i++) {
+        if (g_shaders[i]) {
+            lx_shader_exit(g_shaders[i]);
+            g_shaders[i] = lx_null;
         }
     }
     if (g_entry->on_exit) {
