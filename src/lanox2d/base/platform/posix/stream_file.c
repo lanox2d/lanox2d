@@ -110,6 +110,21 @@ static lx_long_t lx_stream_file_peek(lx_stream_t* self, lx_byte_t const** pdata,
     return size < leftsize? size : leftsize;
 }
 
+static lx_bool_t lx_stream_file_seek(lx_stream_t* self, lx_size_t offset) {
+    lx_stream_file_t* stream = (lx_stream_file_t*)self;
+    lx_assert_and_check_return_val(stream && stream->file, lx_false);
+
+    // only for read mode
+    lx_assert_and_check_return_val(stream->readable, lx_false);
+
+    // update offset
+    if (offset <= stream->filesize) {
+        stream->offset = offset;
+        return lx_true;
+    }
+    return lx_false;
+}
+
 static lx_bool_t lx_stream_file_skip(lx_stream_t* self, lx_size_t size) {
     lx_stream_file_t* stream = (lx_stream_file_t*)self;
     lx_assert_and_check_return_val(stream && stream->file, lx_false);
@@ -197,6 +212,7 @@ lx_stream_ref_t lx_stream_init_file(lx_char_t const* path, lx_char_t const* mode
 
         stream->base.exit   = lx_stream_file_exit;
         stream->base.peek   = lx_stream_file_peek;
+        stream->base.seek   = lx_stream_file_seek;
         stream->base.skip   = lx_stream_file_skip;
         stream->base.size   = lx_stream_file_size;
         stream->base.offset = lx_stream_file_offset;

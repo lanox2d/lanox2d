@@ -33,6 +33,7 @@
 // the stream type
 typedef struct lx_stream_t_ {
     lx_long_t (*peek)(struct lx_stream_t_* stream, lx_byte_t const** pdata, lx_size_t size);
+    lx_bool_t (*seek)(struct lx_stream_t_* stream, lx_size_t offset);
     lx_bool_t (*skip)(struct lx_stream_t_* stream, lx_size_t size);
     lx_bool_t (*write)(struct lx_stream_t_* stream, lx_byte_t const* data, lx_size_t size);
     lx_bool_t (*pwrite)(struct lx_stream_t_* stream, lx_byte_t const* data, lx_size_t size, lx_size_t offset);

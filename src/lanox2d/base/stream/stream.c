@@ -56,10 +56,22 @@ lx_uint16_t lx_stream_peek_u2be(lx_stream_ref_t stream, lx_size_t offset) {
     return (size == offset + 2 && data)? (((lx_uint16_t)data[offset] << 8) + data[offset + 1]) : 0;
 }
 
+lx_uint16_t lx_stream_peek_u2le(lx_stream_ref_t stream, lx_size_t offset) {
+    lx_byte_t const* data = lx_null;
+    lx_long_t size = lx_stream_peek(stream, &data, offset + 2);
+    return (size == offset + 2 && data)? (((lx_uint16_t)data[offset + 1] << 8) + data[offset]) : 0;
+}
+
 lx_uint32_t lx_stream_peek_u4be(lx_stream_ref_t stream, lx_size_t offset) {
     lx_byte_t const* data = lx_null;
     lx_long_t size = lx_stream_peek(stream, &data, offset + 4);
     return (size == offset + 4 && data)? (((lx_uint32_t)data[offset] << 24) + (data[offset + 1] << 16) + (data[offset + 2] << 8) + data[offset + 3]) : 0;
+}
+
+lx_uint32_t lx_stream_peek_u4le(lx_stream_ref_t stream, lx_size_t offset) {
+    lx_byte_t const* data = lx_null;
+    lx_long_t size = lx_stream_peek(stream, &data, offset + 4);
+    return (size == offset + 4 && data)? (((lx_uint32_t)data[offset + 3] << 24) + (data[offset + 2] << 16) + (data[offset + 1] << 8) + data[offset]) : 0;
 }
 
 lx_bool_t lx_stream_skip(lx_stream_ref_t self, lx_size_t size) {
@@ -67,6 +79,13 @@ lx_bool_t lx_stream_skip(lx_stream_ref_t self, lx_size_t size) {
     lx_assert_and_check_return_val(stream && stream->skip, lx_false);
 
     return stream->skip(stream, size);
+}
+
+lx_bool_t lx_stream_seek(lx_stream_ref_t self, lx_size_t offset) {
+    lx_stream_t* stream = (lx_stream_t*)self;
+    lx_assert_and_check_return_val(stream && stream->seek, lx_false);
+
+    return stream->seek(stream, offset);
 }
 
 lx_bool_t lx_stream_write(lx_stream_ref_t self, lx_byte_t const* data, lx_size_t size) {

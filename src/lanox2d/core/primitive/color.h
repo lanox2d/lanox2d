@@ -126,7 +126,7 @@ static lx_inline lx_color_t lx_pixel_color(lx_pixel_t pixel) {
  * @return          the color
  */
 static lx_inline lx_color_t const lx_color_from_index(lx_size_t index) {
-    lx_assert(index < g_named_colors);
+    lx_assert(index < g_constant_colors_size);
     return g_constant_colors[index];
 }
 

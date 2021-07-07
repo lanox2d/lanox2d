@@ -101,6 +101,17 @@ lx_uint8_t              lx_stream_peek_u1(lx_stream_ref_t stream, lx_size_t offs
  */
 lx_uint16_t             lx_stream_peek_u2be(lx_stream_ref_t stream, lx_size_t offset);
 
+/* peek stream value (u2/le)
+ *
+ * @endcode
+ *
+ * @param stream        the stream
+ * @param offset        the offset
+ *
+ * @return              the value
+ */
+lx_uint16_t             lx_stream_peek_u2le(lx_stream_ref_t stream, lx_size_t offset);
+
 /* peek stream value (u4/be)
  *
  * @endcode
@@ -112,6 +123,17 @@ lx_uint16_t             lx_stream_peek_u2be(lx_stream_ref_t stream, lx_size_t of
  */
 lx_uint32_t             lx_stream_peek_u4be(lx_stream_ref_t stream, lx_size_t offset);
 
+/* peek stream value (u4/le)
+ *
+ * @endcode
+ *
+ * @param stream        the stream
+ * @param offset        the offset
+ *
+ * @return              the value
+ */
+lx_uint32_t             lx_stream_peek_u4le(lx_stream_ref_t stream, lx_size_t offset);
+
 /* skip stream data size
  *
  * @endcode
@@ -122,6 +144,17 @@ lx_uint32_t             lx_stream_peek_u4be(lx_stream_ref_t stream, lx_size_t of
  * @return              lx_true or lx_false
  */
 lx_bool_t               lx_stream_skip(lx_stream_ref_t stream, lx_size_t size);
+
+/* seek to the given offset
+ *
+ * @endcode
+ *
+ * @param stream        the stream
+ * @param offset        the offset
+ *
+ * @return              lx_true or lx_false
+ */
+lx_bool_t               lx_stream_seek(lx_stream_ref_t stream, lx_size_t offset);
 
 /*! write stream data
  *
