@@ -25,9 +25,39 @@
 #include "decoder.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
+ * private implementation
+ */
+static lx_bool_t lx_bitmap_bmp_probe(lx_stream_ref_t stream) {
+    lx_byte_t const* p = lx_null;
+    if (lx_stream_peek(stream, &p, 2) && p) {
+        return p[0] == 'B' && p[1] == 'M';
+    }
+    return lx_false;
+}
+
+/* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
 lx_bitmap_ref_t lx_bitmap_bmp_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
-    return lx_null;
+    lx_assert(stream);
+
+    // decode image
+    lx_bool_t       ok = lx_false;
+    lx_bitmap_ref_t bitmap = lx_null;
+    do {
+        if (!lx_bitmap_bmp_probe(stream)) {
+            break;
+        }
+        ok = lx_true;
+    } while (0);
+
+    // decode failed
+    if (!ok) {
+        if (bitmap) {
+            lx_bitmap_exit(bitmap);
+            bitmap = lx_null;
+        }
+    }
+    return bitmap;
 }
 
