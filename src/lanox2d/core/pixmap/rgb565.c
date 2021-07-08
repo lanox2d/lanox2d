@@ -162,7 +162,7 @@ static lx_pixmap_t const g_pixmap_lo_rgb565 = {
 ,   16
 ,   2
 ,   LX_PIXFMT_RGB565
-#ifdef LX_CONFIG_DEVICE_HAVE_BITMAP
+#ifdef LX_CONFIG_PIXFMT_HAVE_RGB565
 ,   lx_pixmap_rgb565_pixel
 ,   lx_pixmap_rgb565_color
 ,   lx_pixmap_rgb16_pixel_get_l
@@ -179,7 +179,7 @@ static lx_pixmap_t const g_pixmap_bo_rgb565 = {
 ,   16
 ,   2
 ,   LX_PIXFMT_RGB565 | LX_PIXFMT_BENDIAN
-#ifdef LX_CONFIG_DEVICE_HAVE_BITMAP
+#ifdef LX_CONFIG_PIXFMT_HAVE_RGB565
 ,   lx_pixmap_rgb565_pixel
 ,   lx_pixmap_rgb565_color
 ,   lx_pixmap_rgb16_pixel_get_l
@@ -196,7 +196,7 @@ static lx_pixmap_t const g_pixmap_la_rgb565 = {
 ,   16
 ,   2
 ,   LX_PIXFMT_RGB565
-#ifdef LX_CONFIG_DEVICE_HAVE_BITMAP
+#ifdef LX_CONFIG_PIXFMT_HAVE_RGB565
 ,   lx_pixmap_rgb565_pixel
 ,   lx_pixmap_rgb565_color
 ,   lx_pixmap_rgb16_pixel_get_l
@@ -213,7 +213,7 @@ static lx_pixmap_t const g_pixmap_ba_rgb565 = {
 ,   16
 ,   2
 ,   LX_PIXFMT_RGB565 | LX_PIXFMT_BENDIAN
-#ifdef LX_CONFIG_DEVICE_HAVE_BITMAP
+#ifdef LX_CONFIG_PIXFMT_HAVE_RGB565
 ,   lx_pixmap_rgb565_pixel
 ,   lx_pixmap_rgb565_color
 ,   lx_pixmap_rgb16_pixel_get_b

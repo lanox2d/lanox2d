@@ -5,10 +5,11 @@ option("examples", {showmenu = true, default = true, description = "Enable exmap
 -- enable small compilation mode, it will disable all optional packages and modules
 option("small",    {showmenu = true, default = true, configvar = {"LX_CONFIG_SMALL", 1}, description = "Enable small mode and disable all optional modules"})
 
--- image options
-option("bmp",      {showmenu = true, default = true, description = "Enable BMP image"})
-option("png",      {showmenu = true, default = false, description = "Enable PNG image"})
-option("jpeg",     {showmenu = true, default = false, description = "Enable JPEG image"})
+-- pixfmt option
+option("pixfmt",   {showmenu = true, default = "rgb565,xrgb8888,argb8888", description = "Enable pixel formats"})
+
+-- bitmap option
+option("bitmap",   {showmenu = true, default = "bmp", description = "Enable bitmap formats"})
 
 -- window option, TODO glut, x11, glfw, ..
 option("window",   {showmenu = true, default = "sdl", description = "Set render window", values = {"sdl", "glut"}})

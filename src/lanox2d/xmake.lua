@@ -64,9 +64,20 @@ target("lanox2d")
     end
 
     -- add bitmaps
-    if has_config("bmp") then
-        set_configvar("LX_CONFIG_BITMAP_HAVE_BMP", 1)
-        add_files("core/bitmap/bmp/*.c")
-    else
+    local bitmap = get_config("bitmap")
+    if bitmap then
+        for _, name in ipairs(bitmap:split(',')) do
+            set_configvar("LX_CONFIG_BITMAP_HAVE_" .. name:upper(), 1)
+        end
+    end
+    if not bitmap or not bitmap:find("bmp") then
         del_files("core/bitmap/bmp/*.c")
+    end
+
+    -- add pixmaps
+    local pixfmt = get_config("pixfmt")
+    if pixfmt then
+        for _, name in ipairs(pixfmt:split(',')) do
+            set_configvar("LX_CONFIG_PIXFMT_HAVE_" .. name:upper(), 1)
+        end
     end
