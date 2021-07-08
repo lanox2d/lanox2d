@@ -63,21 +63,12 @@ static lx_void_t lx_gl_renderer_enable_vertices(lx_opengl_device_t* device, lx_b
     if (enabled) {
         if (device->glversion >= 0x20) {
             lx_assert(device->program);
-
-            // enable vertex
             lx_glEnableVertexAttribArray(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_VERTICES));
-
-            // apply projection matrix
             lx_glUniformMatrix4fv(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_MATRIX_PROJECT), 1, LX_GL_FALSE, device->matrix_project);
-
-            // apply vertex matrix
             lx_glUniformMatrix4fv(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_MATRIX_MODEL), 1, LX_GL_FALSE, device->matrix_vertex);
 
         } else {
-            // enable vertex
             lx_glEnableClientState(LX_GL_VERTEX_ARRAY);
-
-            // apply vertex matrix
             lx_glMatrixMode(LX_GL_MODELVIEW);
             lx_glPushMatrix();
             lx_glLoadIdentity();
@@ -129,6 +120,43 @@ static lx_void_t lx_gl_renderer_apply_texture(lx_opengl_device_t* device, lx_poi
     }
 }
 
+static lx_void_t lx_gl_renderer_apply_texture_matrix(lx_opengl_device_t* device, lx_matrix_ref_t matrix, lx_size_t width, lx_size_t height, lx_rect_ref_t bounds) {
+    lx_assert(bounds);
+
+    /* disable auto scale in the bounds
+     * and move viewport to global
+     */
+    lx_float_t bx = bounds->x;
+    lx_float_t by = bounds->y;
+    lx_float_t bw = bounds->w;
+    lx_float_t bh = bounds->h;
+    lx_float_t sw = (lx_float_t)width;
+    lx_float_t sh = (lx_float_t)height;
+    lx_gl_matrix_convert(device->matrix_texture, matrix);
+    lx_gl_matrix_scale(device->matrix_texture, bw / sw, bh / sh);
+    lx_gl_matrix_translate(device->matrix_texture, bx / bw, by / bh);
+
+    // apply texture matrix
+    if (device->glversion >= 0x20) {
+        lx_assert(device->program);
+        lx_glUniformMatrix4fv(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_MATRIX_TEXCOORD), 1, LX_GL_FALSE, device->matrix_texture);
+    } else {
+        lx_glMatrixMode(LX_GL_TEXTURE);
+        lx_glLoadIdentity();
+        lx_glMultMatrixf(device->matrix_texture);
+        lx_glMatrixMode(LX_GL_MODELVIEW);
+    }
+}
+
+static lx_void_t lx_gl_renderer_apply_texture_coords(lx_opengl_device_t* device, lx_point_ref_t points) {
+    if (device->glversion >= 0x20) {
+        lx_assert(device->program);
+        lx_glVertexAttribPointer(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_TEXCOORDS), 2, LX_GL_FLOAT, LX_GL_FALSE, 0, points);
+    } else {
+        lx_glTexCoordPointer(2, LX_GL_FLOAT, 0, points);
+    }
+}
+
 static lx_void_t lx_gl_renderer_apply_vertices(lx_opengl_device_t* device, lx_point_ref_t points) {
     lx_assert(device && points);
     if (device->glversion >= 0x20) {
@@ -136,15 +164,6 @@ static lx_void_t lx_gl_renderer_apply_vertices(lx_opengl_device_t* device, lx_po
         lx_glVertexAttribPointer(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_VERTICES), 2, LX_GL_FLOAT, LX_GL_FALSE, 0, points);
     } else {
         lx_glVertexPointer(2, LX_GL_FLOAT, 0, points);
-    }
-}
-
-static lx_void_t lx_gl_renderer_apply_texcoords(lx_opengl_device_t* device, lx_point_ref_t points) {
-    if (device->glversion >= 0x20) {
-        lx_assert(device->program);
-        lx_glVertexAttribPointer(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_TEXCOORDS), 2, LX_GL_FLOAT, LX_GL_FALSE, 0, points);
-    } else {
-        lx_glTexCoordPointer(2, LX_GL_FLOAT, 0, points);
     }
 }
 
@@ -178,7 +197,7 @@ static lx_void_t lx_gl_renderer_apply_solid(lx_opengl_device_t* device) {
     lx_gl_renderer_apply_color(device, color);
 }
 
-static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, lx_shader_ref_t shader) {
+static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, lx_shader_ref_t shader, lx_rect_ref_t bounds) {
 
     // get bitmap
     lx_bitmap_ref_t bitmap = ((lx_bitmap_shader_t*)shader)->bitmap;
@@ -189,7 +208,9 @@ static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, 
     lx_assert(paint);
 
     // apply texture
-    lx_gl_renderer_apply_texture(device, lx_bitmap_data(bitmap), lx_bitmap_pixfmt(bitmap), lx_bitmap_width(bitmap), lx_bitmap_height(bitmap));
+    lx_size_t width  = lx_bitmap_width(bitmap);
+    lx_size_t height = lx_bitmap_height(bitmap);
+    lx_gl_renderer_apply_texture(device, lx_bitmap_data(bitmap), lx_bitmap_pixfmt(bitmap), width, height);
 
     // enable blend
     lx_byte_t alpha = lx_paint_alpha(paint);
@@ -202,23 +223,21 @@ static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, 
     // TODO
 
     // apply texture matrix
-    // TODO
+    lx_gl_renderer_apply_texture_matrix(device, &((lx_shader_t*)shader)->matrix, width, height, bounds);
 
-    // apply texcoords
+    // apply texture coordinate
     lx_point_make(&device->texcoords[0], 0.0f, 0.0f);
     lx_point_make(&device->texcoords[1], 1.0f, 0.0f);
     lx_point_make(&device->texcoords[2], 0.0f, 1.0f);
     lx_point_make(&device->texcoords[3], 1.0f, 1.0f);
-    lx_gl_renderer_apply_texcoords(device, device->texcoords);
-
-    // TODO apply vertices
+    lx_gl_renderer_apply_texture_coords(device, device->texcoords);
 }
 
-static lx_void_t lx_gl_renderer_apply_shader(lx_opengl_device_t* device, lx_shader_ref_t shader) {
+static lx_void_t lx_gl_renderer_apply_shader(lx_opengl_device_t* device, lx_shader_ref_t shader, lx_rect_ref_t bounds) {
     lx_size_t shader_type = lx_shader_type(shader);
     switch (shader_type) {
     case LX_SHADER_TYPE_BITMAP:
-        lx_gl_renderer_apply_shader_bitmap(device, shader);
+        lx_gl_renderer_apply_shader_bitmap(device, shader, bounds);
         break;
     default:
         lx_trace_e("not supported shader type!");
@@ -226,11 +245,11 @@ static lx_void_t lx_gl_renderer_apply_shader(lx_opengl_device_t* device, lx_shad
     }
 }
 
-static lx_void_t lx_gl_renderer_apply_paint(lx_opengl_device_t* device) {
+static lx_void_t lx_gl_renderer_apply_paint(lx_opengl_device_t* device, lx_rect_ref_t bounds) {
     lx_assert(device);
 
     if (device->shader) {
-        lx_gl_renderer_apply_shader(device, device->shader);
+        lx_gl_renderer_apply_shader(device, device->shader, bounds);
     } else {
         lx_gl_renderer_apply_solid(device);
     }
@@ -409,7 +428,7 @@ lx_void_t lx_gl_renderer_draw_lines(lx_opengl_device_t* device, lx_point_ref_t p
     lx_check_return(lx_paint_mode(device->base.paint) & LX_PAINT_MODE_STROKE);
     lx_check_return((lx_paint_stroke_width(device->base.paint) > 0));
 
-    lx_gl_renderer_apply_paint(device);
+    lx_gl_renderer_apply_paint(device, bounds);
     if (lx_gl_renderer_stroke_only(device)) {
         lx_gl_renderer_stroke_lines(device, points, count);
     } else {
@@ -422,7 +441,7 @@ lx_void_t lx_gl_renderer_draw_points(lx_opengl_device_t* device, lx_point_ref_t 
     lx_check_return(lx_paint_mode(device->base.paint) & LX_PAINT_MODE_STROKE);
     lx_check_return((lx_paint_stroke_width(device->base.paint) > 0));
 
-    lx_gl_renderer_apply_paint(device);
+    lx_gl_renderer_apply_paint(device, bounds);
     if (lx_gl_renderer_stroke_only(device)) {
         lx_gl_renderer_stroke_points(device, points, count);
     } else {
@@ -444,7 +463,7 @@ lx_void_t lx_gl_renderer_draw_polygon(lx_opengl_device_t* device, lx_polygon_ref
         return ;
     }
 
-    lx_gl_renderer_apply_paint(device);
+    lx_gl_renderer_apply_paint(device, bounds);
     lx_size_t mode = lx_paint_mode(device->base.paint);
     if (mode & LX_PAINT_MODE_FILL) {
         lx_gl_renderer_fill_polygon(device, polygon, bounds, lx_paint_fill_rule(device->base.paint));
