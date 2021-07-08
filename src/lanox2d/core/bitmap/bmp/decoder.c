@@ -233,7 +233,8 @@ lx_bitmap_ref_t lx_bitmap_bmp_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
         }
 
         // check
-        lx_assert_and_check_break(sp && dp);
+        lx_assert_and_check_break(sp && sp->color_get);
+        lx_assert_and_check_break(dp && dp->color_set);
 
         // trace
         lx_trace_d("pixfmt: %s => %s", sp->name, dp->name);
