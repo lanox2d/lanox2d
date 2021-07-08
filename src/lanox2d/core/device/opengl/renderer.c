@@ -97,7 +97,8 @@ static lx_void_t lx_gl_renderer_enable_vertices(lx_opengl_device_t* device, lx_b
     }
 }
 
-static lx_void_t lx_gl_renderer_apply_texture(lx_opengl_device_t* device) {
+static lx_void_t lx_gl_renderer_apply_texture(lx_opengl_device_t* device, lx_pointer_t data, lx_size_t pixfmt, lx_size_t width, lx_size_t height) {
+    lx_assert(data && width && height);
     lx_glEnable(LX_GL_TEXTURE_2D);
     lx_glBindTexture(LX_GL_TEXTURE_2D, device->texture);
     if (device->glversion >= 0x20) {
@@ -106,12 +107,30 @@ static lx_void_t lx_gl_renderer_apply_texture(lx_opengl_device_t* device) {
         lx_glEnableClientState(LX_GL_TEXTURE_COORD_ARRAY);
         lx_glTexEnvi(LX_GL_TEXTURE_ENV, LX_GL_TEXTURE_ENV_MODE, LX_GL_MODULATE);
     }
+    switch (LX_PIXFMT(pixfmt)) {
+    case LX_PIXFMT_RGBA8888:
+        lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGBA, width, height, 0, LX_GL_RGBA, LX_GL_UNSIGNED_BYTE, data);
+        break;
+    case LX_PIXFMT_RGB565:
+        lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGB, width, height, 0, LX_GL_RGB, LX_GL_UNSIGNED_SHORT_5_6_5, data);
+        break;
+    case LX_PIXFMT_RGB888:
+        lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGB, width, height, 0, LX_GL_RGB, LX_GL_UNSIGNED_BYTE, data);
+        break;
+    case LX_PIXFMT_RGBA4444:
+        lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGBA, width, height, 0, LX_GL_RGBA, LX_GL_UNSIGNED_SHORT_4_4_4_4, data);
+        break;
+    case LX_PIXFMT_RGBA5551:
+        lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGBA, width, height, 0, LX_GL_RGBA, LX_GL_UNSIGNED_SHORT_5_5_5_1, data);
+        break;
+    default:
+        lx_trace_e("unsupported pixfmt for texture!");
+        break;
+    }
 }
 
 static lx_void_t lx_gl_renderer_apply_vertices(lx_opengl_device_t* device, lx_point_ref_t points) {
     lx_assert(device && points);
-
-    // apply vertices
     if (device->glversion >= 0x20) {
         lx_assert(device->program);
         lx_glVertexAttribPointer(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_VERTICES), 2, LX_GL_FLOAT, LX_GL_FALSE, 0, points);
@@ -161,7 +180,7 @@ static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, 
     lx_assert(paint);
 
     // apply texture
-    lx_gl_renderer_apply_texture(device);
+    lx_gl_renderer_apply_texture(device, lx_bitmap_data(bitmap), lx_bitmap_pixfmt(bitmap), lx_bitmap_width(bitmap), lx_bitmap_height(bitmap));
 
     // enable blend
     lx_byte_t alpha = lx_paint_alpha(paint);
