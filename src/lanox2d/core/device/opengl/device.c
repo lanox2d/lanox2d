@@ -92,6 +92,7 @@ static lx_void_t lx_device_opengl_exit(lx_device_ref_t self) {
                 device->programs[i] = 0;
             }
         }
+        lx_glDeleteTextures(1, &device->texture);
         lx_free(device);
     }
 }
@@ -169,6 +170,9 @@ lx_device_ref_t lx_device_init_from_opengl(lx_window_ref_t window) {
             lx_glMatrixMode(LX_GL_MODELVIEW);
             lx_glLoadIdentity();
         }
+
+        // generate texture
+        lx_glGenTextures(1, &device->texture);
 
         // ok
         ok = lx_true;

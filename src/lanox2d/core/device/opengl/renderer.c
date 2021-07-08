@@ -24,6 +24,8 @@
  */
 #include "renderer.h"
 #include "../../tess/tess.h"
+#include "../../shader.h"
+#include "../../private/shader.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * macros
@@ -47,78 +49,92 @@ static lx_void_t lx_gl_renderer_apply_vertices(lx_opengl_device_t* device, lx_po
     }
 }
 
-static lx_void_t lx_gl_renderer_enter_solid(lx_opengl_device_t* device) {
-    lx_assert(device);
-
-    // the paint
-    lx_paint_ref_t paint = device->base.paint;
-    lx_assert(paint);
-
-    // the color
-    lx_color_t color = lx_paint_color(paint);
-
-    // the alpha
-    lx_byte_t alpha = lx_paint_alpha(paint);
-
-    // disable shader
-    lx_glDisable(LX_GL_TEXTURE_2D);
-
-    // exists alpha?
-    if (alpha != 0xff) {
+static lx_void_t lx_gl_renderer_apply_blend(lx_opengl_device_t* device, lx_bool_t enable) {
+    if (enable) {
         lx_glEnable(LX_GL_BLEND);
         lx_glBlendFunc(LX_GL_SRC_ALPHA, LX_GL_ONE_MINUS_SRC_ALPHA);
-        color.a = alpha;
     } else {
         lx_glDisable(LX_GL_BLEND);
     }
+}
 
-    // apply color
+static lx_void_t lx_gl_renderer_apply_color(lx_opengl_device_t* device, lx_color_t color) {
     if (device->glversion >= 0x20) {
         lx_assert(device->program);
-        lx_glVertexAttrib4f(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_COLORS), (lx_GLfloat_t)color.r / 0xff, (lx_GLfloat_t)color.g / 0xff, (lx_GLfloat_t)color.b / 0xff, (lx_GLfloat_t)color.a / 0xff);
+        lx_glVertexAttrib4f(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_COLORS), (lx_float_t)color.r / 0xff, (lx_float_t)color.g / 0xff, (lx_float_t)color.b / 0xff, (lx_float_t)color.a / 0xff);
     } else {
-        lx_glColor4f((lx_GLfloat_t)color.r / 0xff, (lx_GLfloat_t)color.g / 0xff, (lx_GLfloat_t)color.b / 0xff, (lx_GLfloat_t)color.a / 0xff);
+        lx_glColor4f((lx_float_t)color.r / 0xff, (lx_float_t)color.g / 0xff, (lx_float_t)color.b / 0xff, (lx_float_t)color.a / 0xff);
     }
 }
 
-static lx_void_t lx_gl_renderer_leave_solid(lx_opengl_device_t* device) {
-    lx_assert(device);
-    lx_glDisable(LX_GL_BLEND);
-}
+static lx_void_t lx_gl_renderer_apply_solid(lx_opengl_device_t* device) {
 
-static lx_void_t lx_gl_renderer_enter_shader(lx_opengl_device_t* device) {
-    lx_assert(device && device->base.paint);
+    // get paint
+    lx_paint_ref_t paint = device->base.paint;
+    lx_assert(paint);
 
-    lx_glDisable(LX_GL_BLEND);
-    lx_glEnable(LX_GL_TEXTURE_2D);
-
-    // TODO
-}
-
-static lx_void_t lx_gl_renderer_leave_shader(lx_opengl_device_t* device) {
-    lx_assert(device);
+    // disable texture
     lx_glDisable(LX_GL_TEXTURE_2D);
 
-    // TODO
+    // apply blend
+    lx_color_t color = lx_paint_color(paint);
+    lx_byte_t alpha = lx_paint_alpha(paint);
+    if (alpha != 0xff) {
+        color.a = alpha;
+    }
+    lx_gl_renderer_apply_blend(device, alpha != 0xff);
+
+    // apply color
+    lx_gl_renderer_apply_color(device, color);
 }
 
-static lx_void_t lx_gl_renderer_enter_paint(lx_opengl_device_t* device) {
-    lx_assert(device);
+static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, lx_shader_ref_t shader) {
 
-    if (device->shader) {
-        lx_gl_renderer_enter_shader(device);
+    // get bitmap
+    lx_bitmap_ref_t bitmap = ((lx_bitmap_shader_t*)shader)->bitmap;
+    lx_assert(bitmap);
+
+    // get paint
+    lx_paint_ref_t paint = device->base.paint;
+    lx_assert(paint);
+
+    // apply texture
+    lx_glEnable(LX_GL_TEXTURE_2D);
+    lx_glBindTexture(LX_GL_TEXTURE_2D, device->texture);
+    if (device->glversion < 0x20) {
+        lx_glEnableClientState(LX_GL_TEXTURE_COORD_ARRAY);
+        lx_glTexEnvi(LX_GL_TEXTURE_ENV, LX_GL_TEXTURE_ENV_MODE, LX_GL_MODULATE);
     } else {
-        lx_gl_renderer_enter_solid(device);
+        lx_glEnableVertexAttribArray(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_TEXCOORDS));
+    }
+
+    // apply blend
+    lx_byte_t alpha = lx_paint_alpha(paint);
+    lx_gl_renderer_apply_blend(device, alpha != 0xff || lx_shader_tile_mode(shader) == LX_SHADER_TILE_MODE_BORDER || lx_bitmap_has_alpha(bitmap));
+
+    // apply color
+    lx_gl_renderer_apply_color(device, lx_color_make(alpha, 0xff, 0xff, 0xff));
+}
+
+static lx_void_t lx_gl_renderer_apply_shader(lx_opengl_device_t* device, lx_shader_ref_t shader) {
+    lx_size_t shader_type = lx_shader_type(shader);
+    switch (shader_type) {
+    case LX_SHADER_TYPE_BITMAP:
+        lx_gl_renderer_apply_shader_bitmap(device, shader);
+        break;
+    default:
+        lx_trace_e("not supported shader type!");
+        break;
     }
 }
 
-static lx_void_t lx_gl_renderer_leave_paint(lx_opengl_device_t* device) {
+static lx_void_t lx_gl_renderer_apply_paint(lx_opengl_device_t* device) {
     lx_assert(device);
 
     if (device->shader) {
-        lx_gl_renderer_leave_shader(device);
+        lx_gl_renderer_apply_shader(device, device->shader);
     } else {
-        lx_gl_renderer_leave_solid(device);
+        lx_gl_renderer_apply_solid(device);
     }
 }
 
@@ -343,13 +359,12 @@ lx_void_t lx_gl_renderer_draw_lines(lx_opengl_device_t* device, lx_point_ref_t p
     lx_check_return(lx_paint_mode(device->base.paint) & LX_PAINT_MODE_STROKE);
     lx_check_return((lx_paint_stroke_width(device->base.paint) > 0));
 
-    lx_gl_renderer_enter_paint(device);
+    lx_gl_renderer_apply_paint(device);
     if (lx_gl_renderer_stroke_only(device)) {
         lx_gl_renderer_stroke_lines(device, points, count);
     } else {
         lx_gl_renderer_stroke_fill(device, lx_stroker_make_from_lines(device->stroker, device->base.paint, points, count));
     }
-    lx_gl_renderer_leave_paint(device);
 }
 
 lx_void_t lx_gl_renderer_draw_points(lx_opengl_device_t* device, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds) {
@@ -357,13 +372,12 @@ lx_void_t lx_gl_renderer_draw_points(lx_opengl_device_t* device, lx_point_ref_t 
     lx_check_return(lx_paint_mode(device->base.paint) & LX_PAINT_MODE_STROKE);
     lx_check_return((lx_paint_stroke_width(device->base.paint) > 0));
 
-    lx_gl_renderer_enter_paint(device);
+    lx_gl_renderer_apply_paint(device);
     if (lx_gl_renderer_stroke_only(device)) {
         lx_gl_renderer_stroke_points(device, points, count);
     } else {
         lx_gl_renderer_stroke_fill(device, lx_stroker_make_from_points(device->stroker, device->base.paint, points, count));
     }
-    lx_gl_renderer_leave_paint(device);
 }
 
 lx_void_t lx_gl_renderer_draw_polygon(lx_opengl_device_t* device, lx_polygon_ref_t polygon, lx_shape_ref_t hint, lx_rect_ref_t bounds) {
@@ -380,7 +394,7 @@ lx_void_t lx_gl_renderer_draw_polygon(lx_opengl_device_t* device, lx_polygon_ref
         return ;
     }
 
-    lx_gl_renderer_enter_paint(device);
+    lx_gl_renderer_apply_paint(device);
     lx_size_t mode = lx_paint_mode(device->base.paint);
     if (mode & LX_PAINT_MODE_FILL) {
         lx_gl_renderer_fill_polygon(device, polygon, bounds, lx_paint_fill_rule(device->base.paint));
@@ -393,6 +407,5 @@ lx_void_t lx_gl_renderer_draw_polygon(lx_opengl_device_t* device, lx_polygon_ref
             lx_gl_renderer_stroke_fill(device, lx_stroker_make_from_polygon(device->stroker, device->base.paint, polygon, hint));
         }
     }
-    lx_gl_renderer_leave_paint(device);
 }
 
