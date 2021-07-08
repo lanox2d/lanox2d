@@ -6,7 +6,7 @@ option("examples", {showmenu = true, default = true, description = "Enable exmap
 option("small",    {showmenu = true, default = true, configvar = {"LX_CONFIG_SMALL", 1}, description = "Enable small mode and disable all optional modules"})
 
 -- pixfmt option
-option("pixfmt",   {showmenu = true, default = "rgb565,xrgb8888,argb8888", description = "Enable pixel formats"})
+option("pixfmt",   {showmenu = true, default = "rgb565,xrgb8888,argb8888,rgbx8888,rgba8888", description = "Enable pixel formats"})
 
 -- bitmap option
 option("bitmap",   {showmenu = true, default = "bmp", description = "Enable bitmap formats"})

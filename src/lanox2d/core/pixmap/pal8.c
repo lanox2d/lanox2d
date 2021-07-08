@@ -88,7 +88,7 @@ static lx_pixmap_t const g_pixmap_o_pal8 = {
 ,   8
 ,   1
 ,   LX_PIXFMT_PAL8
-#ifdef LX_CONFIG_DEVICE_HAVE_BITMAP
+#ifdef LX_CONFIG_PIXFMT_HAVE_PAL8
 ,   lx_pixmap_pal8_pixel
 ,   lx_pixmap_pal8_color
 ,   lx_pixmap_pal8_pixel_get
@@ -105,7 +105,7 @@ static lx_pixmap_t const g_pixmap_a_pal8 = {
 ,   8
 ,   1
 ,   LX_PIXFMT_PAL8
-#ifdef LX_CONFIG_DEVICE_HAVE_BITMAP
+#ifdef LX_CONFIG_PIXFMT_HAVE_PAL8
 ,   lx_pixmap_pal8_pixel
 ,   lx_pixmap_pal8_color
 ,   lx_pixmap_pal8_pixel_get

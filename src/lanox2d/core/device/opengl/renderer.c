@@ -100,6 +100,7 @@ static lx_void_t lx_gl_renderer_apply_texture(lx_opengl_device_t* device, lx_poi
     }
     switch (LX_PIXFMT(pixfmt)) {
     case LX_PIXFMT_RGBA8888:
+    case LX_PIXFMT_RGBX8888:
         lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGBA, width, height, 0, LX_GL_RGBA, LX_GL_UNSIGNED_BYTE, data);
         break;
     case LX_PIXFMT_RGB565:
@@ -109,9 +110,11 @@ static lx_void_t lx_gl_renderer_apply_texture(lx_opengl_device_t* device, lx_poi
         lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGB, width, height, 0, LX_GL_RGB, LX_GL_UNSIGNED_BYTE, data);
         break;
     case LX_PIXFMT_RGBA4444:
+    case LX_PIXFMT_RGBX4444:
         lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGBA, width, height, 0, LX_GL_RGBA, LX_GL_UNSIGNED_SHORT_4_4_4_4, data);
         break;
     case LX_PIXFMT_RGBA5551:
+    case LX_PIXFMT_RGBX5551:
         lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGBA, width, height, 0, LX_GL_RGBA, LX_GL_UNSIGNED_SHORT_5_5_5_1, data);
         break;
     default:

@@ -56,6 +56,9 @@ static lx_int_t lx_window_sdl_pixfmt(lx_uint16_t pixfmt) {
     case LX_PIXFMT_ARGB8888:
     case LX_PIXFMT_XRGB8888:
         return SDL_PIXELFORMAT_ARGB8888;
+    case LX_PIXFMT_RGBA8888:
+    case LX_PIXFMT_RGBX8888:
+        return SDL_PIXELFORMAT_RGBA8888;
     }
     return -1;
 }
@@ -407,7 +410,7 @@ lx_window_ref_t lx_window_init_sdl(lx_size_t width, lx_size_t height, lx_char_t 
         window->base.exit        = lx_window_sdl_exit;
 
         // init pixfmt
-        window->base.pixfmt = lx_quality() < LX_QUALITY_TOP? LX_PIXFMT_RGB565 : LX_PIXFMT_XRGB8888;
+        window->base.pixfmt = lx_quality() < LX_QUALITY_TOP? LX_PIXFMT_RGB565 : LX_PIXFMT_RGBX8888;
 
         // ok
         ok = lx_true;
