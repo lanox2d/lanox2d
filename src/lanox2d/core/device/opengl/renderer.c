@@ -139,6 +139,15 @@ static lx_void_t lx_gl_renderer_apply_vertices(lx_opengl_device_t* device, lx_po
     }
 }
 
+static lx_void_t lx_gl_renderer_apply_texcoords(lx_opengl_device_t* device, lx_point_ref_t points) {
+    if (device->glversion >= 0x20) {
+        lx_assert(device->program);
+        lx_glVertexAttribPointer(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_TEXCOORDS), 2, LX_GL_FLOAT, LX_GL_FALSE, 0, points);
+    } else {
+        lx_glTexCoordPointer(2, LX_GL_FLOAT, 0, points);
+    }
+}
+
 static lx_void_t lx_gl_renderer_apply_color(lx_opengl_device_t* device, lx_color_t color) {
     if (device->glversion >= 0x20) {
         lx_assert(device->program);
@@ -195,8 +204,14 @@ static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, 
     // apply texture matrix
     // TODO
 
-    // apply texcoords & vertices
-    // TODO
+    // apply texcoords
+    lx_point_make(&device->texcoords[0], 0.0f, 0.0f);
+    lx_point_make(&device->texcoords[1], 1.0f, 0.0f);
+    lx_point_make(&device->texcoords[2], 0.0f, 1.0f);
+    lx_point_make(&device->texcoords[3], 1.0f, 1.0f);
+    lx_gl_renderer_apply_texcoords(device, device->texcoords);
+
+    // TODO apply vertices
 }
 
 static lx_void_t lx_gl_renderer_apply_shader(lx_opengl_device_t* device, lx_shader_ref_t shader) {
