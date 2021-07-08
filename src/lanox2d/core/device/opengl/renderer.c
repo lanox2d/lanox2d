@@ -37,6 +37,77 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
+
+static lx_void_t lx_gl_renderer_enable_antialiasing(lx_opengl_device_t* device, lx_bool_t enabled) {
+    if (enabled) {
+        lx_glEnable(LX_GL_MULTISAMPLE);
+#if 0
+        lx_glEnable(LX_GL_LINE_SMOOTH);
+        lx_glHint(LX_GL_LINE_SMOOTH_HINT, LX_GL_NICEST);
+#endif
+    } else {
+        lx_glDisable(LX_GL_MULTISAMPLE);
+    }
+}
+
+static lx_void_t lx_gl_renderer_enable_blend(lx_opengl_device_t* device, lx_bool_t enabled) {
+    if (enabled) {
+        lx_glEnable(LX_GL_BLEND);
+        lx_glBlendFunc(LX_GL_SRC_ALPHA, LX_GL_ONE_MINUS_SRC_ALPHA);
+    } else {
+        lx_glDisable(LX_GL_BLEND);
+    }
+}
+
+static lx_void_t lx_gl_renderer_enable_vertices(lx_opengl_device_t* device, lx_bool_t enabled) {
+    if (enabled) {
+        if (device->glversion >= 0x20) {
+            lx_assert(device->program);
+
+            // enable vertex
+            lx_glEnableVertexAttribArray(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_VERTICES));
+
+            // apply projection matrix
+            lx_glUniformMatrix4fv(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_MATRIX_PROJECT), 1, LX_GL_FALSE, device->matrix_project);
+
+            // apply vertex matrix
+            lx_glUniformMatrix4fv(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_MATRIX_MODEL), 1, LX_GL_FALSE, device->matrix_vertex);
+
+        } else {
+            // enable vertex
+            lx_glEnableClientState(LX_GL_VERTEX_ARRAY);
+
+            // apply vertex matrix
+            lx_glMatrixMode(LX_GL_MODELVIEW);
+            lx_glPushMatrix();
+            lx_glLoadIdentity();
+            lx_glMultMatrixf(device->matrix_vertex);
+        }
+    } else {
+        if (device->glversion >= 0x20) {
+            lx_assert_and_check_return(device->program);
+            lx_glDisableVertexAttribArray(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_VERTICES));
+            lx_glDisableVertexAttribArray(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_TEXCOORDS));
+        } else {
+            lx_glMatrixMode(LX_GL_MODELVIEW);
+            lx_glPopMatrix();
+            lx_glDisableClientState(LX_GL_VERTEX_ARRAY);
+            lx_glDisableClientState(LX_GL_TEXTURE_COORD_ARRAY);
+        }
+    }
+}
+
+static lx_void_t lx_gl_renderer_apply_texture(lx_opengl_device_t* device) {
+    lx_glEnable(LX_GL_TEXTURE_2D);
+    lx_glBindTexture(LX_GL_TEXTURE_2D, device->texture);
+    if (device->glversion >= 0x20) {
+        lx_glEnableVertexAttribArray(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_TEXCOORDS));
+    } else {
+        lx_glEnableClientState(LX_GL_TEXTURE_COORD_ARRAY);
+        lx_glTexEnvi(LX_GL_TEXTURE_ENV, LX_GL_TEXTURE_ENV_MODE, LX_GL_MODULATE);
+    }
+}
+
 static lx_void_t lx_gl_renderer_apply_vertices(lx_opengl_device_t* device, lx_point_ref_t points) {
     lx_assert(device && points);
 
@@ -46,15 +117,6 @@ static lx_void_t lx_gl_renderer_apply_vertices(lx_opengl_device_t* device, lx_po
         lx_glVertexAttribPointer(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_VERTICES), 2, LX_GL_FLOAT, LX_GL_FALSE, 0, points);
     } else {
         lx_glVertexPointer(2, LX_GL_FLOAT, 0, points);
-    }
-}
-
-static lx_void_t lx_gl_renderer_apply_blend(lx_opengl_device_t* device, lx_bool_t enable) {
-    if (enable) {
-        lx_glEnable(LX_GL_BLEND);
-        lx_glBlendFunc(LX_GL_SRC_ALPHA, LX_GL_ONE_MINUS_SRC_ALPHA);
-    } else {
-        lx_glDisable(LX_GL_BLEND);
     }
 }
 
@@ -76,13 +138,13 @@ static lx_void_t lx_gl_renderer_apply_solid(lx_opengl_device_t* device) {
     // disable texture
     lx_glDisable(LX_GL_TEXTURE_2D);
 
-    // apply blend
+    // enable blend
     lx_color_t color = lx_paint_color(paint);
     lx_byte_t alpha = lx_paint_alpha(paint);
     if (alpha != 0xff) {
         color.a = alpha;
     }
-    lx_gl_renderer_apply_blend(device, alpha != 0xff);
+    lx_gl_renderer_enable_blend(device, alpha != 0xff);
 
     // apply color
     lx_gl_renderer_apply_color(device, color);
@@ -99,21 +161,23 @@ static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, 
     lx_assert(paint);
 
     // apply texture
-    lx_glEnable(LX_GL_TEXTURE_2D);
-    lx_glBindTexture(LX_GL_TEXTURE_2D, device->texture);
-    if (device->glversion < 0x20) {
-        lx_glEnableClientState(LX_GL_TEXTURE_COORD_ARRAY);
-        lx_glTexEnvi(LX_GL_TEXTURE_ENV, LX_GL_TEXTURE_ENV_MODE, LX_GL_MODULATE);
-    } else {
-        lx_glEnableVertexAttribArray(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_TEXCOORDS));
-    }
+    lx_gl_renderer_apply_texture(device);
 
-    // apply blend
+    // enable blend
     lx_byte_t alpha = lx_paint_alpha(paint);
-    lx_gl_renderer_apply_blend(device, alpha != 0xff || lx_shader_tile_mode(shader) == LX_SHADER_TILE_MODE_BORDER || lx_bitmap_has_alpha(bitmap));
+    lx_gl_renderer_enable_blend(device, alpha != 0xff || lx_shader_tile_mode(shader) == LX_SHADER_TILE_MODE_BORDER || lx_bitmap_has_alpha(bitmap));
 
     // apply color
     lx_gl_renderer_apply_color(device, lx_color_make(alpha, 0xff, 0xff, 0xff));
+
+    // apply wrap and filter
+    // TODO
+
+    // apply texture matrix
+    // TODO
+
+    // apply texcoords & vertices
+    // TODO
 }
 
 static lx_void_t lx_gl_renderer_apply_shader(lx_opengl_device_t* device, lx_shader_ref_t shader) {
@@ -154,26 +218,19 @@ static lx_void_t lx_gl_renderer_fill_convex(lx_point_ref_t points, lx_uint16_t c
     // make crc32
     lx_uint32_t crc32 = 0xffffffff ^ lx_crc_encode(LX_CRC_MODE_32_IEEE_LE, 0xffffffff, (lx_byte_t const*)points, count * sizeof(lx_point_t));
 
-    // make color
+    // enable blend
+    lx_gl_renderer_enable_blend(device, lx_true);
+
+    // apply color
     lx_color_t color;
     color.r = (lx_byte_t)crc32;
     color.g = (lx_byte_t)(crc32 >> 8);
     color.b = (lx_byte_t)(crc32 >> 16);
     color.a = 128;
-
-    // enable blend
-    lx_glEnable(LX_GL_BLEND);
-    lx_glBlendFunc(LX_GL_SRC_ALPHA, LX_GL_ONE_MINUS_SRC_ALPHA);
-
-    // apply color
-    if (device->version >= 0x20) lx_glVertexAttrib4f(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_COLORS), (lx_GLfloat_t)color.r / 0xff, (lx_GLfloat_t)color.g / 0xff, (lx_GLfloat_t)color.b / 0xff, (lx_GLfloat_t)color.a / 0xff);
-    else lx_glColor4f((lx_GLfloat_t)color.r / 0xff, (lx_GLfloat_t)color.g / 0xff, (lx_GLfloat_t)color.b / 0xff, (lx_GLfloat_t)color.a / 0xff);
+    lx_gl_renderer_apply_color(device, color);
 
     // draw the edges of the filled contour
     lx_glDrawArrays(LX_GL_TRIANGLE_FAN, 0, (lx_GLint_t)count);
-
-    // disable blend
-    lx_glEnable(LX_GL_BLEND);
 #endif
 }
 
@@ -263,53 +320,28 @@ lx_bool_t lx_gl_renderer_init(lx_opengl_device_t* device) {
     lx_bool_t ok = lx_false;
     do {
         // init shader
-//        device->shader = lx_paint_shader(device->base.paint);
+        device->shader = lx_paint_shader(device->base.paint);
 
         // init vertex matrix
         lx_gl_matrix_convert(device->matrix_vertex, device->base.matrix);
 
-        // init antialiasing
-        if (lx_paint_flags(device->base.paint) & LX_PAINT_FLAG_ANTIALIASING) {
-            lx_glEnable(LX_GL_MULTISAMPLE);
-#if 0
-            lx_glEnable(LX_GL_LINE_SMOOTH);
-            lx_glHint(LX_GL_LINE_SMOOTH_HINT, LX_GL_NICEST);
-#endif
-        } else {
-            lx_glDisable(LX_GL_MULTISAMPLE);
-        }
-
-        // init vertex and matrix
+        // init programs
         if (device->glversion >= 0x20) {
-            // the program type
-            lx_size_t program_type = device->shader? LX_GL_PROGRAM_TYPE_TEXTURE : LX_GL_PROGRAM_TYPE_SOLID;
 
             // get program
+            lx_size_t program_type = device->shader? LX_GL_PROGRAM_TYPE_TEXTURE : LX_GL_PROGRAM_TYPE_SOLID;
             device->program = device->programs[program_type];
             lx_assert_and_check_break(device->program);
 
             // bind this program to the current gl context
             lx_gl_program_bind(device->program);
-
-            // enable vertex
-            lx_glEnableVertexAttribArray(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_VERTICES));
-
-            // apply projection matrix
-            lx_glUniformMatrix4fv(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_MATRIX_PROJECT), 1, LX_GL_FALSE, device->matrix_project);
-
-            // apply vertex matrix
-            lx_glUniformMatrix4fv(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_MATRIX_MODEL), 1, LX_GL_FALSE, device->matrix_vertex);
-
-        } else {
-            // enable vertex
-            lx_glEnableClientState(LX_GL_VERTEX_ARRAY);
-
-            // apply vertex matrix
-            lx_glMatrixMode(LX_GL_MODELVIEW);
-            lx_glPushMatrix();
-            lx_glLoadIdentity();
-            lx_glMultMatrixf(device->matrix_vertex);
         }
+
+        // init antialiasing
+        lx_gl_renderer_enable_antialiasing(device, lx_paint_flags(device->base.paint) & LX_PAINT_FLAG_ANTIALIASING);
+
+        // init vertex and matrix
+        lx_gl_renderer_enable_vertices(device, lx_true);
 
         // ok
         ok = lx_true;
@@ -319,22 +351,6 @@ lx_bool_t lx_gl_renderer_init(lx_opengl_device_t* device) {
 }
 
 lx_void_t lx_gl_renderer_exit(lx_opengl_device_t* device) {
-    lx_assert_and_check_return(device);
-
-    // exit vertex and matrix
-    if (device->glversion >= 0x20) {
-        lx_assert_and_check_return(device->program);
-        lx_glDisableVertexAttribArray(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_VERTICES));
-        lx_glDisableVertexAttribArray(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_TEXCOORDS));
-    } else {
-        lx_glMatrixMode(LX_GL_MODELVIEW);
-        lx_glPopMatrix();
-        lx_glDisableClientState(LX_GL_VERTEX_ARRAY);
-        lx_glDisableClientState(LX_GL_TEXTURE_COORD_ARRAY);
-    }
-
-    // disable antialiasing
-    lx_glDisable(LX_GL_MULTISAMPLE);
 }
 
 lx_void_t lx_gl_renderer_draw_path(lx_opengl_device_t* device, lx_path_ref_t path) {
