@@ -251,8 +251,8 @@ static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, 
     // apply texture coordinate
     lx_point_make(&device->texcoords[0], 0.0f, 0.0f);
     lx_point_make(&device->texcoords[1], 1.0f, 0.0f);
-    lx_point_make(&device->texcoords[2], 0.0f, 1.0f);
-    lx_point_make(&device->texcoords[3], 1.0f, 1.0f);
+    lx_point_make(&device->texcoords[2], 1.0f, 1.0f);
+    lx_point_make(&device->texcoords[3], 0.0f, 1.0f);
     lx_gl_renderer_apply_texture_coords(device, device->texcoords);
 }
 
