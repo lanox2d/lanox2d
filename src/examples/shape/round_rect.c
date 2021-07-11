@@ -6,10 +6,12 @@ static lx_void_t on_draw_round_rect(lx_window_ref_t window, lx_canvas_ref_t canv
 
     lx_canvas_color_set(canvas, LX_COLOR_RED);
     lx_canvas_mode_set(canvas, LX_PAINT_MODE_FILL);
+    lx_canvas_shader_set(canvas, g_shaders[g_shader]);
     lx_canvas_draw_round_rect2i(canvas, &bounds, 50, 50);
 
     lx_canvas_color_set(canvas, LX_COLOR_BLUE);
     lx_canvas_mode_set(canvas, LX_PAINT_MODE_STROKE);
+    lx_canvas_shader_set(canvas, lx_null);
     lx_canvas_draw_round_rect2i(canvas, &bounds, 50, 50);
 }
 
