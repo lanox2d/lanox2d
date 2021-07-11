@@ -57,7 +57,6 @@ static lx_void_t on_draw(lx_window_ref_t window, lx_canvas_ref_t canvas) {
     lx_canvas_stroke_join_set(canvas, g_join);
     lx_canvas_stroke_width_set(canvas, g_width);
     lx_canvas_alpha_set(canvas, g_alpha);
-    lx_canvas_shader_set(canvas, g_shaders[g_shader]);
     g_entry->on_draw(window, canvas);
     lx_canvas_load_matrix(canvas);
 }

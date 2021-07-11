@@ -88,7 +88,7 @@ static lx_void_t lx_gl_renderer_enable_vertices(lx_opengl_device_t* device, lx_b
     }
 }
 
-static lx_void_t lx_gl_renderer_apply_texture(lx_opengl_device_t* device, lx_pointer_t data, lx_size_t pixfmt, lx_size_t width, lx_size_t height) {
+static lx_void_t lx_gl_renderer_apply_texture(lx_opengl_device_t* device, lx_pointer_t data, lx_size_t pixfmt, lx_size_t width, lx_size_t height, lx_size_t row_bytes) {
     lx_assert(data && width && height);
     lx_glEnable(LX_GL_TEXTURE_2D);
     lx_glBindTexture(LX_GL_TEXTURE_2D, device->texture);
@@ -98,16 +98,22 @@ static lx_void_t lx_gl_renderer_apply_texture(lx_opengl_device_t* device, lx_poi
         lx_glEnableClientState(LX_GL_TEXTURE_COORD_ARRAY);
         lx_glTexEnvi(LX_GL_TEXTURE_ENV, LX_GL_TEXTURE_ENV_MODE, LX_GL_MODULATE);
     }
+ //   lx_glPixelStorei(LX_GL_UNPACK_ALIGNMENT, !(row_bytes & 0x3)? 4 : 1);
+#if 0
+    lx_color_t c = LX_COLOR_BLUE;
+    lx_pixel_t p = lx_pixmap(LX_PIXFMT_RGBX8888, 0xff)->pixel_get(&c);
+    lx_memset32(data, p, height * width / 2);
+#endif
     switch (LX_PIXFMT(pixfmt)) {
-    case LX_PIXFMT_RGBA8888:
-    case LX_PIXFMT_RGBX8888:
-        lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGBA, width, height, 0, LX_GL_RGBA, LX_GL_UNSIGNED_BYTE, data);
+    case LX_PIXFMT_ARGB8888:
+    case LX_PIXFMT_XRGB8888:
+        lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGBA, width, height, 0, LX_GL_BGRA, LX_GL_UNSIGNED_BYTE, data);
         break;
     case LX_PIXFMT_RGB565:
         lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGB, width, height, 0, LX_GL_RGB, LX_GL_UNSIGNED_SHORT_5_6_5, data);
         break;
     case LX_PIXFMT_RGB888:
-        lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGB, width, height, 0, LX_GL_RGB, LX_GL_UNSIGNED_BYTE, data);
+        lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGB, width, height, 0, LX_GL_BGR, LX_GL_UNSIGNED_BYTE, data);
         break;
     case LX_PIXFMT_RGBA4444:
     case LX_PIXFMT_RGBX4444:
@@ -125,19 +131,28 @@ static lx_void_t lx_gl_renderer_apply_texture(lx_opengl_device_t* device, lx_poi
 
 static lx_void_t lx_gl_renderer_apply_texture_matrix(lx_opengl_device_t* device, lx_matrix_ref_t matrix, lx_size_t width, lx_size_t height, lx_rect_ref_t bounds) {
     lx_assert(bounds);
+    lx_matrix_clear(matrix);
+   // lx_matrix_invert(matrix);
+    lx_trace_i("%{matrix}", matrix);
 
     /* disable auto scale in the bounds
      * and move viewport to global
      */
+#if 0
     lx_float_t bx = bounds->x;
     lx_float_t by = bounds->y;
     lx_float_t bw = bounds->w;
     lx_float_t bh = bounds->h;
     lx_float_t sw = (lx_float_t)width;
     lx_float_t sh = (lx_float_t)height;
+    matrix->tx /= sw;
+    matrix->ty /= sh;
+#endif
     lx_gl_matrix_convert(device->matrix_texture, matrix);
+#if 0
     lx_gl_matrix_scale(device->matrix_texture, bw / sw, bh / sh);
     lx_gl_matrix_translate(device->matrix_texture, bx / bw, by / bh);
+#endif
 
     // apply texture matrix
     if (device->glversion >= 0x20) {
@@ -213,7 +228,7 @@ static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, 
     // apply texture
     lx_size_t width  = lx_bitmap_width(bitmap);
     lx_size_t height = lx_bitmap_height(bitmap);
-    lx_gl_renderer_apply_texture(device, lx_bitmap_data(bitmap), lx_bitmap_pixfmt(bitmap), width, height);
+    lx_gl_renderer_apply_texture(device, lx_bitmap_data(bitmap), lx_bitmap_pixfmt(bitmap), width, height, lx_bitmap_row_bytes(bitmap));
 
     // enable blend
     lx_byte_t alpha = lx_paint_alpha(paint);
@@ -224,6 +239,11 @@ static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, 
 
     // apply wrap and filter
     // TODO
+    lx_glTexParameteri(LX_GL_TEXTURE_2D, LX_GL_TEXTURE_WRAP_S, LX_GL_REPEAT);
+    lx_glTexParameteri(LX_GL_TEXTURE_2D, LX_GL_TEXTURE_WRAP_T, LX_GL_REPEAT);
+
+    lx_glTexParameteri(LX_GL_TEXTURE_2D, LX_GL_TEXTURE_MAG_FILTER, LX_GL_LINEAR);
+    lx_glTexParameteri(LX_GL_TEXTURE_2D, LX_GL_TEXTURE_MIN_FILTER, LX_GL_LINEAR);
 
     // apply texture matrix
     lx_gl_renderer_apply_texture_matrix(device, &((lx_shader_t*)shader)->matrix, width, height, bounds);

@@ -96,7 +96,7 @@ static lx_inline lx_void_t lx_canvas_stroke_join_set(lx_canvas_ref_t canvas, lx_
     lx_paint_stroke_join_set(lx_canvas_paint(canvas), join);
 }
 
-static lx_inline lx_void_t lx_cavas_stroke_miter_set(lx_canvas_ref_t canvas, lx_float_t miter) {
+static lx_inline lx_void_t lx_canvas_stroke_miter_set(lx_canvas_ref_t canvas, lx_float_t miter) {
     lx_paint_stroke_miter_set(lx_canvas_paint(canvas), miter);
 }
 

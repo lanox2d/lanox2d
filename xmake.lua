@@ -7,7 +7,7 @@ set_languages("c99")
 
 -- complation modes
 add_rules("mode.release", "mode.debug", "mode.asan", "mode.minsizerel", "mode.releasedbg")
-if is_mode("debug") then
+if is_mode("debug", "asan") then
     add_defines("LX_DEBUG")
 end
 if is_mode("releasedbg", "release", "minsizerel") then

@@ -444,7 +444,7 @@ lx_window_ref_t lx_window_init_glut(lx_size_t width, lx_size_t height, lx_char_t
         window->fps_delay        = 1000 / window->base.fps;
 
         // init pixfmt
-        window->base.pixfmt = lx_quality() < LX_QUALITY_TOP? LX_PIXFMT_RGB565 : LX_PIXFMT_RGBX8888;
+        window->base.pixfmt = lx_quality() < LX_QUALITY_TOP? LX_PIXFMT_RGB565 : LX_PIXFMT_XRGB8888;
 
         // ok
         ok = lx_true;
