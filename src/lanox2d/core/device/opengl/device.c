@@ -156,7 +156,24 @@ lx_device_ref_t lx_device_init_from_opengl(lx_window_ref_t window) {
             device->programs[LX_GL_PROGRAM_TYPE_TEXTURE] = lx_gl_program_init_texture();
             lx_assert_and_check_break(device->programs[LX_GL_PROGRAM_TYPE_TEXTURE]);
 
-            // init the projection matrix
+            /* init the projection matrix
+             *
+             * opengl (origin):
+             *
+             *  y
+             * /|\
+             *  |
+             *  |
+             *   ----------> x
+             *
+             * to (new)
+             *
+             *   ----------> x
+             *  |
+             *  |
+             * \|/
+             *  y
+             */
             lx_gl_matrix_orthof(device->matrix_project, 0.0f, (lx_GLfloat_t)width, (lx_GLfloat_t)height, 0.0f, -1.0f, 1.0f);
 
         } else { // init gl 1.x

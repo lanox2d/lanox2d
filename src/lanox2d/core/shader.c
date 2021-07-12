@@ -22,6 +22,7 @@
  * includes
  */
 #include "shader.h"
+#include "bitmap.h"
 #include "private/shader.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -35,6 +36,7 @@ lx_shader_ref_t lx_shader_init_linear_gradient(lx_size_t tile_mode, lx_gradient_
         shader->base.tile_mode = tile_mode;
         shader->gradient       = *gradient;
         shader->line           = *line;
+        lx_shader_matrix_set((lx_shader_ref_t)shader, lx_null);
     }
     return (lx_shader_ref_t)shader;
 }
@@ -59,6 +61,7 @@ lx_shader_ref_t lx_shader_init_radial_gradient(lx_size_t tile_mode, lx_gradient_
         shader->base.tile_mode = tile_mode;
         shader->gradient       = *gradient;
         shader->circle         = *circle;
+        lx_shader_matrix_set((lx_shader_ref_t)shader, lx_null);
     }
     return (lx_shader_ref_t)shader;
 }
@@ -82,6 +85,7 @@ lx_shader_ref_t lx_shader_init_bitmap(lx_size_t tile_mode, lx_bitmap_ref_t bitma
         shader->base.type      = LX_SHADER_TYPE_BITMAP;
         shader->base.tile_mode = tile_mode;
         shader->bitmap         = bitmap;
+        lx_shader_matrix_set((lx_shader_ref_t)shader, lx_null);
     }
     return (lx_shader_ref_t)shader;
 }
@@ -113,7 +117,20 @@ lx_matrix_ref_t lx_shader_matrix(lx_shader_ref_t self) {
 
 lx_void_t lx_shader_matrix_set(lx_shader_ref_t self, lx_matrix_ref_t matrix) {
     lx_shader_t* shader = (lx_shader_t*)self;
-    if (shader && matrix) {
-        shader->matrix = *matrix;
+    if (shader) {
+        if (matrix) {
+            shader->matrix = *matrix;
+            if (shader->type == LX_SHADER_TYPE_BITMAP) {
+                lx_bitmap_ref_t bitmap = ((lx_bitmap_shader_t*)shader)->bitmap;
+                if (bitmap && lx_matrix_invert(&shader->matrix)) {
+                    lx_float_t sw = (lx_float_t)lx_bitmap_width(bitmap);
+                    lx_float_t sh = (lx_float_t)lx_bitmap_height(bitmap);
+                    shader->matrix.tx /= sw;
+                    shader->matrix.ty /= sh;
+                }
+            }
+        } else {
+            lx_matrix_clear(&shader->matrix);
+        }
     }
 }

@@ -133,28 +133,19 @@ static lx_void_t lx_gl_renderer_apply_texture(lx_opengl_device_t* device, lx_poi
 
 static lx_void_t lx_gl_renderer_apply_texture_matrix(lx_opengl_device_t* device, lx_matrix_ref_t matrix, lx_size_t width, lx_size_t height, lx_rect_ref_t bounds) {
     lx_assert(bounds);
-    lx_matrix_clear(matrix);
-   // lx_matrix_invert(matrix);
-    lx_trace_i("%{matrix}", matrix);
 
     /* disable auto scale in the bounds
      * and move viewport to global
      */
-#if 0
     lx_float_t bx = bounds->x;
     lx_float_t by = bounds->y;
     lx_float_t bw = bounds->w;
     lx_float_t bh = bounds->h;
     lx_float_t sw = (lx_float_t)width;
     lx_float_t sh = (lx_float_t)height;
-    matrix->tx /= sw;
-    matrix->ty /= sh;
-#endif
     lx_gl_matrix_convert(device->matrix_texture, matrix);
-#if 0
     lx_gl_matrix_scale(device->matrix_texture, bw / sw, bh / sh);
     lx_gl_matrix_translate(device->matrix_texture, bx / bw, by / bh);
-#endif
 
     // apply texture matrix
     if (device->glversion >= 0x20) {

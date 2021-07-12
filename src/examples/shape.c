@@ -57,6 +57,14 @@ static lx_void_t on_draw(lx_window_ref_t window, lx_canvas_ref_t canvas) {
     lx_canvas_stroke_join_set(canvas, g_join);
     lx_canvas_stroke_width_set(canvas, g_width);
     lx_canvas_alpha_set(canvas, g_alpha);
+    if (g_bitmap && g_shaders[0]) {
+        lx_matrix_t mx;
+        lx_size_t bw = lx_bitmap_width(g_bitmap);
+        lx_size_t bh = lx_bitmap_height(g_bitmap);
+        lx_matrix_init_translate(&mx, -100.0f, -100.0f);
+        lx_matrix_scale(&mx, 200.0f / bw, 200.0f / bh);
+        lx_shader_matrix_set(g_shaders[0], &mx);
+    }
     g_entry->on_draw(window, canvas);
     lx_canvas_load_matrix(canvas);
 }
