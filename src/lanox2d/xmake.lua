@@ -48,6 +48,9 @@ target("lanox2d")
         add_files("core/device/opengl/**.c")
         add_files("core/tess/**.c")
     end
+    if is_config("device", "skia") then
+        add_files("core/device/skia/**.cc")
+    end
 
     -- add bitmaps
     local bitmap = get_config("bitmap")

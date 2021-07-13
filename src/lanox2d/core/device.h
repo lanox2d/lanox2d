@@ -51,6 +51,15 @@ lx_device_ref_t     lx_device_init_from_bitmap(lx_bitmap_ref_t bitmap);
  */
 lx_device_ref_t     lx_device_init_from_opengl(lx_window_ref_t window);
 
+/*! init device from skia
+ *
+ * @param window    the window
+ * @param bitmap    the bitmap, we will use opengl renderer if it is null
+ *
+ * @return          the device
+ */
+lx_device_ref_t     lx_device_init_from_skia(lx_window_ref_t window, lx_bitmap_ref_t bitmap);
+
 /*! exit device
  *
  * @param device    the device
