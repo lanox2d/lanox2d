@@ -32,7 +32,7 @@ target("lanox2d")
     add_files("platform/**.c|windows/*.c")
 
     -- add options
-    add_options("small", "wchar", "window")
+    add_options("small", "wchar", "window", "device")
 
     -- check interfaces
     check_interfaces()
@@ -51,14 +51,15 @@ target("lanox2d")
         end
         set_configvar("LX_CONFIG_WINDOW_HAVE_GLUT", 1)
     end
+    if is_config("device", "skia") then
+        add_packages("skia")
+    end
 
     -- add devices
-    if is_config("window", "sdl") then
-        set_configvar("LX_CONFIG_DEVICE_HAVE_BITMAP", 1)
+    if is_config("device", "bitmap") then
         add_files("core/device/bitmap/**.c")
     end
-    if is_config("window", "glut") then
-        set_configvar("LX_CONFIG_DEVICE_HAVE_OPENGL", 1)
+    if is_config("device", "opengl") then
         add_files("core/device/opengl/**.c")
         add_files("core/tess/**.c")
     end
