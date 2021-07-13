@@ -32,28 +32,13 @@ target("lanox2d")
     add_files("platform/**.c|windows/*.c")
 
     -- add options
-    add_options("small", "wchar", "window", "device")
+    add_options("small", "wchar", "window", "device", "bitmap", "pixfmt")
 
     -- check interfaces
     check_interfaces()
 
     -- add packages
-    if is_config("window", "sdl") then
-        add_packages("libsdl")
-        set_configvar("LX_CONFIG_WINDOW_HAVE_SDL", 1)
-    end
-    if is_config("window", "glut") then
-        if is_plat("macosx") then
-            add_frameworks("GLUT", "OpenGL")
-            add_cxflags("-Wno-error=deprecated-declarations")
-        else
-            add_packages("freeglut")
-        end
-        set_configvar("LX_CONFIG_WINDOW_HAVE_GLUT", 1)
-    end
-    if is_config("device", "skia") then
-        add_packages("skia")
-    end
+    add_packages("libsdl", "freeglut", "skia")
 
     -- add devices
     if is_config("device", "bitmap") then
@@ -66,19 +51,7 @@ target("lanox2d")
 
     -- add bitmaps
     local bitmap = get_config("bitmap")
-    if bitmap then
-        for _, name in ipairs(bitmap:split(',')) do
-            set_configvar("LX_CONFIG_BITMAP_HAVE_" .. name:upper(), 1)
-        end
-    end
     if not bitmap or not bitmap:find("bmp") then
         del_files("core/bitmap/bmp/*.c")
     end
 
-    -- add pixmaps
-    local pixfmt = get_config("pixfmt")
-    if pixfmt then
-        for _, name in ipairs(pixfmt:split(',')) do
-            set_configvar("LX_CONFIG_PIXFMT_HAVE_" .. name:upper(), 1)
-        end
-    end

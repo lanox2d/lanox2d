@@ -9,13 +9,50 @@ option("wchar",    {ctypes = "wchar_t", configvar = {"LX_CONFIG_TYPE_HAVE_WCHAR"
 option("small",    {showmenu = true, default = true, configvar = {"LX_CONFIG_SMALL", 1}, description = "Enable small mode and disable all optional modules"})
 
 -- pixfmt option
-option("pixfmt",   {showmenu = true, default = "rgb565,xrgb8888,argb8888,rgbx8888,rgba8888", description = "Enable pixel formats"})
+option("pixfmt")
+    set_showmenu(true)
+    set_default("rgb565,xrgb8888,argb8888,rgbx8888,rgba8888")
+    set_description("Enable pixel formats")
+    after_check(function (option)
+        local value = option:value()
+        if value then
+            for _, name in ipairs(value:split(',')) do
+                option:set("configvar", "LX_CONFIG_PIXFMT_HAVE_" .. name:upper(), 1)
+            end
+        end
+    end)
 
 -- bitmap option
-option("bitmap",   {showmenu = true, default = "bmp", description = "Enable bitmap formats"})
+option("bitmap")
+    set_showmenu(true)
+    set_default("bmp")
+    set_values("bmp", "jpeg", "png")
+    set_description("Enable bitmap formats")
+    after_check(function (option)
+        local value = option:value()
+        if value then
+            for _, name in ipairs(value:split(',')) do
+                option:set("configvar", "LX_CONFIG_BITMAP_HAVE_" .. name:upper(), 1)
+            end
+        end
+    end)
 
 -- window option
-option("window",   {showmenu = true, default = "sdl", description = "Set renderer window", values = {"sdl", "glut"}})
+option("window")
+    set_showmenu(true)
+    set_default("sdl")
+    set_values("sdl", "glut")
+    set_description("Set renderer window")
+    after_check(function (option)
+        local value = option:value()
+        if value == "glut" and is_plat("macosx") then
+            option:add("frameworks", "GLUT", "OpenGL")
+            option:add("cxflags", "-Wno-error=deprecated-declarations")
+        end
+        if value then
+            option:set("configvar", "LX_CONFIG_WINDOW_HAVE_" .. value:upper(), 1)
+        end
+    end)
 
 -- device option
 option("device")
