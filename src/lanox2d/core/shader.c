@@ -79,7 +79,7 @@ lx_shader_ref_t lx_shader_init2i_radial_gradient(lx_size_t tile_mode, lx_gradien
 }
 
 lx_shader_ref_t lx_shader_init_bitmap(lx_size_t tile_mode, lx_bitmap_ref_t bitmap) {
-    lx_assert(bitmap);
+    lx_assert_and_check_return_val(bitmap, lx_null);
     lx_bitmap_shader_t* shader = lx_malloc0_type(lx_bitmap_shader_t);
     if (shader) {
         shader->base.type      = LX_SHADER_TYPE_BITMAP;
@@ -121,7 +121,22 @@ lx_void_t lx_shader_matrix_set(lx_shader_ref_t self, lx_matrix_ref_t matrix) {
         if (matrix) {
             shader->matrix = *matrix;
             if (shader->type == LX_SHADER_TYPE_BITMAP) {
+                /* convert global coordinate to camera coordinate
+                 *
+                 * coordinate (global)
+                 *   --------------->
+                 *  |
+                 *  |        bitmap
+                 *  |    ----------------
+                 *  |   |    --------    |
+                 *  |   |   | camera |   |
+                 *  |   |    --------    |
+                 *  |   |                |
+                 *  |    ----------------
+                 * \|/
+                 */
                 lx_bitmap_ref_t bitmap = ((lx_bitmap_shader_t*)shader)->bitmap;
+                lx_assert(bitmap);
                 if (bitmap && lx_matrix_invert(&shader->matrix)) {
                     lx_float_t sw = (lx_float_t)lx_bitmap_width(bitmap);
                     lx_float_t sh = (lx_float_t)lx_bitmap_height(bitmap);

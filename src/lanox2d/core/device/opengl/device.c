@@ -166,7 +166,7 @@ lx_device_ref_t lx_device_init_from_opengl(lx_window_ref_t window) {
              *  |
              *   ----------> x
              *
-             * to (new)
+             * to (global)
              *
              *   ----------> x
              *  |

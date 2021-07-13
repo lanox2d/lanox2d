@@ -37,6 +37,14 @@ lx_extern_c_enter
 
 /*! get the matrix
  *
+ * use global coordinate
+ *
+ *   ----------> x
+ *  |
+ *  |
+ * \|/
+ *  y
+ *
  * @param canvas    the canvas
  *
  * @return          the matrix

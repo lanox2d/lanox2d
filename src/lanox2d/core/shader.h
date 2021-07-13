@@ -166,6 +166,14 @@ lx_matrix_ref_t      lx_shader_matrix(lx_shader_ref_t shader);
 
 /*! set the shader matrix
  *
+ * use global coordinate
+ *
+ *   ----------> x
+ *  |
+ *  |
+ * \|/
+ *  y
+ *
  * @param shader     the shader
  * @param matrix     the matrix
  */
