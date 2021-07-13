@@ -23,6 +23,7 @@
  * includes
  */
 #include "device.h"
+#include "pixfmt.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
@@ -46,6 +47,10 @@ static lx_void_t lx_device_skia_draw_path(lx_device_ref_t self, lx_path_ref_t pa
 static lx_void_t lx_device_skia_exit(lx_device_ref_t self) {
     lx_skia_device_t* device = (lx_skia_device_t*)self;
     if (device) {
+        if (device->surface) {
+            delete device->surface;
+            device->surface = lx_null;
+        }
         lx_free(device);
     }
 }
@@ -56,7 +61,7 @@ static lx_void_t lx_device_skia_exit(lx_device_ref_t self) {
 lx_device_ref_t lx_device_init_from_skia(lx_window_ref_t window, lx_bitmap_ref_t bitmap) {
     lx_assert_and_check_return_val(window, lx_null);
 
-    lx_bool_t           ok = lx_false;
+    lx_bool_t         ok = lx_false;
     lx_skia_device_t* device = lx_null;
     do {
 
@@ -69,13 +74,29 @@ lx_device_ref_t lx_device_init_from_skia(lx_window_ref_t window, lx_bitmap_ref_t
         device = lx_malloc0_type(lx_skia_device_t);
         lx_assert_and_check_break(device);
 
-        device->base.draw_clear            = lx_device_skia_draw_clear;
-        device->base.draw_lines            = lx_device_skia_draw_lines;
-        device->base.draw_points           = lx_device_skia_draw_points;
-        device->base.draw_polygon          = lx_device_skia_draw_polygon;
-        device->base.draw_path             = lx_device_skia_draw_path;
-        device->base.exit                  = lx_device_skia_exit;
-        device->window                     = window;
+        device->base.draw_clear   = lx_device_skia_draw_clear;
+        device->base.draw_lines   = lx_device_skia_draw_lines;
+        device->base.draw_points  = lx_device_skia_draw_points;
+        device->base.draw_polygon = lx_device_skia_draw_polygon;
+        device->base.draw_path    = lx_device_skia_draw_path;
+        device->base.exit         = lx_device_skia_exit;
+        device->window            = window;
+
+        // init bitmap surface
+        if (bitmap) {
+            lx_pointer_t data   = lx_bitmap_data(bitmap);
+            lx_size_t width     = lx_bitmap_width(bitmap);
+            lx_size_t height    = lx_bitmap_height(bitmap);
+            lx_size_t row_bytes = lx_bitmap_row_bytes(bitmap);
+            lx_size_t pixfmt    = lx_bitmap_pixfmt(bitmap);
+            lx_assert_and_check_break(data && width && height && row_bytes);
+
+            SkImageInfo const bitmap_info = SkImageInfo::Make((lx_int_t)width, (lx_int_t)height,
+                lx_skia_color_type(pixfmt), kUnpremul_SkAlphaType);
+            device->surface = new SkBitmap();
+            device->surface->setPixels(data);
+            device->surface->setInfo(bitmap_info, (lx_int_t)row_bytes);
+        }
 
         // ok
         ok = lx_true;

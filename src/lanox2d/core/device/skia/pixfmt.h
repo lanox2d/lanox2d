@@ -15,11 +15,11 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        device.h
+ * @file        pixfmt.h
  *
  */
-#ifndef LX_CORE_DEVICE_SKIA_DEVICE_H
-#define LX_CORE_DEVICE_SKIA_DEVICE_H
+#ifndef LX_CORE_DEVICE_SKIA_PIXFMT_H
+#define LX_CORE_DEVICE_SKIA_PIXFMT_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
@@ -27,16 +27,31 @@
 #include "prefix.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * types
+ * extern
  */
+lx_extern_c_enter
 
-// the skia device type
-typedef struct lx_skia_device_t_ {
-    lx_device_t             base;
-    lx_window_ref_t         window;
-    lx_shader_ref_t         shader;
-    SkBitmap*               surface;
-}lx_skia_device_t;
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * inline interfaces
+ */
+// g2 pixfmt => skia pixfmt
+static lx_inline SkColorType lx_skia_color_type(lx_size_t pixfmt) {
+    switch (pixfmt) {
+    case LX_PIXFMT_RGB565:
+        return kRGB_565_SkColorType;
+    case LX_PIXFMT_RGBA8888:
+    case LX_PIXFMT_RGBX8888:
+        return kRGBA_8888_SkColorType;
+    default:
+        break;
+    }
+    return kUnknown_SkColorType;
+}
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * extern
+ */
+lx_extern_c_leave
 
 #endif
 

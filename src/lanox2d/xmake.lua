@@ -49,6 +49,7 @@ target("lanox2d")
         add_files("core/tess/**.c")
     end
     if is_config("device", "skia") then
+        set_languages("c++14")
         add_files("core/device/skia/**.cc")
     end
 

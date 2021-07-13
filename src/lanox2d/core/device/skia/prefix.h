@@ -29,6 +29,8 @@
 #include "../../paint.h"
 #include "../../private/stroker.h"
 #include "../../../platform/window.h"
+#include <core/SkPaint.h>
+#include <core/SkBitmap.h>
 
 #endif
 
