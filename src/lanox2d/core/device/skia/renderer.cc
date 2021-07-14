@@ -28,6 +28,27 @@
 #include "../../private/shader.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
+ * private implementation
+ */
+static lx_inline lx_void_t lx_skia_apply_matrix(lx_skia_device_t* device) {
+    SkMatrix mx;
+    lx_matrix_ref_t matrix = device->base.matrix;
+    mx.setAll(matrix->sx, matrix->kx, matrix->tx,
+              matrix->ky, matrix->sy, matrix->ty,
+              0, 0, 1);
+    device->canvas->setMatrix(mx);
+}
+
+static lx_inline lx_void_t lx_skia_canvas_enter(lx_skia_device_t* device) {
+    device->canvas->save();
+    lx_skia_apply_matrix(device);
+}
+
+static lx_inline lx_void_t lx_skia_canvas_leave(lx_skia_device_t* device) {
+    device->canvas->restore();
+}
+
+/* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
 lx_bool_t lx_skia_renderer_init(lx_skia_device_t* device) {
@@ -50,6 +71,8 @@ lx_void_t lx_skia_renderer_exit(lx_skia_device_t* device) {
 
 lx_void_t lx_skia_renderer_draw_path(lx_skia_device_t* device, lx_path_ref_t path) {
     lx_assert(device && device->base.paint && path);
+    lx_skia_canvas_enter(device);
+    lx_skia_canvas_leave(device);
 }
 
 lx_void_t lx_skia_renderer_draw_lines(lx_skia_device_t* device, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds) {
