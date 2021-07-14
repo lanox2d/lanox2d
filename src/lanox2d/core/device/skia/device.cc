@@ -133,7 +133,7 @@ lx_device_ref_t lx_device_init_from_skia(lx_window_ref_t window, lx_bitmap_ref_t
             lx_assert_and_check_break(data && width && height && row_bytes);
 
             SkImageInfo const bitmap_info = SkImageInfo::Make((lx_int_t)width, (lx_int_t)height,
-                lx_skia_color_type(pixfmt), kUnpremul_SkAlphaType);
+                lx_skia_color_type(pixfmt), kOpaque_SkAlphaType);
             device->surface = new SkBitmap();
             device->surface->setInfo(bitmap_info, (lx_int_t)row_bytes);
             device->surface->setPixels(data);
