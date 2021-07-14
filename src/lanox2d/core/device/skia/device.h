@@ -34,9 +34,9 @@
 typedef struct lx_skia_device_t_ {
     lx_device_t             base;
     lx_window_ref_t         window;
-    lx_shader_ref_t         shader;
     SkBitmap*               surface;
     SkCanvas*               canvas;
+    SkPaint*                paint;
 }lx_skia_device_t;
 
 #endif

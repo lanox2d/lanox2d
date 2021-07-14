@@ -80,6 +80,10 @@ static lx_void_t lx_device_skia_draw_path(lx_device_ref_t self, lx_path_ref_t pa
 static lx_void_t lx_device_skia_exit(lx_device_ref_t self) {
     lx_skia_device_t* device = (lx_skia_device_t*)self;
     if (device) {
+        if (device->paint) {
+            delete device->paint;
+            device->paint = lx_null;
+        }
         if (device->canvas) {
             delete device->canvas;
             device = lx_null;
@@ -138,8 +142,10 @@ lx_device_ref_t lx_device_init_from_skia(lx_window_ref_t window, lx_bitmap_ref_t
         }
         lx_assert_and_check_break(device->surface);
 
-        // init canvas
+        // init canvas and paint
         device->canvas = new SkCanvas(*device->surface);
+        device->paint = new SkPaint();
+        lx_assert_and_check_break(device->canvas && device->paint);
 
         // ok
         ok = lx_true;
