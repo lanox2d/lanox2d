@@ -23,30 +23,67 @@
  * includes
  */
 #include "device.h"
-#include "pixfmt.h"
+#include "color.h"
+#include "renderer.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
 
 static lx_void_t lx_device_skia_draw_clear(lx_device_ref_t self, lx_color_t color) {
+    lx_skia_device_t* device = (lx_skia_device_t*)self;
+    lx_assert(device && device->canvas);
+
+    device->canvas->clear(lx_skia_color(color));
 }
 
 static lx_void_t lx_device_skia_draw_lines(lx_device_ref_t self, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds) {
+    lx_skia_device_t* device = (lx_skia_device_t*)self;
+    lx_assert(device && points && count);
+
+    if (lx_skia_renderer_init(device)) {
+        lx_skia_renderer_draw_lines(device, points, count, bounds);
+        lx_skia_renderer_exit(device);
+    }
 }
 
 static lx_void_t lx_device_skia_draw_points(lx_device_ref_t self, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds) {
+    lx_skia_device_t* device = (lx_skia_device_t*)self;
+    lx_assert(device && points && count);
+
+    if (lx_skia_renderer_init(device)) {
+        lx_skia_renderer_draw_points(device, points, count, bounds);
+        lx_skia_renderer_exit(device);
+    }
 }
 
 static lx_void_t lx_device_skia_draw_polygon(lx_device_ref_t self, lx_polygon_ref_t polygon, lx_shape_ref_t hint, lx_rect_ref_t bounds) {
+    lx_skia_device_t* device = (lx_skia_device_t*)self;
+    lx_assert(device && polygon);
+
+    if (lx_skia_renderer_init(device)) {
+        lx_skia_renderer_draw_polygon(device, polygon, hint, bounds);
+        lx_skia_renderer_exit(device);
+    }
 }
 
 static lx_void_t lx_device_skia_draw_path(lx_device_ref_t self, lx_path_ref_t path) {
+    lx_skia_device_t* device = (lx_skia_device_t*)self;
+    lx_assert(device && path);
+
+    if (lx_skia_renderer_init(device)) {
+        lx_skia_renderer_draw_path(device, path);
+        lx_skia_renderer_exit(device);
+    }
 }
 
 static lx_void_t lx_device_skia_exit(lx_device_ref_t self) {
     lx_skia_device_t* device = (lx_skia_device_t*)self;
     if (device) {
+        if (device->canvas) {
+            delete device->canvas;
+            device = lx_null;
+        }
         if (device->surface) {
             delete device->surface;
             device->surface = lx_null;
@@ -94,9 +131,15 @@ lx_device_ref_t lx_device_init_from_skia(lx_window_ref_t window, lx_bitmap_ref_t
             SkImageInfo const bitmap_info = SkImageInfo::Make((lx_int_t)width, (lx_int_t)height,
                 lx_skia_color_type(pixfmt), kUnpremul_SkAlphaType);
             device->surface = new SkBitmap();
-            device->surface->setPixels(data);
             device->surface->setInfo(bitmap_info, (lx_int_t)row_bytes);
+            device->surface->setPixels(data);
+        } else {
+            // TODO init skia surface
         }
+        lx_assert_and_check_break(device->surface);
+
+        // init canvas
+        device->canvas = new SkCanvas(*device->surface);
 
         // ok
         ok = lx_true;

@@ -15,11 +15,11 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        pixfmt.h
+ * @file        color.h
  *
  */
-#ifndef LX_CORE_DEVICE_SKIA_PIXFMT_H
-#define LX_CORE_DEVICE_SKIA_PIXFMT_H
+#ifndef LX_CORE_DEVICE_SKIA_COLOR_H
+#define LX_CORE_DEVICE_SKIA_COLOR_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
@@ -32,11 +32,19 @@
 lx_extern_c_enter
 
 /* //////////////////////////////////////////////////////////////////////////////////////
+ * macros
+ */
+
+// get skia color
+#define lx_skia_color(color)    static_cast<SkColor>(lx_color_pixel(color))
+
+/* //////////////////////////////////////////////////////////////////////////////////////
  * inline interfaces
  */
-// g2 pixfmt => skia pixfmt
-static lx_inline SkColorType lx_skia_color_type(lx_size_t pixfmt) {
-    switch (pixfmt) {
+
+// get skia color type
+static lx_inline SkColorType lx_skia_color_type(lx_size_t color) {
+    switch (color) {
     case LX_PIXFMT_RGB565:
         return kRGB_565_SkColorType;
     case LX_PIXFMT_RGBA8888:
