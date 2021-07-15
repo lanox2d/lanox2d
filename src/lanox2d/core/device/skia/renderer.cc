@@ -31,6 +31,15 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
+static lx_inline SkPathFillType lx_skia_path_fill_type(lx_skia_device_t* device) {
+    lx_assert(device && device->base.paint);
+    SkPathFillType filltype = SkPathFillType::kEvenOdd;
+    if (lx_paint_fill_rule(device->base.paint) == LX_PAINT_FILL_RULE_NONZERO) {
+        filltype = SkPathFillType::kWinding;
+    }
+    return filltype;
+}
+
 static lx_inline lx_void_t lx_skia_apply_matrix(lx_skia_device_t* device) {
     SkMatrix        sk_matrix;
     lx_matrix_ref_t matrix = device->base.matrix;
@@ -126,7 +135,9 @@ static lx_inline lx_void_t lx_skia_renderer_draw_triangle(lx_skia_device_t* devi
     SkPaint* sk_paint = device->paint;
     SkPath*  sk_path = device->path;
     lx_assert(triangle && sk_paint && sk_path);
+    sk_path->reset();
     sk_path->incReserve(3);
+    sk_path->setFillType(lx_skia_path_fill_type(device));
     sk_path->moveTo(triangle->p0.x, triangle->p0.y);
     sk_path->lineTo(triangle->p1.x, triangle->p1.y);
     sk_path->lineTo(triangle->p2.x, triangle->p2.y);
@@ -198,7 +209,9 @@ lx_void_t lx_skia_renderer_draw_path(lx_skia_device_t* device, lx_path_ref_t pat
     // draw path
     SkPath* sk_path = device->path;
     lx_assert(sk_path);
+    sk_path->reset();
     sk_path->incReserve(256);
+    sk_path->setFillType(lx_skia_path_fill_type(device));
     lx_for_all_if (lx_path_item_ref_t, item, path, item) {
         switch (item->code) {
         case LX_PATH_CODE_MOVE:
@@ -256,7 +269,9 @@ lx_void_t lx_skia_renderer_draw_polygon(lx_skia_device_t* device, lx_polygon_ref
     // init path
     SkPath* sk_path = device->path;
     lx_assert(sk_path);
+    sk_path->reset();
     sk_path->incReserve(256);
+    sk_path->setFillType(lx_skia_path_fill_type(device));
 
     // draw polygon
     lx_uint16_t     index = 0;
