@@ -253,7 +253,29 @@ lx_void_t lx_skia_renderer_draw_polygon(lx_skia_device_t* device, lx_polygon_ref
         return ;
     }
 
+    // init path
+    SkPath* sk_path = device->path;
+    lx_assert(sk_path);
+    sk_path->incReserve(256);
+
     // draw polygon
-    lx_trace_i("draw polygon");
+    lx_uint16_t     index = 0;
+    lx_point_ref_t  points = polygon->points;
+    lx_uint16_t*    counts = polygon->counts;
+    lx_uint16_t     count = *counts++;
+    while (index < count) {
+        if (index == 0) {
+            sk_path->moveTo(points[index].x, points[index].y);
+        } else {
+            sk_path->lineTo(points[index].x, points[index].y);
+        }
+        index++;
+        if (index == count) { // next polygon
+            count = *counts++;
+            index = 0;
+            sk_path->close();
+            device->canvas->drawPath(*sk_path, *device->paint);
+        }
+    }
 }
 
