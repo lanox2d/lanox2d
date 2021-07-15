@@ -33,6 +33,7 @@
 #include <core/SkPaint.h>
 #include <core/SkBitmap.h>
 #include <core/SkCanvas.h>
+#include <core/SkShader.h>
 
 #endif
 

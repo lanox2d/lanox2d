@@ -80,6 +80,10 @@ static lx_void_t lx_device_skia_draw_path(lx_device_ref_t self, lx_path_ref_t pa
 static lx_void_t lx_device_skia_exit(lx_device_ref_t self) {
     lx_skia_device_t* device = (lx_skia_device_t*)self;
     if (device) {
+        if (device->texture) {
+            delete device->texture;
+            device->texture = lx_null;
+        }
         if (device->path) {
             delete device->path;
             device->path = lx_null;

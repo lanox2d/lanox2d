@@ -174,6 +174,10 @@ static lx_inline lx_void_t lx_gl_renderer_apply_texture_wrap(lx_opengl_device_t*
 }
 
 static lx_inline lx_void_t lx_gl_renderer_apply_texture_filter(lx_opengl_device_t* device, lx_GLuint_t filter) {
+    lx_assert(device && device->base.paint);
+    if (!(lx_paint_flags(device->base.paint) & LX_PAINT_FLAG_FILTER_BITMAP)) {
+        filter = LX_GL_NEAREST;
+    }
     lx_glTexParameteri(LX_GL_TEXTURE_2D, LX_GL_TEXTURE_MAG_FILTER, filter);
     lx_glTexParameteri(LX_GL_TEXTURE_2D, LX_GL_TEXTURE_MIN_FILTER, filter);
 }

@@ -31,7 +31,7 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
-static lx_inline SkPathFillType lx_skia_path_fill_type(lx_skia_device_t* device) {
+static lx_inline SkPathFillType lx_skia_renderer_path_fill_type(lx_skia_device_t* device) {
     lx_assert(device && device->base.paint);
     SkPathFillType filltype = SkPathFillType::kEvenOdd;
     if (lx_paint_fill_rule(device->base.paint) == LX_PAINT_FILL_RULE_NONZERO) {
@@ -40,7 +40,7 @@ static lx_inline SkPathFillType lx_skia_path_fill_type(lx_skia_device_t* device)
     return filltype;
 }
 
-static lx_inline SkPaint::Style lx_skia_paint_style(lx_skia_device_t* device) {
+static lx_inline SkPaint::Style lx_skia_renderer_paint_style(lx_skia_device_t* device) {
     lx_assert(device && device->base.paint);
     SkPaint::Style style = SkPaint::kFill_Style;
     lx_size_t mode = lx_paint_mode(device->base.paint);
@@ -58,7 +58,7 @@ static lx_inline SkPaint::Style lx_skia_paint_style(lx_skia_device_t* device) {
     return style;
 }
 
-static lx_inline SkPaint::Cap lx_skia_paint_stroke_cap(lx_skia_device_t* device) {
+static lx_inline SkPaint::Cap lx_skia_renderer_paint_stroke_cap(lx_skia_device_t* device) {
     lx_assert(device && device->base.paint);
     SkPaint::Cap cap = SkPaint::kButt_Cap;
     switch (lx_paint_stroke_cap(device->base.paint)) {
@@ -77,7 +77,7 @@ static lx_inline SkPaint::Cap lx_skia_paint_stroke_cap(lx_skia_device_t* device)
     return cap;
 }
 
-static lx_inline SkPaint::Join lx_skia_paint_stroke_join(lx_skia_device_t* device) {
+static lx_inline SkPaint::Join lx_skia_renderer_paint_stroke_join(lx_skia_device_t* device) {
     lx_assert(device && device->base.paint);
     SkPaint::Join join = SkPaint::kMiter_Join;
     switch (lx_paint_stroke_join(device->base.paint)) {
@@ -96,7 +96,7 @@ static lx_inline SkPaint::Join lx_skia_paint_stroke_join(lx_skia_device_t* devic
     return join;
 }
 
-static lx_inline lx_void_t lx_skia_apply_matrix(lx_skia_device_t* device) {
+static lx_inline lx_void_t lx_skia_renderer_apply_matrix(lx_skia_device_t* device) {
     SkMatrix        sk_matrix;
     lx_matrix_ref_t matrix = device->base.matrix;
     lx_assert(matrix);
@@ -105,7 +105,48 @@ static lx_inline lx_void_t lx_skia_apply_matrix(lx_skia_device_t* device) {
     device->canvas->setMatrix(sk_matrix);
 }
 
-static lx_inline lx_void_t lx_skia_apply_paint(lx_skia_device_t* device) {
+static lx_inline lx_void_t lx_skia_renderer_apply_shader_bitmap(lx_skia_device_t* device, lx_shader_ref_t shader) {
+    lx_assert(device && shader);
+    lx_bitmap_ref_t bitmap = ((lx_bitmap_shader_t*)shader)->bitmap;
+    if (!device->texture) {
+        device->texture = new SkBitmap();
+    }
+    lx_assert(bitmap);
+
+    lx_pointer_t data   = lx_bitmap_data(bitmap);
+    lx_size_t width     = lx_bitmap_width(bitmap);
+    lx_size_t height    = lx_bitmap_height(bitmap);
+    lx_size_t row_bytes = lx_bitmap_row_bytes(bitmap);
+    lx_size_t pixfmt    = lx_bitmap_pixfmt(bitmap);
+    lx_assert_and_check_break(data && width && height && row_bytes);
+
+    SkImageInfo const bitmap_info = SkImageInfo::Make((lx_int_t)width, (lx_int_t)height,
+        lx_skia_color_type(pixfmt), kOpaque_SkAlphaType);
+    device->texture->setInfo(bitmap_info, (lx_int_t)row_bytes);
+    device->texture->setPixels(data);
+
+    SkMatrix sk_matrix;
+    lx_matrix_ref_t matrix = lx_shader_matrix(shader);
+    sk_matrix.setAll(matrix->sx, matrix->kx, matrix->tx, matrix->ky, matrix->sy, matrix->ty, 0, 0, 1);
+
+    SkSamplingOptions options(SkFilterMode::kNearest, SkMipmapMode::kNone); // TODO
+    SkPaint*        sk_paint = device->paint;
+    sk_sp<SkShader> sk_shader = device->texture->makeShader(SkTileMode::kRepeat, SkTileMode::kRepeat, options, &sk_matrix); // TODO
+    lx_assert(sk_shader && sk_paint);
+    sk_paint->setShader(sk_shader);
+}
+
+static lx_inline lx_void_t lx_skia_renderer_apply_shader(lx_skia_device_t* device, lx_shader_ref_t shader) {
+    switch (lx_shader_type(shader)) {
+    case LX_SHADER_TYPE_BITMAP:
+        lx_skia_renderer_apply_shader_bitmap(device, shader);
+        break;
+    default:
+        break;
+    }
+}
+
+static lx_inline lx_void_t lx_skia_renderer_apply_paint(lx_skia_device_t* device) {
     lx_paint_ref_t paint = device->base.paint;
     SkPaint*       sk_paint = device->paint;
     lx_assert(paint && sk_paint);
@@ -113,12 +154,16 @@ static lx_inline lx_void_t lx_skia_apply_paint(lx_skia_device_t* device) {
     sk_paint->reset();
     sk_paint->setColor(lx_skia_color(lx_paint_color(paint)));
     sk_paint->setAntiAlias(lx_paint_flags(paint) & LX_PAINT_FLAG_ANTIALIASING? true : false);
-    sk_paint->setStyle(lx_skia_paint_style(device));
+    sk_paint->setStyle(lx_skia_renderer_paint_style(device));
     if (lx_paint_mode(paint) & LX_PAINT_MODE_STROKE) {
         sk_paint->setStrokeMiter(lx_paint_stroke_miter(paint));
         sk_paint->setStrokeWidth(lx_paint_stroke_width(paint));
-        sk_paint->setStrokeCap(lx_skia_paint_stroke_cap(device));
-        sk_paint->setStrokeJoin(lx_skia_paint_stroke_join(device));
+        sk_paint->setStrokeCap(lx_skia_renderer_paint_stroke_cap(device));
+        sk_paint->setStrokeJoin(lx_skia_renderer_paint_stroke_join(device));
+    }
+    lx_shader_ref_t shader = lx_paint_shader(paint);
+    if (shader) {
+        lx_skia_renderer_apply_shader(device, shader);
     }
 }
 
@@ -158,7 +203,7 @@ static lx_inline lx_void_t lx_skia_renderer_draw_triangle(lx_skia_device_t* devi
     lx_assert(triangle && sk_paint && sk_path);
     sk_path->reset();
     sk_path->incReserve(3);
-    sk_path->setFillType(lx_skia_path_fill_type(device));
+    sk_path->setFillType(lx_skia_renderer_path_fill_type(device));
     sk_path->moveTo(triangle->p0.x, triangle->p0.y);
     sk_path->lineTo(triangle->p1.x, triangle->p1.y);
     sk_path->lineTo(triangle->p2.x, triangle->p2.y);
@@ -207,8 +252,8 @@ lx_bool_t lx_skia_renderer_init(lx_skia_device_t* device) {
     lx_assert(device && device->base.matrix && device->base.paint);
     lx_assert(device->canvas && device->paint);
     device->canvas->save();
-    lx_skia_apply_matrix(device);
-    lx_skia_apply_paint(device);
+    lx_skia_renderer_apply_matrix(device);
+    lx_skia_renderer_apply_paint(device);
     return lx_true;
 }
 
@@ -232,7 +277,7 @@ lx_void_t lx_skia_renderer_draw_path(lx_skia_device_t* device, lx_path_ref_t pat
     lx_assert(sk_path);
     sk_path->reset();
     sk_path->incReserve(256);
-    sk_path->setFillType(lx_skia_path_fill_type(device));
+    sk_path->setFillType(lx_skia_renderer_path_fill_type(device));
     lx_for_all_if (lx_path_item_ref_t, item, path, item) {
         switch (item->code) {
         case LX_PATH_CODE_MOVE:
@@ -292,7 +337,7 @@ lx_void_t lx_skia_renderer_draw_polygon(lx_skia_device_t* device, lx_polygon_ref
     lx_assert(sk_path);
     sk_path->reset();
     sk_path->incReserve(256);
-    sk_path->setFillType(lx_skia_path_fill_type(device));
+    sk_path->setFillType(lx_skia_renderer_path_fill_type(device));
 
     // draw polygon
     lx_uint16_t     index = 0;

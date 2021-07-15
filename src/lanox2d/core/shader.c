@@ -137,12 +137,16 @@ lx_void_t lx_shader_matrix_set(lx_shader_ref_t self, lx_matrix_ref_t matrix) {
                  */
                 lx_bitmap_ref_t bitmap = ((lx_bitmap_shader_t*)shader)->bitmap;
                 lx_assert(bitmap);
+#if 0
                 if (bitmap && lx_matrix_invert(&shader->matrix)) {
                     lx_float_t sw = (lx_float_t)lx_bitmap_width(bitmap);
                     lx_float_t sh = (lx_float_t)lx_bitmap_height(bitmap);
                     shader->matrix.tx /= sw;
                     shader->matrix.ty /= sh;
                 }
+#else
+                lx_matrix_clear(&shader->matrix);
+#endif
             }
         } else {
             lx_matrix_clear(&shader->matrix);
