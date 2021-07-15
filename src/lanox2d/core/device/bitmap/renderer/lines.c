@@ -155,7 +155,7 @@ lx_void_t lx_bitmap_renderer_stroke_lines(lx_bitmap_device_t* device, lx_point_r
     lx_fixed6_t     yb  = 0;
     lx_fixed6_t     xe  = 0;
     lx_fixed6_t     ye  = 0;
-    for (i = 0; i < count; i += 2) {
+    for (i = 0; i + 1 < count; i += 2) {
         // line: pb => pe
         pb = points + i;
         pe = points + i + 1;

@@ -29,6 +29,7 @@
 #include "../../paint.h"
 #include "../../private/stroker.h"
 #include "../../../platform/window.h"
+#include <core/SkPath.h>
 #include <core/SkPaint.h>
 #include <core/SkBitmap.h>
 #include <core/SkCanvas.h>

@@ -37,6 +37,7 @@ typedef struct lx_skia_device_t_ {
     SkBitmap*               surface;
     SkCanvas*               canvas;
     SkPaint*                paint;
+    SkPath*                 path;
 }lx_skia_device_t;
 
 #endif

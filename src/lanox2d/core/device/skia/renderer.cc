@@ -47,6 +47,61 @@ static lx_inline lx_void_t lx_skia_apply_paint(lx_skia_device_t* device) {
 
     sk_paint->reset();
     sk_paint->setColor(lx_skia_color(lx_paint_color(paint)));
+    sk_paint->setAntiAlias(lx_paint_flags(paint) & LX_PAINT_FLAG_ANTIALIASING? true : false);
+    lx_size_t mode = lx_paint_mode(paint);
+    switch (mode) {
+    case LX_PAINT_MODE_FILL:
+        sk_paint->setStyle(SkPaint::kFill_Style);
+        break;
+    case LX_PAINT_MODE_STROKE:
+        sk_paint->setStyle(SkPaint::kStroke_Style);
+        break;
+    case LX_PAINT_MODE_FILL_STROKE:
+        sk_paint->setStyle(SkPaint::kStrokeAndFill_Style);
+        break;
+    }
+    if (mode & LX_PAINT_MODE_STROKE) {
+        sk_paint->setStrokeMiter(lx_paint_stroke_miter(paint));
+        sk_paint->setStrokeWidth(lx_paint_stroke_width(paint));
+        switch (lx_paint_stroke_cap(paint)) {
+        case LX_PAINT_STROKE_CAP_BUTT:
+            sk_paint->setStrokeCap(SkPaint::kButt_Cap);
+            break;
+        case LX_PAINT_STROKE_CAP_ROUND:
+            sk_paint->setStrokeCap(SkPaint::kRound_Cap);
+            break;
+        case LX_PAINT_STROKE_CAP_SQUARE:
+            break;
+            sk_paint->setStrokeCap(SkPaint::kSquare_Cap);
+        default:
+            break;
+        }
+        switch (lx_paint_stroke_join(paint)) {
+        case LX_PAINT_STROKE_JOIN_MITER:
+            sk_paint->setStrokeJoin(SkPaint::kMiter_Join);
+            break;
+        case LX_PAINT_STROKE_JOIN_ROUND:
+            sk_paint->setStrokeJoin(SkPaint::kRound_Join);
+            break;
+        case LX_PAINT_STROKE_JOIN_BEVEL:
+            break;
+            sk_paint->setStrokeJoin(SkPaint::kBevel_Join);
+        default:
+            break;
+        }
+    }
+}
+
+static lx_inline lx_void_t lx_skia_renderer_draw_line(lx_skia_device_t* device, lx_line_ref_t line) {
+    SkPaint* sk_paint = device->paint;
+    lx_assert(line && sk_paint);
+    device->canvas->drawLine(line->p0.x, line->p0.y, line->p1.x, line->p1.y, *sk_paint);
+}
+
+static lx_inline lx_void_t lx_skia_renderer_draw_point(lx_skia_device_t* device, lx_point_ref_t point) {
+    SkPaint* sk_paint = device->paint;
+    lx_assert(point && sk_paint);
+    device->canvas->drawPoint(point->x, point->y, *sk_paint);
 }
 
 static lx_inline lx_void_t lx_skia_renderer_draw_rect(lx_skia_device_t* device, lx_rect_ref_t rect) {
@@ -55,10 +110,59 @@ static lx_inline lx_void_t lx_skia_renderer_draw_rect(lx_skia_device_t* device, 
     device->canvas->drawRect(SkRect::MakeXYWH(rect->x, rect->y, rect->w, rect->h), *sk_paint);
 }
 
+static lx_inline lx_void_t lx_skia_renderer_draw_circle(lx_skia_device_t* device, lx_circle_ref_t circle) {
+    SkPaint* sk_paint = device->paint;
+    lx_assert(circle && sk_paint);
+    device->canvas->drawCircle(circle->c.x, circle->c.y, circle->r, *sk_paint);
+}
+
+static lx_inline lx_void_t lx_skia_renderer_draw_ellipse(lx_skia_device_t* device, lx_ellipse_ref_t ellipse) {
+    SkPaint* sk_paint = device->paint;
+    lx_assert(ellipse && sk_paint);
+    device->canvas->drawOval(SkRect::MakeXYWH(ellipse->c.x - ellipse->rx, ellipse->c.y - ellipse->ry, ellipse->rx + ellipse->rx, ellipse->ry + ellipse->ry), *sk_paint);
+}
+
+static lx_inline lx_void_t lx_skia_renderer_draw_triangle(lx_skia_device_t* device, lx_triangle_ref_t triangle) {
+    SkPaint* sk_paint = device->paint;
+    SkPath*  sk_path = device->path;
+    lx_assert(triangle && sk_paint && sk_path);
+    sk_path->incReserve(3);
+    sk_path->moveTo(triangle->p0.x, triangle->p0.y);
+    sk_path->lineTo(triangle->p1.x, triangle->p1.y);
+    sk_path->lineTo(triangle->p2.x, triangle->p2.y);
+    sk_path->close();
+    device->canvas->drawPath(*sk_path, *sk_paint);
+}
+
+static lx_inline lx_void_t lx_skia_renderer_draw_arc(lx_skia_device_t* device, lx_arc_ref_t arc) {
+    SkPaint* sk_paint = device->paint;
+    lx_assert(arc && sk_paint);
+    device->canvas->drawArc(SkRect::MakeXYWH(arc->c.x - arc->rx, arc->c.y - arc->ry, arc->rx * 2.0f, arc->ry * 2), arc->ab, arc->an, false, *sk_paint);
+}
+
 static lx_void_t lx_skia_renderer_draw_shape(lx_skia_device_t* device, lx_shape_ref_t shape, lx_rect_ref_t bounds) {
     switch (shape->type) {
+    case LX_SHAPE_TYPE_LINE:
+        lx_skia_renderer_draw_line(device, &shape->u.line);
+        break;
     case LX_SHAPE_TYPE_RECT:
         lx_skia_renderer_draw_rect(device, &shape->u.rect);
+        break;
+    case LX_SHAPE_TYPE_CIRCLE:
+        lx_skia_renderer_draw_circle(device, &shape->u.circle);
+        break;
+    case LX_SHAPE_TYPE_ELLIPSE:
+        lx_skia_renderer_draw_ellipse(device, &shape->u.ellipse);
+        break;
+    case LX_SHAPE_TYPE_TRIANGLE:
+        lx_skia_renderer_draw_triangle(device, &shape->u.triangle);
+        break;
+    case LX_SHAPE_TYPE_ARC:
+        lx_skia_renderer_draw_arc(device, &shape->u.arc);
+        break;
+    case LX_SHAPE_TYPE_POINT:
+        lx_skia_renderer_draw_point(device, &shape->u.point);
+        break;
     default:
         break;
     }
@@ -82,23 +186,62 @@ lx_void_t lx_skia_renderer_exit(lx_skia_device_t* device) {
 }
 
 lx_void_t lx_skia_renderer_draw_path(lx_skia_device_t* device, lx_path_ref_t path) {
-    lx_assert(device && device->base.paint && path);
+    lx_assert(device && device->paint && path);
 
     // draw hint shape
     lx_shape_ref_t hint = lx_path_hint(path);
     if (hint) {
         lx_skia_renderer_draw_shape(device, hint, lx_path_bounds(path));
+        return ;
     }
 
     // draw path
+    SkPath* sk_path = device->path;
+    lx_assert(sk_path);
+    sk_path->incReserve(256);
+    lx_for_all_if (lx_path_item_ref_t, item, path, item) {
+        switch (item->code) {
+        case LX_PATH_CODE_MOVE:
+            sk_path->moveTo(item->points[0].x, item->points[0].y);
+            break;
+        case LX_PATH_CODE_LINE:
+            sk_path->lineTo(item->points[1].x, item->points[1].y);
+            break;
+        case LX_PATH_CODE_QUAD:
+            sk_path->quadTo(item->points[1].x, item->points[1].y, item->points[2].x, item->points[2].y);
+            break;
+        case LX_PATH_CODE_CUBIC:
+            sk_path->cubicTo(item->points[1].x, item->points[1].y, item->points[2].x, item->points[2].y, item->points[3].x, item->points[3].y);
+            break;
+        case LX_PATH_CODE_CLOSE:
+            sk_path->close();
+            break;
+        default:
+            break;
+        }
+    }
+    device->canvas->drawPath(*sk_path, *device->paint);
 }
 
 lx_void_t lx_skia_renderer_draw_lines(lx_skia_device_t* device, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds) {
     lx_assert(device && device->base.paint && points && count);
+
+    lx_line_t line;
+    lx_size_t index = 0;
+    for (index = 0; index + 1 < count; index += 2) {
+        line.p0 = points[index];
+        line.p1 = points[index + 1];
+        lx_skia_renderer_draw_line(device, &line);
+    }
 }
 
 lx_void_t lx_skia_renderer_draw_points(lx_skia_device_t* device, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds) {
     lx_assert(device && device->base.paint && points && count);
+
+    lx_size_t index = 0;
+    for (index = 0; index < count; index++) {
+        lx_skia_renderer_draw_point(device, points + index);
+    }
 }
 
 lx_void_t lx_skia_renderer_draw_polygon(lx_skia_device_t* device, lx_polygon_ref_t polygon, lx_shape_ref_t hint, lx_rect_ref_t bounds) {
@@ -107,8 +250,10 @@ lx_void_t lx_skia_renderer_draw_polygon(lx_skia_device_t* device, lx_polygon_ref
     // draw hint shape
     if (hint) {
         lx_skia_renderer_draw_shape(device, hint, bounds);
+        return ;
     }
 
     // draw polygon
+    lx_trace_i("draw polygon");
 }
 

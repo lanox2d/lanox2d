@@ -91,7 +91,7 @@ static lx_void_t on_event(lx_window_ref_t window, lx_event_ref_t event) {
                 lx_window_fullscreen(window, lx_true);
             }
             break;
-        case 'Q':
+        case 'g':
             g_quality = (g_quality + 1) % 3;
             lx_quality_set(g_quality);
             break;
