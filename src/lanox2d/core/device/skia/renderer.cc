@@ -40,6 +40,62 @@ static lx_inline SkPathFillType lx_skia_path_fill_type(lx_skia_device_t* device)
     return filltype;
 }
 
+static lx_inline SkPaint::Style lx_skia_paint_style(lx_skia_device_t* device) {
+    lx_assert(device && device->base.paint);
+    SkPaint::Style style = SkPaint::kFill_Style;
+    lx_size_t mode = lx_paint_mode(device->base.paint);
+    switch (mode) {
+    case LX_PAINT_MODE_FILL:
+        style = SkPaint::kFill_Style;
+        break;
+    case LX_PAINT_MODE_STROKE:
+        style = SkPaint::kStroke_Style;
+        break;
+    case LX_PAINT_MODE_FILL_STROKE:
+        style = SkPaint::kStrokeAndFill_Style;
+        break;
+    }
+    return style;
+}
+
+static lx_inline SkPaint::Cap lx_skia_paint_stroke_cap(lx_skia_device_t* device) {
+    lx_assert(device && device->base.paint);
+    SkPaint::Cap cap = SkPaint::kButt_Cap;
+    switch (lx_paint_stroke_cap(device->base.paint)) {
+    case LX_PAINT_STROKE_CAP_BUTT:
+        cap = SkPaint::kButt_Cap;
+        break;
+    case LX_PAINT_STROKE_CAP_ROUND:
+        cap = SkPaint::kRound_Cap;
+        break;
+    case LX_PAINT_STROKE_CAP_SQUARE:
+        cap = SkPaint::kSquare_Cap;
+        break;
+    default:
+        break;
+    }
+    return cap;
+}
+
+static lx_inline SkPaint::Join lx_skia_paint_stroke_join(lx_skia_device_t* device) {
+    lx_assert(device && device->base.paint);
+    SkPaint::Join join = SkPaint::kMiter_Join;
+    switch (lx_paint_stroke_join(device->base.paint)) {
+    case LX_PAINT_STROKE_JOIN_MITER:
+        join = SkPaint::kMiter_Join;
+        break;
+    case LX_PAINT_STROKE_JOIN_ROUND:
+        join = SkPaint::kRound_Join;
+        break;
+    case LX_PAINT_STROKE_JOIN_BEVEL:
+        join = SkPaint::kBevel_Join;
+        break;
+    default:
+        break;
+    }
+    return join;
+}
+
 static lx_inline lx_void_t lx_skia_apply_matrix(lx_skia_device_t* device) {
     SkMatrix        sk_matrix;
     lx_matrix_ref_t matrix = device->base.matrix;
@@ -57,47 +113,12 @@ static lx_inline lx_void_t lx_skia_apply_paint(lx_skia_device_t* device) {
     sk_paint->reset();
     sk_paint->setColor(lx_skia_color(lx_paint_color(paint)));
     sk_paint->setAntiAlias(lx_paint_flags(paint) & LX_PAINT_FLAG_ANTIALIASING? true : false);
-    lx_size_t mode = lx_paint_mode(paint);
-    switch (mode) {
-    case LX_PAINT_MODE_FILL:
-        sk_paint->setStyle(SkPaint::kFill_Style);
-        break;
-    case LX_PAINT_MODE_STROKE:
-        sk_paint->setStyle(SkPaint::kStroke_Style);
-        break;
-    case LX_PAINT_MODE_FILL_STROKE:
-        sk_paint->setStyle(SkPaint::kStrokeAndFill_Style);
-        break;
-    }
-    if (mode & LX_PAINT_MODE_STROKE) {
+    sk_paint->setStyle(lx_skia_paint_style(device));
+    if (lx_paint_mode(paint) & LX_PAINT_MODE_STROKE) {
         sk_paint->setStrokeMiter(lx_paint_stroke_miter(paint));
         sk_paint->setStrokeWidth(lx_paint_stroke_width(paint));
-        switch (lx_paint_stroke_cap(paint)) {
-        case LX_PAINT_STROKE_CAP_BUTT:
-            sk_paint->setStrokeCap(SkPaint::kButt_Cap);
-            break;
-        case LX_PAINT_STROKE_CAP_ROUND:
-            sk_paint->setStrokeCap(SkPaint::kRound_Cap);
-            break;
-        case LX_PAINT_STROKE_CAP_SQUARE:
-            break;
-            sk_paint->setStrokeCap(SkPaint::kSquare_Cap);
-        default:
-            break;
-        }
-        switch (lx_paint_stroke_join(paint)) {
-        case LX_PAINT_STROKE_JOIN_MITER:
-            sk_paint->setStrokeJoin(SkPaint::kMiter_Join);
-            break;
-        case LX_PAINT_STROKE_JOIN_ROUND:
-            sk_paint->setStrokeJoin(SkPaint::kRound_Join);
-            break;
-        case LX_PAINT_STROKE_JOIN_BEVEL:
-            break;
-            sk_paint->setStrokeJoin(SkPaint::kBevel_Join);
-        default:
-            break;
-        }
+        sk_paint->setStrokeCap(lx_skia_paint_stroke_cap(device));
+        sk_paint->setStrokeJoin(lx_skia_paint_stroke_join(device));
     }
 }
 
