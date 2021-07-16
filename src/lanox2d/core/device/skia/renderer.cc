@@ -40,6 +40,19 @@ static lx_inline SkPathFillType lx_skia_renderer_path_fill_type(lx_skia_device_t
     return filltype;
 }
 
+static lx_inline SkTileMode lx_skia_renderer_texture_tile_mode(lx_size_t tile_mode) {
+    static SkTileMode s_tile_mode[] =
+    {
+        SkTileMode::kClamp
+    ,   SkTileMode::kClamp
+    ,   SkTileMode::kDecal
+    ,   SkTileMode::kRepeat
+    ,   SkTileMode::kMirror
+    };
+    lx_assert(tile_mode < lx_arrayn(s_tile_mode));
+    return s_tile_mode[tile_mode];
+}
+
 static lx_inline SkPaint::Style lx_skia_renderer_paint_style(lx_skia_device_t* device) {
     lx_assert(device && device->base.paint);
     SkPaint::Style style = SkPaint::kFill_Style;
@@ -129,9 +142,15 @@ static lx_inline lx_void_t lx_skia_renderer_apply_shader_bitmap(lx_skia_device_t
     lx_matrix_ref_t matrix = lx_shader_matrix(shader);
     sk_matrix.setAll(matrix->sx, matrix->kx, matrix->tx, matrix->ky, matrix->sy, matrix->ty, 0, 0, 1);
 
-    SkSamplingOptions options(SkFilterMode::kNearest, SkMipmapMode::kNone); // TODO
+    SkFilterMode filter = SkFilterMode::kNearest;
+    if (lx_paint_flags(device->base.paint) & LX_PAINT_FLAG_FILTER_BITMAP) {
+        filter = SkFilterMode::kLinear;
+    }
+    SkTileMode tile_mode = lx_skia_renderer_texture_tile_mode(lx_shader_tile_mode(shader));
+
+    SkSamplingOptions options(filter, SkMipmapMode::kNone);
     SkPaint*        sk_paint = device->paint;
-    sk_sp<SkShader> sk_shader = device->texture->makeShader(SkTileMode::kRepeat, SkTileMode::kRepeat, options, &sk_matrix); // TODO
+    sk_sp<SkShader> sk_shader = device->texture->makeShader(tile_mode, tile_mode, options, &sk_matrix);
     lx_assert(sk_shader && sk_paint);
     sk_paint->setShader(sk_shader);
 }
