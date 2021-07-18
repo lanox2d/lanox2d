@@ -59,6 +59,9 @@ static lx_int_t lx_window_sdl_pixfmt(lx_uint16_t pixfmt) {
     case LX_PIXFMT_RGBA8888:
     case LX_PIXFMT_RGBX8888:
         return SDL_PIXELFORMAT_RGBA8888;
+    case LX_PIXFMT_RGBA8888 | LX_PIXFMT_BENDIAN:
+    case LX_PIXFMT_RGBX8888 | LX_PIXFMT_BENDIAN:
+        return SDL_PIXELFORMAT_ABGR8888;
     }
     return -1;
 }
@@ -93,14 +96,16 @@ static lx_bool_t lx_window_sdl_start(lx_window_sdl_t* window) {
         }
 
         // create sdl renderer
-        window->renderer = SDL_CreateRenderer(window->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+        lx_int_t pixfmt = lx_window_sdl_pixfmt(window->base.pixfmt);
+        if (pixfmt != SDL_PIXELFORMAT_ABGR8888 && pixfmt != SDL_PIXELFORMAT_ARGB8888) { // maybe sdl bug? it will blink
+            window->renderer = SDL_CreateRenderer(window->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+        }
         if (!window->renderer) {
             window->renderer = SDL_CreateRenderer(window->window, -1, SDL_RENDERER_SOFTWARE);
         }
         lx_assert_and_check_break(window->renderer);
 
         // create sdl texture
-        lx_int_t pixfmt = lx_window_sdl_pixfmt(window->base.pixfmt);
         if (pixfmt != -1) {
             window->texture = SDL_CreateTexture(window->renderer, pixfmt, SDL_TEXTUREACCESS_STREAMING, window->base.width, window->base.height);
         }
@@ -205,7 +210,7 @@ static lx_void_t lx_window_sdl_event(lx_window_sdl_t* window, SDL_Event* sdleven
         case SDLK_POWER:        event.u.keyboard.code = LX_KEY_POWER;       break;
         case SDLK_UNDO:         event.u.keyboard.code = LX_KEY_UNDO;        break;
 
-        case SDLK_CAPSLOCK:     event.u.keyboard.code = LX_KEY_CAPSLOCK;     break;
+        case SDLK_CAPSLOCK:     event.u.keyboard.code = LX_KEY_CAPSLOCK;    break;
         case SDLK_SCROLLLOCK:   event.u.keyboard.code = LX_KEY_SCROLLLOCK;  break;
         case SDLK_RSHIFT:       event.u.keyboard.code = LX_KEY_RSHIFT;      break;
         case SDLK_LSHIFT:       event.u.keyboard.code = LX_KEY_LSHIFT;      break;
@@ -414,7 +419,11 @@ lx_window_ref_t lx_window_init_sdl(lx_size_t width, lx_size_t height, lx_char_t 
         window->base.exit        = lx_window_sdl_exit;
 
         // init pixfmt
+#ifdef LX_CONFIG_DEVICE_HAVE_SKIA
+        window->base.pixfmt = lx_quality() < LX_QUALITY_TOP? LX_PIXFMT_RGB565 : (LX_PIXFMT_RGBX8888 | LX_PIXFMT_BENDIAN);
+#else
         window->base.pixfmt = lx_quality() < LX_QUALITY_TOP? LX_PIXFMT_RGB565 : LX_PIXFMT_RGBX8888;
+#endif
 
         // ok
         ok = lx_true;

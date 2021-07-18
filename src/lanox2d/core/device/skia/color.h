@@ -47,8 +47,8 @@ static lx_inline SkColorType lx_skia_color_type(lx_size_t color) {
     switch (color) {
     case LX_PIXFMT_RGB565:
         return kRGB_565_SkColorType;
-    case LX_PIXFMT_RGBA8888:
-    case LX_PIXFMT_RGBX8888:
+    case LX_PIXFMT_RGBA8888 | LX_PIXFMT_BENDIAN:
+    case LX_PIXFMT_RGBX8888 | LX_PIXFMT_BENDIAN:
         return kRGBA_8888_SkColorType;
     default:
         break;
