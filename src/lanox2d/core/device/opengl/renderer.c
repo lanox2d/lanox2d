@@ -261,8 +261,30 @@ static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, 
     lx_GLuint_t filter = lx_quality() > LX_QUALITY_LOW? LX_GL_LINEAR : LX_GL_NEAREST;
     lx_gl_renderer_apply_texture_filter(device, filter);
 
+    /* convert global coordinate to camera coordinate
+     *
+     * coordinate (global)
+     *   --------------->
+     *  |
+     *  |        bitmap
+     *  |    ----------------
+     *  |   |    --------    |
+     *  |   |   | camera |   |
+     *  |   |    --------    |
+     *  |   |                |
+     *  |    ----------------
+     * \|/
+     */
+    lx_matrix_t matrix = ((lx_shader_t*)shader)->matrix;
+    if (lx_matrix_invert(&matrix)) {
+        lx_float_t sw = (lx_float_t)width;
+        lx_float_t sh = (lx_float_t)height;
+        matrix.tx /= sw;
+        matrix.ty /= sh;
+    }
+
     // apply texture matrix
-    lx_gl_renderer_apply_texture_matrix(device, &((lx_shader_t*)shader)->matrix, width, height, bounds);
+    lx_gl_renderer_apply_texture_matrix(device, &matrix, width, height, bounds);
 
     // apply texture coordinate
     lx_point_make(&device->texcoords[0], 0.0f, 0.0f);

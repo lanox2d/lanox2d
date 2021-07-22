@@ -43,9 +43,9 @@ static lx_inline SkPathFillType lx_skia_renderer_path_fill_type(lx_skia_device_t
 static lx_inline SkTileMode lx_skia_renderer_texture_tile_mode(lx_size_t tile_mode) {
     static SkTileMode s_tile_mode[] =
     {
-        SkTileMode::kClamp
-    ,   SkTileMode::kClamp
+        SkTileMode::kDecal
     ,   SkTileMode::kDecal
+    ,   SkTileMode::kClamp
     ,   SkTileMode::kRepeat
     ,   SkTileMode::kMirror
     };
