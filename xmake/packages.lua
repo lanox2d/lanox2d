@@ -18,3 +18,9 @@ local bitmap = get_config("bitmap")
 if bitmap and bitmap:find("png") then
     add_requires("libpng")
 end
+
+-- libjpeg-turbo package
+local bitmap = get_config("bitmap")
+if bitmap and bitmap:find("jpg") then
+    add_requires("libjpeg-turbo")
+end

@@ -22,34 +22,52 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
+//#define LX_TRACE_DISABLED
 #include "decoder.h"
-#include "bmp/decoder.h"
-#include "png/decoder.h"
-#include "jpg/decoder.h"
+#include "../../quality.h"
+#include "../../pixmap.h"
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * private implementation
+ */
+
+static lx_bool_t lx_bitmap_jpg_probe(lx_stream_ref_t stream) {
+    lx_byte_t const* p = lx_null;
+    if (lx_stream_peek(stream, &p, 4) && p) {
+        return (    p[0] == 0xff
+                &&  p[1] == 0xd8
+                &&  p[2] == 0xff
+                &&  (p[3] >= 0xe0 && p[3] <= 0xef));
+    }
+    return lx_false;
+}
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_bitmap_ref_t lx_bitmap_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
-    lx_assert(LX_PIXFMT_OK(pixfmt) && stream);
-    static lx_bitmap_ref_t (*s_decode[])(lx_size_t, lx_stream_ref_t) = {
-#ifdef LX_CONFIG_BITMAP_HAVE_BMP
-        lx_bitmap_bmp_decode,
-#endif
-#ifdef LX_CONFIG_BITMAP_HAVE_PNG
-        lx_bitmap_png_decode,
-#endif
-#ifdef LX_CONFIG_BITMAP_HAVE_JPG
-        lx_bitmap_jpg_decode,
-#endif
-        lx_null
-    };
-    lx_size_t i = 0;
+lx_bitmap_ref_t lx_bitmap_jpg_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
+    lx_assert(stream);
+
+    // decode image
+    lx_bool_t       ok = lx_false;
     lx_bitmap_ref_t bitmap = lx_null;
-    for (i = 0; i < lx_arrayn(s_decode) - 1; i++) {
-        bitmap = s_decode[i](pixfmt, stream);
-        if (bitmap) {
+    do {
+
+        // probe format first
+        if (!lx_bitmap_jpg_probe(stream)) {
             break;
+        }
+
+        // ok
+        ok = lx_true;
+
+    } while (0);
+
+    // decode failed
+    if (!ok) {
+        if (bitmap) {
+            lx_bitmap_exit(bitmap);
+            bitmap = lx_null;
         }
     }
     return bitmap;
