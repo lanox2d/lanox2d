@@ -275,6 +275,7 @@ static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, 
      *  |    ----------------
      * \|/
      */
+    // TODO
     lx_matrix_t matrix = ((lx_shader_t*)shader)->matrix;
     if (lx_matrix_invert(&matrix)) {
         lx_float_t sw = (lx_float_t)width;
@@ -329,17 +330,23 @@ static lx_void_t lx_gl_renderer_fill_convex(lx_point_ref_t points, lx_uint16_t c
     // the device
     lx_opengl_device_t* device = (lx_opengl_device_t*)udata;
 
-    // make crc32
-    lx_uint32_t crc32 = 0xffffffff ^ lx_crc_encode(LX_CRC_MODE_32_IEEE_LE, 0xffffffff, (lx_byte_t const*)points, count * sizeof(lx_point_t));
-
     // enable blend
     lx_gl_renderer_enable_blend(device, lx_true);
 
+    // compute value
+    lx_size_t i = 0;
+    lx_uint32_t value = 0;
+    for (i = 0; i < count; i++) {
+        value += (lx_uint32_t)points[i].x;
+        value += (lx_uint32_t)points[i].y;
+        value *= 2166136261ul;
+    }
+
     // apply color
-    lx_color_t color;
-    color.r = (lx_byte_t)crc32;
-    color.g = (lx_byte_t)(crc32 >> 8);
-    color.b = (lx_byte_t)(crc32 >> 16);
+    lx_color_t  color;
+    color.r = (lx_byte_t)value;
+    color.g = (lx_byte_t)(value >> 8);
+    color.b = (lx_byte_t)(value >> 16);
     color.a = 128;
     lx_gl_renderer_apply_color(device, color);
 
