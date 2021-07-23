@@ -256,7 +256,7 @@ lx_bitmap_ref_t lx_bitmap_bmp_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
         lx_color_t  c;
         lx_size_t   btp_dst = dp->btp;
         lx_size_t   btp_src = sp->btp;
-        lx_size_t   has_alpha = 0;
+        lx_bool_t   has_alpha = lx_false;
         lx_size_t   row_bytes = lx_bitmap_row_bytes(bitmap);
         lx_size_t   row_bytes_align4 = lx_align4(linesize);
         lx_byte_t*  p = data + (height - 1) * row_bytes;
