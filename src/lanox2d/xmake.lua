@@ -38,7 +38,7 @@ target("lanox2d")
     check_interfaces()
 
     -- add packages
-    add_packages("libsdl", "freeglut", "skia")
+    add_packages("libsdl", "freeglut", "skia", "libpng")
 
     -- add devices
     if is_config("device", "bitmap") then
@@ -58,4 +58,6 @@ target("lanox2d")
     if not bitmap or not bitmap:find("bmp") then
         del_files("core/bitmap/bmp/*.c")
     end
-
+    if not bitmap or not bitmap:find("png") then
+        del_files("core/bitmap/png/*.c")
+    end

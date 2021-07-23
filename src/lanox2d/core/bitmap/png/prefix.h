@@ -15,39 +15,18 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        decoder.c
+ * @file        prefix.h
  *
  */
+#ifndef LX_CORE_BITMAP_PNG_PREFIX_H
+#define LX_CORE_BITMAP_PNG_PREFIX_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "decoder.h"
-#include "bmp/decoder.h"
-#include "png/decoder.h"
+#include "../prefix.h"
+#include "../../bitmap.h"
 
-/* //////////////////////////////////////////////////////////////////////////////////////
- * implementation
- */
-lx_bitmap_ref_t lx_bitmap_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
-    lx_assert(LX_PIXFMT_OK(pixfmt) && stream);
-    static lx_bitmap_ref_t (*s_decode[])(lx_size_t, lx_stream_ref_t) = {
-#ifdef LX_CONFIG_BITMAP_HAVE_BMP
-        lx_bitmap_bmp_decode,
 #endif
-#ifdef LX_CONFIG_BITMAP_HAVE_PNG
-        lx_bitmap_png_decode,
-#endif
-        lx_null
-    };
-    lx_size_t i = 0;
-    lx_bitmap_ref_t bitmap = lx_null;
-    for (i = 0; i < lx_arrayn(s_decode) - 1; i++) {
-        bitmap = s_decode[i](pixfmt, stream);
-        if (bitmap) {
-            break;
-        }
-    }
-    return bitmap;
-}
+
 

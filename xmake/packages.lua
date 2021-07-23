@@ -12,3 +12,9 @@ end
 if is_config("device", "skia") then
     add_requires("skia")
 end
+
+-- libpng package
+local bitmap = get_config("bitmap")
+if bitmap and bitmap:find("png") then
+    add_requires("libpng")
+end
