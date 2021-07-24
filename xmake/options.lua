@@ -41,12 +41,14 @@ option("bitmap")
 option("window")
     set_showmenu(true)
     set_default("sdl")
-    set_values("sdl", "glut")
+    set_values("sdl", "glut", "glfw")
     set_description("Set renderer window")
     after_check(function (option)
         local value = option:value()
-        if value == "glut" and is_plat("macosx") then
-            option:add("frameworks", "GLUT", "OpenGL")
+        if is_plat("macosx") then
+            if value == "glut" then
+                option:add("frameworks", "GLUT", "OpenGL")
+            end
             option:add("cxflags", "-Wno-error=deprecated-declarations")
         end
         if value then
@@ -65,7 +67,7 @@ option("device")
             local window = option:dep("window"):value()
             if window == "sdl" then
                 option:set_value("bitmap")
-            elseif window == "glut" then
+            elseif window == "glut" or window == "glfw" then
                 option:set_value("opengl")
             end
         end

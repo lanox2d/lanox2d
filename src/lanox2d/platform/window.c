@@ -27,6 +27,8 @@
 #   include "windows/sdl.c"
 #elif defined(LX_CONFIG_WINDOW_HAVE_GLUT)
 #   include "windows/glut.c"
+#elif defined(LX_CONFIG_WINDOW_HAVE_GLFW)
+#   include "windows/glfw.c"
 #else
 #   include "windows/prefix.h"
 #endif

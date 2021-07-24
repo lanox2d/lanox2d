@@ -8,6 +8,11 @@ if is_config("window", "glut") and is_plat("linux", "windows") then
     add_requires("freeglut")
 end
 
+-- glfw package
+if is_config("window", "glfw") then
+    add_requires("glfw")
+end
+
 -- skia package
 if is_config("device", "skia") then
     add_requires("skia")
