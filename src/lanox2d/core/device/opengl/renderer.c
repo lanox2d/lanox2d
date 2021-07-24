@@ -254,35 +254,48 @@ static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, 
     lx_float_t sw = (lx_float_t)width;
     lx_float_t sh = (lx_float_t)height;
 
-    /* convert global coordinate to camera coordinate
+    /* convert world coordinate to camera coordinate
      *
      * before:
      *
-     * global coordinate
-     *  O -------------->
-     *  |
-     *  |   tx   bitmap (matrix)
-     *  | ty ----------------
-     *  |   |                |
-     *  |   |                | sh
-     *  |   |                |
-     *  |    ----------------
-     *  |           sw
-     * \|/
+     *
+     *       bx        bounds of vertices
+     *      -------V7---------------------V6------
+     *  by |     /                          \     |
+     *     |   /              |               \   |
+     *     | /    bitmap  sw  |                 \ |
+     *    V8          -----------------           V5
+     *     |      sh |        |        |          |
+     *     |         |        |        |          | bh
+     *     |---------|--------O--------|----------|------> (bitmap matrix in world coordinate)
+     *     |         |        |        |          |
+     *     |         |        |        |          |
+     *    V1          -----------------           V4
+     *     | \                |                 / |
+     *     |   \             \|/              /   |
+     *     |     \                          /     |
+     *      -------V2--------------------V3-------
+     *                       bw
      *
      * after:
      *
-     * global coordinate
-     *   -----------------
-     *  |
-     *  |        bitmap (invert(matrix))
-     *  |   O -------------->
-     *  |   |                |
-     *  |   |                | sh
-     *  |  \|/               |
-     *  |    ----------------
-     *  |           sw
-     *  |
+     *       bx        bounds of vertices
+     *      -------V7---------------------V6------
+     *  by |     /                          \     |
+     *     |   /              |               \   |
+     *     | /    camera  sw  |                 \ |
+     *    V8         O--------------------------- V5-----> (matrix in camera coordinate)
+     *     |      sh |||||||| | ||||||||          |
+     *     |         |||||||| | ||||||||          | bh
+     *     |    -----|--------.--------|------    |
+     *     |         |||||||| | ||||||||          |
+     *     |         |||||||| | ||||||||          |
+     *    V1         |-----------------           V4
+     *     | \      \|/       |                 / |
+     *     |   \              |               /   |
+     *     |     \                          /     |
+     *      -------V2--------------------V3-------
+     *                       bw
      */
     lx_matrix_t matrix = ((lx_shader_t*)shader)->matrix;
     if (lx_matrix_invert(&matrix)) {
@@ -291,33 +304,56 @@ static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, 
     }
 
     /* disable auto scale in the bounds
-     * and move viewport to global
+     * and move viewport to world
      *
-     * global coordinate
-     *   -----------------
-     *  |
-     *  |        bitmap (invert(matrix))
-     *  |   O -------------->
-     *  |   |                |
-     *  |   |                | sh
-     *  |  \|/               |
-     *  |    ----------------
-     *  |           sw
-     *  |
-     *  |         bx       bounds
-     *  |         ------------------------
-     *  |     by |                        |
-     *  |        |                        |
-     *  |        |                        | bh
-     *  |        |                        |
-     *  |        |                        |
-     *  |         ------------------------
-     *  |                    bw
+     * after scaling:
+     *
+     *       bx        bounds of vertices
+     *      -------V7---------------------V6------
+     *  by |     /                          \     |
+     *     |   /              |               \   |
+     *     | /    camera      |                 \ |
+     *    V8         O--------------------------- V5-----> (matrix in camera coordinate)
+     *     |         |||||||| | |||||||||||||||||||||||||||||
+     *     |         |||||||| | |||||||||||||||||||||||||||||
+     *     |    -----|--------.--------||||||||||||||||||||||
+     *     |         |||||||| | |||||||||||||||||||||||||||||
+     *     |         |||||||| | |||||||||||||||||||||||||||||
+     *    V1         ||||||||||||||||||||||||||||||||||||||||
+     *     | \       ||||||||||||||||||||||||||||||||||||||||
+     *     |   \     ||||||||||||||||||||||||||||||||||||||||
+     *     |     \   ||||||||||||||||||||||||||||||||||||||||
+     *      -------V2||||||||||||||||||||||||||||||||||||||||
+     *               ||||||||||||||||||||||||||||||||||||||||
+     *               ||||||||||||||||||||||||||||||||||||||||
+     *               ||||||||||||||||||||||||||||||||||||||||
+     *              \|/
+     *
+     * after translating:
+     *
+     *       bx        bounds of vertices
+     *      -------V7---------------------V6------
+     *  by ||||| / |||||||||||||||||||||||| \ |||||
+     *     ||| / |||||||||||| | ||||||||||||| \ |||
+     *     | /    camera      |                 \ |
+     *    V8         O--------------------------- V5-----> (matrix in camera coordinate)
+     *     ||||||||| |||||||| | |||||||||||||||||||
+     *     ||||||||| |||||||| | |||||||||||||||||||
+     *     |    -----|--------.--------||||||||||||
+     *     ||||||||| |||||||| | |||||||||||||||||||
+     *     ||||||||| |||||||| | |||||||||||||||||||
+     *    V1 ||||||| ||||||||||||||||||||||||||||||
+     *     | \ ||||| ||||||||||||||||||||||||||||||
+     *     ||| \ ||| ||||||||||||||||||||||||||||||
+     *     ||||| \|| ||||||||||||||||||||||||||||||
+     *      -------V2--------------------V3-------
+     *               |
+     *              \|/
      */
     lx_matrix_scale(&matrix, bw / sw, bh / sh);
     lx_matrix_translate(&matrix, bx / bw, by / bh);
 
-    /* convert to texture coordinate, because our texture vertices is in global coordinate
+    /* convert to texture coordinate, because our texture vertices is in world coordinate
      *
      * texture coordinate
      *
