@@ -317,15 +317,12 @@ static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, 
     lx_matrix_scale(&matrix, bw / sw, bh / sh);
     lx_matrix_translate(&matrix, bx / bw, by / bh);
 
+    // TODO
+    lx_matrix_scale(&matrix, 1.0 / bw, 1.0 / bh);
+    lx_matrix_translate(&matrix, -bx, -by);
+
     // apply texture matrix
     lx_gl_renderer_apply_texture_matrix(device, &matrix);
-
-    // apply texture coordinate
-    lx_point_make(&device->texcoords[0], 0.0f, 0.0f);
-    lx_point_make(&device->texcoords[1], 1.0f, 0.0f);
-    lx_point_make(&device->texcoords[2], 1.0f, 1.0f);
-    lx_point_make(&device->texcoords[3], 0.0f, 1.0f);
-    lx_gl_renderer_apply_texture_coords(device, device->texcoords);
 }
 
 static lx_inline lx_void_t lx_gl_renderer_apply_shader(lx_opengl_device_t* device, lx_shader_ref_t shader, lx_rect_ref_t bounds) {
@@ -351,18 +348,21 @@ static lx_inline lx_void_t lx_gl_renderer_apply_paint(lx_opengl_device_t* device
 }
 
 static lx_void_t lx_gl_renderer_fill_convex(lx_point_ref_t points, lx_uint16_t count, lx_cpointer_t udata) {
-    lx_assert(udata && points && count);
+    lx_opengl_device_t* device = (lx_opengl_device_t*)udata;
+    lx_assert(device && points && count);
 
-    // apply it
-    lx_gl_renderer_apply_vertices((lx_opengl_device_t*)udata, points);
+    // apply vertices
+    lx_gl_renderer_apply_vertices(device, points);
+
+    // apply texture coordinate
+    if (device->shader && lx_shader_type(device->shader) == LX_SHADER_TYPE_BITMAP) {
+        lx_gl_renderer_apply_texture_coords(device, points);
+    }
 
 #ifndef LX_GL_TESSELLATOR_TEST_ENABLE
     // draw it
     lx_glDrawArrays(LX_GL_TRIANGLE_FAN, 0, (lx_GLint_t)count);
 #else
-    // the device
-    lx_opengl_device_t* device = (lx_opengl_device_t*)udata;
-
     // enable blend
     lx_gl_renderer_enable_blend(device, lx_true);
 

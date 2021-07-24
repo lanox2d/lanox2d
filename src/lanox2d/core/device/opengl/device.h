@@ -45,7 +45,6 @@ typedef struct lx_opengl_device_t_ {
     lx_gl_matrix_t          matrix_project;
     lx_gl_matrix_t          matrix_vertex;
     lx_gl_matrix_t          matrix_texture;
-    lx_point_t              texcoords[4];
     lx_tessellator_ref_t    tessellator;
     lx_shader_ref_t         shader;
     lx_GLuint_t             texture;
