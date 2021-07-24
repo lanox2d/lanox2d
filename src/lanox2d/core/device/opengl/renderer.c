@@ -131,23 +131,7 @@ static lx_void_t lx_gl_renderer_apply_texture(lx_opengl_device_t* device, lx_poi
     }
 }
 
-static lx_void_t lx_gl_renderer_apply_texture_matrix(lx_opengl_device_t* device, lx_matrix_ref_t matrix, lx_size_t width, lx_size_t height, lx_rect_ref_t bounds) {
-    lx_assert(bounds);
-
-    /* disable auto scale in the bounds
-     * and move viewport to global
-     */
-    lx_float_t bx = bounds->x;
-    lx_float_t by = bounds->y;
-    lx_float_t bw = bounds->w;
-    lx_float_t bh = bounds->h;
-    lx_float_t sw = (lx_float_t)width;
-    lx_float_t sh = (lx_float_t)height;
-    lx_gl_matrix_convert(device->matrix_texture, matrix);
-    lx_gl_matrix_scale(device->matrix_texture, bw / sw, bh / sh);
-    lx_gl_matrix_translate(device->matrix_texture, bx / bw, by / bh);
-
-    // apply texture matrix
+static lx_void_t lx_gl_renderer_apply_texture_matrix(lx_opengl_device_t* device) {
     if (device->glversion >= 0x20) {
         lx_assert(device->program);
         lx_glUniformMatrix4fv(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_MATRIX_TEXCOORD), 1, LX_GL_FALSE, device->matrix_texture);
@@ -263,19 +247,34 @@ static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, 
 
     /* convert global coordinate to camera coordinate
      *
-     * coordinate (global)
-     *   --------------->
+     * before:
+     *
+     * global coordinate
+     *  O -------------->
      *  |
-     *  |        bitmap
-     *  |    ----------------
-     *  |   |    --------    |
-     *  |   |   | camera |   |
-     *  |   |    --------    |
+     *  |   tx   bitmap (matrix)
+     *  | ty ----------------
+     *  |   |                |
+     *  |   |                | sh
      *  |   |                |
      *  |    ----------------
+     *  |           sw
      * \|/
+     *
+     * after:
+     *
+     * global coordinate
+     *   -----------------
+     *  |
+     *  |        bitmap (invert(matrix))
+     *  |   O -------------->
+     *  |   |                |
+     *  |   |                | sh
+     *  |  \|/               |
+     *  |    ----------------
+     *  |           sw
+     *  |
      */
-    // TODO
     lx_matrix_t matrix = ((lx_shader_t*)shader)->matrix;
     if (lx_matrix_invert(&matrix)) {
         lx_float_t sw = (lx_float_t)width;
@@ -284,8 +283,21 @@ static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, 
         matrix.ty /= sh;
     }
 
+    /* disable auto scale in the bounds
+     * and move viewport to global
+     */
+    lx_float_t bx = bounds->x;
+    lx_float_t by = bounds->y;
+    lx_float_t bw = bounds->w;
+    lx_float_t bh = bounds->h;
+    lx_float_t sw = (lx_float_t)width;
+    lx_float_t sh = (lx_float_t)height;
+    lx_gl_matrix_convert(device->matrix_texture, &matrix);
+    lx_gl_matrix_scale(device->matrix_texture, bw / sw, bh / sh);
+    lx_gl_matrix_translate(device->matrix_texture, bx / bw, by / bh);
+
     // apply texture matrix
-    lx_gl_renderer_apply_texture_matrix(device, &matrix, width, height, bounds);
+    lx_gl_renderer_apply_texture_matrix(device);
 
     // apply texture coordinate
     lx_point_make(&device->texcoords[0], 0.0f, 0.0f);
