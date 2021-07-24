@@ -317,7 +317,17 @@ static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, 
     lx_matrix_scale(&matrix, bw / sw, bh / sh);
     lx_matrix_translate(&matrix, bx / bw, by / bh);
 
-    // TODO
+    /* convert to texture coordinate, because our texture vertices is in global coordinate
+     *
+     * texture coordinate
+     *
+     * 0,1 -------------------- 1,1
+     *    |                     |
+     *    |                     |
+     *    |                     |
+     *    |                     |
+     * 0,0 -------------------- 1,0
+     */
     lx_matrix_scale(&matrix, 1.0 / bw, 1.0 / bh);
     lx_matrix_translate(&matrix, -bx, -by);
 

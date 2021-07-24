@@ -164,9 +164,7 @@ lx_size_t            lx_shader_tile_mode(lx_shader_ref_t shader);
  */
 lx_matrix_ref_t      lx_shader_matrix(lx_shader_ref_t shader);
 
-/*! set the shader matrix
- *
- * use global coordinate
+/*! set the shader matrix in global coordinate
  *
  *   ----------> x
  *  |
