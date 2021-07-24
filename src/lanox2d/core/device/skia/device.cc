@@ -94,7 +94,7 @@ static lx_void_t lx_device_skia_exit(lx_device_ref_t self) {
         }
         if (device->canvas) {
             delete device->canvas;
-            device = lx_null;
+            device->canvas = lx_null;
         }
         if (device->surface) {
             delete device->surface;
