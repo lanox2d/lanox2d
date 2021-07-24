@@ -102,9 +102,6 @@ static lx_void_t lx_gl_renderer_apply_texture(lx_opengl_device_t* device, lx_poi
         lx_glTexEnvi(LX_GL_TEXTURE_ENV, LX_GL_TEXTURE_ENV_MODE, LX_GL_MODULATE);
     }
 
-    // TODO
- //   lx_glPixelStorei(LX_GL_UNPACK_ALIGNMENT, !(row_bytes & 0x3)? 4 : 1);
-
     // apply texture data
     switch (LX_PIXFMT(pixfmt)) {
     case LX_PIXFMT_ARGB8888:
