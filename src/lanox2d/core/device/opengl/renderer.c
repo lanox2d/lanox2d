@@ -303,8 +303,7 @@ static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, 
         matrix.ty /= sh;
     }
 
-    /* disable auto scale in the bounds
-     * and move viewport to world
+    /* move bitmap to bounds of vertices in camera coordinate
      *
      * after scaling:
      *
@@ -331,7 +330,10 @@ static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, 
      *
      * after translating:
      *
-     *       bx        bounds of vertices
+     *                    texture
+     *  --------------------------------------------->
+     * |
+     * |     bx        bounds of vertices
      *      -------V7---------------------V6------
      *  by ||||| / |||||||||||||||||||||||| \ |||||
      *     ||| / |||||||||||| | ||||||||||||| \ |||
@@ -340,29 +342,40 @@ static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, 
      *     ||||||||| |||||||| | |||||||||||||||||||
      *     ||||||||| |||||||| | |||||||||||||||||||
      *     |    -----|--------.--------||||||||||||
+     *     ||||||||| |||||||| | ||||||||||||||||||| bh
      *     ||||||||| |||||||| | |||||||||||||||||||
-     *     ||||||||| |||||||| | |||||||||||||||||||
-     *    V1 ||||||| ||||||||||||||||||||||||||||||
-     *     | \ ||||| ||||||||||||||||||||||||||||||
-     *     ||| \ ||| ||||||||||||||||||||||||||||||
-     *     ||||| \|| ||||||||||||||||||||||||||||||
+     *    V1 ||||||| |||||||||||||||||||||||||||| V4
+     *     | \ ||||| |||||||||||||||||||||||||| / |
+     *     ||| \ ||| |||||||||||||||||||||||| / |||
+     *     ||||| \|| |||||||||||||||||||||||/ |||||
      *      -------V2--------------------V3-------
-     *               |
+     *               |       bw
      *              \|/
      */
     lx_matrix_scale(&matrix, bw / sw, bh / sh);
     lx_matrix_translate(&matrix, bx / bw, by / bh);
 
-    /* convert to texture coordinate, because our texture vertices is in world coordinate
+    /* convert to texture coordinate (0,1), because our texture vertices is in world coordinate
      *
-     * texture coordinate
+     * before:
      *
-     * 0,1 -------------------- 1,1
+     *    bx
+     * by  ---------------------
      *    |                     |
      *    |                     |
+     *    |                     | bh
      *    |                     |
-     *    |                     |
+     *     ---------------------
+     *              bw
+     *
+     * after:
+     *
      * 0,0 -------------------- 1,0
+     *    |                     |
+     *    |                     |
+     *    |                     |
+     *    |                     |
+     * 0,1 -------------------- 1,1
      */
     lx_matrix_scale(&matrix, 1.0 / bw, 1.0 / bh);
     lx_matrix_translate(&matrix, -bx, -by);
