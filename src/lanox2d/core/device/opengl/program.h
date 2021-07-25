@@ -74,15 +74,19 @@ lx_gl_program_ref_t     lx_gl_program_init(lx_size_t type, lx_char_t const* vsha
 
 /* init sold program
  *
- * @return              the program
- */
-lx_gl_program_ref_t     lx_gl_program_init_solid(lx_noarg_t);
-
-/* init texture program
+ * @param glversion     the opengl version
  *
  * @return              the program
  */
-lx_gl_program_ref_t     lx_gl_program_init_texture(lx_noarg_t);
+lx_gl_program_ref_t     lx_gl_program_init_solid(lx_size_t glversion);
+
+/* init texture program
+ *
+ * @param glversion     the opengl version
+ *
+ * @return              the program
+ */
+lx_gl_program_ref_t     lx_gl_program_init_texture(lx_size_t glversion);
 
 /* exit gl program
  *

@@ -25,9 +25,9 @@
 #include "prefix.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * implementation
+ * private implementation
  */
-lx_gl_program_ref_t lx_gl_program_init_solid() {
+static lx_gl_program_ref_t lx_gl_program_init_solid_2x() {
     // the vertex shader
     static lx_char_t const* vshader =
 #if defined(LX_CONFIG_OS_IOS) || defined(LX_CONFIG_OS_ANDROID)
@@ -71,5 +71,60 @@ lx_gl_program_ref_t lx_gl_program_init_solid() {
     lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_MODEL,    lx_gl_program_unif(program, "uMatrixModel"));
     lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_PROJECT,  lx_gl_program_unif(program, "uMatrixProject"));
     return program;
+}
+
+static lx_gl_program_ref_t lx_gl_program_init_solid_3x() {
+    // the vertex shader
+    static lx_char_t const* vshader =
+        "#version 330                                                           \n"
+        "precision mediump float;                                               \n"
+        "                                                                       \n"
+        "in vec4 aColor;                                                        \n"
+        "in vec4 aVertices;                                                     \n"
+        "                                                                       \n"
+        "out vec4 vColors;                                                      \n"
+        "uniform mat4 uMatrixModel;                                             \n"
+        "uniform mat4 uMatrixProject;                                           \n"
+        "                                                                       \n"
+        "void main()                                                            \n"
+        "{                                                                      \n"
+        "   vColors = aColor;                                                   \n"
+        "   gl_Position = uMatrixProject * uMatrixModel * aVertices;            \n"
+        "}                                                                      \n";
+
+    // the fragment shader
+    static lx_char_t const* fshader =
+        "#version 330                                                           \n"
+        "precision mediump float;                                               \n"
+        "                                                                       \n"
+        "in vec4 vColors;                                                       \n"
+        "out vec4 finalColor;                                                   \n"
+        "                                                                       \n"
+        "void main()                                                            \n"
+        "{                                                                      \n"
+        "   finalColor = vColors;                                               \n"
+        "}                                                                      \n";
+
+
+    // init program
+    lx_gl_program_ref_t program = lx_gl_program_init(LX_GL_PROGRAM_TYPE_SOLID, vshader, fshader);
+    lx_assert_and_check_return_val(program, lx_null);
+
+    // init location
+    lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_COLORS,          lx_gl_program_attr(program, "aColor"));  //!< FIXME some name can not work for mac, .e.g aColors aColorx ...
+    lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_VERTICES,        lx_gl_program_attr(program, "aVertices"));
+    lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_MODEL,    lx_gl_program_unif(program, "uMatrixModel"));
+    lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_PROJECT,  lx_gl_program_unif(program, "uMatrixProject"));
+    return program;
+}
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * implementation
+ */
+lx_gl_program_ref_t lx_gl_program_init_solid(lx_size_t glversion) {
+    if (glversion > 0x30) {
+        return lx_gl_program_init_solid_3x();
+    }
+    return lx_gl_program_init_solid_2x();
 }
 

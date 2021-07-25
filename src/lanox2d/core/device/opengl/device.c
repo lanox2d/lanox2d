@@ -149,11 +149,11 @@ lx_device_ref_t lx_device_init_from_opengl(lx_window_ref_t window) {
         if (device->glversion >= 0x20) {
 
             // init solid program
-            device->programs[LX_GL_PROGRAM_TYPE_SOLID] = lx_gl_program_init_solid();
+            device->programs[LX_GL_PROGRAM_TYPE_SOLID] = lx_gl_program_init_solid(device->glversion);
             lx_assert_and_check_break(device->programs[LX_GL_PROGRAM_TYPE_SOLID]);
 
             // init texture program
-            device->programs[LX_GL_PROGRAM_TYPE_TEXTURE] = lx_gl_program_init_texture();
+            device->programs[LX_GL_PROGRAM_TYPE_TEXTURE] = lx_gl_program_init_texture(device->glversion);
             lx_assert_and_check_break(device->programs[LX_GL_PROGRAM_TYPE_TEXTURE]);
 
             /* init the projection matrix
