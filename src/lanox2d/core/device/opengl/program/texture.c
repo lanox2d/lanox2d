@@ -28,107 +28,95 @@
  * private implementation
  */
 static lx_gl_program_ref_t lx_gl_program_init_texture_2x() {
-    // the vertex shader
     static lx_char_t const* vshader =
 #if defined(LX_CONFIG_OS_IOS) || defined(LX_CONFIG_OS_ANDROID)
-        "precision mediump float;                                                           \n"
+        "precision mediump float;\n"
 #endif
-        "                                                                                   \n"
-        "attribute vec4 aColor;                                                             \n"
-        "attribute vec4 aTexcoords;                                                         \n"
-        "attribute vec4 aVertices;                                                          \n"
-        "                                                                                   \n"
-        "varying vec4 vColors;                                                              \n"
-        "varying vec4 vTexcoords;                                                           \n"
-        "uniform mat4 uMatrixModel;                                                         \n"
-        "uniform mat4 uMatrixProject;                                                       \n"
-        "uniform mat4 uMatrixTexcoord;                                                      \n"
-        "                                                                                   \n"
-        "void main()                                                                        \n"
-        "{                                                                                  \n"
-        "   vColors = aColor;                                                               \n"
-        "   vTexcoords = uMatrixTexcoord * aTexcoords;                                      \n"
-        "   gl_Position = uMatrixProject * uMatrixModel * aVertices;                        \n"
-        "}                                                                                  \n";
+        "\n"
+        "attribute vec4 aColor;\n"
+        "attribute vec4 aTexcoords;\n"
+        "attribute vec4 aVertices;\n"
+        "\n"
+        "varying vec4 vColors;\n"
+        "varying vec4 vTexcoords;\n"
+        "uniform mat4 uMatrixModel;\n"
+        "uniform mat4 uMatrixProject;\n"
+        "uniform mat4 uMatrixTexcoord;\n"
+        "\n"
+        "void main() {\n"
+        "   vColors = aColor;\n"
+        "   vTexcoords = uMatrixTexcoord * aTexcoords;\n"
+        "   gl_Position = uMatrixProject * uMatrixModel * aVertices;\n"
+        "}\n";
 
-    // the fragment shader
     static lx_char_t const* fshader =
 #if defined(LX_CONFIG_OS_IOS) || defined(LX_CONFIG_OS_ANDROID)
-        "precision mediump float;                                                           \n"
+        "precision mediump float;\n"
 #endif
-        "                                                                                   \n"
-        "varying vec4 vColors;                                                              \n"
-        "varying vec4 vTexcoords;                                                           \n"
-        "uniform sampler2D uSampler;                                                        \n"
-        "                                                                                   \n"
-        "void main()                                                                        \n"
-        "{                                                                                  \n"
-        "   gl_FragColor = vColors * texture2D(uSampler, vec2(vTexcoords.x, vTexcoords.y)); \n"
-        "}                                                                                  \n";
+        "\n"
+        "varying vec4 vColors;\n"
+        "varying vec4 vTexcoords;\n"
+        "uniform sampler2D uSampler;\n"
+        "\n"
+        "void main() {\n"
+        "   gl_FragColor = vColors * texture2D(uSampler, vec2(vTexcoords.x, vTexcoords.y));\n"
+        "}\n";
 
-    // init program
     lx_gl_program_ref_t program = lx_gl_program_init(LX_GL_PROGRAM_TYPE_TEXTURE, vshader, fshader);
-    lx_assert_and_check_return_val(program, lx_null);
-
-    // init location
-    lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_COLORS,          lx_gl_program_attr(program, "aColor"));
-    lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_VERTICES,        lx_gl_program_attr(program, "aVertices"));
-    lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_TEXCOORDS,       lx_gl_program_attr(program, "aTexcoords"));
-    lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_MODEL,    lx_gl_program_unif(program, "uMatrixModel"));
-    lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_PROJECT,  lx_gl_program_unif(program, "uMatrixProject"));
-    lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_TEXCOORD, lx_gl_program_unif(program, "uMatrixTexcoord"));
+    if (program) {
+        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_COLORS,          lx_gl_program_attr(program, "aColor"));
+        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_VERTICES,        lx_gl_program_attr(program, "aVertices"));
+        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_TEXCOORDS,       lx_gl_program_attr(program, "aTexcoords"));
+        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_MODEL,    lx_gl_program_unif(program, "uMatrixModel"));
+        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_PROJECT,  lx_gl_program_unif(program, "uMatrixProject"));
+        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_TEXCOORD, lx_gl_program_unif(program, "uMatrixTexcoord"));
+    }
     return program;
 }
 
 static lx_gl_program_ref_t lx_gl_program_init_texture_3x() {
-    // the vertex shader
     static lx_char_t const* vshader =
-        "#version 330                                                                       \n"
-        "precision mediump float;                                                           \n"
-        "                                                                                   \n"
-        "in vec4 aColor;                                                                    \n"
-        "in vec4 aTexcoords;                                                                \n"
-        "in vec4 aVertices;                                                                 \n"
-        "                                                                                   \n"
-        "out vec4 vColors;                                                                  \n"
-        "out vec4 vTexcoords;                                                               \n"
-        "uniform mat4 uMatrixModel;                                                         \n"
-        "uniform mat4 uMatrixProject;                                                       \n"
-        "uniform mat4 uMatrixTexcoord;                                                      \n"
-        "                                                                                   \n"
-        "void main()                                                                        \n"
-        "{                                                                                  \n"
-        "   vColors = aColor;                                                               \n"
-        "   vTexcoords = uMatrixTexcoord * aTexcoords;                                      \n"
-        "   gl_Position = uMatrixProject * uMatrixModel * aVertices;                        \n"
-        "}                                                                                  \n";
+        "#version 330\n"
+        "precision mediump float;\n"
+        "\n"
+        "in vec4 aColor;\n"
+        "in vec4 aTexcoords;\n"
+        "in vec4 aVertices;\n"
+        "\n"
+        "out vec4 vColors;\n"
+        "out vec4 vTexcoords;\n"
+        "uniform mat4 uMatrixModel;\n"
+        "uniform mat4 uMatrixProject;\n"
+        "uniform mat4 uMatrixTexcoord;\n"
+        "\n"
+        "void main() {\n"
+        "   vColors = aColor;\n"
+        "   vTexcoords = uMatrixTexcoord * aTexcoords;\n"
+        "   gl_Position = uMatrixProject * uMatrixModel * aVertices;\n"
+        "}\n";
 
-    // the fragment shader
     static lx_char_t const* fshader =
-        "#version 330                                                                       \n"
-        "precision mediump float;                                                           \n"
-        "                                                                                   \n"
-        "in vec4 vColors;                                                                   \n"
-        "in vec4 vTexcoords;                                                                \n"
-        "uniform sampler2D uSampler;                                                        \n"
-        "out vec4 finalColor;                                                               \n"
-        "                                                                                   \n"
-        "void main()                                                                        \n"
-        "{                                                                                  \n"
-        "   finalColor = vColors * texture(uSampler, vec2(vTexcoords.x, vTexcoords.y));     \n"
-        "}                                                                                  \n";
+        "#version 330\n"
+        "precision mediump float;\n"
+        "\n"
+        "in vec4 vColors;\n"
+        "in vec4 vTexcoords;\n"
+        "uniform sampler2D uSampler;\n"
+        "out vec4 finalColor;\n"
+        "\n"
+        "void main() {\n"
+        "   finalColor = vColors * texture(uSampler, vec2(vTexcoords.x, vTexcoords.y));\n"
+        "}\n";
 
-    // init program
     lx_gl_program_ref_t program = lx_gl_program_init(LX_GL_PROGRAM_TYPE_TEXTURE, vshader, fshader);
-    lx_assert_and_check_return_val(program, lx_null);
-
-    // init location
-    lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_COLORS,          lx_gl_program_attr(program, "aColor"));
-    lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_VERTICES,        lx_gl_program_attr(program, "aVertices"));
-    lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_TEXCOORDS,       lx_gl_program_attr(program, "aTexcoords"));
-    lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_MODEL,    lx_gl_program_unif(program, "uMatrixModel"));
-    lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_PROJECT,  lx_gl_program_unif(program, "uMatrixProject"));
-    lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_TEXCOORD, lx_gl_program_unif(program, "uMatrixTexcoord"));
+    if (program) {
+        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_COLORS,          lx_gl_program_attr(program, "aColor"));
+        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_VERTICES,        lx_gl_program_attr(program, "aVertices"));
+        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_TEXCOORDS,       lx_gl_program_attr(program, "aTexcoords"));
+        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_MODEL,    lx_gl_program_unif(program, "uMatrixModel"));
+        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_PROJECT,  lx_gl_program_unif(program, "uMatrixProject"));
+        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_TEXCOORD, lx_gl_program_unif(program, "uMatrixTexcoord"));
+    }
     return program;
 }
 
