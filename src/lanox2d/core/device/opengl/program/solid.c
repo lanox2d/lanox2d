@@ -35,7 +35,6 @@ static lx_gl_program_ref_t lx_gl_program_init_solid_2x() {
         "\n"
         "attribute vec4 aColor;\n"
         "attribute vec4 aVertices;\n"
-        "\n"
         "varying vec4 vColors;\n"
         "uniform mat4 uMatrixModel;\n"
         "uniform mat4 uMatrixProject;\n"
@@ -71,12 +70,11 @@ static lx_gl_program_ref_t lx_gl_program_init_solid_3x() {
         "#version 330\n"
         "precision mediump float;\n"
         "\n"
-        "in vec4 aColor;\n"
-        "in vec4 aVertices;\n"
-        "\n"
-        "out vec4 vColors;\n"
+        "layout(location = 0) in vec4 aColor;\n"
+        "layout(location = 1) in vec4 aVertices;\n"
         "uniform mat4 uMatrixModel;\n"
         "uniform mat4 uMatrixProject;\n"
+        "out vec4 vColors;\n"
         "\n"
         "void main() {\n"
         "   vColors = aColor;\n"
@@ -96,10 +94,10 @@ static lx_gl_program_ref_t lx_gl_program_init_solid_3x() {
 
     lx_gl_program_ref_t program = lx_gl_program_init(LX_GL_PROGRAM_TYPE_SOLID, vshader, fshader);
     if (program) {
-        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_COLORS,          lx_gl_program_attr(program, "aColor"));  //!< FIXME some name can not work for mac, .e.g aColors aColorx ...
-        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_VERTICES,        lx_gl_program_attr(program, "aVertices"));
-        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_MODEL,    lx_gl_program_unif(program, "uMatrixModel"));
-        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_PROJECT,  lx_gl_program_unif(program, "uMatrixProject"));
+        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_COLORS, 0);
+        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_VERTICES, 1);
+        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_MODEL, 2);
+        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_PROJECT, 3);
     }
     return program;
 }
