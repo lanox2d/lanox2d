@@ -10,7 +10,7 @@ end
 
 -- glfw package
 if is_config("window", "glfw") then
-    add_requires("glfw")
+    add_requires("glfw", "glew")
 end
 
 -- skia package

@@ -48,6 +48,8 @@ option("window")
         if is_plat("macosx") then
             if value == "glut" then
                 option:add("frameworks", "GLUT", "OpenGL")
+            elseif value == "glfw" then
+                option:add("frameworks", "OpenGL")
             end
             option:add("cxflags", "-Wno-error=deprecated-declarations")
         end

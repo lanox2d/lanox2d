@@ -23,6 +23,8 @@
  * includes
  */
 #include "prefix.h"
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * types
@@ -31,6 +33,7 @@
 // the glfw window type
 typedef struct lx_window_glfw_t_ {
     lx_window_t     base;
+    GLFWwindow*     window;
     lx_bool_t       is_quit;
     lx_hong_t       fps_time;
     lx_hong_t       fps_count;
@@ -45,9 +48,49 @@ static lx_bool_t lx_window_glfw_start(lx_window_glfw_t* window) {
     lx_bool_t ok = lx_false;
     do {
 
+        // init glfw
+        glfwInit();
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_RESIZABLE, lx_true);
+#ifdef LX_CONFIG_OS_MACOSX
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, lx_true);
+#endif
+
+        // init window
+        window->window = glfwCreateWindow(window->base.width, window->base.height,
+            window->base.title? window->base.title : "lanox2d (GLFW)", lx_null, lx_null);
+        lx_assert_and_check_break(window->window);
+        glfwMakeContextCurrent(window->window);
+
+        // init glew
+        glewExperimental = lx_true;
+        if (glewInit() != GLEW_OK) {
+            lx_trace_e("init glew failed!");
+            break;
+        }
+
+        // init device
+#if defined(LX_CONFIG_DEVICE_HAVE_OPENGL)
+        window->base.device = lx_device_init_from_opengl((lx_window_ref_t)window);
+#elif defined(LX_CONFIG_DEVICE_HAVE_SKIA)
+        window->base.device = lx_device_init_from_skia((lx_window_ref_t)window, lx_null);
+#endif
+        lx_assert_and_check_break(window->base.device);
+
+        // init canvas
+        window->base.canvas = lx_canvas_init(window->base.device);
+        lx_assert_and_check_break(window->base.canvas);
+
         // ok
         ok = lx_true;
     } while (0);
+
+    // failed? exit glfw
+    if (!ok) {
+        glfwTerminate();
+    }
     return ok;
 }
 
@@ -60,6 +103,15 @@ static lx_void_t lx_window_glfw_runloop(lx_window_ref_t self) {
         lx_trace_e("start glfw window failed!");
         return ;
     }
+
+    // do loop
+    while (!window->is_quit && !glfwWindowShouldClose(window->window)) {
+        glfwPollEvents();
+        glfwSwapBuffers(window->window);
+    }
+
+    // exit glfw
+    glfwTerminate();
 }
 
 static lx_void_t lx_window_glfw_show(lx_window_ref_t self, lx_bool_t is_show) {
