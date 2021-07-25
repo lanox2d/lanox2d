@@ -96,7 +96,6 @@ static lx_bool_t lx_window_glfw_start(lx_window_glfw_t* window) {
             break;
         }
 
-#if 0
         // init device
 #if defined(LX_CONFIG_DEVICE_HAVE_OPENGL)
         window->base.device = lx_device_init_from_opengl((lx_window_ref_t)window);
@@ -108,7 +107,6 @@ static lx_bool_t lx_window_glfw_start(lx_window_glfw_t* window) {
         // init canvas
         window->base.canvas = lx_canvas_init(window->base.device);
         lx_assert_and_check_break(window->base.canvas);
-#endif
 
         // ok
         ok = lx_true;
@@ -123,7 +121,7 @@ static lx_bool_t lx_window_glfw_start(lx_window_glfw_t* window) {
 
 static lx_void_t lx_window_glfw_runloop(lx_window_ref_t self) {
     lx_window_glfw_t* window = (lx_window_glfw_t*)self;
-    lx_assert_and_check_return(window);
+    lx_assert(window && window->base.on_draw);
 
     // start glfw window
     if (!lx_window_glfw_start(window)) {
@@ -133,8 +131,36 @@ static lx_void_t lx_window_glfw_runloop(lx_window_ref_t self) {
 
     // do loop
     while (!window->is_quit && !glfwWindowShouldClose(window->window)) {
+
+        // poll events
         glfwPollEvents();
+
+        // draw
+        lx_hong_t starttime = lx_mclock();
+        window->base.on_draw((lx_window_ref_t)window, window->base.canvas);
+
+        // flush
         glfwSwapBuffers(window->window);
+
+        // compute delay for framerate
+        lx_hong_t time = lx_mclock();
+        lx_int_t  fps_drawtime = (lx_int_t)(time - starttime);
+        lx_int_t  fps_delay = 1000 / window->base.fps;
+        window->fps_delay = fps_delay >= fps_drawtime? fps_delay - fps_drawtime : 1;
+
+        // compute framerate
+        if (window->base.flags & LX_WINDOW_FLAG_SHOW_FPS) {
+            if (!window->fps_time) window->fps_time = time;
+            else window->fps_count++;
+            if (time > window->fps_time + 1000) {
+                lx_float_t framerate = (lx_float_t)(window->fps_count * 1000) / (lx_float_t)(time - window->fps_time);
+                lx_char_t title[256];
+                lx_snprintf(title, sizeof(title), "%s (%0.2f fps)", window->base.title, framerate);
+                glfwSetWindowTitle(window->window, title);
+                window->fps_count = 0;
+                window->fps_time = time;
+            }
+        }
     }
 
     // exit glfw

@@ -53,9 +53,14 @@ static lx_GLuint_t lx_gl_program_shader(lx_char_t const* data, lx_size_t type) {
     lx_GLint_t ok = LX_GL_FALSE;
     lx_glGetShaderiv(shader, LX_GL_COMPILE_STATUS, &ok);
     if (ok == LX_GL_FALSE) {
-        lx_GLchar_t info[1024] = {0};
-        lx_glGetProgramInfoLog(shader, sizeof(info), 0, info);
-        lx_trace_e("shader: compile failed: %s", info);
+        lx_GLint_t length = 0;
+        lx_glGetShaderiv(shader, LX_GL_INFO_LOG_LENGTH, &length);
+        lx_char_t* error = (lx_char_t*)lx_malloc0(length);
+        if (error) {
+            lx_glGetShaderInfoLog(shader, length, &length, error);
+            lx_trace_e("shader: compile failed: %s, shader:\n%s", error, data);
+            lx_free(error);
+        }
         lx_glDeleteShader(shader);
         return 0;
     }

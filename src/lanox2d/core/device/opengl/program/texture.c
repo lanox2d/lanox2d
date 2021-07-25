@@ -16,7 +16,6 @@
  *
  * @author      ruki
  * @file        texture.c
- * @ingroup     core
  *
  */
 
