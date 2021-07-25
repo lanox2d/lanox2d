@@ -44,6 +44,13 @@ typedef struct lx_window_glfw_t_ {
  * private implementation
  */
 
+static lx_void_t lx_window_glfw_fullscreen(lx_window_ref_t self, lx_bool_t is_fullscreen) {
+    lx_window_glfw_t* window = (lx_window_glfw_t*)self;
+    if (window) {
+        // TODO
+    }
+}
+
 static lx_bool_t lx_window_glfw_start(lx_window_glfw_t* window) {
     lx_bool_t ok = lx_false;
     do {
@@ -53,7 +60,10 @@ static lx_bool_t lx_window_glfw_start(lx_window_glfw_t* window) {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_RESIZABLE, lx_true);
+        glfwWindowHint(GLFW_RESIZABLE, (window->base.flags & LX_WINDOW_FLAG_NOT_REISZE)? lx_false : lx_true);
+        if (window->base.flags & LX_WINDOW_FLAG_HIDE_TITLEBAR) {
+            glfwWindowHint(GLFW_DECORATED, lx_false);
+        }
 #ifdef LX_CONFIG_OS_MACOSX
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, lx_true);
 #endif
@@ -64,6 +74,21 @@ static lx_bool_t lx_window_glfw_start(lx_window_glfw_t* window) {
         lx_assert_and_check_break(window->window);
         glfwMakeContextCurrent(window->window);
 
+        // hide window
+        if (window->base.flags & LX_WINDOW_FLAG_HIDDEN) {
+            glfwHideWindow(window->window);
+        }
+
+        // hide window cursor
+        if (window->base.flags & LX_WINDOW_FLAG_HIDE_CURSOR) {
+            glfwSetInputMode(window->window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        }
+
+        // fullscreen
+        if (window->base.flags & LX_WINDOW_FLAG_FULLSCREEN) {
+            lx_window_glfw_fullscreen((lx_window_ref_t)window, lx_true);
+        }
+
         // init glew
         glewExperimental = lx_true;
         if (glewInit() != GLEW_OK) {
@@ -71,6 +96,7 @@ static lx_bool_t lx_window_glfw_start(lx_window_glfw_t* window) {
             break;
         }
 
+#if 0
         // init device
 #if defined(LX_CONFIG_DEVICE_HAVE_OPENGL)
         window->base.device = lx_device_init_from_opengl((lx_window_ref_t)window);
@@ -82,6 +108,7 @@ static lx_bool_t lx_window_glfw_start(lx_window_glfw_t* window) {
         // init canvas
         window->base.canvas = lx_canvas_init(window->base.device);
         lx_assert_and_check_break(window->base.canvas);
+#endif
 
         // ok
         ok = lx_true;
@@ -116,16 +143,19 @@ static lx_void_t lx_window_glfw_runloop(lx_window_ref_t self) {
 
 static lx_void_t lx_window_glfw_show(lx_window_ref_t self, lx_bool_t is_show) {
     lx_window_glfw_t* window = (lx_window_glfw_t*)self;
-    if (window) {
+    if (window && window->window) {
+        if (is_show) {
+            glfwShowWindow(window->window);
+        } else {
+            glfwHideWindow(window->window);
+        }
     }
 }
 
 static lx_void_t lx_window_glfw_show_cursor(lx_window_ref_t self, lx_bool_t is_show) {
-}
-
-static lx_void_t lx_window_glfw_fullscreen(lx_window_ref_t self, lx_bool_t is_fullscreen) {
     lx_window_glfw_t* window = (lx_window_glfw_t*)self;
-    if (window) {
+    if (window && window->window) {
+        glfwSetInputMode(window->window, GLFW_CURSOR, is_show? GLFW_CURSOR_NORMAL : GLFW_CURSOR_HIDDEN);
     }
 }
 
