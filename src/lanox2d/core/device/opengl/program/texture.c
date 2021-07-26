@@ -123,8 +123,8 @@ static lx_gl_program_ref_t lx_gl_program_init_texture_3x() {
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_gl_program_ref_t lx_gl_program_init_texture(lx_size_t glversion) {
-    if (glversion > 0x30) {
+lx_gl_program_ref_t lx_gl_program_init_texture() {
+    if (lx_gl_version() > 0x30) {
         return lx_gl_program_init_texture_3x();
     }
     return lx_gl_program_init_texture_2x();
