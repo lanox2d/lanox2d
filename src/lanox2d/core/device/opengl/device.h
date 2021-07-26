@@ -25,7 +25,7 @@
  * includes
  */
 #include "prefix.h"
-#include "api.h"
+#include "gl.h"
 #include "matrix.h"
 #include "program.h"
 #include "../../tess/tess.h"

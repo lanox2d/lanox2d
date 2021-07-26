@@ -113,7 +113,7 @@ lx_device_ref_t lx_device_init_from_opengl(lx_window_ref_t window) {
         lx_assert_and_check_break(width && height && width <= LX_WIDTH_MAX && height <= LX_HEIGHT_MAX);
 
         // load gl api first
-        if (!lx_gl_api_load()) {
+        if (!lx_gl_load()) {
             break;
         }
 
@@ -128,7 +128,7 @@ lx_device_ref_t lx_device_init_from_opengl(lx_window_ref_t window) {
         device->base.draw_path             = lx_device_opengl_draw_path;
         device->base.exit                  = lx_device_opengl_exit;
         device->window                     = window;
-        device->glversion                  = lx_gl_api_version();
+        device->glversion                  = lx_gl_version();
         lx_assert_and_check_break(device->glversion);
 
         // init stroker

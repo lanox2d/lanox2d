@@ -15,11 +15,11 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        api.h
+ * @file        gl.h
  *
  */
-#ifndef LX_CORE_DEVICE_OPENGL_API_H
-#define LX_CORE_DEVICE_OPENGL_API_H
+#ifndef LX_CORE_DEVICE_OPENGL_GL_H
+#define LX_CORE_DEVICE_OPENGL_GL_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
@@ -439,17 +439,17 @@ LX_GL_API_EXTERN(glDeleteBuffers);
  * interface
  */
 
-/* load gl api
+/* load gl apis
  *
  * @return          lx_true or lx_false
  */
-lx_bool_t           lx_gl_api_load(lx_noarg_t);
+lx_bool_t           lx_gl_load(lx_noarg_t);
 
 /* get gl api version
  *
  * @return          the opengl api version, e.g. 0x1x -> 1.x, 0x20 -> 2.0x
  */
-lx_size_t           lx_gl_api_version(lx_noarg_t);
+lx_size_t           lx_gl_version(lx_noarg_t);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

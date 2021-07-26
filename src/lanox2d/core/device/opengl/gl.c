@@ -15,14 +15,14 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        api.c
+ * @file        gl.c
  *
  */
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "api.h"
+#include "gl.h"
 #ifdef LX_CONFIG_OS_MACOSX
 #   include <OpenGL/gl.h>
 #   include <OpenGL/glu.h>
@@ -127,7 +127,7 @@ static lx_GLvoid_t LX_GL_APICALL lx_gl_api_glOrthof(lx_GLfloat_t left, lx_GLfloa
  * implementation
  */
 #if defined(LX_CONFIG_OS_ANDROID)
-lx_bool_t lx_gl_api_load() {
+lx_bool_t lx_gl_load() {
     lx_bool_t ok = lx_false;
     do {
         // load v2 library first
@@ -242,7 +242,7 @@ lx_bool_t lx_gl_api_load() {
     return ok;
 }
 #elif defined(LX_CONFIG_OS_WINDOWS)
-lx_bool_t lx_gl_api_load() {
+lx_bool_t lx_gl_load() {
     lx_bool_t ok = lx_false;
     do {
         LX_GL_API_LOAD_S(glAlphaFunc);
@@ -296,7 +296,7 @@ lx_bool_t lx_gl_api_load() {
     return ok;
 }
 #else
-lx_bool_t lx_gl_api_load() {
+lx_bool_t lx_gl_load() {
     lx_bool_t ok = lx_false;
     do {
         // load interfaces for common
@@ -396,7 +396,7 @@ lx_bool_t lx_gl_api_load() {
 }
 #endif
 
-lx_size_t lx_gl_api_version() {
+lx_size_t lx_gl_version() {
     static lx_size_t s_version = 0;
     if (!s_version) {
 #ifdef LX_CONFIG_OS_WINDOWS
