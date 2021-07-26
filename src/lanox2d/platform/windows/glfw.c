@@ -150,6 +150,77 @@ static lx_void_t lx_window_glfw_key_callback(GLFWwindow* self, lx_int_t key, lx_
 
         default :
             if (key < 256) {
+                if (mode != GLFW_MOD_SHIFT && key >= 'A' && key <= 'Z') {
+                    key = lx_tolower(key);
+                } else if (mode == GLFW_MOD_SHIFT) {
+                    switch (key) {
+                    case GLFW_KEY_0:
+                        key = ')';
+                        break;
+                    case GLFW_KEY_1:
+                        key = '!';
+                        break;
+                    case GLFW_KEY_2:
+                        key = '@';
+                        break;
+                    case GLFW_KEY_3:
+                        key = '#';
+                        break;
+                    case GLFW_KEY_4:
+                        key = '$';
+                        break;
+                    case GLFW_KEY_5:
+                        key = '%';
+                        break;
+                    case GLFW_KEY_6:
+                        key = '^';
+                        break;
+                    case GLFW_KEY_7:
+                        key = '&';
+                        break;
+                    case GLFW_KEY_8:
+                        key = '*';
+                        break;
+                    case GLFW_KEY_9:
+                        key = '(';
+                        break;
+                    case '=':
+                        key = '+';
+                        break;
+                    case '-':
+                        key = '_';
+                        break;
+                    case '[':
+                        key = '{';
+                        break;
+                    case ']':
+                        key = '}';
+                        break;
+                    case '\\':
+                        key = '|';
+                        break;
+                    case ';':
+                        key = ':';
+                        break;
+                    case '\'':
+                        key = '\"';
+                        break;
+                    case ',':
+                        key = '<';
+                        break;
+                    case '.':
+                        key = '>';
+                        break;
+                    case '/':
+                        key = '?';
+                        break;
+                    case '`':
+                        key = '~';
+                        break;
+                    default:
+                        break;
+                    }
+                }
                 event.u.keyboard.code = key;
             }
             break;
