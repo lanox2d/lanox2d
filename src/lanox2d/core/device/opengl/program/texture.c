@@ -79,9 +79,9 @@ static lx_gl_program_ref_t lx_gl_program_init_texture_3x() {
         "#version 330\n"
         "precision mediump float;\n"
         "\n"
-        "in vec4 aColor;\n"
-        "in vec4 aTexcoords;\n"
-        "in vec4 aVertices;\n"
+        "layout(location = 0) in vec4 aColor;\n"
+        "layout(location = 1) in vec4 aTexcoords;\n"
+        "layout(location = 2) in vec4 aVertices;\n"
         "\n"
         "out vec4 vColors;\n"
         "out vec4 vTexcoords;\n"
@@ -110,9 +110,9 @@ static lx_gl_program_ref_t lx_gl_program_init_texture_3x() {
 
     lx_gl_program_ref_t program = lx_gl_program_init(LX_GL_PROGRAM_TYPE_TEXTURE, vshader, fshader);
     if (program) {
-        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_COLORS,          lx_gl_program_attr(program, "aColor"));
-        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_VERTICES,        lx_gl_program_attr(program, "aVertices"));
-        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_TEXCOORDS,       lx_gl_program_attr(program, "aTexcoords"));
+        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_COLORS, 0);
+        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_VERTICES, 1);
+        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_TEXCOORDS, 2);
         lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_MODEL,    lx_gl_program_unif(program, "uMatrixModel"));
         lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_PROJECT,  lx_gl_program_unif(program, "uMatrixProject"));
         lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_TEXCOORD, lx_gl_program_unif(program, "uMatrixTexcoord"));

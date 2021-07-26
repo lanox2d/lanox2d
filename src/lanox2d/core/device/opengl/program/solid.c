@@ -96,8 +96,8 @@ static lx_gl_program_ref_t lx_gl_program_init_solid_3x() {
     if (program) {
         lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_COLORS, 0);
         lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_VERTICES, 1);
-        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_MODEL, 2);
-        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_PROJECT, 3);
+        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_MODEL,    lx_gl_program_unif(program, "uMatrixModel"));
+        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_PROJECT,  lx_gl_program_unif(program, "uMatrixProject"));
     }
     return program;
 }
