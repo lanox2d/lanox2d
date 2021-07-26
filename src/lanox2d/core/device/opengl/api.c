@@ -126,10 +126,10 @@ static lx_GLvoid_t LX_GL_APICALL lx_gl_api_glOrthof(lx_GLfloat_t left, lx_GLfloa
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
+#if defined(LX_CONFIG_OS_ANDROID)
 lx_bool_t lx_gl_api_load() {
     lx_bool_t ok = lx_false;
     do {
-#ifdef LX_CONFIG_OS_ANDROID
         // load v2 library first
         lx_dlimage_ref_t library = lx_null;
         if ((library = lx_dlopen("libGLESv2.so", LX_RTLD_LAZY))) {
@@ -237,11 +237,70 @@ lx_bool_t lx_gl_api_load() {
             LX_GL_API_LOAD_D(library, glTranslatef);
             LX_GL_API_LOAD_D(library, glVertexPointer);
         }
+        ok = lx_true;
+    } while (0);
+    return ok;
+}
+#elif defined(LX_CONFIG_OS_WINDOWS)
+lx_bool_t lx_gl_api_load() {
+    lx_bool_t ok = lx_false;
+    do {
+        LX_GL_API_LOAD_S(glAlphaFunc);
+        LX_GL_API_LOAD_S(glBindTexture);
+        LX_GL_API_LOAD_S(glBlendFunc);
+        LX_GL_API_LOAD_S(glClear);
+        LX_GL_API_LOAD_S(glClearColor);
+        LX_GL_API_LOAD_S(glClearStencil);
+        LX_GL_API_LOAD_S(glColorMask);
+        LX_GL_API_LOAD_S(glDeleteTextures);
+        LX_GL_API_LOAD_S(glDisable);
+        LX_GL_API_LOAD_S(glDrawArrays);
+        LX_GL_API_LOAD_S(glEnable);
+        LX_GL_API_LOAD_S(glGenTextures);
+        LX_GL_API_LOAD_S(glGetString);
+        LX_GL_API_LOAD_S(glHint);
+        LX_GL_API_LOAD_S(glIsTexture);
+        LX_GL_API_LOAD_S(glLineWidth);
+        LX_GL_API_LOAD_S(glPixelStorei);
+        LX_GL_API_LOAD_S(glScissor);
+        LX_GL_API_LOAD_S(glStencilFunc);
+        LX_GL_API_LOAD_S(glStencilMask);
+        LX_GL_API_LOAD_S(glStencilOp);
+        LX_GL_API_LOAD_S(glTexImage2D);
+        LX_GL_API_LOAD_S(glTexParameterf);
+        LX_GL_API_LOAD_S(glTexParameteri);
+        LX_GL_API_LOAD_S(glViewport);
+
+        // load interfaces for gl 1.x
+        LX_GL_API_LOAD_S(glColor4f);
+        LX_GL_API_LOAD_S(glColorPointer);
+        LX_GL_API_LOAD_S(glDisableClientState);
+        LX_GL_API_LOAD_S(glEnableClientState);
+        LX_GL_API_LOAD_S(glLoadIdentity);
+        LX_GL_API_LOAD_S(glLoadMatrixf);
+        LX_GL_API_LOAD_S(glMatrixMode);
+        LX_GL_API_LOAD_S(glMultMatrixf);
+        LX_GL_API_LOAD_S(glOrtho);
+        LX_GL_API_LOAD_S_(glOrthof, lx_gl_api_glOrthof);
+        LX_GL_API_LOAD_S(glPopMatrix);
+        LX_GL_API_LOAD_S(glPushMatrix);
+        LX_GL_API_LOAD_S(glRotatef);
+        LX_GL_API_LOAD_S(glScalef);
+        LX_GL_API_LOAD_S(glTexCoordPointer);
+        LX_GL_API_LOAD_S(glTexEnvi);
+        LX_GL_API_LOAD_S(glTranslatef);
+        LX_GL_API_LOAD_S(glVertexPointer);
+
+        ok = lx_true;
+    } while (0);
+    return ok;
+}
 #else
+lx_bool_t lx_gl_api_load() {
+    lx_bool_t ok = lx_false;
+    do {
         // load interfaces for common
-#ifndef LX_CONFIG_OS_WINDOWS
         LX_GL_API_LOAD_S(glActiveTexture);
-#endif
         LX_GL_API_LOAD_S(glAlphaFunc);
         LX_GL_API_LOAD_S(glBindTexture);
         LX_GL_API_LOAD_S(glBlendFunc);
@@ -292,7 +351,6 @@ lx_bool_t lx_gl_api_load() {
         LX_GL_API_LOAD_S(glTranslatef);
         LX_GL_API_LOAD_S(glVertexPointer);
 
-#   ifndef LX_CONFIG_OS_WINDOWS
         // load interfaces for gl >= 2.0
         LX_GL_API_LOAD_S(glAttachShader);
         LX_GL_API_LOAD_S(glCompileShader);
@@ -331,14 +389,12 @@ lx_bool_t lx_gl_api_load() {
         LX_GL_API_LOAD_S(glBindVertexArray);
         LX_GL_API_LOAD_S(glDeleteVertexArrays);
 #endif
-#   endif
-#endif
-        // ok
         ok = lx_true;
 
     } while (0);
     return ok;
 }
+#endif
 
 lx_size_t lx_gl_api_version() {
     static lx_size_t s_version = 0;
