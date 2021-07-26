@@ -348,6 +348,7 @@ typedef lx_GLvoid_t             (LX_GL_API_TYPE(glVertexAttrib4f))            (l
 typedef lx_GLvoid_t             (LX_GL_API_TYPE(glVertexAttribPointer))       (lx_GLuint_t indx, lx_GLint_t size, lx_GLenum_t type, lx_GLboolean_t normalized, lx_GLsizei_t stride, lx_GLvoid_t const* ptr);
 typedef lx_GLvoid_t             (LX_GL_API_TYPE(glVertexPointer))             (lx_GLint_t size, lx_GLenum_t type, lx_GLsizei_t stride,  lx_GLvoid_t const* ptr);
 typedef lx_GLvoid_t             (LX_GL_API_TYPE(glViewport))                  (lx_GLint_t x, lx_GLint_t y, lx_GLsizei_t width, lx_GLsizei_t height);
+typedef lx_GLenum_t             (LX_GL_API_TYPE(glGetError))                  (lx_GLvoid_t);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * functions
@@ -417,6 +418,7 @@ LX_GL_API_EXTERN(glVertexAttrib4f);
 LX_GL_API_EXTERN(glVertexAttribPointer);
 LX_GL_API_EXTERN(glVertexPointer);
 LX_GL_API_EXTERN(glViewport);
+LX_GL_API_EXTERN(glGetError);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * interface

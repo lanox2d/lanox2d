@@ -107,6 +107,7 @@ LX_GL_API_DEFINE(glVertexAttrib4f);
 LX_GL_API_DEFINE(glVertexAttribPointer);
 LX_GL_API_DEFINE(glVertexPointer);
 LX_GL_API_DEFINE(glViewport);
+LX_GL_API_DEFINE(glGetError);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
@@ -173,6 +174,7 @@ lx_bool_t lx_gl_api_load() {
             LX_GL_API_LOAD_D(library, glUseProgram);
             LX_GL_API_LOAD_D(library, glVertexAttrib4f);
             LX_GL_API_LOAD_D(library, glVertexAttribPointer);
+            LX_GL_API_LOAD_D(library, glGetError);
         } else if ((library = lx_dlopen("libGLESv1_CM.so", LX_RTLD_LAZY))) { // load v1 library
             // load interfaces for common
             LX_GL_API_LOAD_D(library, glActiveTexture);
@@ -297,6 +299,7 @@ lx_bool_t lx_gl_api_load() {
         LX_GL_API_LOAD_S(glUseProgram);
         LX_GL_API_LOAD_S(glVertexAttrib4f);
         LX_GL_API_LOAD_S(glVertexAttribPointer);
+        LX_GL_API_LOAD_S(glGetError);
 #   endif
 #endif
         // ok
