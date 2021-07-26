@@ -108,6 +108,13 @@ LX_GL_API_DEFINE(glVertexAttribPointer);
 LX_GL_API_DEFINE(glVertexPointer);
 LX_GL_API_DEFINE(glViewport);
 LX_GL_API_DEFINE(glGetError);
+LX_GL_API_DEFINE(glGenVertexArrays);
+LX_GL_API_DEFINE(glGenBuffers);
+LX_GL_API_DEFINE(glBindVertexArray);
+LX_GL_API_DEFINE(glBindBuffer);
+LX_GL_API_DEFINE(glBufferData);
+LX_GL_API_DEFINE(glDeleteVertexArrays);
+LX_GL_API_DEFINE(glDeleteBuffers);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
@@ -175,6 +182,15 @@ lx_bool_t lx_gl_api_load() {
             LX_GL_API_LOAD_D(library, glVertexAttrib4f);
             LX_GL_API_LOAD_D(library, glVertexAttribPointer);
             LX_GL_API_LOAD_D(library, glGetError);
+            LX_GL_API_LOAD_D(library, glBindBuffer);
+            LX_GL_API_LOAD_D(library, glBufferData);
+            LX_GL_API_LOAD_D(library, glDeleteBuffers);
+
+            // load interfaces for gl >= 3.0
+            LX_GL_API_LOAD_D(library, glGenVertexArrays);
+            LX_GL_API_LOAD_D(library, glBindVertexArray);
+            LX_GL_API_LOAD_D(library, glDeleteVertexArrays);
+
         } else if ((library = lx_dlopen("libGLESv1_CM.so", LX_RTLD_LAZY))) { // load v1 library
             // load interfaces for common
             LX_GL_API_LOAD_D(library, glActiveTexture);
@@ -300,6 +316,21 @@ lx_bool_t lx_gl_api_load() {
         LX_GL_API_LOAD_S(glVertexAttrib4f);
         LX_GL_API_LOAD_S(glVertexAttribPointer);
         LX_GL_API_LOAD_S(glGetError);
+        LX_GL_API_LOAD_S(glGenBuffers);
+        LX_GL_API_LOAD_S(glBindBuffer);
+        LX_GL_API_LOAD_S(glBufferData);
+        LX_GL_API_LOAD_S(glDeleteBuffers);
+
+        // load interfaces for gl >= 3.0
+#ifdef LX_CONFIG_OS_MACOSX
+        LX_GL_API_LOAD_S_(glGenVertexArrays, glGenVertexArraysAPPLE);
+        LX_GL_API_LOAD_S_(glBindVertexArray, glBindVertexArrayAPPLE);
+        LX_GL_API_LOAD_S_(glDeleteVertexArrays, glDeleteVertexArraysAPPLE);
+#else
+        LX_GL_API_LOAD_S(glGenVertexArrays);
+        LX_GL_API_LOAD_S(glBindVertexArray);
+        LX_GL_API_LOAD_S(glDeleteVertexArrays);
+#endif
 #   endif
 #endif
         // ok

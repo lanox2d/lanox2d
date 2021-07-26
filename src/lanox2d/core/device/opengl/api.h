@@ -275,6 +275,7 @@ typedef lx_int_t        lx_GLint_t;
 typedef lx_byte_t       lx_GLubyte_t;
 typedef lx_uint_t       lx_GLuint_t;
 typedef lx_int_t        lx_GLsizei_t;
+typedef lx_intptr_t     lx_GLsizeiptr_t;
 typedef lx_float_t      lx_GLfloat_t;
 typedef lx_float_t      lx_GLclampf_t;
 typedef lx_double_t     lx_GLdouble_t;
@@ -349,6 +350,13 @@ typedef lx_GLvoid_t             (LX_GL_API_TYPE(glVertexAttribPointer))       (l
 typedef lx_GLvoid_t             (LX_GL_API_TYPE(glVertexPointer))             (lx_GLint_t size, lx_GLenum_t type, lx_GLsizei_t stride,  lx_GLvoid_t const* ptr);
 typedef lx_GLvoid_t             (LX_GL_API_TYPE(glViewport))                  (lx_GLint_t x, lx_GLint_t y, lx_GLsizei_t width, lx_GLsizei_t height);
 typedef lx_GLenum_t             (LX_GL_API_TYPE(glGetError))                  (lx_GLvoid_t);
+typedef lx_void_t               (LX_GL_API_TYPE(glGenVertexArrays))           (lx_GLsizei_t n, lx_GLuint_t* arrays);
+typedef lx_void_t               (LX_GL_API_TYPE(glGenBuffers))                (lx_GLsizei_t n, lx_GLuint_t* buffers);
+typedef lx_void_t               (LX_GL_API_TYPE(glBindVertexArray))           (lx_GLuint_t array);
+typedef lx_void_t               (LX_GL_API_TYPE(glBindBuffer))                (lx_GLenum_t target, lx_GLuint_t array);
+typedef lx_void_t               (LX_GL_API_TYPE(glBufferData))                (lx_GLenum_t target, lx_GLsizeiptr_t size, lx_GLvoid_t const* data, lx_GLenum_t usage);
+typedef lx_void_t               (LX_GL_API_TYPE(glDeleteVertexArrays))        (lx_GLsizei_t n, lx_GLuint_t const* arrays);
+typedef lx_void_t               (LX_GL_API_TYPE(glDeleteBuffers))             (lx_GLsizei_t n, lx_GLuint_t const* buffers);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * functions
@@ -419,6 +427,13 @@ LX_GL_API_EXTERN(glVertexAttribPointer);
 LX_GL_API_EXTERN(glVertexPointer);
 LX_GL_API_EXTERN(glViewport);
 LX_GL_API_EXTERN(glGetError);
+LX_GL_API_EXTERN(glGenVertexArrays);
+LX_GL_API_EXTERN(glGenBuffers);
+LX_GL_API_EXTERN(glBindVertexArray);
+LX_GL_API_EXTERN(glBindBuffer);
+LX_GL_API_EXTERN(glBufferData);
+LX_GL_API_EXTERN(glDeleteVertexArrays);
+LX_GL_API_EXTERN(glDeleteBuffers);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * interface

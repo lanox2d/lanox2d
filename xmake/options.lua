@@ -51,7 +51,7 @@ option("window")
             elseif value == "glfw" then
                 option:add("frameworks", "OpenGL")
             end
-            option:add("cxflags", "-Wno-error=deprecated-declarations")
+            option:add("defines", "GL_SILENCE_DEPRECATION")
         end
         if value then
             option:set("configvar", "LX_CONFIG_WINDOW_HAVE_" .. value:upper(), 1)

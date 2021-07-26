@@ -129,6 +129,7 @@ typedef lx_ulong_t                  lx_size_t;
 // integer pointer
 typedef lx_long_t                   lx_ptrdiff_t;
 typedef lx_ulong_t                  lx_uintptr_t;
+typedef lx_long_t                   lx_intptr_t;
 
 // float number
 typedef float                       lx_float_t;
