@@ -178,8 +178,7 @@ static lx_void_t lx_window_sdl_event(lx_window_sdl_t* window, SDL_Event* sdleven
         event.type                  = LX_EVENT_TYPE_KEYBOARD;
         event.u.keyboard.pressed    = sdlevent->type == SDL_KEYDOWN? lx_true : lx_false;
 
-        switch ((lx_size_t)sdlevent->key.keysym.sym)
-        {
+        switch ((lx_size_t)sdlevent->key.keysym.sym) {
         case SDLK_F1:           event.u.keyboard.code = LX_KEY_F1;          break;
         case SDLK_F2:           event.u.keyboard.code = LX_KEY_F2;          break;
         case SDLK_F3:           event.u.keyboard.code = LX_KEY_F3;          break;

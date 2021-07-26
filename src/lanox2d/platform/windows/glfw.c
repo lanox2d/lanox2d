@@ -51,6 +51,115 @@ static lx_void_t lx_window_glfw_fullscreen(lx_window_ref_t self, lx_bool_t is_fu
     }
 }
 
+static lx_void_t lx_window_glfw_mouse_button_callback(GLFWwindow* self, lx_int_t button, lx_int_t action, lx_int_t mode) {
+    lx_assert(self);
+    lx_window_glfw_t* window = (lx_window_glfw_t*)glfwGetWindowUserPointer(self);
+    lx_assert(window && window->window);
+
+    lx_double_t x, y;
+    glfwGetCursorPos(window->window, &x, &y);
+
+    lx_event_t event = {0};
+    lx_point_make(&event.u.mouse.cursor, (lx_float_t)x, (lx_float_t)y);
+    if (button == GLFW_MOUSE_BUTTON_LEFT)  {
+        event.type              = LX_EVENT_TYPE_MOUSE;
+        event.u.mouse.button    = LX_MOUSE_BUTTON_LEFT;
+        event.u.mouse.code      = (action == GLFW_PRESS)? LX_MOUSE_DOWN : LX_MOUSE_UP;
+    } else if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+        event.type              = LX_EVENT_TYPE_MOUSE;
+        event.u.mouse.button    = LX_MOUSE_BUTTON_RIGHT;
+        event.u.mouse.code      = (action == GLFW_PRESS)? LX_MOUSE_DOWN : LX_MOUSE_UP;
+    } else if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
+        event.type              = LX_EVENT_TYPE_MOUSE;
+        event.u.mouse.button    = LX_MOUSE_BUTTON_MIDDLE;
+        event.u.mouse.code      = (action == GLFW_PRESS)? LX_MOUSE_DOWN : LX_MOUSE_UP;
+    }
+    if (window->base.on_event) {
+        window->base.on_event((lx_window_ref_t)window, &event);
+    }
+}
+
+static lx_void_t lx_window_glfw_cursor_pos_callback(GLFWwindow* self, lx_double_t x, lx_double_t y) {
+    lx_assert(self);
+    lx_window_glfw_t* window = (lx_window_glfw_t*)glfwGetWindowUserPointer(self);
+    lx_assert(window && window->window);
+
+    lx_event_t event = {0};
+    event.type           = LX_EVENT_TYPE_MOUSE;
+    event.u.mouse.code   = LX_MOUSE_MOVE;
+    if (GLFW_PRESS == glfwGetMouseButton(window->window, GLFW_MOUSE_BUTTON_LEFT)) {
+        event.u.mouse.button = LX_MOUSE_BUTTON_LEFT;
+    } else if (GLFW_PRESS == glfwGetMouseButton(window->window, GLFW_MOUSE_BUTTON_RIGHT)) {
+        event.u.mouse.button = LX_MOUSE_BUTTON_RIGHT;
+    } else if (GLFW_PRESS == glfwGetMouseButton(window->window, GLFW_MOUSE_BUTTON_MIDDLE)) {
+        event.u.mouse.button = LX_MOUSE_BUTTON_MIDDLE;
+    }
+    lx_point_make(&event.u.mouse.cursor, (lx_float_t)x, (lx_float_t)y);
+    if (window->base.on_event) {
+        window->base.on_event((lx_window_ref_t)window, &event);
+    }
+}
+
+static lx_void_t lx_window_glfw_key_callback(GLFWwindow* self, lx_int_t key, lx_int_t scancode, lx_int_t action, lx_int_t mode) {
+    lx_assert(self);
+    lx_window_glfw_t* window = (lx_window_glfw_t*)glfwGetWindowUserPointer(self);
+    lx_assert(window);
+    if (action == GLFW_PRESS || action == GLFW_RELEASE) {
+        lx_event_t event = {0};
+        event.type               = LX_EVENT_TYPE_KEYBOARD;
+        event.u.keyboard.pressed = action == GLFW_PRESS? lx_true : lx_false;
+        switch (key) {
+        case GLFW_KEY_F1:           event.u.keyboard.code = LX_KEY_F1;          break;
+        case GLFW_KEY_F2:           event.u.keyboard.code = LX_KEY_F2;          break;
+        case GLFW_KEY_F3:           event.u.keyboard.code = LX_KEY_F3;          break;
+        case GLFW_KEY_F4:           event.u.keyboard.code = LX_KEY_F4;          break;
+        case GLFW_KEY_F5:           event.u.keyboard.code = LX_KEY_F5;          break;
+        case GLFW_KEY_F6:           event.u.keyboard.code = LX_KEY_F6;          break;
+        case GLFW_KEY_F7:           event.u.keyboard.code = LX_KEY_F7;          break;
+        case GLFW_KEY_F8:           event.u.keyboard.code = LX_KEY_F8;          break;
+        case GLFW_KEY_F9:           event.u.keyboard.code = LX_KEY_F9;          break;
+        case GLFW_KEY_F10:          event.u.keyboard.code = LX_KEY_F10;         break;
+        case GLFW_KEY_F11:          event.u.keyboard.code = LX_KEY_F11;         break;
+        case GLFW_KEY_F12:          event.u.keyboard.code = LX_KEY_F12;         break;
+
+        case GLFW_KEY_LEFT:         event.u.keyboard.code = LX_KEY_LEFT;        break;
+        case GLFW_KEY_UP:           event.u.keyboard.code = LX_KEY_UP;          break;
+        case GLFW_KEY_RIGHT:        event.u.keyboard.code = LX_KEY_RIGHT;       break;
+        case GLFW_KEY_DOWN:         event.u.keyboard.code = LX_KEY_DOWN;        break;
+
+        case GLFW_KEY_HOME:         event.u.keyboard.code = LX_KEY_HOME;        break;
+        case GLFW_KEY_END:          event.u.keyboard.code = LX_KEY_END;         break;
+        case GLFW_KEY_INSERT:       event.u.keyboard.code = LX_KEY_INSERT;      break;
+        case GLFW_KEY_PAGE_UP:      event.u.keyboard.code = LX_KEY_PAGEUP;      break;
+        case GLFW_KEY_PAGE_DOWN:    event.u.keyboard.code = LX_KEY_PAGEDOWN;    break;
+
+        case GLFW_KEY_MENU:         event.u.keyboard.code = LX_KEY_MENU;        break;
+
+        case GLFW_KEY_CAPS_LOCK:    event.u.keyboard.code = LX_KEY_CAPSLOCK;    break;
+        case GLFW_KEY_SCROLL_LOCK:  event.u.keyboard.code = LX_KEY_SCROLLLOCK;  break;
+        case GLFW_KEY_RIGHT_SHIFT:  event.u.keyboard.code = LX_KEY_RSHIFT;      break;
+        case GLFW_KEY_LEFT_SHIFT:   event.u.keyboard.code = LX_KEY_LSHIFT;      break;
+        case GLFW_KEY_RIGHT_CONTROL:event.u.keyboard.code = LX_KEY_RCTRL;       break;
+        case GLFW_KEY_LEFT_CONTROL: event.u.keyboard.code = LX_KEY_LCTRL;       break;
+        case GLFW_KEY_RIGHT_ALT:    event.u.keyboard.code = LX_KEY_RALT;        break;
+        case GLFW_KEY_LEFT_ALT:     event.u.keyboard.code = LX_KEY_LALT;        break;
+
+        case GLFW_KEY_PAUSE:        event.u.keyboard.code = LX_KEY_PAUSE;       break;
+        case GLFW_KEY_ENTER:        event.u.keyboard.code = LX_KEY_ENTER;       break;
+        case GLFW_KEY_ESCAPE:       event.u.keyboard.code = LX_KEY_ESCAPE;       break;
+
+        default :
+            if (key < 256) {
+                event.u.keyboard.code = key;
+            }
+            break;
+        }
+        if (event.u.keyboard.code && window->base.on_event) {
+            window->base.on_event((lx_window_ref_t)window, &event);
+        }
+    }
+}
+
 static lx_bool_t lx_window_glfw_start(lx_window_glfw_t* window) {
     lx_bool_t ok = lx_false;
     do {
@@ -73,6 +182,10 @@ static lx_bool_t lx_window_glfw_start(lx_window_glfw_t* window) {
             window->base.title? window->base.title : "lanox2d (GLFW)", lx_null, lx_null);
         lx_assert_and_check_break(window->window);
         glfwMakeContextCurrent(window->window);
+        glfwSetKeyCallback(window->window, lx_window_glfw_key_callback);
+        glfwSetMouseButtonCallback(window->window, lx_window_glfw_mouse_button_callback);
+        glfwSetCursorPosCallback(window->window, lx_window_glfw_cursor_pos_callback);
+        glfwSetWindowUserPointer(window->window, window);
 
         // hide window
         if (window->base.flags & LX_WINDOW_FLAG_HIDDEN) {
