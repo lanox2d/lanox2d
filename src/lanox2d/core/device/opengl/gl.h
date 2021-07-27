@@ -435,11 +435,11 @@ LX_GL_API_EXTERN(glDeleteBuffers);
  * interface
  */
 
-/* load gl apis
+/* init gl context
  *
  * @return          lx_true or lx_false
  */
-lx_bool_t           lx_gl_load(lx_noarg_t);
+lx_bool_t           lx_gl_context_init(lx_noarg_t);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

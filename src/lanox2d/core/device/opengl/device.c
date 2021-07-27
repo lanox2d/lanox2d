@@ -112,8 +112,8 @@ lx_device_ref_t lx_device_init_from_opengl(lx_window_ref_t window) {
         lx_size_t height = lx_window_height(window);
         lx_assert_and_check_break(width && height && width <= LX_WIDTH_MAX && height <= LX_HEIGHT_MAX);
 
-        // load gl api first
-        if (!lx_gl_load()) {
+        // init gl context first
+        if (!lx_gl_context_init()) {
             break;
         }
 

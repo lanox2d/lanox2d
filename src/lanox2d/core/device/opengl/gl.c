@@ -123,11 +123,8 @@ static lx_GLvoid_t LX_GL_APICALL lx_gl_api_glOrthof(lx_GLfloat_t left, lx_GLfloa
     lx_glOrtho(left, right, bottom, top, nearp, farp);
 }
 
-/* //////////////////////////////////////////////////////////////////////////////////////
- * implementation
- */
 #if defined(LX_CONFIG_OS_ANDROID)
-lx_bool_t lx_gl_load() {
+static lx_bool_t lx_gl_api_init() {
     lx_bool_t ok = lx_false;
     do {
         // load v2 library first
@@ -242,7 +239,7 @@ lx_bool_t lx_gl_load() {
     return ok;
 }
 #elif defined(LX_CONFIG_OS_WINDOWS)
-lx_bool_t lx_gl_load() {
+static lx_bool_t lx_gl_api_init() {
     lx_bool_t ok = lx_false;
     do {
         LX_GL_API_LOAD_S(glAlphaFunc);
@@ -296,7 +293,7 @@ lx_bool_t lx_gl_load() {
     return ok;
 }
 #else
-lx_bool_t lx_gl_load() {
+static lx_bool_t lx_gl_api_init() {
     lx_bool_t ok = lx_false;
     do {
         // load interfaces for common
@@ -395,3 +392,15 @@ lx_bool_t lx_gl_load() {
     return ok;
 }
 #endif
+
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * implementation
+ */
+lx_bool_t lx_gl_context_init() {
+    if (!lx_gl_api_init()) {
+        lx_trace_e("init opengl api failed!");
+        return lx_false;
+    }
+    return lx_true;
+}
