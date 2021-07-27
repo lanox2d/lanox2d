@@ -450,6 +450,14 @@ LX_GL_API_EXTERN(glDeleteBuffers);
  */
 lx_bool_t           lx_gl_context_init(lx_noarg_t);
 
+/* is the given extension supported?
+ *
+ * @param ext       the extension enum, LX_GL_EXT_ARB_xxx
+ *
+ * @return          lx_true or lx_false
+ */
+lx_bool_t           lx_gl_has_extension(lx_size_t ext);
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */

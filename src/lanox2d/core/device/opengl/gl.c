@@ -467,3 +467,7 @@ lx_bool_t lx_gl_context_init() {
     lx_gl_extensions_init();
     return lx_true;
 }
+
+lx_bool_t lx_gl_has_extension(lx_size_t ext) {
+    return ext < lx_arrayn(g_gl_context.extensions)? (lx_bool_t)g_gl_context.extensions[ext] : lx_false;
+}
