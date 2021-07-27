@@ -32,7 +32,7 @@ target("lanox2d")
     add_files("platform/**.c|windows/*.c")
 
     -- add options
-    add_options("small", "wchar", "window", "device", "bitmap", "pixfmt")
+    add_options("small", "wchar", "window", "device", "bitmap", "pixfmt", "openglver")
 
     -- check interfaces
     check_interfaces()

@@ -128,8 +128,6 @@ lx_device_ref_t lx_device_init_from_opengl(lx_window_ref_t window) {
         device->base.draw_path             = lx_device_opengl_draw_path;
         device->base.exit                  = lx_device_opengl_exit;
         device->window                     = window;
-        device->glversion                  = lx_gl_version();
-        lx_assert_and_check_break(device->glversion);
 
         // init stroker
         device->stroker = lx_stroker_init();
@@ -145,48 +143,44 @@ lx_device_ref_t lx_device_init_from_opengl(lx_window_ref_t window) {
         // init viewport
         lx_glViewport(0, 0, width, height);
 
-        // init gl >= 2.0
-        if (device->glversion >= 0x20) {
+#if LX_GL_API_VERSION >= 20
+        // init solid program
+        device->programs[LX_GL_PROGRAM_TYPE_SOLID] = lx_gl_program_init_solid();
+        lx_assert_and_check_break(device->programs[LX_GL_PROGRAM_TYPE_SOLID]);
 
-            // init solid program
-            device->programs[LX_GL_PROGRAM_TYPE_SOLID] = lx_gl_program_init_solid();
-            lx_assert_and_check_break(device->programs[LX_GL_PROGRAM_TYPE_SOLID]);
+        // init texture program
+        device->programs[LX_GL_PROGRAM_TYPE_TEXTURE] = lx_gl_program_init_texture();
+        lx_assert_and_check_break(device->programs[LX_GL_PROGRAM_TYPE_TEXTURE]);
 
-            // init texture program
-            device->programs[LX_GL_PROGRAM_TYPE_TEXTURE] = lx_gl_program_init_texture();
-            lx_assert_and_check_break(device->programs[LX_GL_PROGRAM_TYPE_TEXTURE]);
+        /* init the projection matrix
+         *
+         * opengl (origin):
+         *
+         *  y
+         * /|\
+         *  |
+         *  |
+         *   ----------> x
+         *
+         * to (world)
+         *
+         *   ----------> x
+         *  |
+         *  |
+         * \|/
+         *  y
+         */
+        lx_gl_matrix_orthof(device->matrix_project, 0.0f, (lx_GLfloat_t)width, (lx_GLfloat_t)height, 0.0f, -1.0f, 1.0f);
+#else
+        // init the projection matrix
+        lx_glMatrixMode(LX_GL_PROJECTION);
+        lx_glLoadIdentity();
+        lx_glOrthof(0.0f, (lx_GLfloat_t)width, (lx_GLfloat_t)height, 0.0f, -1.0f, 1.0f);
 
-            /* init the projection matrix
-             *
-             * opengl (origin):
-             *
-             *  y
-             * /|\
-             *  |
-             *  |
-             *   ----------> x
-             *
-             * to (world)
-             *
-             *   ----------> x
-             *  |
-             *  |
-             * \|/
-             *  y
-             */
-            lx_gl_matrix_orthof(device->matrix_project, 0.0f, (lx_GLfloat_t)width, (lx_GLfloat_t)height, 0.0f, -1.0f, 1.0f);
-
-        } else { // init gl 1.x
-
-            // init the projection matrix
-            lx_glMatrixMode(LX_GL_PROJECTION);
-            lx_glLoadIdentity();
-            lx_glOrthof(0.0f, (lx_GLfloat_t)width, (lx_GLfloat_t)height, 0.0f, -1.0f, 1.0f);
-
-            // init the model matrix
-            lx_glMatrixMode(LX_GL_MODELVIEW);
-            lx_glLoadIdentity();
-        }
+        // init the model matrix
+        lx_glMatrixMode(LX_GL_MODELVIEW);
+        lx_glLoadIdentity();
+#endif
 
         // generate texture
         lx_glGenTextures(1, &device->texture);

@@ -395,34 +395,3 @@ lx_bool_t lx_gl_load() {
     return ok;
 }
 #endif
-
-lx_size_t lx_gl_version() {
-    static lx_size_t s_version = 0;
-    if (!s_version) {
-#ifdef LX_CONFIG_OS_WINDOWS
-        // only supports gl 1.1 for windows
-        s_version = 0x11;
-#else
-        // get version string
-        lx_char_t const* version = (lx_char_t const*)lx_glGetString(LX_GL_VERSION);
-        lx_assert_and_check_return_val(version, 0);
-
-        // find version
-        lx_char_t const* p = version;
-        lx_char_t const* e = version + lx_strlen(version);
-        for (; p < e && *p && !lx_isdigit(*p); p++) ;
-        lx_assert_and_check_return_val(p + 2 < e && p[1] == '.' && lx_isdigit(p[2]), 0);
-
-        // major & minor
-        lx_byte_t major = p[0] - '0';
-        lx_byte_t minor = p[2] - '0';
-
-        // trace
-        lx_trace_d("version: %s: %x", version, ((major << 4) + minor));
-
-        // [0x10, 0x19]
-        s_version = ((major << 4) + minor);
-#endif
-    }
-    return s_version;
-}

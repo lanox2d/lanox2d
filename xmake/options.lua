@@ -79,4 +79,37 @@ option("device")
             option:set("configvar", "LX_CONFIG_DEVICE_HAVE_" .. option:value():upper(), 1)
         end
     end)
+
+-- opengl version, e.g. 1.1, 3.3, es2.0, ...
+option("openglver")
+    set_showmenu(true)
+    set_description("Set opengl version")
+    add_deps("device", "window")
+    on_check(function (option)
+        if not option:value() then
+            local device = option:dep("device"):value()
+            local window = option:dep("window"):value()
+            if device == "opengl" then
+                if is_plat("macosx") then
+                    option:set_value(window == "glfw" and "3.3" or "2.1")
+                elseif is_plat("linux") then
+                    option:set_value(window == "glfw" and "3.3" or "2.1")
+                elseif is_plat("windows", "mingw") then
+                    option:set_value("1.1")
+                elseif is_plat("android", "iphoneos") then
+                    option:set_value("es2.0")
+                end
+            end
+        end
+    end)
+    after_check(function (option)
+        local value = option:value()
+        if value then
+            if value:startswith("es") then
+                option:set("configvar", "LX_CONFIG_OPENGL_ES", 1)
+                value = value:sub(3)
+            end
+            option:set("configvar", "LX_CONFIG_OPENGL_VERSION", tonumber((value:gsub("%.", ""))))
+        end
+    end)
 option_end()

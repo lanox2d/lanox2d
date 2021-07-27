@@ -30,35 +30,31 @@
  * macros
  */
 
-// gl apicall
+// api function macros
 #define LX_GL_APICALL
+#define LX_GL_API_TYPE(func)                LX_GL_APICALL *lx_##func##_t
+#define LX_GL_API_EXTERN(func)              extern lx_##func##_t lx_##func
+#define LX_GL_API_LOAD_S(func)              lx_##func = func
+#define LX_GL_API_LOAD_S_(name, func)       lx_##name = &func
+#define LX_GL_API_LOAD_D(library, func)     lx_##func = (lx_##func##_t)lx_dlsym(library, #func); lx_assert_and_check_break(lx_##func)
 
-// type
-#define LX_GL_API_TYPE(func)                          LX_GL_APICALL *lx_##func##_t
-
-// extern
-#define LX_GL_API_EXTERN(func)                        extern lx_##func##_t lx_##func
-
-// load the static function
-#define LX_GL_API_LOAD_S(func)                        lx_##func = func
-
-// load the static function
-#define LX_GL_API_LOAD_S_(name, func)                 lx_##name = &func
-
-// load the dynamic function
-#define LX_GL_API_LOAD_D(library, func)               lx_##func = (lx_##func##_t)lx_dlsym(library, #func); lx_assert_and_check_break(lx_##func)
-
-/* //////////////////////////////////////////////////////////////////////////////////////
- * macros for gl
- */
+// opengl api version
+#ifdef LX_CONFIG_OPENGL_VERSION
+#   define LX_GL_API_VERSION            LX_CONFIG_OPENGL_VERSION
+#else
+#   error unknown opengl version
+#endif
+#ifdef LX_CONFIG_OPENGL_ES
+#   define LX_GL_API_ES                 LX_CONFIG_OPENGL_ES
+#endif
 
 // data type
 #define LX_GL_BYTE                      (0x1400)
 #define LX_GL_UNSIGNED_BYTE             (0x1401)
 #define LX_GL_SHORT                     (0x1402)
 #define LX_GL_UNSIGNED_SHORT            (0x1403)
-#define GL_GL_INT                       (0x1404)
-#define GL_GL_UNSIGNED_INT              (0x1405)
+#define LX_GL_INT                       (0x1404)
+#define LX_GL_UNSIGNED_INT              (0x1405)
 #define LX_GL_FLOAT                     (0x1406)
 #if defined(LX_CONFIG_OS_IOS) || defined(LX_CONFIG_OS_ANDROID)
 #   define LX_GL_FIXED                  (0x140C)
@@ -444,12 +440,6 @@ LX_GL_API_EXTERN(glDeleteBuffers);
  * @return          lx_true or lx_false
  */
 lx_bool_t           lx_gl_load(lx_noarg_t);
-
-/* get gl api version
- *
- * @return          the opengl api version, e.g. 0x1x -> 1.x, 0x20 -> 2.0x
- */
-lx_size_t           lx_gl_version(lx_noarg_t);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
