@@ -256,9 +256,10 @@
 lx_extern_c_enter
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * basic type
+ * types
  */
 
+// basic types
 typedef lx_uint_t       lx_GLenum_t;
 typedef lx_char_t       lx_GLchar_t;
 typedef lx_byte_t       lx_GLboolean_t;
@@ -277,9 +278,7 @@ typedef lx_float_t      lx_GLclampf_t;
 typedef lx_double_t     lx_GLdouble_t;
 typedef lx_double_t     lx_GLclampd_t;
 
-/* //////////////////////////////////////////////////////////////////////////////////////
- * interface types
- */
+// interface types
 typedef lx_GLvoid_t             (LX_GL_API_TYPE(glActiveTexture))             (lx_GLenum_t texture);
 typedef lx_GLvoid_t             (LX_GL_API_TYPE(glAlphaFunc))                 (lx_GLenum_t func, lx_GLclampf_t ref);
 typedef lx_GLvoid_t             (LX_GL_API_TYPE(glAttachShader))              (lx_GLuint_t program, lx_GLuint_t shader);
@@ -353,6 +352,14 @@ typedef lx_void_t               (LX_GL_API_TYPE(glBindBuffer))                (l
 typedef lx_void_t               (LX_GL_API_TYPE(glBufferData))                (lx_GLenum_t target, lx_GLsizeiptr_t size, lx_GLvoid_t const* data, lx_GLenum_t usage);
 typedef lx_void_t               (LX_GL_API_TYPE(glDeleteVertexArrays))        (lx_GLsizei_t n, lx_GLuint_t const* arrays);
 typedef lx_void_t               (LX_GL_API_TYPE(glDeleteBuffers))             (lx_GLsizei_t n, lx_GLuint_t const* buffers);
+
+// the opengl extensions enum
+typedef enum lx_gl_extensions_e_ {
+    LX_GL_EXT_ARB_NONE = 0,
+    LX_GL_EXT_ARB_vertex_array_object,          // vao
+    LX_GL_EXT_ARB_texture_non_power_of_two,
+    LX_GL_EXT_ARB_MAXN
+}lx_gl_extensions_e;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * functions

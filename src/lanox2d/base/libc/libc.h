@@ -209,6 +209,16 @@ lx_size_t           lx_strnlen(lx_char_t const* s, lx_size_t n);
  */
 lx_int_t            lx_strcmp(lx_char_t const* s1, lx_char_t const* s2);
 
+/*! strncmp
+ *
+ * @param s1        the c-string
+ * @param s2        the c-string
+ * @param n         the max length
+ *
+ * @return          >0, 0, <0
+ */
+lx_int_t            lx_strncmp(lx_char_t const* s1, lx_char_t const* s2, lx_size_t n);
+
 /*! strnicmp
  *
  * @param s1        the c-string
@@ -228,6 +238,25 @@ lx_int_t            lx_strnicmp(lx_char_t const* s1, lx_char_t const* s2, lx_siz
  * @return          the long value
  */
 lx_long_t           lx_strtol(lx_char_t const* s, lx_char_t** endptr, lx_int_t base);
+
+/*! strchr
+ *
+ * @param s         the c-string
+ * @param c         the charactor
+ *
+ * @return          the result positon
+ */
+lx_char_t*          lx_strchr(lx_char_t const* s, lx_char_t c);
+
+/* strlcpy
+ *
+ * @param s1        the c-string
+ * @param s2        the c-string
+ * @param n         the s1 max buffer length
+ *
+ * @return          the result length
+ */
+lx_size_t           lx_strlcpy(lx_char_t* s1, lx_char_t const* s2, lx_size_t n);
 
 /*! get random value
  *

@@ -35,13 +35,30 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * macros
  */
-// define func
+
+// define opengl api function
 #define LX_GL_API_DEFINE(func)            lx_##func##_t lx_##func = lx_null
+
+// init opengl api extension
+#define LX_GL_API_EXT_INIT(ext)           do {\
+    if (!lx_strncmp(p, "GL_" #ext, l)) { \
+        g_gl_context.extensions[LX_GL_EXT_##ext] = 1; \
+        lx_trace_d("GL_" #ext ": 1"); \
+    } \
+} while (0)
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * types
+ */
+
+// the opengl context type
+typedef struct lx_gl_context_t_ {
+    lx_byte_t       extensions[LX_GL_EXT_ARB_MAXN];
+}lx_gl_context_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * functions
  */
-
 LX_GL_API_DEFINE(glActiveTexture);
 LX_GL_API_DEFINE(glAlphaFunc);
 LX_GL_API_DEFINE(glAttachShader);
@@ -115,6 +132,13 @@ LX_GL_API_DEFINE(glBindBuffer);
 LX_GL_API_DEFINE(glBufferData);
 LX_GL_API_DEFINE(glDeleteVertexArrays);
 LX_GL_API_DEFINE(glDeleteBuffers);
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * globals
+ */
+
+// the opengl context
+static lx_gl_context_t g_gl_context;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
@@ -393,6 +417,22 @@ static lx_bool_t lx_gl_api_init() {
 }
 #endif
 
+// init opengl api extensions
+static lx_void_t lx_gl_extensions_init() {
+    lx_char_t const* p = (lx_char_t const*)lx_glGetString(LX_GL_EXTENSIONS);
+    if (p) {
+        lx_size_t        n = lx_strlen(p);
+        lx_char_t const* e = p + n;
+        while (p < e) {
+            lx_char_t const* q = lx_strchr(p, ' ');
+            lx_size_t        l = q? q - p : lx_strlen(p);
+            LX_GL_API_EXT_INIT(ARB_vertex_array_object);
+            LX_GL_API_EXT_INIT(ARB_texture_non_power_of_two);
+            p += l + 1;
+        }
+    }
+}
+
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
@@ -402,5 +442,6 @@ lx_bool_t lx_gl_context_init() {
         lx_trace_e("init opengl api failed!");
         return lx_false;
     }
+    lx_gl_extensions_init();
     return lx_true;
 }
