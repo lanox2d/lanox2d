@@ -40,11 +40,16 @@
 #define LX_GL_API_DEFINE(func)            lx_##func##_t lx_##func = lx_null
 
 // init opengl api extension
-#define LX_GL_API_EXT_INIT(ext)           do {\
+#define LX_GL_API_EXT_CHECK_INIT(ext)           do {\
     if (!lx_strncmp(p, "GL_" #ext, l)) { \
         g_gl_context.extensions[LX_GL_EXT_##ext] = 1; \
         lx_trace_d("GL_" #ext ": 1"); \
     } \
+} while (0)
+
+#define LX_GL_API_EXT_INIT(ext)           do {\
+    g_gl_context.extensions[LX_GL_EXT_##ext] = 1; \
+    lx_trace_d("GL_" #ext ": 1"); \
 } while (0)
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -143,9 +148,11 @@ static lx_gl_context_t g_gl_context;
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
+#if LX_GL_API_VERSION < 20
 static lx_GLvoid_t LX_GL_APICALL lx_gl_api_glOrthof(lx_GLfloat_t left, lx_GLfloat_t right, lx_GLfloat_t bottom, lx_GLfloat_t top, lx_GLfloat_t nearp, lx_GLfloat_t farp) {
     lx_glOrtho(left, right, bottom, top, nearp, farp);
 }
+#endif
 
 #if defined(LX_CONFIG_OS_ANDROID)
 static lx_bool_t lx_gl_api_init() {
@@ -180,7 +187,7 @@ static lx_bool_t lx_gl_api_init() {
             LX_GL_API_LOAD_D(library, glTexParameteri);
             LX_GL_API_LOAD_D(library, glViewport);
 
-            // load interfaces for gl >= 2.0
+#if LX_GL_API_VERSION >= 20
             LX_GL_API_LOAD_D(library, glAttachShader);
             LX_GL_API_LOAD_D(library, glCompileShader);
             LX_GL_API_LOAD_D(library, glCreateProgram);
@@ -206,12 +213,7 @@ static lx_bool_t lx_gl_api_init() {
             LX_GL_API_LOAD_D(library, glBindBuffer);
             LX_GL_API_LOAD_D(library, glBufferData);
             LX_GL_API_LOAD_D(library, glDeleteBuffers);
-
-            // load interfaces for gl >= 3.0
-            LX_GL_API_LOAD_D(library, glGenVertexArrays);
-            LX_GL_API_LOAD_D(library, glBindVertexArray);
-            LX_GL_API_LOAD_D(library, glDeleteVertexArrays);
-
+#endif
         } else if ((library = lx_dlopen("libGLESv1_CM.so", LX_RTLD_LAZY))) { // load v1 library
             // load interfaces for common
             LX_GL_API_LOAD_D(library, glActiveTexture);
@@ -239,7 +241,7 @@ static lx_bool_t lx_gl_api_init() {
             LX_GL_API_LOAD_D(library, glTexParameteri);
             LX_GL_API_LOAD_D(library, glViewport);
 
-            // load interfaces for gl 1.x
+#if LX_GL_API_VERSION < 20
             LX_GL_API_LOAD_D(library, glColor4f);
             LX_GL_API_LOAD_D(library, glColorPointer);
             LX_GL_API_LOAD_D(library, glDisableClientState);
@@ -257,6 +259,7 @@ static lx_bool_t lx_gl_api_init() {
             LX_GL_API_LOAD_D(library, glTexEnvi);
             LX_GL_API_LOAD_D(library, glTranslatef);
             LX_GL_API_LOAD_D(library, glVertexPointer);
+#endif
         }
         ok = lx_true;
     } while (0);
@@ -292,7 +295,7 @@ static lx_bool_t lx_gl_api_init() {
         LX_GL_API_LOAD_S(glTexParameteri);
         LX_GL_API_LOAD_S(glViewport);
 
-        // load interfaces for gl 1.x
+#if LX_GL_API_VERSION < 20
         LX_GL_API_LOAD_S(glColor4f);
         LX_GL_API_LOAD_S(glColorPointer);
         LX_GL_API_LOAD_S(glDisableClientState);
@@ -311,7 +314,7 @@ static lx_bool_t lx_gl_api_init() {
         LX_GL_API_LOAD_S(glTexEnvi);
         LX_GL_API_LOAD_S(glTranslatef);
         LX_GL_API_LOAD_S(glVertexPointer);
-
+#endif
         ok = lx_true;
     } while (0);
     return ok;
@@ -349,6 +352,7 @@ static lx_bool_t lx_gl_api_init() {
         LX_GL_API_LOAD_S(glViewport);
 
         // load interfaces for gl 1.x
+#if LX_GL_API_VERSION <= 20
         LX_GL_API_LOAD_S(glColor4f);
         LX_GL_API_LOAD_S(glColorPointer);
         LX_GL_API_LOAD_S(glDisableClientState);
@@ -371,8 +375,9 @@ static lx_bool_t lx_gl_api_init() {
         LX_GL_API_LOAD_S(glTexEnvi);
         LX_GL_API_LOAD_S(glTranslatef);
         LX_GL_API_LOAD_S(glVertexPointer);
+#endif
 
-        // load interfaces for gl >= 2.0
+#if LX_GL_API_VERSION >= 20
         LX_GL_API_LOAD_S(glAttachShader);
         LX_GL_API_LOAD_S(glCompileShader);
         LX_GL_API_LOAD_S(glCreateProgram);
@@ -399,16 +404,18 @@ static lx_bool_t lx_gl_api_init() {
         LX_GL_API_LOAD_S(glBindBuffer);
         LX_GL_API_LOAD_S(glBufferData);
         LX_GL_API_LOAD_S(glDeleteBuffers);
+#endif
 
-        // load interfaces for gl >= 3.0
-#ifdef LX_CONFIG_OS_MACOSX
+#if LX_GL_API_VERSION >= 30
+#   ifdef LX_CONFIG_OS_MACOSX
         LX_GL_API_LOAD_S_(glGenVertexArrays, glGenVertexArraysAPPLE);
         LX_GL_API_LOAD_S_(glBindVertexArray, glBindVertexArrayAPPLE);
         LX_GL_API_LOAD_S_(glDeleteVertexArrays, glDeleteVertexArraysAPPLE);
-#else
+#   else
         LX_GL_API_LOAD_S(glGenVertexArrays);
         LX_GL_API_LOAD_S(glBindVertexArray);
         LX_GL_API_LOAD_S(glDeleteVertexArrays);
+#   endif
 #endif
         ok = lx_true;
 
@@ -419,6 +426,8 @@ static lx_bool_t lx_gl_api_init() {
 
 // init opengl api extensions
 static lx_void_t lx_gl_extensions_init() {
+
+#if LX_GL_API_VERSION < 30
     lx_char_t const* p = (lx_char_t const*)lx_glGetString(LX_GL_EXTENSIONS);
     if (p) {
         lx_size_t        n = lx_strlen(p);
@@ -426,11 +435,17 @@ static lx_void_t lx_gl_extensions_init() {
         while (p < e) {
             lx_char_t const* q = lx_strchr(p, ' ');
             lx_size_t        l = q? q - p : lx_strlen(p);
-            LX_GL_API_EXT_INIT(ARB_vertex_array_object);
-            LX_GL_API_EXT_INIT(ARB_texture_non_power_of_two);
+            LX_GL_API_EXT_CHECK_INIT(ARB_vertex_array_object);
+            LX_GL_API_EXT_CHECK_INIT(ARB_texture_non_power_of_two);
             p += l + 1;
         }
     }
+#endif
+
+#if LX_GL_API_VERSION >= 33
+    // opengl 3.3 extensions supported by default (core)
+    LX_GL_API_EXT_INIT(ARB_vertex_array_object);
+#endif
 }
 
 
@@ -438,10 +453,17 @@ static lx_void_t lx_gl_extensions_init() {
  * implementation
  */
 lx_bool_t lx_gl_context_init() {
+
+    // init api
     if (!lx_gl_api_init()) {
         lx_trace_e("init opengl api failed!");
         return lx_false;
     }
+
+    // init context
+    lx_memset(&g_gl_context, 0, sizeof(g_gl_context));
+
+    // init extensions
     lx_gl_extensions_init();
     return lx_true;
 }

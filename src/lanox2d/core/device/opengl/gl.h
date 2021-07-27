@@ -310,6 +310,7 @@ typedef lx_GLvoid_t             (LX_GL_API_TYPE(glGetProgramInfoLog))         (l
 typedef lx_GLvoid_t             (LX_GL_API_TYPE(glGetShaderiv))               (lx_GLuint_t shader, lx_GLenum_t pname, lx_GLint_t* params);
 typedef lx_GLvoid_t             (LX_GL_API_TYPE(glGetShaderInfoLog))          (lx_GLuint_t shader, lx_GLsizei_t bufsize, lx_GLsizei_t* length, lx_GLchar_t* infolog);
 typedef lx_GLubyte_t const*     (LX_GL_API_TYPE(glGetString))                 (lx_GLenum_t name);
+typedef lx_GLubyte_t const*     (LX_GL_API_TYPE(glGetStringi))                (lx_GLenum_t name, lx_GLenum_t index);
 typedef lx_GLint_t              (LX_GL_API_TYPE(glGetUniformLocation))        (lx_GLuint_t program, lx_GLchar_t const* name);
 typedef lx_GLvoid_t             (LX_GL_API_TYPE(glHint))                      (lx_GLenum_t target, lx_GLenum_t mode);
 typedef lx_GLboolean_t          (LX_GL_API_TYPE(glIsTexture))                 (lx_GLuint_t texture);
@@ -356,7 +357,7 @@ typedef lx_void_t               (LX_GL_API_TYPE(glDeleteBuffers))             (l
 // the opengl extensions enum
 typedef enum lx_gl_extensions_e_ {
     LX_GL_EXT_ARB_NONE = 0,
-    LX_GL_EXT_ARB_vertex_array_object,          // vao
+    LX_GL_EXT_ARB_vertex_array_object,          // VAO
     LX_GL_EXT_ARB_texture_non_power_of_two,
     LX_GL_EXT_ARB_MAXN
 }lx_gl_extensions_e;
@@ -395,6 +396,7 @@ LX_GL_API_EXTERN(glGetProgramInfoLog);
 LX_GL_API_EXTERN(glGetShaderiv);
 LX_GL_API_EXTERN(glGetShaderInfoLog);
 LX_GL_API_EXTERN(glGetString);
+LX_GL_API_EXTERN(glGetStringi);
 LX_GL_API_EXTERN(glGetUniformLocation);
 LX_GL_API_EXTERN(glHint);
 LX_GL_API_EXTERN(glIsTexture);
