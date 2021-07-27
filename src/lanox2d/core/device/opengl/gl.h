@@ -458,6 +458,14 @@ lx_bool_t           lx_gl_context_init(lx_noarg_t);
  */
 lx_bool_t           lx_gl_has_extension(lx_size_t ext);
 
+/* bind vertex array
+ *
+ * @param vao_id    the VAO id
+ *
+ * @return          lx_true or lx_false
+ */
+lx_bool_t           lx_gl_vertex_array_bind(lx_uint_t vao_id);
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */

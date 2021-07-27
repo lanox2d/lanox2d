@@ -471,3 +471,13 @@ lx_bool_t lx_gl_context_init() {
 lx_bool_t lx_gl_has_extension(lx_size_t ext) {
     return ext < lx_arrayn(g_gl_context.extensions)? (lx_bool_t)g_gl_context.extensions[ext] : lx_false;
 }
+
+lx_bool_t lx_gl_vertex_array_bind(lx_uint_t vao_id) {
+#if LX_GL_API_VERSION >= 20
+    if (lx_gl_has_extension(LX_GL_EXT_ARB_vertex_array_object)) {
+        lx_glBindVertexArray(vao_id);
+        return lx_true;
+    }
+#endif
+    return lx_false;
+}
