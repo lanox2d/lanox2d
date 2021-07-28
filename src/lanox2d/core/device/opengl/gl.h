@@ -250,6 +250,11 @@
 #define LX_GL_TEXTURE31                 (0x84DF)
 #define LX_GL_ACTIVE_TEXTURE            (0x84E0)
 
+// vertex buffer
+#define LX_GL_ARRAY_BUFFER              (0x8892)
+#define LX_GL_STATIC_DRAW               (0x88E4)
+#define LX_GL_DYNAMIC_DRAW              (0x88E8)
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */
@@ -460,26 +465,47 @@ lx_bool_t           lx_gl_has_extension(lx_size_t ext);
 
 /* init vertex array
  *
- * @return          the VAO id
+ * @return          the id
  */
 lx_GLuint_t         lx_gl_vertex_array_init(lx_noarg_t);
 
 /* exit the given vertex array
  *
- * @param vao_id    the VAO id
+ * @param id        the id
  */
-lx_void_t           lx_gl_vertex_array_exit(lx_GLuint_t vao_id);
+lx_void_t           lx_gl_vertex_array_exit(lx_GLuint_t id);
 
 /* enable the given vertex array
  *
- * @param vao_id    the VAO id
+ * @param id        the id
  *
  * @return          lx_true or lx_false
  */
-lx_bool_t           lx_gl_vertex_array_enable(lx_GLuint_t vao_id);
+lx_bool_t           lx_gl_vertex_array_enable(lx_GLuint_t id);
 
 // disable vertex array
 lx_void_t           lx_gl_vertex_array_disable(lx_noarg_t);
+
+/* init vertex buffer
+ *
+ * @return          the id
+ */
+lx_GLuint_t         lx_gl_vertex_buffer_init(lx_cpointer_t buffer, lx_GLsizeiptr_t size, lx_bool_t dynamic);
+
+/* exit the given vertex buffer
+ *
+ * @param id        the id
+ */
+lx_void_t           lx_gl_vertex_buffer_exit(lx_GLuint_t id);
+
+/* enable the given vertex buffer
+ *
+ * @param id        the id
+ */
+lx_void_t           lx_gl_vertex_buffer_enable(lx_GLuint_t id);
+
+// disable vertex buffer
+lx_void_t           lx_gl_vertex_buffer_disable(lx_noarg_t);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
