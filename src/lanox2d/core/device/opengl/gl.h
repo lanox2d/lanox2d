@@ -458,13 +458,28 @@ lx_bool_t           lx_gl_context_init(lx_noarg_t);
  */
 lx_bool_t           lx_gl_has_extension(lx_size_t ext);
 
-/* bind vertex array
+/* init vertex array
+ *
+ * @return          the VAO id
+ */
+lx_GLuint_t         lx_gl_vertex_array_init(lx_noarg_t);
+
+/* exit the given vertex array
+ *
+ * @param vao_id    the VAO id
+ */
+lx_void_t           lx_gl_vertex_array_exit(lx_GLuint_t vao_id);
+
+/* enable the given vertex array
  *
  * @param vao_id    the VAO id
  *
  * @return          lx_true or lx_false
  */
-lx_bool_t           lx_gl_vertex_array_bind(lx_uint_t vao_id);
+lx_bool_t           lx_gl_vertex_array_enable(lx_GLuint_t vao_id);
+
+// disable vertex array
+lx_void_t           lx_gl_vertex_array_disable(lx_noarg_t);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

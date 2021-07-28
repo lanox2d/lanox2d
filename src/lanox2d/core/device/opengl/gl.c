@@ -472,7 +472,26 @@ lx_bool_t lx_gl_has_extension(lx_size_t ext) {
     return ext < lx_arrayn(g_gl_context.extensions)? (lx_bool_t)g_gl_context.extensions[ext] : lx_false;
 }
 
-lx_bool_t lx_gl_vertex_array_bind(lx_uint_t vao_id) {
+lx_GLuint_t lx_gl_vertex_array_init() {
+    lx_GLuint_t vao_id = 0;
+#if LX_GL_API_VERSION >= 20
+    if (lx_gl_has_extension(LX_GL_EXT_ARB_vertex_array_object)) {
+        lx_glGenVertexArrays(1, &vao_id);
+    }
+#endif
+    return vao_id;
+}
+
+lx_void_t lx_gl_vertex_array_exit(lx_GLuint_t vao_id) {
+#if LX_GL_API_VERSION >= 20
+    if (lx_gl_has_extension(LX_GL_EXT_ARB_vertex_array_object)) {
+        lx_glBindVertexArray(0);
+        lx_glDeleteVertexArrays(1, &vao_id);
+    }
+#endif
+}
+
+lx_bool_t lx_gl_vertex_array_enable(lx_GLuint_t vao_id) {
 #if LX_GL_API_VERSION >= 20
     if (lx_gl_has_extension(LX_GL_EXT_ARB_vertex_array_object)) {
         lx_glBindVertexArray(vao_id);
@@ -480,4 +499,12 @@ lx_bool_t lx_gl_vertex_array_bind(lx_uint_t vao_id) {
     }
 #endif
     return lx_false;
+}
+
+lx_void_t lx_gl_vertex_array_disable() {
+#if LX_GL_API_VERSION >= 20
+    if (lx_gl_has_extension(LX_GL_EXT_ARB_vertex_array_object)) {
+        lx_glBindVertexArray(0);
+    }
+#endif
 }
