@@ -58,6 +58,7 @@
 
 // the opengl context type
 typedef struct lx_gl_context_t_ {
+    lx_gl_matrix_t  modelview;
     lx_gl_matrix_t  projection;
     lx_byte_t       extensions[LX_GL_EXT_ARB_MAXN];
 }lx_gl_context_t;
@@ -494,6 +495,11 @@ lx_bool_t lx_gl_context_init(lx_size_t width, lx_size_t height) {
     lx_glMatrixMode(LX_GL_PROJECTION);
     lx_glLoadIdentity();
     lx_glOrthof(0.0f, (lx_GLfloat_t)width, (lx_GLfloat_t)height, 0.0f, -1.0f, 1.0f);
+#endif
+
+    // init the modelview matrix
+    lx_gl_matrix_clear(g_gl_context.modelview);
+#if LX_GL_API_VERSION < 20
     lx_glMatrixMode(LX_GL_MODELVIEW);
     lx_glLoadIdentity();
 #endif
@@ -502,6 +508,10 @@ lx_bool_t lx_gl_context_init(lx_size_t width, lx_size_t height) {
 
 lx_bool_t lx_gl_has_extension(lx_size_t ext) {
     return ext < lx_arrayn(g_gl_context.extensions)? (lx_bool_t)g_gl_context.extensions[ext] : lx_false;
+}
+
+lx_gl_matrix_ref_t lx_gl_matrix_modelview(lx_noarg_t) {
+    return g_gl_context.modelview;
 }
 
 lx_gl_matrix_ref_t lx_gl_matrix_projection() {

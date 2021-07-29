@@ -66,13 +66,13 @@ static lx_void_t lx_gl_renderer_enable_vertices(lx_opengl_device_t* device, lx_b
         lx_assert(device->program);
         lx_glEnableVertexAttribArray(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_VERTICES));
         lx_glUniformMatrix4fv(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_MATRIX_PROJECT), 1, LX_GL_FALSE, lx_gl_matrix_projection());
-        lx_glUniformMatrix4fv(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_MATRIX_MODEL), 1, LX_GL_FALSE, device->matrix_vertex);
+        lx_glUniformMatrix4fv(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_MATRIX_MODEL), 1, LX_GL_FALSE, lx_gl_matrix_modelview());
 #else
         lx_glEnableClientState(LX_GL_VERTEX_ARRAY);
         lx_glMatrixMode(LX_GL_MODELVIEW);
         lx_glPushMatrix();
         lx_glLoadIdentity();
-        lx_glMultMatrixf(device->matrix_vertex);
+        lx_glMultMatrixf(lx_gl_matrix_modelview());
 #endif
     } else {
 #if LX_GL_API_VERSION >= 20
@@ -531,8 +531,8 @@ lx_bool_t lx_gl_renderer_init(lx_opengl_device_t* device) {
         // init shader
         device->shader = lx_paint_shader(device->base.paint);
 
-        // init vertex matrix
-        lx_gl_matrix_convert(device->matrix_vertex, device->base.matrix);
+        // init modelview matrix
+        lx_gl_matrix_convert(lx_gl_matrix_modelview(), device->base.matrix);
 
 #if LX_GL_API_VERSION >= 20
         // get program

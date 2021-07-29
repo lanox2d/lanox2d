@@ -447,6 +447,12 @@ lx_bool_t           lx_gl_context_init(lx_size_t width, lx_size_t height);
  */
 lx_bool_t           lx_gl_has_extension(lx_size_t ext);
 
+/* get modelview matrix in current context
+ *
+ * @return          the modelview matrix reference
+ */
+lx_gl_matrix_ref_t  lx_gl_matrix_modelview(lx_noarg_t);
+
 /* get projection matrix in current context
  *
  * @return          the projection matrix reference
