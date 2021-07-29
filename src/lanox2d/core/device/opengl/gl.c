@@ -58,6 +58,7 @@
 
 // the opengl context type
 typedef struct lx_gl_context_t_ {
+    lx_gl_matrix_t  projection;
     lx_byte_t       extensions[LX_GL_EXT_ARB_MAXN];
 }lx_gl_context_t;
 
@@ -452,7 +453,7 @@ static lx_void_t lx_gl_extensions_init() {
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_bool_t lx_gl_context_init() {
+lx_bool_t lx_gl_context_init(lx_size_t width, lx_size_t height) {
 
     // init api
     if (!lx_gl_api_init()) {
@@ -465,11 +466,51 @@ lx_bool_t lx_gl_context_init() {
 
     // init extensions
     lx_gl_extensions_init();
+
+    // init viewport
+    lx_glViewport(0, 0, width, height);
+
+    /* init the projection matrix
+     *
+     * opengl (origin):
+     *
+     *  y
+     * /|\
+     *  |
+     *  |
+     *   ----------> x
+     *
+     * to (world)
+     *
+     *   ----------> x
+     *  |
+     *  |
+     * \|/
+     *  y
+     */
+#if LX_GL_API_VERSION >= 20
+    lx_gl_matrix_orthof(g_gl_context.projection, 0.0f, (lx_GLfloat_t)width, (lx_GLfloat_t)height, 0.0f, -1.0f, 1.0f);
+#else
+    lx_glMatrixMode(LX_GL_PROJECTION);
+    lx_glLoadIdentity();
+    lx_glOrthof(0.0f, (lx_GLfloat_t)width, (lx_GLfloat_t)height, 0.0f, -1.0f, 1.0f);
+    lx_glMatrixMode(LX_GL_MODELVIEW);
+    lx_glLoadIdentity();
+#endif
     return lx_true;
 }
 
 lx_bool_t lx_gl_has_extension(lx_size_t ext) {
     return ext < lx_arrayn(g_gl_context.extensions)? (lx_bool_t)g_gl_context.extensions[ext] : lx_false;
+}
+
+lx_gl_matrix_ref_t lx_gl_matrix_projection() {
+#if LX_GL_API_VERSION >= 20
+    return g_gl_context.projection;
+#else
+    // we need not it now
+    return lx_null;
+#endif
 }
 
 lx_GLuint_t lx_gl_vertex_array_init() {

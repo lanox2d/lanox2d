@@ -24,7 +24,7 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "prefix.h"
+#include "matrix.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * macros
@@ -264,25 +264,6 @@ lx_extern_c_enter
  * types
  */
 
-// basic types
-typedef lx_uint_t       lx_GLenum_t;
-typedef lx_char_t       lx_GLchar_t;
-typedef lx_byte_t       lx_GLboolean_t;
-typedef lx_uint_t       lx_GLbitfield_t;
-typedef lx_void_t       lx_GLvoid_t;
-typedef lx_char_t       lx_GLbyte_t;
-typedef lx_ushort_t     lx_GLushort_t;
-typedef lx_short_t      lx_GLshort_t;
-typedef lx_int_t        lx_GLint_t;
-typedef lx_byte_t       lx_GLubyte_t;
-typedef lx_uint_t       lx_GLuint_t;
-typedef lx_int_t        lx_GLsizei_t;
-typedef lx_intptr_t     lx_GLsizeiptr_t;
-typedef lx_float_t      lx_GLfloat_t;
-typedef lx_float_t      lx_GLclampf_t;
-typedef lx_double_t     lx_GLdouble_t;
-typedef lx_double_t     lx_GLclampd_t;
-
 // interface types
 typedef lx_GLvoid_t             (LX_GL_API_TYPE(glActiveTexture))             (lx_GLenum_t texture);
 typedef lx_GLvoid_t             (LX_GL_API_TYPE(glAlphaFunc))                 (lx_GLenum_t func, lx_GLclampf_t ref);
@@ -451,9 +432,12 @@ LX_GL_API_EXTERN(glDeleteBuffers);
 
 /* init gl context
  *
+ * @param width     the width
+ * @param height    the height
+ *
  * @return          lx_true or lx_false
  */
-lx_bool_t           lx_gl_context_init(lx_noarg_t);
+lx_bool_t           lx_gl_context_init(lx_size_t width, lx_size_t height);
 
 /* is the given extension supported?
  *
@@ -462,6 +446,12 @@ lx_bool_t           lx_gl_context_init(lx_noarg_t);
  * @return          lx_true or lx_false
  */
 lx_bool_t           lx_gl_has_extension(lx_size_t ext);
+
+/* get projection matrix in current context
+ *
+ * @return          the projection matrix reference
+ */
+lx_gl_matrix_ref_t  lx_gl_matrix_projection(lx_noarg_t);
 
 /* init vertex array
  *

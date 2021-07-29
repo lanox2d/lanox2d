@@ -30,6 +30,29 @@
 #include "../../private/stroker.h"
 #include "../../../platform/window.h"
 
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * types
+ */
+
+// basic types
+typedef lx_uint_t       lx_GLenum_t;
+typedef lx_char_t       lx_GLchar_t;
+typedef lx_byte_t       lx_GLboolean_t;
+typedef lx_uint_t       lx_GLbitfield_t;
+typedef lx_void_t       lx_GLvoid_t;
+typedef lx_char_t       lx_GLbyte_t;
+typedef lx_ushort_t     lx_GLushort_t;
+typedef lx_short_t      lx_GLshort_t;
+typedef lx_int_t        lx_GLint_t;
+typedef lx_byte_t       lx_GLubyte_t;
+typedef lx_uint_t       lx_GLuint_t;
+typedef lx_int_t        lx_GLsizei_t;
+typedef lx_intptr_t     lx_GLsizeiptr_t;
+typedef lx_float_t      lx_GLfloat_t;
+typedef lx_float_t      lx_GLclampf_t;
+typedef lx_double_t     lx_GLdouble_t;
+typedef lx_double_t     lx_GLclampd_t;
+
 #endif
 
 
