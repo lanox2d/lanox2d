@@ -53,6 +53,15 @@ typedef lx_float_t      lx_GLclampf_t;
 typedef lx_double_t     lx_GLdouble_t;
 typedef lx_double_t     lx_GLclampd_t;
 
+// the gl program ref type
+typedef lx_typeref(gl_program);
+
+// the gl matrix type
+typedef lx_GLfloat_t    lx_gl_matrix_t[16];
+
+// the gl matrix ref type
+typedef lx_GLfloat_t*   lx_gl_matrix_ref_t;
+
 #endif
 
 

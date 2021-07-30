@@ -24,7 +24,7 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "matrix.h"
+#include "prefix.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * macros
@@ -459,6 +459,22 @@ lx_gl_matrix_ref_t  lx_gl_matrix_modelview(lx_noarg_t);
  */
 lx_gl_matrix_ref_t  lx_gl_matrix_projection(lx_noarg_t);
 
+/* set uniform matrix
+ *
+ * @param index     the program location index
+ * @param matrix    the matrix
+ */
+lx_void_t           lx_gl_matrix_uniform_set(lx_size_t index, lx_gl_matrix_ref_t matrix);
+
+/* enable the given program
+ *
+ * @param program   the program
+ */
+lx_void_t           lx_gl_program_enable(lx_gl_program_ref_t program);
+
+// disable program
+lx_void_t           lx_gl_program_disable(lx_noarg_t);
+
 /* init vertex array
  *
  * @return          the id
@@ -502,6 +518,18 @@ lx_void_t           lx_gl_vertex_buffer_enable(lx_GLuint_t id);
 
 // disable vertex buffer
 lx_void_t           lx_gl_vertex_buffer_disable(lx_noarg_t);
+
+/* enable vertex attribute
+ *
+ * @param index     the program location index
+ */
+lx_void_t           lx_gl_vertex_attribute_enable(lx_size_t index);
+
+/* disable vertex attribute
+ *
+ * @param index     the program location index
+ */
+lx_void_t           lx_gl_vertex_attribute_disable(lx_size_t index);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

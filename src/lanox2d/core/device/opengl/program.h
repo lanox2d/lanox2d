@@ -55,9 +55,6 @@ typedef enum lx_gl_program_location_e_ {
 ,   LX_GL_PROGRAM_LOCATION_MAXN            = 7
 }lx_gl_program_location_e;
 
-// the gl program ref type
-typedef lx_typeref(gl_program);
-
 /* //////////////////////////////////////////////////////////////////////////////////////
  * interfaces
  */

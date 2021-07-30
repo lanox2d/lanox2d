@@ -23,6 +23,8 @@
  * includes
  */
 #include "gl.h"
+#include "matrix.h"
+#include "program.h"
 #ifdef LX_CONFIG_OS_MACOSX
 #   include <OpenGL/gl.h>
 #   include <OpenGL/glu.h>
@@ -58,9 +60,10 @@
 
 // the opengl context type
 typedef struct lx_gl_context_t_ {
-    lx_gl_matrix_t  modelview;
-    lx_gl_matrix_t  projection;
-    lx_byte_t       extensions[LX_GL_EXT_ARB_MAXN];
+    lx_gl_matrix_t          modelview;
+    lx_gl_matrix_t          projection;
+    lx_gl_program_ref_t     program;
+    lx_byte_t               extensions[LX_GL_EXT_ARB_MAXN];
 }lx_gl_context_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -523,6 +526,36 @@ lx_gl_matrix_ref_t lx_gl_matrix_projection() {
 #endif
 }
 
+lx_void_t lx_gl_matrix_uniform_set(lx_size_t index, lx_gl_matrix_ref_t matrix) {
+    lx_assert(matrix);
+#if LX_GL_API_VERSION >= 20
+    lx_assert(g_gl_context.program);
+    lx_glUniformMatrix4fv(lx_gl_program_location(g_gl_context.program, index), 1, LX_GL_FALSE, matrix);
+#else
+    if (index == LX_GL_PROGRAM_LOCATION_MATRIX_MODEL) {
+        lx_glMatrixMode(LX_GL_MODELVIEW);
+    } else if (index == LX_GL_PROGRAM_LOCATION_MATRIX_PROJECT) {
+        lx_glMatrixMode(LX_GL_PROJECTION);
+    } else if (index == LX_GL_PROGRAM_LOCATION_MATRIX_TEXCOORD) {
+        lx_glMatrixMode(LX_GL_TEXTURE);
+    }
+    lx_glLoadIdentity();
+    lx_glMultMatrixf(matrix);
+#endif
+}
+
+lx_void_t lx_gl_program_enable(lx_gl_program_ref_t program) {
+#if LX_GL_API_VERSION >= 20
+    lx_assert(program);
+    g_gl_context.program = program;
+    lx_gl_program_bind(program);
+#endif
+}
+
+lx_void_t lx_gl_program_disable() {
+    g_gl_context.program = lx_null;
+}
+
 lx_GLuint_t lx_gl_vertex_array_init() {
     lx_GLuint_t id = 0;
 #if LX_GL_API_VERSION >= 20
@@ -585,5 +618,23 @@ lx_void_t lx_gl_vertex_buffer_enable(lx_GLuint_t id) {
 lx_void_t lx_gl_vertex_buffer_disable() {
 #if LX_GL_API_VERSION >= 20
     lx_glBindBuffer(LX_GL_ARRAY_BUFFER, 0);
+#endif
+}
+
+lx_void_t lx_gl_vertex_attribute_enable(lx_size_t index) {
+#if LX_GL_API_VERSION >= 20
+    lx_assert(g_gl_context.program);
+    lx_glEnableVertexAttribArray(lx_gl_program_location(g_gl_context.program, index));
+#else
+    lx_glEnableClientState(LX_GL_VERTEX_ARRAY);
+#endif
+}
+
+lx_void_t lx_gl_vertex_attribute_disable(lx_size_t index) {
+#if LX_GL_API_VERSION >= 20
+    lx_assert(g_gl_context.program);
+    lx_glDisableVertexAttribArray(lx_gl_program_location(g_gl_context.program, index));
+#else
+    lx_glDisableClientState(LX_GL_VERTEX_ARRAY);
 #endif
 }

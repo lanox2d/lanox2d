@@ -60,31 +60,16 @@ static lx_inline lx_void_t lx_gl_renderer_enable_blend(lx_opengl_device_t* devic
     }
 }
 
-static lx_void_t lx_gl_renderer_enable_vertices(lx_opengl_device_t* device, lx_bool_t enabled) {
+static lx_inline lx_void_t lx_gl_renderer_enable_vertices(lx_opengl_device_t* device, lx_bool_t enabled) {
     if (enabled) {
-#if LX_GL_API_VERSION >= 20
-        lx_assert(device->program);
-        lx_glEnableVertexAttribArray(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_VERTICES));
-        lx_glUniformMatrix4fv(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_MATRIX_PROJECT), 1, LX_GL_FALSE, lx_gl_matrix_projection());
-        lx_glUniformMatrix4fv(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_MATRIX_MODEL), 1, LX_GL_FALSE, lx_gl_matrix_modelview());
-#else
-        lx_glEnableClientState(LX_GL_VERTEX_ARRAY);
-        lx_glMatrixMode(LX_GL_MODELVIEW);
-        lx_glPushMatrix();
-        lx_glLoadIdentity();
-        lx_glMultMatrixf(lx_gl_matrix_modelview());
-#endif
+        lx_gl_vertex_attribute_enable(LX_GL_PROGRAM_LOCATION_VERTICES);
+        lx_gl_matrix_ref_t projection = lx_gl_matrix_projection();
+        if (projection) {
+            lx_gl_matrix_uniform_set(LX_GL_PROGRAM_LOCATION_MATRIX_PROJECT, projection);
+        }
+        lx_gl_matrix_uniform_set(LX_GL_PROGRAM_LOCATION_MATRIX_MODEL, lx_gl_matrix_modelview());
     } else {
-#if LX_GL_API_VERSION >= 20
-        lx_assert_and_check_return(device->program);
-        lx_glDisableVertexAttribArray(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_VERTICES));
-        lx_glDisableVertexAttribArray(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_TEXCOORDS));
-#else
-        lx_glMatrixMode(LX_GL_MODELVIEW);
-        lx_glPopMatrix();
-        lx_glDisableClientState(LX_GL_VERTEX_ARRAY);
-        lx_glDisableClientState(LX_GL_TEXTURE_COORD_ARRAY);
-#endif
+        lx_gl_vertex_attribute_disable(LX_GL_PROGRAM_LOCATION_VERTICES);
     }
 }
 
@@ -534,15 +519,12 @@ lx_bool_t lx_gl_renderer_init(lx_opengl_device_t* device) {
         // init modelview matrix
         lx_gl_matrix_convert(lx_gl_matrix_modelview(), device->base.matrix);
 
-#if LX_GL_API_VERSION >= 20
         // get program
         lx_size_t program_type = device->shader? LX_GL_PROGRAM_TYPE_TEXTURE : LX_GL_PROGRAM_TYPE_SOLID;
         device->program = device->programs[program_type];
-        lx_assert_and_check_break(device->program);
-
-        // bind this program to the current gl context
-        lx_gl_program_bind(device->program);
-#endif
+        if (device->program) {
+            lx_gl_program_enable(device->program);
+        }
 
         // init antialiasing
         lx_gl_renderer_enable_antialiasing(device, lx_paint_flags(device->base.paint) & LX_PAINT_FLAG_ANTIALIASING);
