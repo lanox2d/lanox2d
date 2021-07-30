@@ -638,3 +638,12 @@ lx_void_t lx_gl_vertex_attribute_disable(lx_size_t index) {
     lx_glDisableClientState(LX_GL_VERTEX_ARRAY);
 #endif
 }
+
+lx_void_t lx_gl_vertex_attribute_set(lx_size_t index, lx_point_ref_t pointer) {
+#if LX_GL_API_VERSION >= 20
+    lx_assert(g_gl_context.program);
+    lx_glVertexAttribPointer(lx_gl_program_location(g_gl_context.program, index), 2, LX_GL_FLOAT, LX_GL_FALSE, 0, pointer);
+#else
+    lx_glVertexPointer(2, LX_GL_FLOAT, 0, pointer);
+#endif
+}

@@ -159,12 +159,7 @@ static lx_inline lx_void_t lx_gl_renderer_apply_texture_coords(lx_opengl_device_
 
 static lx_inline lx_void_t lx_gl_renderer_apply_vertices(lx_opengl_device_t* device, lx_point_ref_t points) {
     lx_assert(device && points);
-#if LX_GL_API_VERSION >= 20
-    lx_assert(device->program);
-    lx_glVertexAttribPointer(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_VERTICES), 2, LX_GL_FLOAT, LX_GL_FALSE, 0, points);
-#else
-    lx_glVertexPointer(2, LX_GL_FLOAT, 0, points);
-#endif
+    lx_gl_vertex_attribute_set(LX_GL_PROGRAM_LOCATION_VERTICES, points);
 }
 
 static lx_inline lx_void_t lx_gl_renderer_apply_color(lx_opengl_device_t* device, lx_color_t color) {

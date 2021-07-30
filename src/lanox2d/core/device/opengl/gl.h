@@ -531,6 +531,13 @@ lx_void_t           lx_gl_vertex_attribute_enable(lx_size_t index);
  */
 lx_void_t           lx_gl_vertex_attribute_disable(lx_size_t index);
 
+/* set vertex attribute
+ *
+ * @param index     the program location index
+ * @param pointer   the vertex pointer
+ */
+lx_void_t           lx_gl_vertex_attribute_set(lx_size_t index, lx_point_ref_t pointer);
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */
