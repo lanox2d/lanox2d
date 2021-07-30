@@ -626,7 +626,11 @@ lx_void_t lx_gl_vertex_attribute_enable(lx_size_t index) {
     lx_assert(g_gl_context.program);
     lx_glEnableVertexAttribArray(lx_gl_program_location(g_gl_context.program, index));
 #else
-    lx_glEnableClientState(LX_GL_VERTEX_ARRAY);
+    if (index == LX_GL_PROGRAM_LOCATION_VERTICES) {
+        lx_glEnableClientState(LX_GL_VERTEX_ARRAY);
+    } else if (index == LX_GL_PROGRAM_LOCATION_TEXCOORDS) {
+        lx_glEnableClientState(LX_GL_TEXTURE_COORD_ARRAY);
+    }
 #endif
 }
 
@@ -635,7 +639,11 @@ lx_void_t lx_gl_vertex_attribute_disable(lx_size_t index) {
     lx_assert(g_gl_context.program);
     lx_glDisableVertexAttribArray(lx_gl_program_location(g_gl_context.program, index));
 #else
-    lx_glDisableClientState(LX_GL_VERTEX_ARRAY);
+    if (index == LX_GL_PROGRAM_LOCATION_VERTICES) {
+        lx_glDisableClientState(LX_GL_VERTEX_ARRAY);
+    } else if (index == LX_GL_PROGRAM_LOCATION_TEXCOORDS) {
+        lx_glDisableClientState(LX_GL_TEXTURE_COORD_ARRAY);
+    }
 #endif
 }
 
@@ -644,7 +652,11 @@ lx_void_t lx_gl_vertex_attribute_set(lx_size_t index, lx_point_ref_t pointer) {
     lx_assert(g_gl_context.program);
     lx_glVertexAttribPointer(lx_gl_program_location(g_gl_context.program, index), 2, LX_GL_FLOAT, LX_GL_FALSE, 0, pointer);
 #else
-    lx_glVertexPointer(2, LX_GL_FLOAT, 0, pointer);
+    if (index == LX_GL_PROGRAM_LOCATION_VERTICES) {
+        lx_glVertexPointer(2, LX_GL_FLOAT, 0, pointer);
+    } else if (index == LX_GL_PROGRAM_LOCATION_TEXCOORDS) {
+        lx_glTexCoordPointer(2, LX_GL_FLOAT, 0, pointer);
+    }
 #endif
 }
 

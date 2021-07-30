@@ -79,12 +79,8 @@ static lx_void_t lx_gl_renderer_apply_texture(lx_opengl_device_t* device, lx_poi
     lx_assert(data && width && height);
     lx_glEnable(LX_GL_TEXTURE_2D);
     lx_glBindTexture(LX_GL_TEXTURE_2D, device->texture);
-#if LX_GL_API_VERSION >= 20
-    lx_glEnableVertexAttribArray(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_TEXCOORDS));
-#else
-    lx_glEnableClientState(LX_GL_TEXTURE_COORD_ARRAY);
+    lx_gl_vertex_attribute_enable(LX_GL_PROGRAM_LOCATION_TEXCOORDS);
     lx_glTexEnvi(LX_GL_TEXTURE_ENV, LX_GL_TEXTURE_ENV_MODE, LX_GL_MODULATE);
-#endif
 
     // apply texture data
     switch (LX_PIXFMT(pixfmt)) {
@@ -114,15 +110,7 @@ static lx_void_t lx_gl_renderer_apply_texture(lx_opengl_device_t* device, lx_poi
 
 static lx_void_t lx_gl_renderer_apply_texture_matrix(lx_opengl_device_t* device, lx_matrix_ref_t matrix) {
     lx_gl_matrix_convert(device->matrix_texture, matrix);
-#if LX_GL_API_VERSION >= 20
-    lx_assert(device->program);
-    lx_glUniformMatrix4fv(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_MATRIX_TEXCOORD), 1, LX_GL_FALSE, device->matrix_texture);
-#else
-    lx_glMatrixMode(LX_GL_TEXTURE);
-    lx_glLoadIdentity();
-    lx_glMultMatrixf(device->matrix_texture);
-    lx_glMatrixMode(LX_GL_MODELVIEW);
-#endif
+    lx_gl_matrix_uniform_set(LX_GL_PROGRAM_LOCATION_MATRIX_TEXCOORD, device->matrix_texture);
 }
 
 static lx_inline lx_void_t lx_gl_renderer_apply_texture_wrap(lx_opengl_device_t* device, lx_size_t tile_mode_s, lx_size_t tile_mode_t) {
@@ -149,12 +137,7 @@ static lx_inline lx_void_t lx_gl_renderer_apply_texture_filter(lx_opengl_device_
 }
 
 static lx_inline lx_void_t lx_gl_renderer_apply_texture_coords(lx_opengl_device_t* device, lx_point_ref_t points) {
-#if LX_GL_API_VERSION >= 20
-    lx_assert(device->program);
-    lx_glVertexAttribPointer(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_TEXCOORDS), 2, LX_GL_FLOAT, LX_GL_FALSE, 0, points);
-#else
-    lx_glTexCoordPointer(2, LX_GL_FLOAT, 0, points);
-#endif
+    lx_gl_vertex_attribute_set(LX_GL_PROGRAM_LOCATION_TEXCOORDS, points);
 }
 
 static lx_inline lx_void_t lx_gl_renderer_apply_vertices(lx_opengl_device_t* device, lx_point_ref_t points) {
@@ -519,7 +502,7 @@ lx_bool_t lx_gl_renderer_init(lx_opengl_device_t* device) {
         // init antialiasing
         lx_gl_renderer_enable_antialiasing(device, lx_paint_flags(device->base.paint) & LX_PAINT_FLAG_ANTIALIASING);
 
-        // init vertex and matrix
+        // init vertex and matrix, we always enable vertices for filling and stroking
         lx_gl_renderer_enable_vertices(device, lx_true);
 
         // ok
