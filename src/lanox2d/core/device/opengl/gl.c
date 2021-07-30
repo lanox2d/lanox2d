@@ -647,3 +647,12 @@ lx_void_t lx_gl_vertex_attribute_set(lx_size_t index, lx_point_ref_t pointer) {
     lx_glVertexPointer(2, LX_GL_FLOAT, 0, pointer);
 #endif
 }
+
+lx_void_t lx_gl_vertex_color_set(lx_size_t index, lx_color_t color) {
+#if LX_GL_API_VERSION >= 20
+    lx_assert(g_gl_context.program);
+    lx_glVertexAttrib4f(lx_gl_program_location(g_gl_context.program, index), (lx_float_t)color.r / 0xff, (lx_float_t)color.g / 0xff, (lx_float_t)color.b / 0xff, (lx_float_t)color.a / 0xff);
+#else
+    lx_glColor4f((lx_float_t)color.r / 0xff, (lx_float_t)color.g / 0xff, (lx_float_t)color.b / 0xff, (lx_float_t)color.a / 0xff);
+#endif
+}

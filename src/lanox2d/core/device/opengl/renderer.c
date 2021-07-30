@@ -163,12 +163,7 @@ static lx_inline lx_void_t lx_gl_renderer_apply_vertices(lx_opengl_device_t* dev
 }
 
 static lx_inline lx_void_t lx_gl_renderer_apply_color(lx_opengl_device_t* device, lx_color_t color) {
-#if LX_GL_API_VERSION >= 20
-    lx_assert(device->program);
-    lx_glVertexAttrib4f(lx_gl_program_location(device->program, LX_GL_PROGRAM_LOCATION_COLORS), (lx_float_t)color.r / 0xff, (lx_float_t)color.g / 0xff, (lx_float_t)color.b / 0xff, (lx_float_t)color.a / 0xff);
-#else
-    lx_glColor4f((lx_float_t)color.r / 0xff, (lx_float_t)color.g / 0xff, (lx_float_t)color.b / 0xff, (lx_float_t)color.a / 0xff);
-#endif
+    lx_gl_vertex_color_set(LX_GL_PROGRAM_LOCATION_COLORS, color);
 }
 
 static lx_void_t lx_gl_renderer_apply_solid(lx_opengl_device_t* device) {
