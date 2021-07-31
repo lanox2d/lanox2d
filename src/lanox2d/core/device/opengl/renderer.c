@@ -136,8 +136,18 @@ static lx_inline lx_void_t lx_gl_renderer_apply_texture_filter(lx_opengl_device_
     lx_glTexParameteri(LX_GL_TEXTURE_2D, LX_GL_TEXTURE_MIN_FILTER, filter);
 }
 
-static lx_inline lx_void_t lx_gl_renderer_apply_texture_coords(lx_opengl_device_t* device, lx_point_ref_t points) {
-    lx_gl_vertex_attribute_set(LX_GL_PROGRAM_LOCATION_TEXCOORDS, points);
+static lx_inline lx_void_t lx_gl_renderer_apply_texture_coords(lx_opengl_device_t* device, lx_point_ref_t points, lx_size_t count) {
+    lx_assert(device && points);
+    if (device->vertex_array) {
+        lx_gl_vertex_array_enable(device->vertex_array);
+    }
+    if (device->vertex_buffer) {
+        lx_gl_vertex_buffer_enable(device->vertex_buffer);
+        lx_gl_vertex_buffer_data_set(points, (sizeof(lx_point_t) * count), lx_false);
+        lx_gl_vertex_attribute_set(LX_GL_PROGRAM_LOCATION_TEXCOORDS, lx_null);
+    } else {
+        lx_gl_vertex_attribute_set(LX_GL_PROGRAM_LOCATION_TEXCOORDS, points);
+    }
 }
 
 static lx_inline lx_void_t lx_gl_renderer_apply_vertices(lx_opengl_device_t* device, lx_point_ref_t points, lx_size_t count) {
@@ -378,7 +388,7 @@ static lx_void_t lx_gl_renderer_fill_convex(lx_point_ref_t points, lx_uint16_t c
 
     // apply texture coordinate
     if (device->shader && lx_shader_type(device->shader) == LX_SHADER_TYPE_BITMAP) {
-        lx_gl_renderer_apply_texture_coords(device, points);
+        lx_gl_renderer_apply_texture_coords(device, points, count);
     }
 
 #ifndef LX_GL_TESSELLATOR_TEST_ENABLE

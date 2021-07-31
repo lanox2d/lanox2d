@@ -93,6 +93,10 @@ static lx_void_t lx_device_opengl_exit(lx_device_ref_t self) {
             }
         }
         lx_glDeleteTextures(1, &device->texture);
+        if (device->texcoord_buffer) {
+            lx_gl_vertex_buffer_exit(device->texcoord_buffer);
+            device->texcoord_buffer = 0;
+        }
         if (device->vertex_buffer) {
             lx_gl_vertex_buffer_exit(device->vertex_buffer);
             device->vertex_buffer = 0;
@@ -160,6 +164,9 @@ lx_device_ref_t lx_device_init_from_opengl(lx_size_t width, lx_size_t height, lx
 
         // init vertex buffer
         device->vertex_buffer = lx_gl_vertex_buffer_init();
+
+        // init texcoord buffer
+        device->texcoord_buffer = lx_gl_vertex_buffer_init();
 
         // ok
         ok = lx_true;
