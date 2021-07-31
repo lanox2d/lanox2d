@@ -93,6 +93,14 @@ static lx_void_t lx_device_opengl_exit(lx_device_ref_t self) {
             }
         }
         lx_glDeleteTextures(1, &device->texture);
+        if (device->vertex_buffer) {
+            lx_gl_vertex_buffer_exit(device->vertex_buffer);
+            device->vertex_buffer = 0;
+        }
+        if (device->vertex_array) {
+            lx_gl_vertex_array_exit(device->vertex_array);
+            device->vertex_array = 0;
+        }
         lx_free(device);
     }
 }
@@ -100,17 +108,12 @@ static lx_void_t lx_device_opengl_exit(lx_device_ref_t self) {
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_device_ref_t lx_device_init_from_opengl(lx_window_ref_t window) {
-    lx_assert_and_check_return_val(window, lx_null);
+lx_device_ref_t lx_device_init_from_opengl(lx_size_t width, lx_size_t height) {
+    lx_assert_and_check_return_val(width && height, lx_null);
 
     lx_bool_t           ok = lx_false;
     lx_opengl_device_t* device = lx_null;
     do {
-
-        // the width and height
-        lx_size_t width  = lx_window_width(window);
-        lx_size_t height = lx_window_height(window);
-        lx_assert_and_check_break(width && height && width <= LX_WIDTH_MAX && height <= LX_HEIGHT_MAX);
 
         // init gl context first
         if (!lx_gl_context_init(width, height)) {
@@ -127,7 +130,6 @@ lx_device_ref_t lx_device_init_from_opengl(lx_window_ref_t window) {
         device->base.draw_polygon          = lx_device_opengl_draw_polygon;
         device->base.draw_path             = lx_device_opengl_draw_path;
         device->base.exit                  = lx_device_opengl_exit;
-        device->window                     = window;
 
         // init stroker
         device->stroker = lx_stroker_init();
@@ -139,9 +141,6 @@ lx_device_ref_t lx_device_init_from_opengl(lx_window_ref_t window) {
 
         // init tessellator mode
         lx_tessellator_mode_set(device->tessellator, LX_TESSELLATOR_MODE_CONVEX);
-
-        // init viewport
-        lx_glViewport(0, 0, width, height);
 
 #if LX_GL_API_VERSION >= 20
         // init solid program
@@ -155,6 +154,12 @@ lx_device_ref_t lx_device_init_from_opengl(lx_window_ref_t window) {
 
         // generate texture
         lx_glGenTextures(1, &device->texture);
+
+        // init vertex array
+        device->vertex_array = lx_gl_vertex_array_init();
+
+        // init vertex buffer
+        device->vertex_buffer = lx_gl_vertex_buffer_init();
 
         // ok
         ok = lx_true;

@@ -107,17 +107,12 @@ static lx_void_t lx_device_skia_exit(lx_device_ref_t self) {
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_device_ref_t lx_device_init_from_skia(lx_window_ref_t window, lx_bitmap_ref_t bitmap) {
-    lx_assert_and_check_return_val(window, lx_null);
+lx_device_ref_t lx_device_init_from_skia(lx_size_t width, lx_size_t height, lx_bitmap_ref_t bitmap) {
+    lx_assert_and_check_return_val(width && height, lx_null);
 
     lx_bool_t         ok = lx_false;
     lx_skia_device_t* device = lx_null;
     do {
-
-        // the width and height
-        lx_size_t width  = lx_window_width(window);
-        lx_size_t height = lx_window_height(window);
-        lx_assert_and_check_break(width && height && width <= LX_WIDTH_MAX && height <= LX_HEIGHT_MAX);
 
         // init device
         device = lx_malloc0_type(lx_skia_device_t);
@@ -129,7 +124,6 @@ lx_device_ref_t lx_device_init_from_skia(lx_window_ref_t window, lx_bitmap_ref_t
         device->base.draw_polygon = lx_device_skia_draw_polygon;
         device->base.draw_path    = lx_device_skia_draw_path;
         device->base.exit         = lx_device_skia_exit;
-        device->window            = window;
 
         // init bitmap surface
         if (bitmap) {

@@ -354,9 +354,9 @@ static lx_bool_t lx_window_glut_start(lx_window_glut_t* window) {
 
         // init device
 #if defined(LX_CONFIG_DEVICE_HAVE_OPENGL)
-        window->base.device = lx_device_init_from_opengl((lx_window_ref_t)window);
+        window->base.device = lx_device_init_from_opengl(window->base.width, window->base.height);
 #elif defined(LX_CONFIG_DEVICE_HAVE_SKIA)
-        window->base.device = lx_device_init_from_skia((lx_window_ref_t)window, lx_null);
+        window->base.device = lx_device_init_from_skia((window->base.width, window->base.height, lx_null);
 #endif
         lx_assert_and_check_break(window->base.device);
 

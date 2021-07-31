@@ -459,6 +459,9 @@ static lx_void_t lx_gl_extensions_init() {
  */
 lx_bool_t lx_gl_context_init(lx_size_t width, lx_size_t height) {
 
+    // trace
+    lx_trace_d("init opengl %lux%lu", width, height);
+
     // init api
     if (!lx_gl_api_init()) {
         lx_trace_e("init opengl api failed!");
@@ -569,7 +572,6 @@ lx_GLuint_t lx_gl_vertex_array_init() {
 lx_void_t lx_gl_vertex_array_exit(lx_GLuint_t id) {
 #if LX_GL_API_VERSION >= 20
     if (lx_gl_has_extension(LX_GL_EXT_ARB_vertex_array_object)) {
-        lx_glBindVertexArray(0);
         lx_glDeleteVertexArrays(1, &id);
     }
 #endif
@@ -593,12 +595,10 @@ lx_void_t lx_gl_vertex_array_disable() {
 #endif
 }
 
-lx_GLuint_t lx_gl_vertex_buffer_init(lx_cpointer_t buffer, lx_GLsizeiptr_t size, lx_bool_t dynamic) {
+lx_GLuint_t lx_gl_vertex_buffer_init(lx_noarg_t) {
     lx_GLuint_t id = 0;
 #if LX_GL_API_VERSION >= 20
     lx_glGenBuffers(1, &id);
-    lx_glBindBuffer(LX_GL_ARRAY_BUFFER, id);
-    lx_glBufferData(LX_GL_ARRAY_BUFFER, size, buffer, dynamic? LX_GL_DYNAMIC_DRAW : LX_GL_STATIC_DRAW);
 #endif
     return id;
 }
@@ -606,6 +606,12 @@ lx_GLuint_t lx_gl_vertex_buffer_init(lx_cpointer_t buffer, lx_GLsizeiptr_t size,
 lx_void_t lx_gl_vertex_buffer_exit(lx_GLuint_t id) {
 #if LX_GL_API_VERSION >= 20
     lx_glDeleteBuffers(1, &id);
+#endif
+}
+
+lx_void_t lx_gl_vertex_buffer_data_set(lx_cpointer_t buffer, lx_size_t size, lx_bool_t dynamic) {
+#if LX_GL_API_VERSION >= 20
+    lx_glBufferData(LX_GL_ARRAY_BUFFER, (lx_GLsizeiptr_t)size, buffer, dynamic? LX_GL_DYNAMIC_DRAW : LX_GL_STATIC_DRAW);
 #endif
 }
 

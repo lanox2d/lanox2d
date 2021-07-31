@@ -502,13 +502,21 @@ lx_void_t           lx_gl_vertex_array_disable(lx_noarg_t);
  *
  * @return          the id
  */
-lx_GLuint_t         lx_gl_vertex_buffer_init(lx_cpointer_t buffer, lx_GLsizeiptr_t size, lx_bool_t dynamic);
+lx_GLuint_t         lx_gl_vertex_buffer_init(lx_noarg_t);
 
 /* exit the given vertex buffer
  *
  * @param id        the id
  */
 lx_void_t           lx_gl_vertex_buffer_exit(lx_GLuint_t id);
+
+/* set vertex buffer data
+ *
+ * @param buffer    the buffer data
+ * @param size      the buffer size
+ * @param dynamic   is dynamic?
+ */
+lx_void_t           lx_gl_vertex_buffer_data_set(lx_cpointer_t buffer, lx_size_t size, lx_bool_t dynamic);
 
 /* enable the given vertex buffer
  *

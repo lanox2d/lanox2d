@@ -80,7 +80,7 @@ static lx_void_t lx_gl_renderer_apply_texture(lx_opengl_device_t* device, lx_poi
     lx_glEnable(LX_GL_TEXTURE_2D);
     lx_glBindTexture(LX_GL_TEXTURE_2D, device->texture);
     lx_gl_vertex_attribute_enable(LX_GL_PROGRAM_LOCATION_TEXCOORDS);
-    lx_glTexEnvi(LX_GL_TEXTURE_ENV, LX_GL_TEXTURE_ENV_MODE, LX_GL_MODULATE);
+    //lx_glTexEnvi(LX_GL_TEXTURE_ENV, LX_GL_TEXTURE_ENV_MODE, LX_GL_MODULATE);
 
     // apply texture data
     switch (LX_PIXFMT(pixfmt)) {
@@ -140,9 +140,18 @@ static lx_inline lx_void_t lx_gl_renderer_apply_texture_coords(lx_opengl_device_
     lx_gl_vertex_attribute_set(LX_GL_PROGRAM_LOCATION_TEXCOORDS, points);
 }
 
-static lx_inline lx_void_t lx_gl_renderer_apply_vertices(lx_opengl_device_t* device, lx_point_ref_t points) {
+static lx_inline lx_void_t lx_gl_renderer_apply_vertices(lx_opengl_device_t* device, lx_point_ref_t points, lx_size_t count) {
     lx_assert(device && points);
-    lx_gl_vertex_attribute_set(LX_GL_PROGRAM_LOCATION_VERTICES, points);
+    if (device->vertex_array) {
+        lx_gl_vertex_array_enable(device->vertex_array);
+    }
+    if (device->vertex_buffer) {
+        lx_gl_vertex_buffer_enable(device->vertex_buffer);
+        lx_gl_vertex_buffer_data_set(points, (sizeof(lx_point_t) * count), lx_false);
+        lx_gl_vertex_attribute_set(LX_GL_PROGRAM_LOCATION_VERTICES, lx_null);
+    } else {
+        lx_gl_vertex_attribute_set(LX_GL_PROGRAM_LOCATION_VERTICES, points);
+    }
 }
 
 static lx_inline lx_void_t lx_gl_renderer_apply_color(lx_opengl_device_t* device, lx_color_t color) {
@@ -365,7 +374,7 @@ static lx_void_t lx_gl_renderer_fill_convex(lx_point_ref_t points, lx_uint16_t c
     lx_assert(device && points && count);
 
     // apply vertices
-    lx_gl_renderer_apply_vertices(device, points);
+    lx_gl_renderer_apply_vertices(device, points, count);
 
     // apply texture coordinate
     if (device->shader && lx_shader_type(device->shader) == LX_SHADER_TYPE_BITMAP) {
@@ -417,27 +426,26 @@ static lx_inline lx_void_t lx_gl_renderer_fill_polygon(lx_opengl_device_t* devic
 static lx_inline lx_void_t lx_gl_renderer_stroke_lines(lx_opengl_device_t* device, lx_point_ref_t points, lx_size_t count) {
     lx_assert(device && points && count);
 
-    lx_gl_renderer_apply_vertices(device, points);
+    lx_gl_renderer_apply_vertices(device, points, count);
     lx_glDrawArrays(LX_GL_LINES, 0, (lx_GLint_t)count);
 }
 
 static lx_inline lx_void_t lx_gl_renderer_stroke_points(lx_opengl_device_t* device, lx_point_ref_t points, lx_size_t count) {
     lx_assert(device && points && count);
 
-    lx_gl_renderer_apply_vertices(device, points);
+    lx_gl_renderer_apply_vertices(device, points, count);
     lx_glDrawArrays(LX_GL_POINTS, 0, (lx_GLint_t)count);
 }
 
 static lx_inline lx_void_t lx_gl_renderer_stroke_polygon(lx_opengl_device_t* device, lx_point_ref_t points, lx_uint16_t const* counts) {
     lx_assert(device && points && counts);
 
-    // apply vertices
-    lx_gl_renderer_apply_vertices(device, points);
-
+    // TODO, we need optimize it
     lx_uint16_t count;
     lx_size_t   index = 0;
     while ((count = *counts++)) {
-        lx_glDrawArrays(LX_GL_LINE_STRIP, (lx_GLint_t)index, (lx_GLint_t)count);
+        lx_gl_renderer_apply_vertices(device, points, count);
+        lx_glDrawArrays(LX_GL_LINE_STRIP, 0, (lx_GLint_t)count);
         index += count;
     }
 }

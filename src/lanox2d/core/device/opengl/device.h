@@ -45,6 +45,8 @@ typedef struct lx_opengl_device_t_ {
     lx_tessellator_ref_t    tessellator;
     lx_shader_ref_t         shader;
     lx_GLuint_t             texture;
+    lx_GLuint_t             vertex_array;
+    lx_GLuint_t             vertex_buffer;
 }lx_opengl_device_t;
 
 #endif

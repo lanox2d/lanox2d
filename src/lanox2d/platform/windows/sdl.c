@@ -124,7 +124,7 @@ static lx_bool_t lx_window_sdl_start(lx_window_sdl_t* window) {
 #if defined(LX_CONFIG_DEVICE_HAVE_BITMAP)
         window->base.device = lx_device_init_from_bitmap(window->bitmap);
 #elif defined(LX_CONFIG_DEVICE_HAVE_SKIA)
-        window->base.device = lx_device_init_from_skia((lx_window_ref_t)window, window->bitmap);
+        window->base.device = lx_device_init_from_skia(window->base.width, window->base.height, window->bitmap);
 #endif
         lx_assert_and_check_break(window->base.device);
 
