@@ -23,7 +23,6 @@
  * includes
  */
 #include "prefix.h"
-#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -273,17 +272,12 @@ static lx_bool_t lx_window_glfw_start(lx_window_glfw_t* window) {
             lx_window_glfw_fullscreen((lx_window_ref_t)window, lx_true);
         }
 
-        // init glew
-        glewExperimental = lx_true;
-        if (glewInit() != GLEW_OK) {
-            lx_trace_e("init glew failed!");
-            break;
-        }
-
         // get frame width and height
         lx_int_t framewidth = 0;
         lx_int_t frameheight = 0;
         glfwGetFramebufferSize(window->window, &framewidth, &frameheight);
+        framewidth = window->base.width;
+        frameheight = window->base.height;
 
         // init device
 #if defined(LX_CONFIG_DEVICE_HAVE_OPENGL)

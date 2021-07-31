@@ -26,8 +26,12 @@
 #include "matrix.h"
 #include "program.h"
 #ifdef LX_CONFIG_OS_MACOSX
-#   include <OpenGL/gl.h>
-#   include <OpenGL/glu.h>
+#   if LX_GL_VERSION >= 30
+#       include <OpenGL/gl3.h>
+#   else
+#       include <OpenGL/gl.h>
+#       include <OpenGL/glu.h>
+#   endif
 #else
 #define GL_GLEXT_PROTOTYPES
 #   include <GL/glut.h>
@@ -330,7 +334,9 @@ static lx_bool_t lx_gl_api_init() {
     do {
         // load interfaces for common
         LX_GL_API_LOAD_S(glActiveTexture);
+#if defined(LX_CONFIG_OS_MACOSX) && LX_GL_VERSION < 30
         LX_GL_API_LOAD_S(glAlphaFunc);
+#endif
         LX_GL_API_LOAD_S(glBindTexture);
         LX_GL_API_LOAD_S(glBlendFunc);
         LX_GL_API_LOAD_S(glClear);
@@ -412,15 +418,9 @@ static lx_bool_t lx_gl_api_init() {
 #endif
 
 #if LX_GL_API_VERSION >= 30
-#   ifdef LX_CONFIG_OS_MACOSX
-        LX_GL_API_LOAD_S_(glGenVertexArrays, glGenVertexArraysAPPLE);
-        LX_GL_API_LOAD_S_(glBindVertexArray, glBindVertexArrayAPPLE);
-        LX_GL_API_LOAD_S_(glDeleteVertexArrays, glDeleteVertexArraysAPPLE);
-#   else
         LX_GL_API_LOAD_S(glGenVertexArrays);
         LX_GL_API_LOAD_S(glBindVertexArray);
         LX_GL_API_LOAD_S(glDeleteVertexArrays);
-#   endif
 #endif
         ok = lx_true;
 
