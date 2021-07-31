@@ -23,10 +23,10 @@
  * includes
  */
 #include "renderer.h"
+#include "shader.h"
 #include "../../quality.h"
 #include "../../tess/tess.h"
 #include "../../shader.h"
-#include "../../private/shader.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * macros
@@ -73,58 +73,9 @@ static lx_inline lx_void_t lx_gl_renderer_enable_vertices(lx_opengl_device_t* de
     }
 }
 
-static lx_void_t lx_gl_renderer_apply_texture(lx_opengl_device_t* device, lx_pointer_t data, lx_size_t pixfmt, lx_size_t width, lx_size_t height, lx_size_t row_bytes) {
-
-    // enable texture
-    lx_assert(data && width && height);
-    lx_glEnable(LX_GL_TEXTURE_2D);
-    lx_glBindTexture(LX_GL_TEXTURE_2D, device->texture);
-    lx_gl_vertex_attribute_enable(LX_GL_PROGRAM_LOCATION_TEXCOORDS);
-    //lx_glTexEnvi(LX_GL_TEXTURE_ENV, LX_GL_TEXTURE_ENV_MODE, LX_GL_MODULATE);
-
-    // apply texture data
-    switch (LX_PIXFMT(pixfmt)) {
-    case LX_PIXFMT_ARGB8888:
-    case LX_PIXFMT_XRGB8888:
-        lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGBA, width, height, 0, LX_GL_BGRA, LX_GL_UNSIGNED_BYTE, data);
-        break;
-    case LX_PIXFMT_RGB565:
-        lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGB, width, height, 0, LX_GL_RGB, LX_GL_UNSIGNED_SHORT_5_6_5, data);
-        break;
-    case LX_PIXFMT_RGB888:
-        lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGB, width, height, 0, LX_GL_BGR, LX_GL_UNSIGNED_BYTE, data);
-        break;
-    case LX_PIXFMT_RGBA4444:
-    case LX_PIXFMT_RGBX4444:
-        lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGBA, width, height, 0, LX_GL_RGBA, LX_GL_UNSIGNED_SHORT_4_4_4_4, data);
-        break;
-    case LX_PIXFMT_RGBA5551:
-    case LX_PIXFMT_RGBX5551:
-        lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGBA, width, height, 0, LX_GL_RGBA, LX_GL_UNSIGNED_SHORT_5_5_5_1, data);
-        break;
-    default:
-        lx_trace_e("unsupported pixfmt for texture!");
-        break;
-    }
-}
-
 static lx_void_t lx_gl_renderer_apply_texture_matrix(lx_opengl_device_t* device, lx_matrix_ref_t matrix) {
     lx_gl_matrix_convert(device->matrix_texture, matrix);
     lx_gl_matrix_uniform_set(LX_GL_PROGRAM_LOCATION_MATRIX_TEXCOORD, device->matrix_texture);
-}
-
-static lx_inline lx_void_t lx_gl_renderer_apply_texture_wrap(lx_opengl_device_t* device, lx_size_t tile_mode_s, lx_size_t tile_mode_t) {
-    static lx_GLuint_t wrap[] =
-    {
-        LX_GL_CLAMP_TO_BORDER
-    ,   LX_GL_CLAMP_TO_BORDER
-    ,   LX_GL_CLAMP_TO_EDGE
-    ,   LX_GL_REPEAT
-    ,   LX_GL_MIRRORED_REPEAT
-    };
-    lx_assert(tile_mode_s < lx_arrayn(wrap) && tile_mode_t < lx_arrayn(wrap));
-    lx_glTexParameteri(LX_GL_TEXTURE_2D, LX_GL_TEXTURE_WRAP_S, wrap[tile_mode_s]);
-    lx_glTexParameteri(LX_GL_TEXTURE_2D, LX_GL_TEXTURE_WRAP_T, wrap[tile_mode_t]);
 }
 
 static lx_inline lx_void_t lx_gl_renderer_apply_texture_filter(lx_opengl_device_t* device, lx_GLuint_t filter) {
@@ -191,18 +142,26 @@ static lx_void_t lx_gl_renderer_apply_solid(lx_opengl_device_t* device) {
 
 static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, lx_shader_ref_t shader, lx_rect_ref_t bounds) {
 
+    // get bitmap texture
+    lx_GLuint_t texture = lx_bitmap_shader_texture((lx_bitmap_shader_t*)shader);
+    lx_assert(texture);
+
+    // apply texture
+    lx_glEnable(LX_GL_TEXTURE_2D);
+    lx_glBindTexture(LX_GL_TEXTURE_2D, texture);
+    lx_gl_vertex_attribute_enable(LX_GL_PROGRAM_LOCATION_TEXCOORDS);
+
     // get bitmap
     lx_bitmap_ref_t bitmap = ((lx_bitmap_shader_t*)shader)->bitmap;
     lx_assert(bitmap);
 
+    // get bitmap width and height
+    lx_size_t width = lx_bitmap_width(bitmap);
+    lx_size_t height = lx_bitmap_height(bitmap);
+
     // get paint
     lx_paint_ref_t paint = device->base.paint;
     lx_assert(paint);
-
-    // apply texture
-    lx_size_t width  = lx_bitmap_width(bitmap);
-    lx_size_t height = lx_bitmap_height(bitmap);
-    lx_gl_renderer_apply_texture(device, lx_bitmap_data(bitmap), lx_bitmap_pixfmt(bitmap), width, height, lx_bitmap_row_bytes(bitmap));
 
     // enable blend
     lx_byte_t alpha = lx_paint_alpha(paint);
@@ -210,10 +169,6 @@ static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, 
 
     // apply color (only for alpha blend)
     lx_gl_renderer_apply_color(device, lx_color_make(alpha, 0xff, 0xff, 0xff));
-
-    // apply wrap
-    lx_size_t tile_mode = lx_shader_tile_mode(shader);
-    lx_gl_renderer_apply_texture_wrap(device, tile_mode, tile_mode);
 
     // apply filter
     lx_GLuint_t filter = lx_quality() > LX_QUALITY_LOW? LX_GL_LINEAR : LX_GL_NEAREST;

@@ -93,8 +93,8 @@ lx_shader_ref_t lx_shader_init_bitmap(lx_size_t tile_mode, lx_bitmap_ref_t bitma
 lx_void_t lx_shader_exit(lx_shader_ref_t self) {
     lx_shader_t* shader = (lx_shader_t*)self;
     if (shader) {
-        if (shader->exit) {
-            shader->exit(self);
+        if (shader->devdata_free) {
+            shader->devdata_free(self);
         }
         lx_free(shader);
     }

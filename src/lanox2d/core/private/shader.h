@@ -35,8 +35,8 @@ typedef struct lx_shader_t_ {
     lx_uint8_t          type;
     lx_uint8_t          tile_mode;
     lx_matrix_t         matrix;
-    lx_pointer_t        device_data; // save device private data
-    lx_void_t           (*exit)(lx_shader_ref_t shader); // maybe we will set it to free device data
+    lx_pointer_t        devdata; // the device private data
+    lx_void_t           (*devdata_free)(lx_shader_ref_t shader);
 }lx_shader_t;
 
 // the linear grandient shader type

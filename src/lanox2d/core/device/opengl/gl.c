@@ -674,3 +674,4 @@ lx_void_t lx_gl_vertex_color_set(lx_size_t index, lx_color_t color) {
     lx_glColor4f((lx_float_t)color.r / 0xff, (lx_float_t)color.g / 0xff, (lx_float_t)color.b / 0xff, (lx_float_t)color.a / 0xff);
 #endif
 }
+

@@ -15,40 +15,38 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        device.h
+ * @file        shader.h
  *
  */
-#ifndef LX_CORE_DEVICE_OPENGL_DEVICE_H
-#define LX_CORE_DEVICE_OPENGL_DEVICE_H
+#ifndef LX_CORE_DEVICE_OPENGL_SHADER_H
+#define LX_CORE_DEVICE_OPENGL_SHADER_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "prefix.h"
 #include "gl.h"
-#include "matrix.h"
-#include "program.h"
-#include "../../tess/tess.h"
+#include "../../private/shader.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * types
+ * extern
+ */
+lx_extern_c_enter
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * interfaces
  */
 
-// the opengl device type
-typedef struct lx_opengl_device_t_ {
-    lx_device_t             base;
-    lx_window_ref_t         window;
-    lx_stroker_ref_t        stroker;
-    lx_gl_program_ref_t     program;
-    lx_gl_program_ref_t     programs[LX_GL_PROGRAM_LOCATION_MAXN];
-    lx_gl_matrix_t          matrix_texture;
-    lx_tessellator_ref_t    tessellator;
-    lx_shader_ref_t         shader;
-    lx_GLuint_t             vertex_array;
-    lx_GLuint_t             vertex_buffer;
-    lx_GLuint_t             texcoord_buffer;
-}lx_opengl_device_t;
+/* get texture of bitmap shader
+ *
+ * @param shader        the bitmap shader
+ *
+ * @return              the texture id
+ */
+lx_GLuint_t             lx_bitmap_shader_texture(lx_bitmap_shader_t* shader);
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * extern
+ */
+lx_extern_c_leave
 
 #endif
-
-
