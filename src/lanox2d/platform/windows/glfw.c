@@ -103,10 +103,10 @@ static lx_void_t lx_window_glfw_key_callback(GLFWwindow* self, lx_int_t key, lx_
     lx_assert(self);
     lx_window_glfw_t* window = (lx_window_glfw_t*)glfwGetWindowUserPointer(self);
     lx_assert(window);
-    if (action == GLFW_PRESS || action == GLFW_RELEASE) {
+    if (action == GLFW_PRESS || action == GLFW_RELEASE || action == GLFW_REPEAT) {
         lx_event_t event = {0};
         event.type               = LX_EVENT_TYPE_KEYBOARD;
-        event.u.keyboard.pressed = action == GLFW_PRESS? lx_true : lx_false;
+        event.u.keyboard.pressed = action != GLFW_RELEASE? lx_true : lx_false;
         switch (key) {
         case GLFW_KEY_F1:           event.u.keyboard.code = LX_KEY_F1;          break;
         case GLFW_KEY_F2:           event.u.keyboard.code = LX_KEY_F2;          break;
