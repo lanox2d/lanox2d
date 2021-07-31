@@ -450,11 +450,10 @@ static lx_inline lx_void_t lx_gl_renderer_stroke_points(lx_opengl_device_t* devi
 static lx_inline lx_void_t lx_gl_renderer_stroke_polygon(lx_opengl_device_t* device, lx_point_ref_t points, lx_uint16_t const* counts) {
     lx_assert(device && points && counts);
 
-    // TODO, we need optimize it
     lx_uint16_t count;
     lx_size_t   index = 0;
     while ((count = *counts++)) {
-        lx_gl_renderer_apply_vertices(device, points, count);
+        lx_gl_renderer_apply_vertices(device, points + index, count);
         lx_glDrawArrays(LX_GL_LINE_STRIP, 0, (lx_GLint_t)count);
         index += count;
     }
