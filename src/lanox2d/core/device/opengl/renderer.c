@@ -379,6 +379,7 @@ static lx_inline lx_void_t lx_gl_renderer_apply_paint(lx_opengl_device_t* device
     }
 }
 
+// TODO, we should output triangles array for concave polygon and convex points for convex polygon directly
 static lx_void_t lx_gl_renderer_fill_convex(lx_point_ref_t points, lx_uint16_t count, lx_cpointer_t udata) {
     lx_opengl_device_t* device = (lx_opengl_device_t*)udata;
     lx_assert(device && points && count);
