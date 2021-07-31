@@ -432,126 +432,128 @@ LX_GL_API_EXTERN(glDeleteBuffers);
 
 /* init gl context
  *
- * @param width     the width
- * @param height    the height
+ * @param width         the width
+ * @param height        the height
+ * @param framewidth    the frame width
+ * @param frameheight   the frame height
  *
- * @return          lx_true or lx_false
+ * @return              lx_true or lx_false
  */
-lx_bool_t           lx_gl_context_init(lx_size_t width, lx_size_t height);
+lx_bool_t               lx_gl_context_init(lx_size_t width, lx_size_t height, lx_size_t framewidth, lx_size_t frameheight);
 
 /* is the given extension supported?
  *
- * @param ext       the extension enum, LX_GL_EXT_ARB_xxx
+ * @param ext           the extension enum, LX_GL_EXT_ARB_xxx
  *
- * @return          lx_true or lx_false
+ * @return              lx_true or lx_false
  */
-lx_bool_t           lx_gl_has_extension(lx_size_t ext);
+lx_bool_t               lx_gl_has_extension(lx_size_t ext);
 
 /* get modelview matrix in current context
  *
- * @return          the modelview matrix reference
+ * @return              the modelview matrix reference
  */
-lx_gl_matrix_ref_t  lx_gl_matrix_modelview(lx_noarg_t);
+lx_gl_matrix_ref_t      lx_gl_matrix_modelview(lx_noarg_t);
 
 /* get projection matrix in current context
  *
- * @return          the projection matrix reference
+ * @return              the projection matrix reference
  */
-lx_gl_matrix_ref_t  lx_gl_matrix_projection(lx_noarg_t);
+lx_gl_matrix_ref_t      lx_gl_matrix_projection(lx_noarg_t);
 
 /* set uniform matrix
  *
- * @param index     the program location index
- * @param matrix    the matrix
+ * @param index         the program location index
+ * @param matrix        the matrix
  */
-lx_void_t           lx_gl_matrix_uniform_set(lx_size_t index, lx_gl_matrix_ref_t matrix);
+lx_void_t               lx_gl_matrix_uniform_set(lx_size_t index, lx_gl_matrix_ref_t matrix);
 
 /* enable the given program
  *
  * @param program   the program
  */
-lx_void_t           lx_gl_program_enable(lx_gl_program_ref_t program);
+lx_void_t               lx_gl_program_enable(lx_gl_program_ref_t program);
 
 // disable program
-lx_void_t           lx_gl_program_disable(lx_noarg_t);
+lx_void_t               lx_gl_program_disable(lx_noarg_t);
 
 /* init vertex array
  *
- * @return          the id
+ * @return              the id
  */
-lx_GLuint_t         lx_gl_vertex_array_init(lx_noarg_t);
+lx_GLuint_t             lx_gl_vertex_array_init(lx_noarg_t);
 
 /* exit the given vertex array
  *
- * @param id        the id
+ * @param id            the id
  */
-lx_void_t           lx_gl_vertex_array_exit(lx_GLuint_t id);
+lx_void_t               lx_gl_vertex_array_exit(lx_GLuint_t id);
 
 /* enable the given vertex array
  *
- * @param id        the id
+ * @param id            the id
  *
- * @return          lx_true or lx_false
+ * @return              lx_true or lx_false
  */
-lx_bool_t           lx_gl_vertex_array_enable(lx_GLuint_t id);
+lx_bool_t               lx_gl_vertex_array_enable(lx_GLuint_t id);
 
 // disable vertex array
-lx_void_t           lx_gl_vertex_array_disable(lx_noarg_t);
+lx_void_t               lx_gl_vertex_array_disable(lx_noarg_t);
 
 /* init vertex buffer
  *
- * @return          the id
+ * @return              the id
  */
-lx_GLuint_t         lx_gl_vertex_buffer_init(lx_noarg_t);
+lx_GLuint_t             lx_gl_vertex_buffer_init(lx_noarg_t);
 
 /* exit the given vertex buffer
  *
- * @param id        the id
+ * @param id            the id
  */
-lx_void_t           lx_gl_vertex_buffer_exit(lx_GLuint_t id);
+lx_void_t               lx_gl_vertex_buffer_exit(lx_GLuint_t id);
 
 /* set vertex buffer data
  *
- * @param buffer    the buffer data
- * @param size      the buffer size
- * @param dynamic   is dynamic?
+ * @param buffer        the buffer data
+ * @param size          the buffer size
+ * @param dynamic       is dynamic?
  */
-lx_void_t           lx_gl_vertex_buffer_data_set(lx_cpointer_t buffer, lx_size_t size, lx_bool_t dynamic);
+lx_void_t               lx_gl_vertex_buffer_data_set(lx_cpointer_t buffer, lx_size_t size, lx_bool_t dynamic);
 
 /* enable the given vertex buffer
  *
- * @param id        the id
+ * @param id            the id
  */
-lx_void_t           lx_gl_vertex_buffer_enable(lx_GLuint_t id);
+lx_void_t               lx_gl_vertex_buffer_enable(lx_GLuint_t id);
 
 // disable vertex buffer
-lx_void_t           lx_gl_vertex_buffer_disable(lx_noarg_t);
+lx_void_t               lx_gl_vertex_buffer_disable(lx_noarg_t);
 
 /* enable vertex attribute
  *
- * @param index     the program location index
+ * @param index         the program location index
  */
-lx_void_t           lx_gl_vertex_attribute_enable(lx_size_t index);
+lx_void_t               lx_gl_vertex_attribute_enable(lx_size_t index);
 
 /* disable vertex attribute
  *
- * @param index     the program location index
+ * @param index         the program location index
  */
-lx_void_t           lx_gl_vertex_attribute_disable(lx_size_t index);
+lx_void_t               lx_gl_vertex_attribute_disable(lx_size_t index);
 
 /* set vertex attribute
  *
- * @param index     the program location index
- * @param pointer   the vertex pointer
+ * @param index         the program location index
+ * @param pointer       the vertex pointer
  */
-lx_void_t           lx_gl_vertex_attribute_set(lx_size_t index, lx_point_ref_t pointer);
+lx_void_t               lx_gl_vertex_attribute_set(lx_size_t index, lx_point_ref_t pointer);
 
 /* set vertex color
  *
- * @param index     the program location index
- * @param color     the color
+ * @param index         the program location index
+ * @param color         the color
  */
-lx_void_t           lx_gl_vertex_color_set(lx_size_t index, lx_color_t color);
+lx_void_t               lx_gl_vertex_color_set(lx_size_t index, lx_color_t color);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

@@ -37,121 +37,123 @@ lx_extern_c_enter
 
 /*! init device from bitmap
  *
- * @param bitmap    the bitmap
+ * @param bitmap        the bitmap
  *
- * @return          the device
+ * @return              the device
  */
-lx_device_ref_t     lx_device_init_from_bitmap(lx_bitmap_ref_t bitmap);
+lx_device_ref_t         lx_device_init_from_bitmap(lx_bitmap_ref_t bitmap);
 
 /*! init device from opengl
  *
- * @param width     the frame width
- * @param height    the frame height
+ * @param width         the window width
+ * @param height        the window height
+ * @param framewidth    the frame width
+ * @param frameheight   the frame height
  *
- * @return          the device
+ * @return              the device
  */
-lx_device_ref_t     lx_device_init_from_opengl(lx_size_t width, lx_size_t height);
+lx_device_ref_t         lx_device_init_from_opengl(lx_size_t width, lx_size_t height, lx_size_t framewidth, lx_size_t frameheight);
 
 /*! init device from skia
  *
- * @param width     the frame width
- * @param height    the frame height
- * @param bitmap    the bitmap, we will use opengl renderer if it is null
+ * @param width         the frame width
+ * @param height        the frame height
+ * @param bitmap        the bitmap, we will use opengl renderer if it is null
  *
- * @return          the device
+ * @return              the device
  */
-lx_device_ref_t     lx_device_init_from_skia(lx_size_t width, lx_size_t height, lx_bitmap_ref_t bitmap);
+lx_device_ref_t         lx_device_init_from_skia(lx_size_t width, lx_size_t height, lx_bitmap_ref_t bitmap);
 
 /*! exit device
  *
- * @param device    the device
+ * @param device        the device
  */
-lx_void_t           lx_device_exit(lx_device_ref_t device);
+lx_void_t               lx_device_exit(lx_device_ref_t device);
 
 /*! get the device width
  *
- * @param device    the device
+ * @param device        the device
  *
- * @return          the width
+ * @return              the width
  */
-lx_size_t           lx_device_width(lx_device_ref_t device);
+lx_size_t               lx_device_width(lx_device_ref_t device);
 
 /*! get the device height
  *
- * @param device    the device
+ * @param device        the device
  *
- * @return          the height
+ * @return              the height
  */
-lx_size_t           lx_device_height(lx_device_ref_t device);
+lx_size_t               lx_device_height(lx_device_ref_t device);
 
 /*! bind path
  *
- * @param device    the device
- * @param path      the path
+ * @param device        the device
+ * @param path          the path
  */
-lx_void_t           lx_device_bind_path(lx_device_ref_t device, lx_path_ref_t path);
+lx_void_t               lx_device_bind_path(lx_device_ref_t device, lx_path_ref_t path);
 
 /*! bind paint
  *
- * @param device    the device
- * @param paint     the paint
+ * @param device        the device
+ * @param paint         the paint
  */
-lx_void_t           lx_device_bind_paint(lx_device_ref_t device, lx_paint_ref_t paint);
+lx_void_t               lx_device_bind_paint(lx_device_ref_t device, lx_paint_ref_t paint);
 
 /*! bind matrix
  *
- * @param device    the device
- * @param matrix    the matrix
+ * @param device        the device
+ * @param matrix        the matrix
  */
-lx_void_t           lx_device_bind_matrix(lx_device_ref_t device, lx_matrix_ref_t matrix);
+lx_void_t               lx_device_bind_matrix(lx_device_ref_t device, lx_matrix_ref_t matrix);
 
 /*! bind clipper
  *
- * @param device    the device
- * @param clipper   the clipper
+ * @param device        the device
+ * @param clipper       the clipper
  */
-lx_void_t           lx_device_bind_clipper(lx_device_ref_t device, lx_clipper_ref_t clipper);
+lx_void_t               lx_device_bind_clipper(lx_device_ref_t device, lx_clipper_ref_t clipper);
 
 /*! clear draw and fill the given color
  *
- * @param device    the device
- * @param color     the color
+ * @param device        the device
+ * @param color         the color
  */
-lx_void_t           lx_device_draw_clear(lx_device_ref_t device, lx_color_t color);
+lx_void_t               lx_device_draw_clear(lx_device_ref_t device, lx_color_t color);
 
 /*! draw path
  *
- * @param device    the device
- * @param path      the path
+ * @param device        the device
+ * @param path          the path
  */
-lx_void_t           lx_device_draw_path(lx_device_ref_t device, lx_path_ref_t path);
+lx_void_t               lx_device_draw_path(lx_device_ref_t device, lx_path_ref_t path);
 
 /*! draw lines
  *
- * @param device    the device
- * @param points    the points
- * @param count     the points count
- * @param bounds    the bounds
+ * @param device        the device
+ * @param points        the points
+ * @param count         the points count
+ * @param bounds        the bounds
  */
-lx_void_t           lx_device_draw_lines(lx_device_ref_t device, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds);
+lx_void_t               lx_device_draw_lines(lx_device_ref_t device, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds);
 
 /*! draw points
  *
- * @param device    the device
- * @param points    the points
- * @param count     the points count
- * @param bounds    the bounds
+ * @param device        the device
+ * @param points        the points
+ * @param count         the points count
+ * @param bounds        the bounds
  */
-lx_void_t           lx_device_draw_points(lx_device_ref_t device, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds);
+lx_void_t               lx_device_draw_points(lx_device_ref_t device, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds);
 
 /*! draw polygon
  *
- * @param device    the device
- * @param polygon   the polygon
- * @param hint      the hint shape
- * @param bounds    the bounds
+ * @param device        the device
+ * @param polygon       the polygon
+ * @param hint          the hint shape
+ * @param bounds        the bounds
  */
-lx_void_t           lx_device_draw_polygon(lx_device_ref_t device, lx_polygon_ref_t polygon, lx_shape_ref_t hint, lx_rect_ref_t bounds);
+lx_void_t               lx_device_draw_polygon(lx_device_ref_t device, lx_polygon_ref_t polygon, lx_shape_ref_t hint, lx_rect_ref_t bounds);
 
 
 /* //////////////////////////////////////////////////////////////////////////////////////

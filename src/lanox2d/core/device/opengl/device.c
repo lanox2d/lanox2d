@@ -108,7 +108,7 @@ static lx_void_t lx_device_opengl_exit(lx_device_ref_t self) {
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_device_ref_t lx_device_init_from_opengl(lx_size_t width, lx_size_t height) {
+lx_device_ref_t lx_device_init_from_opengl(lx_size_t width, lx_size_t height, lx_size_t framewidth, lx_size_t frameheight) {
     lx_assert_and_check_return_val(width && height, lx_null);
 
     lx_bool_t           ok = lx_false;
@@ -116,7 +116,7 @@ lx_device_ref_t lx_device_init_from_opengl(lx_size_t width, lx_size_t height) {
     do {
 
         // init gl context first
-        if (!lx_gl_context_init(width, height)) {
+        if (!lx_gl_context_init(width, height, framewidth, frameheight)) {
             break;
         }
 

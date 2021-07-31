@@ -272,18 +272,16 @@ static lx_bool_t lx_window_glfw_start(lx_window_glfw_t* window) {
             lx_window_glfw_fullscreen((lx_window_ref_t)window, lx_true);
         }
 
-        // get frame width and height
+        // init viewport
         lx_int_t framewidth = 0;
         lx_int_t frameheight = 0;
         glfwGetFramebufferSize(window->window, &framewidth, &frameheight);
-        framewidth = window->base.width;
-        frameheight = window->base.height;
 
         // init device
 #if defined(LX_CONFIG_DEVICE_HAVE_OPENGL)
-        window->base.device = lx_device_init_from_opengl(framewidth, frameheight);
+        window->base.device = lx_device_init_from_opengl(window->base.width, window->base.height, framewidth, frameheight);
 #elif defined(LX_CONFIG_DEVICE_HAVE_SKIA)
-        window->base.device = lx_device_init_from_skia(framewidth, frameheight, lx_null);
+        window->base.device = lx_device_init_from_skia(window->base.width, window->base.height, lx_null);
 #endif
         lx_assert_and_check_break(window->base.device);
 

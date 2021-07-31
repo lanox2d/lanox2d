@@ -457,7 +457,7 @@ static lx_void_t lx_gl_extensions_init() {
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_bool_t lx_gl_context_init(lx_size_t width, lx_size_t height) {
+lx_bool_t lx_gl_context_init(lx_size_t width, lx_size_t height, lx_size_t framewidth, lx_size_t frameheight) {
 
     // trace
     lx_trace_d("init opengl %lux%lu", width, height);
@@ -475,7 +475,7 @@ lx_bool_t lx_gl_context_init(lx_size_t width, lx_size_t height) {
     lx_gl_extensions_init();
 
     // init viewport
-    lx_glViewport(0, 0, width, height);
+    lx_glViewport(0, 0, framewidth, frameheight);
 
     /* init the projection matrix
      *
