@@ -53,7 +53,7 @@ static lx_void_t lx_bitmap_shader_devdata_free(lx_shader_ref_t self) {
     }
 }
 
-static lx_GLuint_t lx_bitmap_shader_init_texture(lx_bitmap_shader_t* shader) {
+static lx_bitmap_shader_devdata_t* lx_bitmap_shader_init_devdata(lx_bitmap_shader_t* shader) {
     lx_assert(shader);
 
     // get bitmap
@@ -63,9 +63,14 @@ static lx_GLuint_t lx_bitmap_shader_init_texture(lx_bitmap_shader_t* shader) {
     // generate texture
     lx_GLuint_t texture = 0;
     lx_glGenTextures(1, &texture);
-    lx_assert_and_check_return_val(texture, 0);
+    lx_assert_and_check_return_val(texture, lx_null);
+
+    // init bitmap shader devdata
+    lx_bitmap_shader_devdata_t* devdata = lx_malloc0_type(lx_bitmap_shader_devdata_t);
+    lx_assert_and_check_return_val(devdata, lx_null);
 
     // init texture
+    devdata->texture = texture;
     lx_glBindTexture(LX_GL_TEXTURE_2D, texture);
     lx_glPixelStorei(LX_GL_UNPACK_ALIGNMENT, 1);
 
@@ -101,20 +106,71 @@ static lx_GLuint_t lx_bitmap_shader_init_texture(lx_bitmap_shader_t* shader) {
         lx_trace_e("unsupported pixfmt for texture!");
         break;
     }
-    return texture;
+
+    /* convert world coordinate to camera coordinate
+     *
+     * before:
+     *
+     *
+     *       bx        bounds of vertices
+     *      -------V7---------------------V6------
+     *  by |     /                          \     |
+     *     |   /              |               \   |
+     *     | /    bitmap  sw  |                 \ |
+     *    V8          -----------------           V5
+     *     |      sh |        |        |          |
+     *     |         |        |        |          | bh
+     *     |---------|--------O--------|----------|------> (bitmap matrix in world coordinate)
+     *     |         |        |        |          |
+     *     |         |        |        |          |
+     *    V1          -----------------           V4
+     *     | \                |                 / |
+     *     |   \             \|/              /   |
+     *     |     \                          /     |
+     *      -------V2--------------------V3-------
+     *                       bw
+     *
+     * after:
+     *
+     *       bx        bounds of vertices
+     *      -------V7---------------------V6------
+     *  by |     /                          \     |
+     *     |   /              |               \   |
+     *     | /    camera  sw  |                 \ |
+     *    V8         O--------------------------- V5-----> (matrix in camera coordinate)
+     *     |      sh |||||||| | ||||||||          |
+     *     |         |||||||| | ||||||||          | bh
+     *     |    -----|--------.--------|------    |
+     *     |         |||||||| | ||||||||          |
+     *     |         |||||||| | ||||||||          |
+     *    V1         |-----------------           V4
+     *     | \      \|/       |                 / |
+     *     |   \              |               /   |
+     *     |     \                          /     |
+     *      -------V2--------------------V3-------
+     *                       bw
+     */
+    lx_float_t sw = (lx_float_t)width;
+    lx_float_t sh = (lx_float_t)height;
+    devdata->matrix = shader->base.matrix;
+    if (lx_matrix_invert(&devdata->matrix)) {
+        devdata->matrix.tx /= sw;
+        devdata->matrix.ty /= sh;
+    }
+    return devdata;
 }
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_GLuint_t lx_bitmap_shader_texture(lx_bitmap_shader_t* shader) {
-    lx_GLuint_t texture = (lx_GLuint_t)(lx_size_t)shader->base.devdata;
-    if (!texture) {
-        texture = lx_bitmap_shader_init_texture(shader);
-        if (texture) {
+lx_bitmap_shader_devdata_t* lx_bitmap_shader_devdata(lx_bitmap_shader_t* shader) {
+    lx_bitmap_shader_devdata_t* devdata = (lx_bitmap_shader_devdata_t*)shader->base.devdata;
+    if (!devdata) {
+        devdata = lx_bitmap_shader_init_devdata(shader);
+        if (devdata) {
             shader->base.devdata_free = lx_bitmap_shader_devdata_free;
-            shader->base.devdata = (lx_pointer_t)(lx_size_t)texture;
+            shader->base.devdata = devdata;
         }
     }
-    return texture;
+    return devdata;
 }

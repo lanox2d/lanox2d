@@ -143,12 +143,12 @@ static lx_void_t lx_gl_renderer_apply_solid(lx_opengl_device_t* device) {
 static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, lx_shader_ref_t shader, lx_rect_ref_t bounds) {
 
     // get bitmap texture
-    lx_GLuint_t texture = lx_bitmap_shader_texture((lx_bitmap_shader_t*)shader);
-    lx_assert(texture);
+    lx_bitmap_shader_devdata_t* devdata = lx_bitmap_shader_devdata((lx_bitmap_shader_t*)shader);
+    lx_assert(devdata && devdata->texture);
 
     // apply texture
     lx_glEnable(LX_GL_TEXTURE_2D);
-    lx_glBindTexture(LX_GL_TEXTURE_2D, texture);
+    lx_glBindTexture(LX_GL_TEXTURE_2D, devdata->texture);
     lx_gl_vertex_attribute_enable(LX_GL_PROGRAM_LOCATION_TEXCOORDS);
 
     // get bitmap
@@ -182,30 +182,7 @@ static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, 
     lx_float_t sw = (lx_float_t)width;
     lx_float_t sh = (lx_float_t)height;
 
-    /* convert world coordinate to camera coordinate
-     *
-     * before:
-     *
-     *
-     *       bx        bounds of vertices
-     *      -------V7---------------------V6------
-     *  by |     /                          \     |
-     *     |   /              |               \   |
-     *     | /    bitmap  sw  |                 \ |
-     *    V8          -----------------           V5
-     *     |      sh |        |        |          |
-     *     |         |        |        |          | bh
-     *     |---------|--------O--------|----------|------> (bitmap matrix in world coordinate)
-     *     |         |        |        |          |
-     *     |         |        |        |          |
-     *    V1          -----------------           V4
-     *     | \                |                 / |
-     *     |   \             \|/              /   |
-     *     |     \                          /     |
-     *      -------V2--------------------V3-------
-     *                       bw
-     *
-     * after:
+    /* get matrix in camera coordinate
      *
      *       bx        bounds of vertices
      *      -------V7---------------------V6------
@@ -225,11 +202,7 @@ static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, 
      *      -------V2--------------------V3-------
      *                       bw
      */
-    lx_matrix_t matrix = ((lx_shader_t*)shader)->matrix;
-    if (lx_matrix_invert(&matrix)) {
-        matrix.tx /= sw;
-        matrix.ty /= sh;
-    }
+    lx_matrix_t matrix = devdata->matrix;
 
     /* move bitmap to bounds of vertices in camera coordinate
      *

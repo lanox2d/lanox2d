@@ -33,16 +33,26 @@
 lx_extern_c_enter
 
 /* //////////////////////////////////////////////////////////////////////////////////////
+ * types
+ */
+
+// the bitmap shader devdata type
+typedef struct lx_bitmap_shader_devdata_t_ {
+    lx_matrix_t     matrix;
+    lx_GLuint_t     texture;
+}lx_bitmap_shader_devdata_t;
+
+/* //////////////////////////////////////////////////////////////////////////////////////
  * interfaces
  */
 
-/* get texture of bitmap shader
+/* get devdata of bitmap shader
  *
- * @param shader        the bitmap shader
+ * @param shader            the bitmap shader
  *
- * @return              the texture id
+ * @return                  the devdata
  */
-lx_GLuint_t             lx_bitmap_shader_texture(lx_bitmap_shader_t* shader);
+lx_bitmap_shader_devdata_t* lx_bitmap_shader_devdata(lx_bitmap_shader_t* shader);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
