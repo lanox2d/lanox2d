@@ -51,18 +51,6 @@ option("window")
     end)
     after_check(function (option)
         local value = option:value()
-        if is_plat("macosx") then
-            if value == "glut" then
-                option:add("frameworks", "GLUT", "OpenGL")
-            elseif value == "glfw" then
-                option:add("frameworks", "OpenGL")
-            end
-            option:add("defines", "GL_SILENCE_DEPRECATION")
-        elseif is_plat("linux") then
-            if value == "glut" or value == "glfw" then
-                option:add("syslinks", "GL")
-            end
-        end
         if value then
             option:set("configvar", "LX_CONFIG_WINDOW_HAVE_" .. value:upper(), 1)
         end
