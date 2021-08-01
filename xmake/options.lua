@@ -25,7 +25,7 @@ option("pixfmt")
 -- bitmap option
 option("bitmap")
     set_showmenu(true)
-    set_default("bmp")
+    set_default("png")
     set_values("bmp", "jpg", "png")
     set_description("Enable bitmap formats")
     after_check(function (option)
@@ -40,9 +40,15 @@ option("bitmap")
 -- window option
 option("window")
     set_showmenu(true)
-    set_default("sdl")
     set_values("sdl", "glut", "glfw")
     set_description("Set renderer window")
+    on_check(function (option)
+        if not option:value() then
+            if is_plat("macosx", "linux", "windows") then
+                option:set_value("glfw")
+            end
+        end
+    end)
     after_check(function (option)
         local value = option:value()
         if is_plat("macosx") then
