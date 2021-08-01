@@ -68,6 +68,7 @@ function check_interfaces()
     check_module_cfuncs("libc", {"string.h", "stdlib.h"},
         "strtol",
         "strnlen",
+        "strlcpy",
         "strncasecmp")
 
     -- add the interfaces for posix

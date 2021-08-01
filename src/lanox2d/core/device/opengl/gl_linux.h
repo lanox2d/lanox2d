@@ -26,7 +26,7 @@
  */
 #include "gl.h"
 #define GL_GLEXT_PROTOTYPES
-#include <GL/glut.h>
+#include <GL/gl.h>
 #include <GL/glext.h>
 
 /* //////////////////////////////////////////////////////////////////////////////////////
