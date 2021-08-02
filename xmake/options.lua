@@ -40,7 +40,7 @@ option("bitmap")
 -- window option
 option("window")
     set_showmenu(true)
-    set_values("sdl", "glut", "glfw")
+    set_values("sdl", "glut", "glfw", "fbdev")
     set_description("Set renderer window")
     on_check(function (option)
         if not option:value() then
@@ -65,7 +65,7 @@ option("device")
     on_check(function (option)
         if not option:value() then
             local window = option:dep("window"):value()
-            if window == "sdl" then
+            if window == "sdl" or window == "fbdev" then
                 option:set_value("bitmap")
             elseif window == "glut" or window == "glfw" then
                 option:set_value("opengl")
