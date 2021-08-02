@@ -196,6 +196,9 @@ lx_bool_t lx_gl_context_init(lx_size_t width, lx_size_t height, lx_size_t framew
         return lx_false;
     }
 
+    // get opengl version
+    lx_trace_d("opengl version: %s", lx_glGetString(LX_GL_VERSION));
+
     // init context
     lx_memset(&g_gl_context, 0, sizeof(g_gl_context));
 
