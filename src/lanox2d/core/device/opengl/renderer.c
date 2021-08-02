@@ -278,7 +278,7 @@ static lx_void_t lx_gl_renderer_apply_shader_bitmap(lx_opengl_device_t* device, 
      *    |                     |
      * 0,1 -------------------- 1,1
      */
-    lx_matrix_scale(&matrix, 1.0 / bw, 1.0 / bh);
+    lx_matrix_scale(&matrix, 1.0f / bw, 1.0f / bh);
     lx_matrix_translate(&matrix, -bx, -by);
 
     // apply texture matrix

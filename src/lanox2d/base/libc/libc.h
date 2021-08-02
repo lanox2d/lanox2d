@@ -246,7 +246,7 @@ lx_long_t           lx_strtol(lx_char_t const* s, lx_char_t** endptr, lx_int_t b
  *
  * @return          the result positon
  */
-lx_char_t*          lx_strchr(lx_char_t const* s, lx_char_t c);
+lx_char_t const*    lx_strchr(lx_char_t const* s, lx_char_t c);
 
 /* strlcpy
  *

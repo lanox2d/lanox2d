@@ -28,6 +28,6 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_char_t* lx_strchr(lx_char_t const* s, lx_char_t c) {
+lx_char_t const* lx_strchr(lx_char_t const* s, lx_char_t c) {
     return strchr(s, c);
 }

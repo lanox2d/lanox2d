@@ -67,7 +67,7 @@ lx_bool_t lx_tessellator_event_queue_make(lx_tessellator_t* tessellator) {
     lx_for_all (lx_mesh_vertex_ref_t, vertex, lx_mesh_vertex_list(mesh)) {
         lx_priority_queue_put(tessellator->event_queue, &vertex);
     }
-    return lx_priority_queue_size(tessellator->event_queue);
+    return lx_priority_queue_size(tessellator->event_queue) != 0;
 }
 
 lx_void_t lx_tessellator_event_queue_insert(lx_tessellator_t* tessellator, lx_mesh_vertex_ref_t event) {

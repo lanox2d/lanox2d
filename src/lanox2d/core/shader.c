@@ -33,7 +33,7 @@ lx_shader_ref_t lx_shader_init_linear_gradient(lx_size_t tile_mode, lx_gradient_
     lx_linear_gradient_shader_t* shader = lx_malloc0_type(lx_linear_gradient_shader_t);
     if (shader) {
         shader->base.type      = LX_SHADER_TYPE_LINEAR_GRADIENT;
-        shader->base.tile_mode = tile_mode;
+        shader->base.tile_mode = (lx_uint8_t)tile_mode;
         shader->gradient       = *gradient;
         shader->line           = *line;
         lx_shader_matrix_set((lx_shader_ref_t)shader, lx_null);
@@ -58,7 +58,7 @@ lx_shader_ref_t lx_shader_init_radial_gradient(lx_size_t tile_mode, lx_gradient_
     lx_radial_gradient_shader_t* shader = lx_malloc0_type(lx_radial_gradient_shader_t);
     if (shader) {
         shader->base.type      = LX_SHADER_TYPE_RADIAL_GRADIENT;
-        shader->base.tile_mode = tile_mode;
+        shader->base.tile_mode = (lx_uint8_t)tile_mode;
         shader->gradient       = *gradient;
         shader->circle         = *circle;
         lx_shader_matrix_set((lx_shader_ref_t)shader, lx_null);
@@ -83,7 +83,7 @@ lx_shader_ref_t lx_shader_init_bitmap(lx_size_t tile_mode, lx_bitmap_ref_t bitma
     lx_bitmap_shader_t* shader = lx_malloc0_type(lx_bitmap_shader_t);
     if (shader) {
         shader->base.type      = LX_SHADER_TYPE_BITMAP;
-        shader->base.tile_mode = tile_mode;
+        shader->base.tile_mode = (lx_uint8_t)tile_mode;
         shader->bitmap         = bitmap;
         lx_shader_matrix_set((lx_shader_ref_t)shader, lx_null);
     }

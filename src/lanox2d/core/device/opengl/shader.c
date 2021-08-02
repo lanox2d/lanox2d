@@ -79,28 +79,28 @@ static lx_bitmap_shader_devdata_t* lx_bitmap_shader_init_devdata(lx_bitmap_shade
     lx_shader_texture_apply_wrap(tile_mode, tile_mode);
 
     // apply texture data
-    lx_byte_t const* data   = lx_bitmap_data(bitmap);
+    lx_pointer_t     data   = lx_bitmap_data(bitmap);
     lx_size_t        pixfmt = lx_bitmap_pixfmt(bitmap);
     lx_size_t        width  = lx_bitmap_width(bitmap);
     lx_size_t        height = lx_bitmap_height(bitmap);
     switch (LX_PIXFMT(pixfmt)) {
     case LX_PIXFMT_ARGB8888:
     case LX_PIXFMT_XRGB8888:
-        lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGBA, width, height, 0, LX_GL_BGRA, LX_GL_UNSIGNED_BYTE, data);
+        lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGBA, (lx_GLsizei_t)width, (lx_GLsizei_t)height, 0, LX_GL_BGRA, LX_GL_UNSIGNED_BYTE, data);
         break;
     case LX_PIXFMT_RGB565:
-        lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGB, width, height, 0, LX_GL_RGB, LX_GL_UNSIGNED_SHORT_5_6_5, data);
+        lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGB, (lx_GLsizei_t)width, (lx_GLsizei_t)height, 0, LX_GL_RGB, LX_GL_UNSIGNED_SHORT_5_6_5, data);
         break;
     case LX_PIXFMT_RGB888:
-        lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGB, width, height, 0, LX_GL_BGR, LX_GL_UNSIGNED_BYTE, data);
+        lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGB, (lx_GLsizei_t)width, (lx_GLsizei_t)height, 0, LX_GL_BGR, LX_GL_UNSIGNED_BYTE, data);
         break;
     case LX_PIXFMT_RGBA4444:
     case LX_PIXFMT_RGBX4444:
-        lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGBA, width, height, 0, LX_GL_RGBA, LX_GL_UNSIGNED_SHORT_4_4_4_4, data);
+        lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGBA, (lx_GLsizei_t)width, (lx_GLsizei_t)height, 0, LX_GL_RGBA, LX_GL_UNSIGNED_SHORT_4_4_4_4, data);
         break;
     case LX_PIXFMT_RGBA5551:
     case LX_PIXFMT_RGBX5551:
-        lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGBA, width, height, 0, LX_GL_RGBA, LX_GL_UNSIGNED_SHORT_5_5_5_1, data);
+        lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGBA, (lx_GLsizei_t)width, (lx_GLsizei_t)height, 0, LX_GL_RGBA, LX_GL_UNSIGNED_SHORT_5_5_5_1, data);
         break;
     default:
         lx_trace_e("unsupported pixfmt for texture!");

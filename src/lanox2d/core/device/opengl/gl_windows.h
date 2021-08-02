@@ -25,9 +25,8 @@
  * includes
  */
 #include "gl.h"
-#define GL_GLEXT_PROTOTYPES
+#include <windows.h>
 #include <GL/gl.h>
-#include <GL/glext.h>
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

@@ -66,7 +66,7 @@ static boolean lx_bitmap_jpg_jsrc_fill_input_buffer(j_decompress_ptr jdec) {
     return lx_false;
 }
 
-static lx_void_t lx_bitmap_jpg_jsrc_skip_input_data(j_decompress_ptr jdec, lx_long_t num_bytes) {
+static lx_void_t lx_bitmap_jpg_jsrc_skip_input_data(j_decompress_ptr jdec, long num_bytes) {
     lx_bitmap_jpg_jsrc_manager_t* jsm = (lx_bitmap_jpg_jsrc_manager_t*)jdec->src;
     if (jsm && num_bytes > 0 && jsm->jsrc.next_input_byte && jsm->jsrc.bytes_in_buffer >= num_bytes) {
         jsm->jsrc.next_input_byte += num_bytes;
@@ -170,7 +170,7 @@ lx_bitmap_ref_t lx_bitmap_jpg_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
 
         // init line buffer
         lx_size_t lsize = jdec.output_components * width;
-        JSAMPROW  ldata = jdec.mem->alloc_small((j_common_ptr)&jdec, JPOOL_IMAGE, lsize);
+        JSAMPROW  ldata = (JSAMPROW)jdec.mem->alloc_small((j_common_ptr)&jdec, JPOOL_IMAGE, lsize);
         lx_assert_and_check_break(ldata && lsize);
 
         // read lines

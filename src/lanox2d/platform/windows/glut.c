@@ -254,7 +254,7 @@ static lx_void_t lx_window_glut_motion(lx_int_t x, lx_int_t y) {
     lx_event_t event = {0};
     event.type           = LX_EVENT_TYPE_MOUSE;
     event.u.mouse.code   = LX_MOUSE_MOVE;
-    event.u.mouse.button = window->button;
+    event.u.mouse.button = (lx_uint8_t)window->button;
     lx_point_imake(&event.u.mouse.cursor, x, y);
     if (window->base.on_event) {
         window->base.on_event((lx_window_ref_t)window, &event);
@@ -300,7 +300,7 @@ static lx_void_t lx_window_glut_fullscreen(lx_window_ref_t self, lx_bool_t is_fu
             lx_size_t screen_width  = glutGet(GLUT_SCREEN_WIDTH);
             lx_size_t screen_height = glutGet(GLUT_SCREEN_HEIGHT);
             lx_assert(screen_width && screen_height && screen_width >= window->normal_width && screen_height >= window->normal_height);
-            glutPositionWindow((screen_width - window->normal_width) >> 1, (screen_height - window->normal_height) >> 1);
+            glutPositionWindow((lx_int_t)((screen_width - window->normal_width) >> 1), (lx_int_t)((screen_height - window->normal_height) >> 1));
             glutReshapeWindow(window->normal_width, window->normal_height);
             window->base.flags &= ~LX_WINDOW_FLAG_FULLSCREEN;
         }

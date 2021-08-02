@@ -194,7 +194,7 @@ lx_bitmap_ref_t lx_bitmap_png_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
 
         // init line buffer
         lx_size_t lsize = png_get_rowbytes(png, info);
-        ldata = lx_malloc0(lsize);
+        ldata = (lx_byte_t*)lx_malloc0(lsize);
         lx_assert_and_check_break(ldata && lsize);
 
         // decode image data

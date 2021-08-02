@@ -544,7 +544,7 @@ static lx_void_t lx_stroker_joiner_miter(lx_path_ref_t inner, lx_path_ref_t oute
          *
          * cos(a/2) = sqrt((1 + cos(a)) / 2)
          */
-        lx_float_t cos_half_a = lx_sqrt(lx_avg(1.0f, cos_angle));
+        lx_float_t cos_half_a = lx_sqrtf(lx_avg(1.0f, cos_angle));
 
         /* limit the miter length
          *
@@ -906,7 +906,7 @@ static lx_void_t lx_stroker_make_quad_to(lx_stroker_t* stroker, lx_point_ref_t p
          *
          * length(p1, p1^) ~= R / cos(angle/2) = R / sqrt((1 + cos(angle)) / 2)
          */
-        if (!lx_vector_length_set(&normal_1, stroker->radius / lx_sqrt(lx_avg(1.0f, cos_angle)))) {
+        if (!lx_vector_length_set(&normal_1, stroker->radius / lx_sqrtf(lx_avg(1.0f, cos_angle)))) {
             lx_assert(0);
             return ;
         }
@@ -1036,7 +1036,7 @@ static lx_void_t lx_stroker_make_cubic_to(lx_stroker_t* stroker, lx_point_ref_t 
          *
          * length(p1, p1^) ~= R / cos(angle/2) = R / sqrt((1 + cos(angle)) / 2)
          */
-        if (!lx_vector_length_set(&normal_1, stroker->radius / lx_sqrt(lx_avg(1.0f, cos_angle_012)))) {
+        if (!lx_vector_length_set(&normal_1, stroker->radius / lx_sqrtf(lx_avg(1.0f, cos_angle_012)))) {
             lx_assert(0);
             return ;
         }
@@ -1045,7 +1045,7 @@ static lx_void_t lx_stroker_make_cubic_to(lx_stroker_t* stroker, lx_point_ref_t 
          *
          * length(p1, p1^) ~= R / cos(angle/2) = R / sqrt((1 + cos(angle)) / 2)
          */
-        if (!lx_vector_length_set(&normal_2, stroker->radius / lx_sqrt(lx_avg(1.0f, cos_angle_123)))) {
+        if (!lx_vector_length_set(&normal_2, stroker->radius / lx_sqrtf(lx_avg(1.0f, cos_angle_123)))) {
             lx_assert(0);
             return ;
         }

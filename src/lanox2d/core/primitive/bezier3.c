@@ -141,16 +141,14 @@ lx_size_t lx_bezier3_divide_line_count(lx_point_t const points[4]) {
     lx_assert(distance >= 0);
 
     // get the integer distance
-    lx_size_t idistance = lx_ceil(distance);
+    lx_uint32_t idistance = (lx_uint32_t)lx_ceil(distance);
 
     // compute the divided count
-    lx_size_t count = (lx_ilog2i(idistance) >> 1) + 1;
-
-    // limit the count
+    lx_uint32_t count = (lx_ilog2i(idistance) >> 1) + 1;
     if (count > LX_BEZIER3_DIVIDED_MAXN) {
         count = LX_BEZIER3_DIVIDED_MAXN;
     }
-    return count;
+    return (lx_size_t)count;
 }
 
 lx_void_t lx_bezier3_chop_at(lx_point_t const points[4], lx_point_t output[7], lx_float_t factor) {

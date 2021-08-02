@@ -413,9 +413,7 @@ lx_bool_t lx_tessellator_active_regions_make(lx_tessellator_t* tessellator, lx_r
     // test the active regions
     lx_tessellator_active_regions_test(tessellator, xb, xe, lx_avg(yb, ye));
 #endif
-
-    // ok
-    return lx_list_size(tessellator->active_regions);
+    return lx_list_size(tessellator->active_regions) != 0;
 }
 
 lx_tessellator_active_region_ref_t lx_tessellator_active_regions_find(lx_tessellator_t* tessellator, lx_mesh_edge_ref_t edge) {

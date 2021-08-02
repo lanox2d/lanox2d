@@ -203,7 +203,7 @@ lx_bool_t lx_gl_context_init(lx_size_t width, lx_size_t height, lx_size_t framew
     lx_gl_extensions_init();
 
     // init viewport
-    lx_glViewport(0, 0, framewidth, frameheight);
+    lx_glViewport(0, 0, (lx_GLsizei_t)framewidth, (lx_GLsizei_t)frameheight);
 
     /* init the projection matrix
      *
