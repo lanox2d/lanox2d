@@ -42,12 +42,13 @@ typedef struct lx_window_fbdev_t_ {
     lx_bitmap_ref_t bitmap;
     lx_bool_t       is_quit;
     lx_int_t        devfd;
+    lx_int_t        screensize;
+    lx_byte_t*      framebuffer;
 } lx_window_fbdev_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
-
 static lx_bool_t lx_window_fbdev_start(lx_window_fbdev_t* window) {
     lx_bool_t ok = lx_false;
     do {
@@ -58,18 +59,42 @@ static lx_bool_t lx_window_fbdev_start(lx_window_fbdev_t* window) {
 
         // get screen info
         struct fb_fix_screeninfo finfo;
+        struct fb_var_screeninfo vinfo;
         if (ioctl(window->devfd, FBIOGET_FSCREENINFO, &finfo) != 0) {
             lx_trace_e("get fix screeninfo failed!");
             break;
         }
-        struct fb_var_screeninfo vinfo;
         if (ioctl(window->devfd, FBIOGET_VSCREENINFO, &vinfo) != 0) {
             lx_trace_e("get var screeninfo failed!");
             break;
         }
+        window->base.width  = vinfo.xres;
+        window->base.height = vinfo.yres;
+        window->screensize  = finfo.smem_len;
 
         // trace
         lx_trace_d("fb screen info: %dx%d bpp: %d, size: %d", vinfo.xres, vinfo.yres, vinfo.bits_per_pixel, finfo.smem_len);
+
+        // get framebuffer
+        window->framebuffer = mmap(0, window->screensize, PROT_READ | PROT_WRITE, MAP_SHARED, window->devfd, 0);
+        lx_assert_and_check_break(window->framebuffer);
+
+        // init bitmap
+        lx_size_t row_bytes = vinfo.xres * (vinfo.bits_per_pixel >> 3);
+        window->bitmap = lx_bitmap_init(window->framebuffer, window->base.pixfmt, window->base.width, window->base.height, row_bytes, lx_false);
+        lx_assert_and_check_break(window->bitmap);
+
+        // init device
+#if defined(LX_CONFIG_DEVICE_HAVE_BITMAP)
+        window->base.device = lx_device_init_from_bitmap(window->bitmap);
+#elif defined(LX_CONFIG_DEVICE_HAVE_SKIA)
+        window->base.device = lx_device_init_from_skia(window->base.width, window->base.height, window->bitmap);
+#endif
+        lx_assert_and_check_break(window->base.device);
+
+        // init canvas
+        window->base.canvas = lx_canvas_init(window->base.device);
+        lx_assert_and_check_break(window->base.canvas);
 
 
         // ok
@@ -110,6 +135,10 @@ static lx_void_t lx_window_fbdev_exit(lx_window_ref_t self) {
         if (window->bitmap) {
             lx_bitmap_exit(window->bitmap);
             window->bitmap = lx_null;
+        }
+        if (window->framebuffer) {
+            munmap(window->framebuffer, window->screensize);
+            window->framebuffer = lx_null;
         }
         if (window->devfd >= 0) {
             close(window->devfd);
