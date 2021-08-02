@@ -91,7 +91,7 @@ option("openglver")
                 if is_plat("macosx") then
                     option:set_value(window == "glfw" and "3.3" or "2.1")
                 elseif is_plat("linux") then
-                    option:set_value(window == "glfw" and "3.3" or "2.1")
+                    option:set_value("2.1")
                 elseif is_plat("windows", "mingw") then
                     option:set_value("1.1")
                 elseif is_plat("android", "iphoneos") then
