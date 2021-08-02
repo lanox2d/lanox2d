@@ -23,6 +23,14 @@
  * includes
  */
 #include "prefix.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <fcntl.h>
+#include <linux/fb.h>
+#include <sys/mman.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * types
@@ -33,6 +41,7 @@ typedef struct lx_window_fbdev_t_ {
     lx_window_t     base;
     lx_bitmap_ref_t bitmap;
     lx_bool_t       is_quit;
+    lx_int_t        devfd;
 } lx_window_fbdev_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -42,6 +51,26 @@ typedef struct lx_window_fbdev_t_ {
 static lx_bool_t lx_window_fbdev_start(lx_window_fbdev_t* window) {
     lx_bool_t ok = lx_false;
     do {
+
+        // open fb dev
+        window->devfd = open("/dev/fb0", O_RDWR);
+        lx_assert_and_check_break(window->devfd >= 0);
+
+        // get screen info
+        struct fb_fix_screeninfo finfo;
+        if (ioctl(window->devfd, FBIOGET_FSCREENINFO, &finfo) != 0) {
+            lx_trace_e("get fix screeninfo failed!");
+            break;
+        }
+        struct fb_var_screeninfo vinfo;
+        if (ioctl(window->devfd, FBIOGET_VSCREENINFO, &vinfo) != 0) {
+            lx_trace_e("get var screeninfo failed!");
+            break;
+        }
+
+        // trace
+        lx_trace_d("fb screen info: %dx%d bpp: %d, size: %d", vinfo.xres, vinfo.yres, vinfo.bits_per_pixel, finfo.smem_len);
+
 
         // ok
         ok = lx_true;
@@ -81,6 +110,10 @@ static lx_void_t lx_window_fbdev_exit(lx_window_ref_t self) {
         if (window->bitmap) {
             lx_bitmap_exit(window->bitmap);
             window->bitmap = lx_null;
+        }
+        if (window->devfd >= 0) {
+            close(window->devfd);
+            window->devfd = -1;
         }
         lx_free(window);
     }
