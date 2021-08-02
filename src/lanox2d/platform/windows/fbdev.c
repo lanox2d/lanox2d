@@ -170,13 +170,7 @@ lx_window_ref_t lx_window_init_fbdev(lx_size_t width, lx_size_t height, lx_char_
         window->base.runloop     = lx_window_fbdev_runloop;
         window->base.quit        = lx_window_fbdev_quit;
         window->base.exit        = lx_window_fbdev_exit;
-
-        // init pixfmt
-#ifdef LX_CONFIG_DEVICE_HAVE_SKIA
-        window->base.pixfmt = lx_quality() < LX_QUALITY_TOP? LX_PIXFMT_RGB565 : (LX_PIXFMT_RGBX8888 | LX_PIXFMT_BENDIAN);
-#else
-        window->base.pixfmt = lx_quality() < LX_QUALITY_TOP? LX_PIXFMT_RGB565 : LX_PIXFMT_RGBX8888;
-#endif
+        window->base.pixfmt      = LX_PIXFMT_RGBX8888;
 
         // ok
         ok = lx_true;
