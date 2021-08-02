@@ -23,6 +23,7 @@
  * includes
  */
 #include "prefix.h"
+#include "../../core/device/opengl/gl.h"
 #include <GLFW/glfw3.h>
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -239,7 +240,7 @@ static lx_bool_t lx_window_glfw_start(lx_window_glfw_t* window) {
 #if LX_GL_API_VERSION >= 30
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 #else
 #   ifdef LX_GL_API_ES
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
