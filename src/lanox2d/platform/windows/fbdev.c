@@ -78,7 +78,7 @@ static lx_bool_t lx_window_fbdev_start(lx_window_fbdev_t* window) {
         // activate buffer
         vinfo.activate |= FB_ACTIVATE_NOW | FB_ACTIVATE_FORCE;
         if (ioctl(window->devfd, FBIOPUT_VSCREENINFO, &vinfo) < 0) {
-            lx_trace_e("faailed to activate framebuffer!");
+            lx_trace_e("failed to activate framebuffer!");
             break;
         }
 
