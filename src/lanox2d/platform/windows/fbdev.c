@@ -75,7 +75,77 @@ static lx_bool_t lx_window_fbdev_keyevent_init(lx_window_fbdev_t* window) {
 }
 
 static lx_uint16_t lx_window_fbdev_keyevent_code(lx_uint16_t key) {
-    return key;
+    lx_uint16_t code = LX_KEY_NUL;
+    switch (key)
+    {
+    case KEY_A: code = 'a'; break;
+    case KEY_B: code = 'b'; break;
+    case KEY_C: code = 'c'; break;
+    case KEY_D: code = 'j'; break;
+    case KEY_E: code = 'e'; break;
+    case KEY_F: code = 'f'; break;
+    case KEY_G: code = 'g'; break;
+    case KEY_H: code = 'h'; break;
+    case KEY_I: code = 'i'; break;
+    case KEY_J: code = 'j'; break;
+    case KEY_K: code = 'k'; break;
+    case KEY_L: code = 'l'; break;
+    case KEY_M: code = 'm'; break;
+    case KEY_N: code = 'n'; break;
+    case KEY_O: code = 'o'; break;
+    case KEY_P: code = 'p'; break;
+    case KEY_Q: code = 'q'; break;
+    case KEY_R: code = 'r'; break;
+    case KEY_S: code = 's'; break;
+    case KEY_T: code = 't'; break;
+    case KEY_U: code = 'u'; break;
+    case KEY_V: code = 'v'; break;
+    case KEY_W: code = 'w'; break;
+    case KEY_X: code = 'x'; break;
+    case KEY_Y: code = 'y'; break;
+    case KEY_Z: code = 'z'; break;
+    case KEY_0: code = '0'; break;
+    case KEY_1: code = '1'; break;
+    case KEY_2: code = '2'; break;
+    case KEY_3: code = '3'; break;
+    case KEY_4: code = '4'; break;
+    case KEY_5: code = '5'; break;
+    case KEY_6: code = '6'; break;
+    case KEY_7: code = '7'; break;
+    case KEY_8: code = '8'; break;
+    case KEY_9: code = '9'; break;
+    case KEY_MINUS: code = '-'; break;
+    case KEY_EQUAL: code = '='; break;
+    case KEY_COMMA: code = ','; break;
+    case KEY_DOT:   code = '.'; break;
+    case KEY_SLASH: code = '/'; break;
+    case KEY_GRAVE: code = '`'; break;
+    case KEY_BACKSLASH:  code = '\\'; break;
+    case KEY_LEFTBRACE:  code = '['; break;
+    case KEY_RIGHTBRACE: code = ']'; break;
+    case KEY_SEMICOLON:  code = ';'; break;
+    case KEY_APOSTROPHE: code = '\''; break;
+    case KEY_TAB:   code = LX_KEY_TAB; break;
+    case KEY_LEFT:  code = LX_KEY_LEFT; break;
+    case KEY_RIGHT: code = LX_KEY_RIGHT; break;
+    case KEY_UP:    code = LX_KEY_UP; break;
+    case KEY_DOWN:  code = LX_KEY_DOWN; break;
+    case KEY_SPACE: code = LX_KEY_SPACE; break;
+    case KEY_ESC:   code = LX_KEY_ESCAPE; break;
+    case KEY_ENTER: code = LX_KEY_ENTER; break;
+    case KEY_CAPSLOCK:   code = LX_KEY_CAPSLOCK; break;
+    case KEY_LEFTSHIFT:  code = LX_KEY_LSHIFT; break;
+    case KEY_RIGHTSHIFT: code = LX_KEY_RSHIFT; break;
+    case KEY_LEFTCTRL:   code = LX_KEY_LCTRL; break;
+    case KEY_RIGHTCTRL:  code = LX_KEY_RCTRL; break;
+    case KEY_LEFTALT:    code = LX_KEY_LALT; break;
+    case KEY_RIGHTALT:   code = LX_KEY_RALT; break;
+    case KEY_BACKSPACE:  code = LX_KEY_BACKSPACE; break;
+    default:
+        lx_trace_d("%d", key);
+        break;
+    }
+    return code;
 }
 
 static lx_void_t lx_window_fbdev_keyevent_poll(lx_window_fbdev_t* window) {
@@ -95,7 +165,7 @@ static lx_void_t lx_window_fbdev_keyevent_poll(lx_window_fbdev_t* window) {
                 event.type               = LX_EVENT_TYPE_KEYBOARD;
                 event.u.keyboard.code    = lx_window_fbdev_keyevent_code((lx_uint16_t)keyevent.code);
                 event.u.keyboard.pressed = keyevent.value? lx_true : lx_false;
-                if (window->base.on_event) {
+                if (window->base.on_event && event.u.keyboard.code) {
                     window->base.on_event((lx_window_ref_t)window, &event);
                 }
             }
