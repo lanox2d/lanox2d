@@ -248,6 +248,15 @@ lx_long_t           lx_strtol(lx_char_t const* s, lx_char_t** endptr, lx_int_t b
  */
 lx_char_t const*    lx_strchr(lx_char_t const* s, lx_char_t c);
 
+/*! strstr
+ *
+ * @param s1        the c-string
+ * @param s2        the c-string
+ *
+ * @return          the result positon
+ */
+lx_char_t const*    lx_strstr(lx_char_t const* s1, lx_char_t const* s2);
+
 /* strlcpy
  *
  * @param s1        the c-string

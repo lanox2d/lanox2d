@@ -28,8 +28,10 @@
 #include <string.h>
 #include <fcntl.h>
 #include <linux/fb.h>
+#include <linux/input.h>
 #include <sys/mman.h>
 #include <sys/ioctl.h>
+#include <poll.h>
 #include <unistd.h>
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -42,6 +44,7 @@ typedef struct lx_window_fbdev_t_ {
     lx_bitmap_ref_t bitmap;
     lx_bool_t       is_quit;
     lx_int_t        devfd;
+    lx_int_t        keyfd;
     lx_int_t        screensize;
     lx_byte_t*      framebuffer;
 } lx_window_fbdev_t;
@@ -49,6 +52,51 @@ typedef struct lx_window_fbdev_t_ {
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
+static lx_bool_t lx_window_fbdev_keyevent_init(lx_window_fbdev_t* window) {
+    lx_char_t name[64];
+    lx_char_t buffer[256] = {0};
+    lx_int_t i;
+    lx_int_t fd = 0;
+    for (i = 0; i < 32; i++) {
+        lx_snprintf(name, sizeof(name), "/dev/input/event%d", i);
+        if ((fd = open(name, O_RDONLY, 0)) >= 0) {
+            lx_int_t len = ioctl(fd, EVIOCGNAME(sizeof(buffer)), buffer);
+            if (len > 0) {
+                if (lx_strstr(buffer, "keyboard")) {
+                    window->keyfd = fd;
+                    lx_trace_d("found input keyboard: %s, %s, fd: %d", buffer, name, fd);
+                    return lx_true;
+                }
+            }
+            close(fd);
+        }
+    }
+    return lx_false;
+}
+
+static lx_void_t lx_window_fbdev_keyevent_poll(lx_window_fbdev_t* window) {
+    lx_check_return(window && window->keyfd >= 0);
+
+    // poll event
+    struct pollfd pfd = {0};
+    pfd.fd = window->keyfd;
+    pfd.events |= POLLIN;
+    if (poll(&pfd, 1, 0) > 0) {
+
+        // read event
+        struct input_event event;
+        if (read(window->keyfd, &event, sizeof(event)) == sizeof(event)) {
+            if (event.type == EV_KEY) {
+                if (event.value == 0 || event.value == 1) {
+                    lx_trace_d("key %d %s", event.code, (event.value) ? "Pressed" : "Released");
+                    //if (event.code == KEY_ESC)
+                    //    break;
+                }
+            }
+        }
+    }
+}
+
 static lx_bool_t lx_window_fbdev_start(lx_window_fbdev_t* window) {
     lx_bool_t ok = lx_false;
     do {
@@ -75,12 +123,14 @@ static lx_bool_t lx_window_fbdev_start(lx_window_fbdev_t* window) {
         // trace
         lx_trace_d("fb screen info: %dx%d bpp: %d, size: %d", vinfo.xres, vinfo.yres, vinfo.bits_per_pixel, finfo.smem_len);
 
+#if 0
         // activate buffer
         vinfo.activate |= FB_ACTIVATE_NOW | FB_ACTIVATE_FORCE;
         if (ioctl(window->devfd, FBIOPUT_VSCREENINFO, &vinfo) < 0) {
             lx_trace_e("failed to activate framebuffer!");
             break;
         }
+#endif
 
         // get framebuffer
         window->framebuffer = mmap(0, window->screensize, PROT_READ | PROT_WRITE, MAP_SHARED, window->devfd, 0);
@@ -90,6 +140,12 @@ static lx_bool_t lx_window_fbdev_start(lx_window_fbdev_t* window) {
         lx_size_t row_bytes = vinfo.xres * (vinfo.bits_per_pixel >> 3);
         window->bitmap = lx_bitmap_init(window->framebuffer, window->base.pixfmt, window->base.width, window->base.height, row_bytes, lx_false);
         lx_assert_and_check_break(window->bitmap);
+
+        // init key event
+        if (!lx_window_fbdev_keyevent_init(window)) {
+            lx_trace_e("failed to start key event!");
+            break;
+        }
 
         // init device
 #if defined(LX_CONFIG_DEVICE_HAVE_BITMAP)
@@ -102,7 +158,6 @@ static lx_bool_t lx_window_fbdev_start(lx_window_fbdev_t* window) {
         // init canvas
         window->base.canvas = lx_canvas_init(window->base.device);
         lx_assert_and_check_break(window->base.canvas);
-
 
         // ok
         ok = lx_true;
@@ -123,6 +178,9 @@ static lx_void_t lx_window_fbdev_runloop(lx_window_ref_t self) {
     // do loop
     lx_int_t fps_delay = 1000 / window->base.fps;
     while (!window->is_quit) {
+
+        // poll event
+        lx_window_fbdev_keyevent_poll(window);
 
         // draw window
         lx_hong_t starttime = lx_mclock();
@@ -170,6 +228,10 @@ static lx_void_t lx_window_fbdev_exit(lx_window_ref_t self) {
             munmap(window->framebuffer, window->screensize);
             window->framebuffer = lx_null;
         }
+        if (window->keyfd >= 0) {
+            close(window->keyfd);
+            window->keyfd = -1;
+        }
         if (window->devfd >= 0) {
             close(window->devfd);
             window->devfd = -1;
@@ -201,6 +263,8 @@ lx_window_ref_t lx_window_init_fbdev(lx_size_t width, lx_size_t height, lx_char_
         window->base.quit        = lx_window_fbdev_quit;
         window->base.exit        = lx_window_fbdev_exit;
         window->base.pixfmt      = LX_PIXFMT_RGBX8888;
+        window->devfd            = -1;
+        window->keyfd            = -1;
 
         // ok
         ok = lx_true;
