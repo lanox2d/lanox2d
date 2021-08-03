@@ -75,6 +75,13 @@ static lx_bool_t lx_window_fbdev_start(lx_window_fbdev_t* window) {
         // trace
         lx_trace_d("fb screen info: %dx%d bpp: %d, size: %d", vinfo.xres, vinfo.yres, vinfo.bits_per_pixel, finfo.smem_len);
 
+        // activate buffer
+        vinfo.activate |= FB_ACTIVATE_NOW | FB_ACTIVATE_FORCE;
+        if (ioctl(window->devfd, FBIOPUT_VSCREENINFO, &vinfo) < 0) {
+            lx_trace_e("faailed to activate framebuffer!");
+            break;
+        }
+
         // get framebuffer
         window->framebuffer = mmap(0, window->screensize, PROT_READ | PROT_WRITE, MAP_SHARED, window->devfd, 0);
         lx_assert_and_check_break(window->framebuffer);
@@ -112,6 +119,29 @@ static lx_void_t lx_window_fbdev_runloop(lx_window_ref_t self) {
         lx_trace_e("start sdl window failed!");
         return ;
     }
+
+    // do loop
+    lx_int_t fps_delay = 1000 / window->base.fps;
+    while (!window->is_quit) {
+
+        // draw window
+        lx_hong_t starttime = lx_mclock();
+        if (window->base.on_draw) {
+            window->base.on_draw(self, window->base.canvas);
+        }
+
+        // compute delay for framerate
+        lx_int_t  delay = 1;
+        lx_hong_t time = lx_mclock();
+        lx_int_t  dt = (lx_int_t)(time - starttime);
+        if (fps_delay >= dt) {
+            delay = fps_delay - dt;
+        }
+
+        // delay
+        lx_msleep(delay);
+    }
+
 }
 
 static lx_void_t lx_window_fbdev_quit(lx_window_ref_t self) {
