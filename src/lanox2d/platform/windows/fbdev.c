@@ -84,13 +84,15 @@ static lx_void_t lx_window_fbdev_keyevent_poll(lx_window_fbdev_t* window) {
     if (poll(&pfd, 1, 0) > 0) {
 
         // read event
-        struct input_event event;
-        if (read(window->keyfd, &event, sizeof(event)) == sizeof(event)) {
-            if (event.type == EV_KEY) {
-                if (event.value == 0 || event.value == 1) {
-                    lx_trace_d("key %d %s", event.code, (event.value) ? "Pressed" : "Released");
-                    //if (event.code == KEY_ESC)
-                    //    break;
+        struct input_event keyevent;
+        if (read(window->keyfd, &keyevent, sizeof(keyevent)) == sizeof(keyevent)) {
+            if (keyevent.type == EV_KEY) {
+                lx_event_t event = {0};
+                event.type               = LX_EVENT_TYPE_KEYBOARD;
+                event.u.keyboard.code    = keyevent.code;
+                event.u.keyboard.pressed = keyevent.value? lx_true : lx_false;
+                if (window->base.on_event) {
+                    window->base.on_event((lx_window_ref_t)window, &event);
                 }
             }
         }
