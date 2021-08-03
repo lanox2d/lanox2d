@@ -74,6 +74,10 @@ static lx_bool_t lx_window_fbdev_keyevent_init(lx_window_fbdev_t* window) {
     return lx_false;
 }
 
+static lx_uint16_t lx_window_fbdev_keyevent_code(lx_uint16_t key) {
+    return key;
+}
+
 static lx_void_t lx_window_fbdev_keyevent_poll(lx_window_fbdev_t* window) {
     lx_check_return(window && window->keyfd >= 0);
 
@@ -89,7 +93,7 @@ static lx_void_t lx_window_fbdev_keyevent_poll(lx_window_fbdev_t* window) {
             if (keyevent.type == EV_KEY) {
                 lx_event_t event = {0};
                 event.type               = LX_EVENT_TYPE_KEYBOARD;
-                event.u.keyboard.code    = keyevent.code;
+                event.u.keyboard.code    = lx_window_fbdev_keyevent_code((lx_uint16_t)keyevent.code);
                 event.u.keyboard.pressed = keyevent.value? lx_true : lx_false;
                 if (window->base.on_event) {
                     window->base.on_event((lx_window_ref_t)window, &event);
