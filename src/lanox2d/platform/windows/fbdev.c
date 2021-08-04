@@ -43,6 +43,7 @@ typedef struct lx_window_fbdev_t_ {
     lx_window_t     base;
     lx_bitmap_ref_t bitmap;
     lx_bool_t       is_quit;
+    lx_bool_t       is_shift;
     lx_int_t        devfd;
     lx_int_t        keyfd;
     lx_int_t        screensize;
@@ -74,7 +75,7 @@ static lx_bool_t lx_window_fbdev_keyevent_init(lx_window_fbdev_t* window) {
     return lx_false;
 }
 
-static lx_uint16_t lx_window_fbdev_keyevent_code(lx_uint16_t key) {
+static lx_uint16_t lx_window_fbdev_keyevent_code(lx_window_fbdev_t* window, lx_uint16_t key, lx_bool_t is_pressed) {
     lx_uint16_t code = LX_KEY_NUL;
     switch (key)
     {
@@ -104,27 +105,27 @@ static lx_uint16_t lx_window_fbdev_keyevent_code(lx_uint16_t key) {
     case KEY_X: code = 'x'; break;
     case KEY_Y: code = 'y'; break;
     case KEY_Z: code = 'z'; break;
-    case KEY_0: code = '0'; break;
-    case KEY_1: code = '1'; break;
-    case KEY_2: code = '2'; break;
-    case KEY_3: code = '3'; break;
-    case KEY_4: code = '4'; break;
-    case KEY_5: code = '5'; break;
-    case KEY_6: code = '6'; break;
-    case KEY_7: code = '7'; break;
-    case KEY_8: code = '8'; break;
-    case KEY_9: code = '9'; break;
-    case KEY_MINUS: code = '-'; break;
-    case KEY_EQUAL: code = '='; break;
-    case KEY_COMMA: code = ','; break;
-    case KEY_DOT:   code = '.'; break;
-    case KEY_SLASH: code = '/'; break;
-    case KEY_GRAVE: code = '`'; break;
-    case KEY_BACKSLASH:  code = '\\'; break;
-    case KEY_LEFTBRACE:  code = '['; break;
-    case KEY_RIGHTBRACE: code = ']'; break;
-    case KEY_SEMICOLON:  code = ';'; break;
-    case KEY_APOSTROPHE: code = '\''; break;
+    case KEY_0: code = window->is_shift? ')' : '0'; break;
+    case KEY_1: code = window->is_shift? '!' : '1'; break;
+    case KEY_2: code = window->is_shift? '@' : '2'; break;
+    case KEY_3: code = window->is_shift? '#' : '3'; break;
+    case KEY_4: code = window->is_shift? '$' : '4'; break;
+    case KEY_5: code = window->is_shift? '%' : '5'; break;
+    case KEY_6: code = window->is_shift? '^' : '6'; break;
+    case KEY_7: code = window->is_shift? '&' : '7'; break;
+    case KEY_8: code = window->is_shift? '*' : '8'; break;
+    case KEY_9: code = window->is_shift? '(' : '9'; break;
+    case KEY_MINUS: code = window->is_shift? '_' : '-'; break;
+    case KEY_EQUAL: code = window->is_shift? '+' : '='; break;
+    case KEY_COMMA: code = window->is_shift? '<' : ','; break;
+    case KEY_DOT:   code = window->is_shift? '>' : '.'; break;
+    case KEY_SLASH: code = window->is_shift? '?' : '/'; break;
+    case KEY_GRAVE: code = window->is_shift? '~' : '`'; break;
+    case KEY_BACKSLASH:  code = window->is_shift? '|' : '\\'; break;
+    case KEY_LEFTBRACE:  code = window->is_shift? '{' : '['; break;
+    case KEY_RIGHTBRACE: code = window->is_shift? '}' : ']'; break;
+    case KEY_SEMICOLON:  code = window->is_shift? ':' : ';'; break;
+    case KEY_APOSTROPHE: code = window->is_shift? '"' : '\''; break;
     case KEY_TAB:   code = LX_KEY_TAB; break;
     case KEY_LEFT:  code = LX_KEY_LEFT; break;
     case KEY_RIGHT: code = LX_KEY_RIGHT; break;
@@ -133,9 +134,20 @@ static lx_uint16_t lx_window_fbdev_keyevent_code(lx_uint16_t key) {
     case KEY_SPACE: code = LX_KEY_SPACE; break;
     case KEY_ESC:   code = LX_KEY_ESCAPE; break;
     case KEY_ENTER: code = LX_KEY_ENTER; break;
-    case KEY_CAPSLOCK:   code = LX_KEY_CAPSLOCK; break;
-    case KEY_LEFTSHIFT:  code = LX_KEY_LSHIFT; break;
-    case KEY_RIGHTSHIFT: code = LX_KEY_RSHIFT; break;
+    case KEY_CAPSLOCK:
+        if (is_pressed) {
+            window->is_shift = !window->is_shift;
+        }
+        code = LX_KEY_CAPSLOCK;
+        break;
+    case KEY_LEFTSHIFT:
+        window->is_shift = is_pressed;
+        code = LX_KEY_LSHIFT;
+        break;
+    case KEY_RIGHTSHIFT:
+        window->is_shift = is_pressed;
+        code = LX_KEY_RSHIFT;
+        break;
     case KEY_LEFTCTRL:   code = LX_KEY_LCTRL; break;
     case KEY_RIGHTCTRL:  code = LX_KEY_RCTRL; break;
     case KEY_LEFTALT:    code = LX_KEY_LALT; break;
@@ -144,6 +156,9 @@ static lx_uint16_t lx_window_fbdev_keyevent_code(lx_uint16_t key) {
     default:
         lx_trace_d("%d", key);
         break;
+    }
+    if (code >= 'a' && code <= 'z' && window->is_shift) {
+        code = lx_toupper(code);
     }
     return code;
 }
@@ -163,8 +178,8 @@ static lx_void_t lx_window_fbdev_keyevent_poll(lx_window_fbdev_t* window) {
             if (keyevent.type == EV_KEY) {
                 lx_event_t event = {0};
                 event.type               = LX_EVENT_TYPE_KEYBOARD;
-                event.u.keyboard.code    = lx_window_fbdev_keyevent_code((lx_uint16_t)keyevent.code);
                 event.u.keyboard.pressed = keyevent.value? lx_true : lx_false;
+                event.u.keyboard.code    = lx_window_fbdev_keyevent_code(window, (lx_uint16_t)keyevent.code, event.u.keyboard.pressed);
                 if (window->base.on_event && event.u.keyboard.code) {
                     window->base.on_event((lx_window_ref_t)window, &event);
                 }
