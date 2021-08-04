@@ -306,12 +306,11 @@ static lx_bool_t lx_window_fbdev_start(lx_window_fbdev_t* window) {
         // trace
         lx_trace_d("fb screen info: %dx%d bpp: %d, row_bytes: %d, size: %d", window->vinfo.xres, window->vinfo.yres, window->vinfo.bits_per_pixel, window->finfo.line_length, window->finfo.smem_len);
 
-#if 1
         // activate buffer
         if (ioctl(window->devfd, FBIOPUT_VSCREENINFO, &window->vinfo) < 0) {
             lx_trace_e("active fb swap failed!");
         }
-#endif
+
         // get framebuffer
         window->framebuffer = mmap(0, window->screensize, PROT_READ | PROT_WRITE, MAP_SHARED, window->devfd, 0);
         lx_assert_and_check_break(window->framebuffer);
