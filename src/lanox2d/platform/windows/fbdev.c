@@ -199,15 +199,6 @@ static lx_void_t lx_window_fbdev_keyevent_poll(lx_window_fbdev_t* window) {
     }
 }
 
-static lx_void_t lx_window_fbdev_active_framebuffer(lx_window_fbdev_t* window, lx_uint_t n)
-{
-    window->vinfo.yres_virtual = window->vinfo.yres * 2;
-    window->vinfo.yoffset = n * window->vinfo.yres;
-    if (ioctl(window->devfd, FBIOPUT_VSCREENINFO, &window->vinfo) < 0) {
-        lx_trace_e("active fb swap failed!");
-    }
-}
-
 static lx_bool_t lx_window_fbdev_start(lx_window_fbdev_t* window) {
     lx_bool_t ok = lx_false;
     do {
@@ -239,23 +230,19 @@ static lx_bool_t lx_window_fbdev_start(lx_window_fbdev_t* window) {
         window->screensize  = window->finfo.smem_len;
 
         // trace
-        lx_trace_d("fb screen info: %dx%d bpp: %d, size: %d", window->vinfo.xres, window->vinfo.yres, window->vinfo.bits_per_pixel, window->finfo.smem_len);
+        lx_trace_d("fb screen info: %dx%d bpp: %d, row_bytes: %d, size: %d", window->vinfo.xres, window->vinfo.yres, window->vinfo.bits_per_pixel, window->finfo.line_length, window->finfo.smem_len);
 
-        lx_window_fbdev_active_framebuffer(window, 0);
-#if 0
         // activate buffer
-        vinfo.activate |= FB_ACTIVATE_NOW | FB_ACTIVATE_FORCE;
         if (ioctl(window->devfd, FBIOPUT_VSCREENINFO, &window->vinfo) < 0) {
-            lx_trace_e("failed to activate framebuffer!");
-            break;
+            lx_trace_e("active fb swap failed!");
         }
-#endif
+
         // get framebuffer
         window->framebuffer = mmap(0, window->screensize, PROT_READ | PROT_WRITE, MAP_SHARED, window->devfd, 0);
         lx_assert_and_check_break(window->framebuffer);
 
         // init bitmap
-        lx_size_t row_bytes = window->vinfo.xres * (window->vinfo.bits_per_pixel >> 3);
+        lx_size_t row_bytes = window->finfo.line_length;
         window->bitmap = lx_bitmap_init(window->framebuffer, window->base.pixfmt, window->base.width, window->base.height, row_bytes, lx_false);
         lx_assert_and_check_break(window->bitmap);
 
@@ -317,9 +304,6 @@ static lx_void_t lx_window_fbdev_runloop(lx_window_ref_t self) {
         // delay
         lx_msleep(delay);
     }
-
-    lx_window_fbdev_active_framebuffer(window, 1);
-    lx_window_fbdev_active_framebuffer(window, 0);
 }
 
 static lx_void_t lx_window_fbdev_quit(lx_window_ref_t self) {
@@ -382,7 +366,7 @@ lx_window_ref_t lx_window_init_fbdev(lx_size_t width, lx_size_t height, lx_char_
         window->base.runloop     = lx_window_fbdev_runloop;
         window->base.quit        = lx_window_fbdev_quit;
         window->base.exit        = lx_window_fbdev_exit;
-        window->base.pixfmt      = LX_PIXFMT_RGBX8888;
+        window->base.pixfmt      = LX_PIXFMT_XRGB8888;
         window->devfd            = -1;
         window->keyfd            = -1;
 
