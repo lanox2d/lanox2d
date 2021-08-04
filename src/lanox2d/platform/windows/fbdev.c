@@ -38,10 +38,12 @@
  * macros
  */
 #ifdef LX_CONFIG_OS_ANDROID
-#   define LX_FBDEV_NAME   "/dev/graphics/fb%d"
+#   define LX_FBDEV_NAME        "/dev/graphics/fb%d"
 #else
-#   define LX_FBDEV_NAME   "/dev/fb%d"
+#   define LX_FBDEV_NAME        "/dev/fb%d"
 #endif
+#define LX_FBDEV_KEYBOARD_NAME  "/dev/input/event%d"
+#define LX_FBDEV_MOUSE_NAME     "/dev/input/event%d"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * types
@@ -77,7 +79,7 @@ static lx_bool_t lx_window_fbdev_event_keyboard_init(lx_window_fbdev_t* window) 
     lx_int_t i;
     lx_int_t fd = 0;
     for (i = 0; i < 32; i++) {
-        lx_snprintf(name, sizeof(name), "/dev/input/event%d", i);
+        lx_snprintf(name, sizeof(name), LX_FBDEV_KEYBOARD_NAME, i);
         if ((fd = open(name, O_RDONLY)) >= 0) {
             lx_int_t len = ioctl(fd, EVIOCGNAME(sizeof(buffer)), buffer);
             if (len > 0) {
@@ -257,7 +259,7 @@ static lx_bool_t lx_window_fbdev_event_mouse_init(lx_window_fbdev_t* window) {
     lx_int_t i;
     lx_int_t fd = 0;
     for (i = 0; i < 32; i++) {
-        lx_snprintf(name, sizeof(name), "/dev/input/event%d", i);
+        lx_snprintf(name, sizeof(name), LX_FBDEV_MOUSE_NAME, i);
         if ((fd = open(name, O_RDONLY)) >= 0) {
             lx_int_t len = ioctl(fd, EVIOCGNAME(sizeof(buffer)), buffer);
             if (len > 0) {
