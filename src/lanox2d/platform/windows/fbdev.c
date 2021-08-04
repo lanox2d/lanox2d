@@ -58,13 +58,14 @@ typedef struct lx_window_fbdev_t_ {
     lx_int_t                 devfd;
     lx_int_t                 keyfd;
     lx_int_t                 mousefd;
-    lx_int_t                 cursor_x;
-    lx_int_t                 cursor_y;
+    lx_float_t               cursor_x;
+    lx_float_t               cursor_y;
     lx_int_t                 screensize;
     lx_byte_t*               framebuffer;
     lx_byte_t*               framebuffer_offscreen;
     struct fb_fix_screeninfo finfo;
     struct fb_var_screeninfo vinfo;
+    struct input_absinfo     absinfo[2];
 } lx_window_fbdev_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -220,9 +221,17 @@ static lx_void_t lx_window_fbdev_event_mouse_poll(lx_window_fbdev_t* window) {
             lx_bool_t done = lx_false;
             if (event_mouse.type == EV_ABS) { // touch board
                 if (event_mouse.code == ABS_X) {
-                    window->cursor_x = event_mouse.value;
+                    struct input_absinfo* absinfo = &window->absinfo[0];
+                    if (window->cursor_x == -1) {
+                        ioctl(window->mousefd, EVIOCGABS(ABS_X), absinfo);
+                    }
+                    window->cursor_x = (lx_float_t)(event_mouse.value - absinfo->minimum) * window->base.width / (absinfo->maximum - absinfo->minimum);
                 } else if (event_mouse.code == ABS_Y) {
-                    window->cursor_y = event_mouse.value;
+                    struct input_absinfo* absinfo = &window->absinfo[1];
+                    if (window->cursor_y == -1) {
+                        ioctl(window->mousefd, EVIOCGABS(ABS_Y), absinfo);
+                    }
+                    window->cursor_y = (lx_float_t)(event_mouse.value - absinfo->minimum) * window->base.height / (absinfo->maximum - absinfo->minimum);
                     done = lx_true;
                 }
             } else if (event_mouse.type == EV_REL) { // mouse
@@ -233,7 +242,7 @@ static lx_void_t lx_window_fbdev_event_mouse_poll(lx_window_fbdev_t* window) {
                 event.type              = LX_EVENT_TYPE_MOUSE;
                 event.u.mouse.code      = LX_MOUSE_MOVE;
                 event.u.mouse.button    = LX_MOUSE_BUTTON_NONE; // TODO
-                lx_point_imake(&event.u.mouse.cursor, window->cursor_x, window->cursor_y);
+                lx_point_make(&event.u.mouse.cursor, window->cursor_x, window->cursor_y);
                 if (window->base.on_event) {
                     window->base.on_event((lx_window_ref_t)window, &event);
                 }
@@ -465,6 +474,8 @@ lx_window_ref_t lx_window_init_fbdev(lx_size_t width, lx_size_t height, lx_char_
         window->devfd            = -1;
         window->keyfd            = -1;
         window->mousefd          = -1;
+        window->cursor_x         = -1;
+        window->cursor_y         = -1;
 
         // ok
         ok = lx_true;
