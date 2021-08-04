@@ -50,13 +50,16 @@
 // the fbdev window type
 typedef struct lx_window_fbdev_t_ {
     lx_window_t              base;
-    lx_bitmap_ref_t          bitmap;
+    lx_bitmap_ref_t          surface;
     lx_bool_t                is_quit;
     lx_bool_t                is_shift;
+    lx_hong_t                fps_time;
+    lx_hong_t                fps_count;
     lx_int_t                 devfd;
     lx_int_t                 keyfd;
     lx_int_t                 screensize;
     lx_byte_t*               framebuffer;
+    lx_byte_t*               framebuffer_offscreen;
     struct fb_fix_screeninfo finfo;
     struct fb_var_screeninfo vinfo;
 } lx_window_fbdev_t;
@@ -241,10 +244,14 @@ static lx_bool_t lx_window_fbdev_start(lx_window_fbdev_t* window) {
         window->framebuffer = mmap(0, window->screensize, PROT_READ | PROT_WRITE, MAP_SHARED, window->devfd, 0);
         lx_assert_and_check_break(window->framebuffer);
 
-        // init bitmap
+        // init offsreen framebuffer
+        window->framebuffer_offscreen = (lx_byte_t*)lx_malloc(window->screensize);
+        lx_assert_and_check_break(window->framebuffer_offscreen);
+
+        // init surface
         lx_size_t row_bytes = window->finfo.line_length;
-        window->bitmap = lx_bitmap_init(window->framebuffer, window->base.pixfmt, window->base.width, window->base.height, row_bytes, lx_false);
-        lx_assert_and_check_break(window->bitmap);
+        window->surface = lx_bitmap_init(window->framebuffer_offscreen, window->base.pixfmt, window->base.width, window->base.height, row_bytes, lx_false);
+        lx_assert_and_check_break(window->surface);
 
         // init key event
         if (!lx_window_fbdev_keyevent_init(window)) {
@@ -254,9 +261,9 @@ static lx_bool_t lx_window_fbdev_start(lx_window_fbdev_t* window) {
 
         // init device
 #if defined(LX_CONFIG_DEVICE_HAVE_BITMAP)
-        window->base.device = lx_device_init_from_bitmap(window->bitmap);
+        window->base.device = lx_device_init_from_bitmap(window->surface);
 #elif defined(LX_CONFIG_DEVICE_HAVE_SKIA)
-        window->base.device = lx_device_init_from_skia(window->base.width, window->base.height, window->bitmap);
+        window->base.device = lx_device_init_from_skia(window->base.width, window->base.height, window->surface);
 #endif
         lx_assert_and_check_break(window->base.device);
 
@@ -292,6 +299,7 @@ static lx_void_t lx_window_fbdev_runloop(lx_window_ref_t self) {
         if (window->base.on_draw) {
             window->base.on_draw(self, window->base.canvas);
         }
+        lx_memcpy(window->framebuffer, window->framebuffer_offscreen, window->screensize);
 
         // compute delay for framerate
         lx_int_t  delay = 1;
@@ -299,6 +307,18 @@ static lx_void_t lx_window_fbdev_runloop(lx_window_ref_t self) {
         lx_int_t  dt = (lx_int_t)(time - starttime);
         if (fps_delay >= dt) {
             delay = fps_delay - dt;
+        }
+
+        // compute framerate
+        if (window->base.flags & LX_WINDOW_FLAG_SHOW_FPS) {
+            if (!window->fps_time) window->fps_time = time;
+            else window->fps_count++;
+            if (time > window->fps_time + 1000) {
+                lx_float_t framerate = (lx_float_t)(window->fps_count * 1000) / (lx_float_t)(time - window->fps_time);
+                lx_trace_i("%s (%0.2f fps)", window->base.title, framerate);
+                window->fps_count = 0;
+                window->fps_time = time;
+            }
         }
 
         // delay
@@ -324,9 +344,13 @@ static lx_void_t lx_window_fbdev_exit(lx_window_ref_t self) {
             lx_device_exit(window->base.device);
             window->base.device = lx_null;
         }
-        if (window->bitmap) {
-            lx_bitmap_exit(window->bitmap);
-            window->bitmap = lx_null;
+        if (window->surface) {
+            lx_bitmap_exit(window->surface);
+            window->surface = lx_null;
+        }
+        if (window->framebuffer_offscreen) {
+            lx_free(window->framebuffer_offscreen);
+            window->framebuffer_offscreen = lx_null;
         }
         if (window->framebuffer) {
             munmap(window->framebuffer, window->screensize);
