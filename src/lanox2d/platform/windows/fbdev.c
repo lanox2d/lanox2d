@@ -35,19 +35,30 @@
 #include <unistd.h>
 
 /* //////////////////////////////////////////////////////////////////////////////////////
+ * macros
+ */
+#ifdef LX_CONFIG_OS_ANDROID
+#   define LX_FBDEV_NAME   "/dev/graphics/fb%d"
+#else
+#   define LX_FBDEV_NAME   "/dev/fb%d"
+#endif
+
+/* //////////////////////////////////////////////////////////////////////////////////////
  * types
  */
 
 // the fbdev window type
 typedef struct lx_window_fbdev_t_ {
-    lx_window_t     base;
-    lx_bitmap_ref_t bitmap;
-    lx_bool_t       is_quit;
-    lx_bool_t       is_shift;
-    lx_int_t        devfd;
-    lx_int_t        keyfd;
-    lx_int_t        screensize;
-    lx_byte_t*      framebuffer;
+    lx_window_t              base;
+    lx_bitmap_ref_t          bitmap;
+    lx_bool_t                is_quit;
+    lx_bool_t                is_shift;
+    lx_int_t                 devfd;
+    lx_int_t                 keyfd;
+    lx_int_t                 screensize;
+    lx_byte_t*               framebuffer;
+    struct fb_fix_screeninfo finfo;
+    struct fb_var_screeninfo vinfo;
 } lx_window_fbdev_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -60,7 +71,7 @@ static lx_bool_t lx_window_fbdev_keyevent_init(lx_window_fbdev_t* window) {
     lx_int_t fd = 0;
     for (i = 0; i < 32; i++) {
         lx_snprintf(name, sizeof(name), "/dev/input/event%d", i);
-        if ((fd = open(name, O_RDONLY, 0)) >= 0) {
+        if ((fd = open(name, O_RDONLY)) >= 0) {
             lx_int_t len = ioctl(fd, EVIOCGNAME(sizeof(buffer)), buffer);
             if (len > 0) {
                 if (lx_strstr(buffer, "keyboard")) {
@@ -188,47 +199,63 @@ static lx_void_t lx_window_fbdev_keyevent_poll(lx_window_fbdev_t* window) {
     }
 }
 
+static lx_void_t lx_window_fbdev_active_framebuffer(lx_window_fbdev_t* window, lx_uint_t n)
+{
+    window->vinfo.yres_virtual = window->vinfo.yres * 2;
+    window->vinfo.yoffset = n * window->vinfo.yres;
+    if (ioctl(window->devfd, FBIOPUT_VSCREENINFO, &window->vinfo) < 0) {
+        lx_trace_e("active fb swap failed!");
+    }
+}
+
 static lx_bool_t lx_window_fbdev_start(lx_window_fbdev_t* window) {
     lx_bool_t ok = lx_false;
     do {
 
         // open fb dev
-        window->devfd = open("/dev/fb0", O_RDWR);
+        lx_int_t i;
+        lx_int_t fd = 0;
+        lx_char_t name[64];
+        for (i = 0; i < 8; i++) {
+            lx_snprintf(name, sizeof(name), LX_FBDEV_NAME, i);
+            if ((fd = open(name, O_RDWR)) >= 0) {
+                break;
+            }
+        }
+        window->devfd = fd;
         lx_assert_and_check_break(window->devfd >= 0);
 
         // get screen info
-        struct fb_fix_screeninfo finfo;
-        struct fb_var_screeninfo vinfo;
-        if (ioctl(window->devfd, FBIOGET_FSCREENINFO, &finfo) != 0) {
+        if (ioctl(window->devfd, FBIOGET_FSCREENINFO, &window->finfo) != 0) {
             lx_trace_e("get fix screeninfo failed!");
             break;
         }
-        if (ioctl(window->devfd, FBIOGET_VSCREENINFO, &vinfo) != 0) {
+        if (ioctl(window->devfd, FBIOGET_VSCREENINFO, &window->vinfo) != 0) {
             lx_trace_e("get var screeninfo failed!");
             break;
         }
-        window->base.width  = vinfo.xres;
-        window->base.height = vinfo.yres;
-        window->screensize  = finfo.smem_len;
+        window->base.width  = window->vinfo.xres;
+        window->base.height = window->vinfo.yres;
+        window->screensize  = window->finfo.smem_len;
 
         // trace
-        lx_trace_d("fb screen info: %dx%d bpp: %d, size: %d", vinfo.xres, vinfo.yres, vinfo.bits_per_pixel, finfo.smem_len);
+        lx_trace_d("fb screen info: %dx%d bpp: %d, size: %d", window->vinfo.xres, window->vinfo.yres, window->vinfo.bits_per_pixel, window->finfo.smem_len);
 
+        lx_window_fbdev_active_framebuffer(window, 0);
 #if 0
         // activate buffer
         vinfo.activate |= FB_ACTIVATE_NOW | FB_ACTIVATE_FORCE;
-        if (ioctl(window->devfd, FBIOPUT_VSCREENINFO, &vinfo) < 0) {
+        if (ioctl(window->devfd, FBIOPUT_VSCREENINFO, &window->vinfo) < 0) {
             lx_trace_e("failed to activate framebuffer!");
             break;
         }
 #endif
-
         // get framebuffer
         window->framebuffer = mmap(0, window->screensize, PROT_READ | PROT_WRITE, MAP_SHARED, window->devfd, 0);
         lx_assert_and_check_break(window->framebuffer);
 
         // init bitmap
-        lx_size_t row_bytes = vinfo.xres * (vinfo.bits_per_pixel >> 3);
+        lx_size_t row_bytes = window->vinfo.xres * (window->vinfo.bits_per_pixel >> 3);
         window->bitmap = lx_bitmap_init(window->framebuffer, window->base.pixfmt, window->base.width, window->base.height, row_bytes, lx_false);
         lx_assert_and_check_break(window->bitmap);
 
@@ -291,6 +318,8 @@ static lx_void_t lx_window_fbdev_runloop(lx_window_ref_t self) {
         lx_msleep(delay);
     }
 
+    lx_window_fbdev_active_framebuffer(window, 1);
+    lx_window_fbdev_active_framebuffer(window, 0);
 }
 
 static lx_void_t lx_window_fbdev_quit(lx_window_ref_t self) {
