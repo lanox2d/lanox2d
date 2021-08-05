@@ -106,7 +106,7 @@ typedef struct lx_tessellator_active_region_t_ {
     lx_mesh_edge_ref_t                  edge;
 
     // the winding
-    lx_int32_t                          winding;
+    lx_int64_t                          winding;
 
     // is dirty? we need fix the region ordering
     lx_uint8_t                          dirty   : 1;
@@ -175,5 +175,4 @@ typedef struct lx_tessellator_t_ {
 }lx_tessellator_t;
 
 #endif
-
 

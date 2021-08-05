@@ -358,7 +358,7 @@ static lx_int_t lx_tessellator_active_regions_vsnprintf(lx_char_t* s, lx_size_t 
     if (region->fixedge) {
         return lx_snprintf(s, n, "(e%lu.fixable)", region->edge->id);
     }
-    return lx_snprintf(s, n, "(e%lu.w%d, winding: %ld, inside: %d)",
+    return lx_snprintf(s, n, "(e%lu.w%d, winding: %lld, inside: %d)",
                 region->edge->id, lx_tessellator_edge_winding(region->edge), region->winding, region->inside);
 }
 #endif
