@@ -52,7 +52,7 @@ static lx_mesh_edge_ref_t                   lx_tessellator_finish_top_regions(lx
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
-static lx_inline lx_uint8_t lx_tessellator_winding_is_inside(lx_tessellator_t* tessellator, lx_int32_t winding) {
+static lx_inline lx_uint8_t lx_tessellator_winding_is_inside(lx_tessellator_t* tessellator, lx_int64_t winding) {
     switch (tessellator->rule) {
         case LX_TESSELLATOR_RULE_ODD:       return (winding & 1);
         case LX_TESSELLATOR_RULE_NONZERO:   return (winding != 0);

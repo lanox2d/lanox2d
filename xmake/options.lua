@@ -82,6 +82,7 @@ option("device")
 option("openglver")
     set_showmenu(true)
     set_description("Set opengl version")
+    set_values("3.3", "2.1", "es2.0", "1.1")
     add_deps("device", "window")
     on_check(function (option)
         if not option:value() then

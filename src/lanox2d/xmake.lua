@@ -45,10 +45,32 @@ target("lanox2d")
         add_files("core/device/bitmap/**.c")
     end
     if is_config("device", "opengl") then
-        add_files("core/device/opengl/**.c")
+        add_files("core/device/opengl/**.c|program/*.c")
         add_files("core/tess/**.c")
-        add_files("core/device/opengl/program/shaders/*.vs", {rules = "utils.bin2c"})
-        add_files("core/device/opengl/program/shaders/*.fs", {rules = "utils.bin2c"})
+        local openglver = get_config("openglver")
+        if openglver then
+            local opengles = false
+            if openglver:startswith("es") then
+                openglver = openglver:sub(3)
+                opengles = true
+            end
+            openglver = tonumber((openglver:gsub("%.", "")))
+            if openglver > 30 then
+                add_files("core/device/opengl/program/shaders/*_33.vs", {rules = "utils.bin2c"})
+                add_files("core/device/opengl/program/shaders/*_33.fs", {rules = "utils.bin2c"})
+            elseif openglver >= 20 then
+                if opengles then
+                    add_files("core/device/opengl/program/shaders/*_es20.vs", {rules = "utils.bin2c"})
+                    add_files("core/device/opengl/program/shaders/*_es20.fs", {rules = "utils.bin2c"})
+                else
+                    add_files("core/device/opengl/program/shaders/*_21.vs", {rules = "utils.bin2c"})
+                    add_files("core/device/opengl/program/shaders/*_21.fs", {rules = "utils.bin2c"})
+                end
+            end
+            if openglver >= 20 then
+                add_files("core/device/opengl/program/*.c")
+            end
+        end
     end
     if is_config("device", "skia") then
         set_languages("c++14")
