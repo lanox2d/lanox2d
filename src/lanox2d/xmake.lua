@@ -47,6 +47,8 @@ target("lanox2d")
     if is_config("device", "opengl") then
         add_files("core/device/opengl/**.c")
         add_files("core/tess/**.c")
+        add_files("core/device/opengl/program/shaders/*.vs", {rules = "utils.bin2c"})
+        add_files("core/device/opengl/program/shaders/*.fs", {rules = "utils.bin2c"})
     end
     if is_config("device", "skia") then
         set_languages("c++14")
