@@ -47,32 +47,21 @@ lx_gl_program_ref_t lx_gl_program_init_solid() {
 }
 #else
 lx_gl_program_ref_t lx_gl_program_init_solid() {
-    static lx_char_t const* vshader =
-#if defined(LX_CONFIG_OS_IOS) || defined(LX_CONFIG_OS_ANDROID)
-        "precision mediump float;\n"
+    static lx_char_t const vshader[] = {
+#ifdef LX_GL_API_ES
+#   include "solid_es20.vs.h"
+#else
+#   include "solid_21.vs.h"
 #endif
-        "\n"
-        "attribute vec4 aColor;\n"
-        "attribute vec4 aVertices;\n"
-        "varying vec4 vColors;\n"
-        "uniform mat4 uMatrixModel;\n"
-        "uniform mat4 uMatrixProject;\n"
-        "\n"
-        "void main() {\n"
-        "   vColors = aColor;\n"
-        "   gl_Position = uMatrixProject * uMatrixModel * aVertices;\n"
-        "}\n";
+    };
 
-    static lx_char_t const* fshader =
-#if defined(LX_CONFIG_OS_IOS) || defined(LX_CONFIG_OS_ANDROID)
-        "precision mediump float;\n"
+    static lx_char_t const fshader[] = {
+#ifdef LX_GL_API_ES
+#   include "solid_es20.fs.h"
+#else
+#   include "solid_21.fs.h"
 #endif
-        "\n"
-        "varying vec4 vColors;\n"
-        "\n"
-        "void main() {\n"
-        "   gl_FragColor = vColors;\n"
-        "}\n";
+    };
 
     lx_gl_program_ref_t program = lx_gl_program_init(LX_GL_PROGRAM_TYPE_SOLID, vshader, fshader);
     if (program) {

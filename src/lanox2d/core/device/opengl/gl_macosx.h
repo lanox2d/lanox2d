@@ -129,6 +129,9 @@ static lx_bool_t lx_gl_api_init() {
         LX_GL_API_LOAD_S(glBindBuffer);
         LX_GL_API_LOAD_S(glBufferData);
         LX_GL_API_LOAD_S(glDeleteBuffers);
+#endif
+
+#if LX_GL_API_VERSION >= 30
         LX_GL_API_LOAD_S(glGenVertexArrays);
         LX_GL_API_LOAD_S(glBindVertexArray);
         LX_GL_API_LOAD_S(glDeleteVertexArrays);
