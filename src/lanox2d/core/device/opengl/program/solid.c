@@ -27,28 +27,11 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
+lx_gl_program_ref_t lx_gl_program_init_solid() {
+    static lx_char_t const vshader[] = {
 #if LX_GL_API_VERSION > 30
-lx_gl_program_ref_t lx_gl_program_init_solid() {
-    static lx_char_t const vshader[] = {
-#include "solid_33.vs.h"
-    };
-    static lx_char_t const fshader[] = {
-#include "solid_33.fs.h"
-    };
-
-    lx_gl_program_ref_t program = lx_gl_program_init(LX_GL_PROGRAM_TYPE_SOLID, vshader, fshader);
-    if (program) {
-        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_COLORS, 0);
-        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_VERTICES, 1);
-        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_MODEL,    lx_gl_program_unif(program, "uMatrixModel"));
-        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_PROJECT,  lx_gl_program_unif(program, "uMatrixProject"));
-    }
-    return program;
-}
-#else
-lx_gl_program_ref_t lx_gl_program_init_solid() {
-    static lx_char_t const vshader[] = {
-#ifdef LX_GL_API_ES
+#   include "solid_33.vs.h"
+#elif defined(LX_GL_API_ES)
 #   include "solid_es20.vs.h"
 #else
 #   include "solid_21.vs.h"
@@ -56,7 +39,9 @@ lx_gl_program_ref_t lx_gl_program_init_solid() {
     };
 
     static lx_char_t const fshader[] = {
-#ifdef LX_GL_API_ES
+#if LX_GL_API_VERSION > 30
+#   include "solid_33.fs.h"
+#elif defined(LX_GL_API_ES)
 #   include "solid_es20.fs.h"
 #else
 #   include "solid_21.fs.h"
@@ -65,12 +50,10 @@ lx_gl_program_ref_t lx_gl_program_init_solid() {
 
     lx_gl_program_ref_t program = lx_gl_program_init(LX_GL_PROGRAM_TYPE_SOLID, vshader, fshader);
     if (program) {
-        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_COLORS,          lx_gl_program_attr(program, "aColor"));  //!< FIXME some name can not work for mac, .e.g aColors aColorx ...
+        lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_COLORS,          lx_gl_program_attr(program, "aColor"));
         lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_VERTICES,        lx_gl_program_attr(program, "aVertices"));
         lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_MODEL,    lx_gl_program_unif(program, "uMatrixModel"));
         lx_gl_program_location_set(program, LX_GL_PROGRAM_LOCATION_MATRIX_PROJECT,  lx_gl_program_unif(program, "uMatrixProject"));
     }
     return program;
 }
-#endif
-
