@@ -15,19 +15,19 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        gl_linux.h
+ * @file        gl_android.h
  *
  */
-#ifndef LX_CORE_DEVICE_OPENGL_GL_LINUX_H
-#define LX_CORE_DEVICE_OPENGL_GL_LINUX_H
+#ifndef LX_CORE_DEVICE_OPENGL_GL_ANDROID_H
+#define LX_CORE_DEVICE_OPENGL_GL_ANDROID_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
 #include "gl.h"
 #define GL_GLEXT_PROTOTYPES
-#include <GL/gl.h>
-#include <GL/glext.h>
+#include <GLES/gl.h>
+#include <GLES/glext.h>
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

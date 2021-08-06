@@ -40,12 +40,14 @@ option("bitmap")
 -- window option
 option("window")
     set_showmenu(true)
-    set_values("sdl", "glut", "glfw", "fbdev")
+    set_values("sdl", "glut", "glfw", "fbdev", "android")
     set_description("Set renderer window")
     on_check(function (option)
         if not option:value() then
             if is_plat("macosx", "linux", "windows") then
                 option:set_value("glfw")
+            elseif is_plat("android") then
+                option:set_value("android")
             end
         end
     end)
@@ -67,7 +69,7 @@ option("device")
             local window = option:dep("window"):value()
             if window == "sdl" or window == "fbdev" then
                 option:set_value("bitmap")
-            elseif window == "glut" or window == "glfw" then
+            elseif window == "glut" or window == "glfw" or window == "android" then
                 option:set_value("opengl")
             end
         end

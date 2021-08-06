@@ -31,6 +31,8 @@
 #   include "windows/glfw.c"
 #elif defined(LX_CONFIG_WINDOW_HAVE_FBDEV)
 #   include "windows/fbdev.c"
+#elif defined(LX_CONFIG_WINDOW_HAVE_ANDROID)
+#   include "windows/android.c"
 #else
 #   include "windows/prefix.h"
 #endif
@@ -47,6 +49,8 @@ lx_window_ref_t lx_window_init(lx_size_t width, lx_size_t height, lx_char_t cons
     return lx_window_init_glfw(width, height, title);
 #elif defined(LX_CONFIG_WINDOW_HAVE_FBDEV)
     return lx_window_init_fbdev(width, height, title);
+#elif defined(LX_CONFIG_WINDOW_HAVE_ANDROID)
+    return lx_window_init_android(width, height, title);
 #else
     lx_trace_e("window not found!");
     return lx_null;
