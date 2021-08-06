@@ -37,4 +37,11 @@ else
     add_syslinks("pthread", "dl", "m", "c")
 end
 
+-- toolchain settings
+--[[
+if is_plat("android") then
+    add_requires("ndk")
+    set_toolchains("@ndk", {sdkver = "21"})
+end]]
+
 includes("xmake", "src")
