@@ -4,7 +4,7 @@ task("apk_build")
     }}
     on_run(function ()
         import("core.base.option")
-        os.cd("src/android")
+        os.cd(os.scriptdir())
         if option.get("release") then
             os.exec("./gradlew app:assembleRelease")
             print("resigning apk ..")
@@ -29,7 +29,7 @@ task("apk_install")
     }}
     on_run(function ()
         import("core.base.option")
-        os.cd("src/android")
+        os.cd(os.scriptdir())
         if option.get("release") then
             os.exec("adb install -r ./app/build/outputs/apk/release/app-release-signed.apk")
         else
@@ -46,12 +46,12 @@ task("apk_test")
         import("core.base.option")
         task.run("apk_build", {release = option.get("release")})
         task.run("apk_install", {release = option.get("release")})
-        os.exec("adb logcat -s xleak")
+        os.exec("adb logcat -s lanox2d")
     end)
 
 task("aar_upload")
     set_menu {usage = "xmake aar_upload [options]", description = "upload the aar archives.", options = {}}
     on_run(function ()
-        os.cd("src/android")
-        os.exec("./gradlew lib:uploadArchives")
+        os.cd(os.scriptdir())
+        os.exec("./gradlew lanox2d:uploadArchives")
     end)

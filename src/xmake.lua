@@ -1,1 +1,1 @@
-includes("lanox2d", "tests", "examples")
+includes("lanox2d", "tests", "examples", "wrapper")

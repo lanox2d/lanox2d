@@ -45,4 +45,4 @@ if is_plat("android") then
     set_toolchains("@ndk", {sdkver = "21"})
 end]]
 
-includes("xmake", "src", "wrapper")
+includes("xmake", "src")
