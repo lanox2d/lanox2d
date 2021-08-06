@@ -1,0 +1,3 @@
+include ':lanox2d'
+include ':app'
+rootProject.name = "Lanox2d"
