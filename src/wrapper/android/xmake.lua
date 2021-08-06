@@ -55,3 +55,5 @@ task("aar_upload")
         os.cd(os.scriptdir())
         os.exec("./gradlew lanox2d:uploadArchives")
     end)
+
+includes("lanox2d/jni")
