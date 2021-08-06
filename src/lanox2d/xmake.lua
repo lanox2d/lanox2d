@@ -56,20 +56,21 @@ target("lanox2d")
             end
             openglver = tonumber((openglver:gsub("%.", "")))
             if openglver > 30 then
-                add_files("core/device/opengl/program/shaders/*_33.vs", {rules = "utils.bin2c"})
-                add_files("core/device/opengl/program/shaders/*_33.fs", {rules = "utils.bin2c"})
+                add_files("core/device/opengl/program/shaders/*_33.vs")
+                add_files("core/device/opengl/program/shaders/*_33.fs")
             elseif openglver >= 20 then
                 if opengles then
-                    add_files("core/device/opengl/program/shaders/*_es20.vs", {rules = "utils.bin2c"})
-                    add_files("core/device/opengl/program/shaders/*_es20.fs", {rules = "utils.bin2c"})
+                    add_files("core/device/opengl/program/shaders/*_es20.vs")
+                    add_files("core/device/opengl/program/shaders/*_es20.fs")
                 else
-                    add_files("core/device/opengl/program/shaders/*_21.vs", {rules = "utils.bin2c"})
-                    add_files("core/device/opengl/program/shaders/*_21.fs", {rules = "utils.bin2c"})
+                    add_files("core/device/opengl/program/shaders/*_21.vs")
+                    add_files("core/device/opengl/program/shaders/*_21.fs")
                 end
             end
             if openglver >= 20 then
                 add_files("core/device/opengl/program/*.c")
             end
+            add_rules("utils.bin2c", {extensions = {".vs", ".fs"}})
         end
     end
     if is_config("device", "skia") then
