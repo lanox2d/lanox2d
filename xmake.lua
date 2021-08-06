@@ -11,11 +11,7 @@ if is_mode("debug", "asan") then
     add_defines("LX_DEBUG")
 end
 if is_mode("releasedbg", "release", "minsizerel") then
-    if is_plat("android") then
-        add_shflags("-fuse-ld=lld")
-        add_cxflags("-fPIC")
-        add_shflags("-Wl,--build-id")
-    elseif not is_plat("windows", "mingw") then
+    if is_plat("windows", "mingw") then
         add_cxflags("-flto")
         add_shflags("-flto")
         add_ldflags("-flto")
@@ -30,6 +26,11 @@ if is_plat("windows") then
         set_runtimes("MT")
     end
 elseif is_plat("android") then
+    if is_arch("arm64-v8a") then -- for r20b, lld is default linker for r22b
+        add_shflags("-fuse-ld=lld")
+    end
+    add_cxflags("-fPIC")
+    add_shflags("-Wl,--build-id")
     add_syslinks("m", "c")
 elseif is_plat("mingw", "msys", "cygwin") then
     add_syslinks("pthread", "m")
@@ -44,4 +45,4 @@ if is_plat("android") then
     set_toolchains("@ndk", {sdkver = "21"})
 end]]
 
-includes("xmake", "src")
+includes("xmake", "src", "wrapper")
