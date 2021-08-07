@@ -19,7 +19,9 @@
  */
 package io.lanox2d.lib;
 
+import android.app.ActivityManager;
 import android.content.Context;
+import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 
@@ -30,6 +32,24 @@ public class Lanox2dView extends GLSurfaceView {
 
     public Lanox2dView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        Logger.d(TAG, "init");
+
+        // init lanox2d
+        Lanox2d.init(context);
+
+        // init opengl version, gles2.0 or gles3.0?
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        ConfigurationInfo info = am.getDeviceConfigurationInfo();
+        Logger.i(TAG, String.format("reqGlEsVersion: %x", info.reqGlEsVersion));
+        if (info.reqGlEsVersion >= 0x30000) {
+            setEGLContextClientVersion(3);
+        } else if (info.reqGlEsVersion >= 0x20000) {
+            setEGLContextClientVersion(2);
+        }
+
+        // init config chooser, no multisample
+        setEGLConfigChooser(8, 8, 8, 8, 16, 4);
+
+        // init render
+        setRenderer(new Lanox2dViewRenderer(this));
     }
 }
