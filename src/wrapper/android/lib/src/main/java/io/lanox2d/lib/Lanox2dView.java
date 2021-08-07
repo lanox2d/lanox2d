@@ -51,5 +51,9 @@ public class Lanox2dView extends GLSurfaceView {
 
         // init render
         setRenderer(new Lanox2dViewRenderer(this));
+
+        // init focus
+        requestFocus();
+        setFocusableInTouchMode(true);
     }
 }
