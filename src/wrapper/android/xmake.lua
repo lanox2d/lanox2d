@@ -53,7 +53,7 @@ task("aar_upload")
     set_menu {usage = "xmake aar_upload [options]", description = "upload the aar archives.", options = {}}
     on_run(function ()
         os.cd(os.scriptdir())
-        os.exec("./gradlew lanox2d:uploadArchives")
+        os.exec("./gradlew lib:uploadArchives")
     end)
 
-includes("lanox2d/jni")
+includes("lib/jni")
