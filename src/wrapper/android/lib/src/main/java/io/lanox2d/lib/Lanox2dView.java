@@ -15,23 +15,21 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        Lanox2d.java
+ * @file        Lanox2dView.java
  */
 package io.lanox2d.lib;
 
 import android.content.Context;
+import android.opengl.GLSurfaceView;
+import android.util.AttributeSet;
 
 import io.lanox2d.lib.common.Logger;
-import io.lanox2d.lib.internal.Lanox2dInternal;
 
-public class Lanox2d {
+public class Lanox2dView extends GLSurfaceView {
+    private static final String TAG = "Lanox2dView";
 
-    public static void init(Context context) {
-        setLogger(new Logger.DefaultLogger());
-        Lanox2dInternal.getInstance().init(context);
-    }
-
-    public static void setLogger(Logger.ILogger logger) {
-        Logger.init(logger);
+    public Lanox2dView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        Logger.d(TAG, "init");
     }
 }
