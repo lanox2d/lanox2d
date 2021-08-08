@@ -24,13 +24,21 @@
  */
 #include "libc.h"
 #include <stdio.h>
+#if defined(__ANDROID__)
+#   include <jni.h>
+#   include <android/log.h>
+#endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
 
 lx_int_t lx_puts(lx_char_t const* s) {
+#if defined(__ANDROID__)
+    return __android_log_print(ANDROID_LOG_INFO, "lanox2d", "%s", s);
+#else
     return fputs(s, stdout);
+#endif
 }
 
 lx_int_t lx_printf(lx_char_t const* fmt, ...) {
