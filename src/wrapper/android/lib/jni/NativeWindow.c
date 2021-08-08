@@ -33,18 +33,18 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* jvm, lx_pointer_t reserved) {
 }
 
 JNIEXPORT jboolean Java_io_lanox2d_lib_NativeWindow_window_1init(JNIEnv* env, jclass jthis, jint width, jint height) {
-    lx_trace_i("window_init: %dx%d", width, height);
+    lx_trace_d("window_init: %dx%d", width, height);
     return lx_true;
 }
 
 JNIEXPORT lx_void_t Java_io_lanox2d_lib_NativeWindow_window_1exit(JNIEnv* env, jclass jthis) {
-    lx_trace_i("window_exit");
+    lx_trace_d("window_exit");
 }
 
 JNIEXPORT lx_void_t Java_io_lanox2d_lib_NativeWindow_window_1draw(JNIEnv* env, jclass jthis) {
-    lx_trace_i("window_draw");
+    lx_trace_d("window_draw");
 }
 
 JNIEXPORT lx_void_t Java_io_lanox2d_lib_NativeWindow_window_1resize(JNIEnv* env, jclass jthis, jint width, jint height) {
-    lx_trace_i("window_resize: %dx%d", width, height);
+    lx_trace_d("window_resize: %dx%d", width, height);
 }

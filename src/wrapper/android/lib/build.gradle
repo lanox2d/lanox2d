@@ -32,7 +32,8 @@ android {
         xmake {
             logLevel "verbose"
             path "../../../../xmake.lua"
-            buildMode "releasedbg"
+            //buildMode "releasedbg"
+            buildMode "debug"
             targets "lanox2d_jni"
             stl "c++_shared"
         }

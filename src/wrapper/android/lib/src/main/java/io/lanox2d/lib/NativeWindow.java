@@ -45,7 +45,7 @@ public class NativeWindow {
     public NativeWindow() {
         load();
     }
-    
+
     // load the native library
     private boolean load() {
 
