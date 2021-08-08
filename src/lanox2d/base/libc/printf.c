@@ -27,6 +27,8 @@
 #if defined(__ANDROID__)
 #   include <jni.h>
 #   include <android/log.h>
+#elif defined(__ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__)
+#   include <os/log.h>
 #endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -36,6 +38,8 @@
 lx_int_t lx_puts(lx_char_t const* s) {
 #if defined(__ANDROID__)
     return __android_log_print(ANDROID_LOG_INFO, "lanox2d", "%s", s);
+#elif defined(__ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__)
+    return os_log(OS_LOG_DEFAULT, "[lanox2d]: %s", s);
 #else
     return fputs(s, stdout);
 #endif
