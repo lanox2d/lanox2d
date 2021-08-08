@@ -24,10 +24,10 @@
  */
 #include "libc.h"
 #include <stdio.h>
-#if defined(__ANDROID__)
+#if defined(LX_CONFIG_OS_ANDROID)
 #   include <jni.h>
 #   include <android/log.h>
-#elif defined(__ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__)
+#elif defined(LX_CONFIG_OS_IOS)
 #   include <os/log.h>
 #endif
 
@@ -36,9 +36,9 @@
  */
 
 lx_int_t lx_puts(lx_char_t const* s) {
-#if defined(__ANDROID__)
+#if defined(LX_CONFIG_OS_ANDROID)
     return __android_log_print(ANDROID_LOG_INFO, "lanox2d", "%s", s);
-#elif defined(__ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__)
+#elif defined(LX_CONFIG_OS_IOS)
     return os_log(OS_LOG_DEFAULT, "[lanox2d]: %s", s);
 #else
     return fputs(s, stdout);
