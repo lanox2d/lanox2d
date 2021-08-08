@@ -19,32 +19,45 @@
  */
 package io.lanox2d.lib;
 
+import android.content.Context;
 import android.opengl.GLSurfaceView;
 
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.egl.EGLConfig;
 
 import io.lanox2d.lib.common.Logger;
+import io.lanox2d.lib.internal.Lanox2dInternal;
 
 public class Lanox2dViewRenderer implements GLSurfaceView.Renderer {
     private static final String TAG = "Lanox2dViewRenderer";
+    private boolean started = false;
     private Lanox2dView view;
+    private NativeWindow nativeWindow;
 
     public Lanox2dViewRenderer(Lanox2dView view)  {
         this.view = view;
+        this.nativeWindow = NativeWindow.getInstance();
     }
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig eglConfig) {
-
+        if (nativeWindow.initWindow(view.getWidth(), view.getHeight())) {
+            started = true;
+        }
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
+        if (started) {
+            nativeWindow.drawWindow();
+        }
     }
 
     @Override
-    public void onSurfaceChanged(GL10 gl, int width, int height)
-    {
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
+        if (started) {
+            nativeWindow.resizeWindow(view.getWidth(), view.getHeight());
+        }
     }
+
 }

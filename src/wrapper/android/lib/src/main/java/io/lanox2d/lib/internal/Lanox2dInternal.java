@@ -58,4 +58,9 @@ public class Lanox2dInternal {
         }
         Logger.i(TAG,"init " + (inited ? "ok" : "failed"));
     }
+
+    // get context
+    public synchronized Context getContext() {
+        return context;
+    }
 }
