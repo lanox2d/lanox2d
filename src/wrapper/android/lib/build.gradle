@@ -30,7 +30,7 @@ android {
 
     externalNativeBuild {
         xmake {
-            logLevel "warning"
+            logLevel "verbose"
             path "../../../../xmake.lua"
             buildMode "releasedbg"
             targets "lanox2d_jni"

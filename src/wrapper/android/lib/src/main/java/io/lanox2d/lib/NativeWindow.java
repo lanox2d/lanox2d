@@ -45,7 +45,7 @@ public class NativeWindow {
     public NativeWindow() {
         load();
     }
-
+    
     // load the native library
     private boolean load() {
 
@@ -54,15 +54,14 @@ public class NativeWindow {
 
         // attempt to load library
         try {
-            System.loadLibrary("lanox2d");
+            System.loadLibrary("lanox2d_jni");
             loaded = true;
         } catch (Throwable e) {
+            e.printStackTrace();
             Context context = Lanox2dInternal.getInstance().getContext();
-            if (context == null) {
-                e.printStackTrace();
-            } else {
+            if (context != null) {
                 try {
-                    System.load(context.getFilesDir().getParent() + "/lib/lanox2d.so");
+                    System.load(context.getFilesDir().getParent() + "/lib/lanox2d_jni.so");
                 } catch (Throwable ex) {
                     ex.printStackTrace();
                 }
