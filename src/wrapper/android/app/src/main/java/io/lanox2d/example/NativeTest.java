@@ -29,7 +29,8 @@ public class NativeTest {
         NativeWindow.getInstance().setNativeWindowListener(new NativeWindow.NativeWindowListener() {
             @Override
             public void onInitWindow(long nativeWindowPtr) {
-                load_emptyWindow(NativeWindow.getInstance().getNativeWindowPtr());
+                //load_emptyWindow(NativeWindow.getInstance().getNativeWindowPtr());
+                load_shapeWindow(NativeWindow.getInstance().getNativeWindowPtr());
             }
         });
     }
@@ -60,4 +61,5 @@ public class NativeTest {
     }
 
     private static native void load_emptyWindow(long nativeWindowPtr);
+    private static native void load_shapeWindow(long nativeWindowPtr);
 }

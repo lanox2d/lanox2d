@@ -28,6 +28,7 @@ static lx_void_t on_event(lx_window_ref_t window, lx_event_ref_t event) {
     }
 }
 
+#ifndef LX_NOMAIN_ENTRY
 int main(int argc, char** argv) {
     lx_window_ref_t window = lx_window_init(640, 480, "lanox2d");
     if (window) {
@@ -39,3 +40,4 @@ int main(int argc, char** argv) {
     }
     return 0;
 }
+#endif

@@ -159,7 +159,7 @@ static lx_entry_t* get_entry(lx_char_t const* name) {
 
 static lx_void_t window_init(lx_window_ref_t window, lx_int_t argc, lx_char_t** argv) {
 
-    g_entry = get_entry(argv[1]? argv[1] : "rect");
+    g_entry = get_entry(argc > 1? argv[1] : "rect");
 
     lx_window_on_draw(window, on_draw);
     lx_window_on_event(window, on_event);
@@ -177,7 +177,7 @@ static lx_void_t window_init(lx_window_ref_t window, lx_int_t argc, lx_char_t** 
     lx_gradient_t gradent = {colors, lx_null, 3};
     g_shaders[1] = lx_shader_init2i_linear_gradient(LX_SHADER_TILE_MODE_CLAMP, &gradent, -50, -50, 50, 50);
     g_shaders[2] = lx_shader_init2i_radial_gradient(LX_SHADER_TILE_MODE_CLAMP, &gradent, 0, 0, 50);
-    if (argv[2]) {
+    if (argc > 2) {
         g_bitmap = lx_bitmap_init_from_file(argv[2], lx_window_pixfmt(window));
         if (g_bitmap) {
             g_shaders[0] = lx_shader_init_bitmap(LX_SHADER_TILE_MODE_CLAMP, g_bitmap);
@@ -206,6 +206,7 @@ static lx_void_t window_exit(lx_window_ref_t window) {
     lx_window_exit(window);
 }
 
+#ifndef LX_NOMAIN_ENTRY
 int main(int argc, char** argv) {
     lx_window_ref_t window = lx_window_init(640, 640, "lanox2d");
     if (window) {
@@ -215,3 +216,4 @@ int main(int argc, char** argv) {
     }
     return 0;
 }
+#endif
