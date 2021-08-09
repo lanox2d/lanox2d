@@ -16,6 +16,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // init tests
+        NativeTest.getInstance().loadEmptyWindow();
+
         // init lanox2d view
         lanox2dView = (Lanox2dView)this.findViewById(R.id.Lanox2dView);
     }

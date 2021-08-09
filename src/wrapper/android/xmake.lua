@@ -56,4 +56,4 @@ task("aar_upload")
         os.exec("./gradlew lib:uploadArchives")
     end)
 
-includes("lib/jni")
+includes("lib/jni", "app/jni")
