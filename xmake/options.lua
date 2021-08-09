@@ -98,7 +98,7 @@ option("openglver")
                 elseif is_plat("windows", "mingw") then
                     option:set_value("1.1")
                 elseif is_plat("android", "iphoneos") then
-                    option:set_value("es2.0")
+                    option:set_value("es3.0")
                 end
             end
         end

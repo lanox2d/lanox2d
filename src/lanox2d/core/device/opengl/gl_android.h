@@ -91,6 +91,7 @@ static lx_bool_t lx_gl_api_init() {
             LX_GL_API_LOAD_D(library, glVertexAttrib4f);
             LX_GL_API_LOAD_D(library, glVertexAttribPointer);
             LX_GL_API_LOAD_D(library, glGetError);
+            LX_GL_API_LOAD_D(library, glGenBuffers);
             LX_GL_API_LOAD_D(library, glBindBuffer);
             LX_GL_API_LOAD_D(library, glBufferData);
             LX_GL_API_LOAD_D(library, glDeleteBuffers);
@@ -151,6 +152,7 @@ static lx_bool_t lx_gl_api_init() {
             LX_GL_API_LOAD_D(library, glVertexAttrib4f);
             LX_GL_API_LOAD_D(library, glVertexAttribPointer);
             LX_GL_API_LOAD_D(library, glGetError);
+            LX_GL_API_LOAD_D(library, glGenBuffers);
             LX_GL_API_LOAD_D(library, glBindBuffer);
             LX_GL_API_LOAD_D(library, glBufferData);
             LX_GL_API_LOAD_D(library, glDeleteBuffers);
