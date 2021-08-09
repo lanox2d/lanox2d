@@ -57,6 +57,8 @@ typedef struct lx_window_t_ {
 
     // inner functions
     lx_void_t           (*runloop)(lx_window_ref_t window);
+    lx_void_t           (*draw)(lx_window_ref_t window);
+    lx_void_t           (*resize)(lx_window_ref_t window, lx_size_t width, lx_size_t height);
     lx_void_t           (*fullscreen)(lx_window_ref_t window, lx_bool_t is_fullscreen);
     lx_void_t           (*show)(lx_window_ref_t window, lx_bool_t is_show);
     lx_void_t           (*show_cursor)(lx_window_ref_t window, lx_bool_t is_show);

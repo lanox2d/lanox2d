@@ -26,6 +26,11 @@
 #include <jni.h>
 
 /* //////////////////////////////////////////////////////////////////////////////////////
+ * globals
+ */
+static lx_window_ref_t g_window = lx_null;
+
+/* //////////////////////////////////////////////////////////////////////////////////////
  * interfaces
  */
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* jvm, lx_pointer_t reserved) {
@@ -33,18 +38,27 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* jvm, lx_pointer_t reserved) {
 }
 
 JNIEXPORT jboolean Java_io_lanox2d_lib_NativeWindow_window_1init(JNIEnv* env, jclass jthis, jint width, jint height) {
-    lx_trace_d("window_init: %dx%d", width, height);
-    return lx_true;
+    if (!g_window) {
+        g_window = lx_window_init(width, height, lx_null);
+    }
+    return g_window? lx_true : lx_false;
 }
 
 JNIEXPORT lx_void_t Java_io_lanox2d_lib_NativeWindow_window_1exit(JNIEnv* env, jclass jthis) {
-    lx_trace_d("window_exit");
+    if (g_window) {
+        lx_window_exit(g_window);
+        g_window = lx_null;
+    }
 }
 
 JNIEXPORT lx_void_t Java_io_lanox2d_lib_NativeWindow_window_1draw(JNIEnv* env, jclass jthis) {
-    lx_trace_d("window_draw");
+    if (g_window) {
+        lx_window_draw(g_window);
+    }
 }
 
 JNIEXPORT lx_void_t Java_io_lanox2d_lib_NativeWindow_window_1resize(JNIEnv* env, jclass jthis, jint width, jint height) {
-    lx_trace_d("window_resize: %dx%d", width, height);
+    if (g_window) {
+        lx_window_resize(g_window, width, height);
+    }
 }

@@ -173,6 +173,20 @@ lx_void_t               lx_window_on_resize(lx_window_ref_t window, lx_window_on
  */
 lx_void_t               lx_window_runloop(lx_window_ref_t window);
 
+/*! draw window, we will use it to draw window in external loop if runloop is not used
+ *
+ * @param window        the window
+ */
+lx_void_t               lx_window_draw(lx_window_ref_t window);
+
+/*! resize window
+ *
+ * @param window        the window
+ * @param width         the width
+ * @param height        the height
+ */
+lx_void_t               lx_window_resize(lx_window_ref_t window, lx_size_t width, lx_size_t height);
+
 /*! enter or leave the fullscreen (only for the desktop window)
  *
  * @param window        the window

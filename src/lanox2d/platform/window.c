@@ -123,6 +123,20 @@ lx_void_t lx_window_runloop(lx_window_ref_t self) {
     window->runloop(self);
 }
 
+lx_void_t lx_window_draw(lx_window_ref_t self) {
+    lx_window_t* window = (lx_window_t*)self;
+    if (window && window->draw) {
+        window->draw(self);
+    }
+}
+
+lx_void_t lx_window_resize(lx_window_ref_t self, lx_size_t width, lx_size_t height) {
+    lx_window_t* window = (lx_window_t*)self;
+    if (window && window->resize) {
+        window->resize(self, width, height);
+    }
+}
+
 lx_void_t lx_window_fullscreen(lx_window_ref_t self, lx_bool_t is_fullscreen) {
     lx_window_t* window = (lx_window_t*)self;
     if (window && window->fullscreen) {
