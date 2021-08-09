@@ -31,6 +31,7 @@ import io.lanox2d.lib.internal.Lanox2dInternal;
 public class NativeWindow {
     private static final String TAG = "NativeWindow";
     private boolean loaded = false;
+    private long nativeWindowPtr = 0;
 
     // the singleton holder
     private static class NativeWindowHolder {
@@ -76,17 +77,20 @@ public class NativeWindow {
             return false;
         }
         try {
-            return window_init(width, height);
+            if (nativeWindowPtr == 0) {
+                nativeWindowPtr = window_init(width, height);
+            }
         } catch (Throwable e) {
             e.printStackTrace();
         }
-        return false;
+        return nativeWindowPtr != 0;
     }
 
     public void exitWindow() {
         try {
-            if (loaded) {
-                window_exit();
+            if (loaded && nativeWindowPtr != 0) {
+                window_exit(nativeWindowPtr);
+                nativeWindowPtr = 0;
             }
         } catch (Throwable e) {
             e.printStackTrace();
@@ -95,8 +99,8 @@ public class NativeWindow {
 
     public void drawWindow() {
         try {
-            if (loaded) {
-                window_draw();
+            if (loaded && nativeWindowPtr != 0) {
+                window_draw(nativeWindowPtr);
             }
         } catch (Throwable e) {
             e.printStackTrace();
@@ -105,16 +109,20 @@ public class NativeWindow {
 
     public void resizeWindow(int width, int height) {
         try {
-            if (loaded) {
-                window_resize(width, height);
+            if (loaded && nativeWindowPtr != 0) {
+                window_resize(nativeWindowPtr, width, height);
             }
         } catch (Throwable e) {
             e.printStackTrace();
         }
     }
 
-    private static native boolean window_init(int width, int height);
-    private static native void    window_exit();
-    private static native void    window_draw();
-    private static native void    window_resize(int width, int height);
+    public long getNativeWindowPtr() {
+        return nativeWindowPtr;
+    }
+
+    private static native long window_init(int width, int height);
+    private static native void window_exit(long nativeWindowPtr);
+    private static native void window_draw(long nativeWindowPtr);
+    private static native void window_resize(long nativeWindowPtr, int width, int height);
 }

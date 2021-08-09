@@ -32,34 +32,31 @@
 // the android window type
 typedef struct lx_window_android_t_ {
     lx_window_t     base;
-    lx_bool_t       is_quit;
-    lx_hong_t       fps_time;
-    lx_hong_t       fps_count;
-    lx_int_t        fps_delay;
 } lx_window_android_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
 
-static lx_bool_t lx_window_android_start(lx_window_android_t* window) {
-    lx_bool_t ok = lx_false;
-    do {
-
-        // ok
-        ok = lx_true;
-    } while (0);
-    return ok;
-}
-
-static lx_void_t lx_window_android_runloop(lx_window_ref_t self) {
+static lx_void_t lx_window_android_draw(lx_window_ref_t self) {
     lx_window_android_t* window = (lx_window_android_t*)self;
     lx_assert(window && window->base.on_draw);
 
-    // start android window
-    if (!lx_window_android_start(window)) {
-        lx_trace_e("start android window failed!");
-        return ;
+    // do draw
+    window->base.on_draw((lx_window_ref_t)window, window->base.canvas);
+}
+
+static lx_void_t lx_window_android_resize(lx_window_ref_t self, lx_size_t width, lx_size_t height) {
+    lx_window_android_t* window = (lx_window_android_t*)self;
+    lx_check_return(width && height);
+
+    lx_event_t event = {0};
+    event.type = LX_EVENT_TYPE_ACTIVE;
+    event.u.active.code = LX_ACTIVE_RESIZE_WINDOW;
+    event.u.active.data[0] = (lx_size_t)width;
+    event.u.active.data[1] = (lx_size_t)height;
+    if (window->base.on_event) {
+        window->base.on_event((lx_window_ref_t)window, &event);
     }
 }
 
@@ -93,17 +90,25 @@ lx_window_ref_t lx_window_init_android(lx_size_t width, lx_size_t height, lx_cha
         window = lx_malloc0_type(lx_window_android_t);
         lx_assert_and_check_break(window);
 
-        window->base.fps         = 60;
         window->base.width       = (lx_uint16_t)width;
         window->base.height      = (lx_uint16_t)height;
         window->base.title       = title;
-        window->base.runloop     = lx_window_android_runloop;
+        window->base.draw        = lx_window_android_draw;
+        window->base.resize      = lx_window_android_resize;
         window->base.exit        = lx_window_android_exit;
-        window->fps_delay        = 1000 / window->base.fps;
+        window->base.pixfmt      = LX_PIXFMT_XRGB8888;
 
-        // init pixfmt
-        window->base.pixfmt = lx_quality() < LX_QUALITY_TOP? LX_PIXFMT_RGB565 : LX_PIXFMT_XRGB8888;
+#if 0
+        // init device
+#if defined(LX_CONFIG_DEVICE_HAVE_OPENGL)
+        window->base.device = lx_device_init_from_opengl(width, height, width, height);
+#endif
+        lx_assert_and_check_break(window->base.device);
 
+        // init canvas
+        window->base.canvas = lx_canvas_init(window->base.device);
+        lx_assert_and_check_break(window->base.canvas);
+#endif
         // ok
         ok = lx_true;
 
