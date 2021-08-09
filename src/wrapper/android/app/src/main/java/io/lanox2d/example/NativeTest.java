@@ -24,9 +24,14 @@ public class NativeTest {
         load();
     }
 
-    // load empty window
-    public void loadEmptyWindow() {
-        load_emptyWindow(NativeWindow.getInstance().getNativeWindowPtr());
+    // init test
+    public void init() {
+        NativeWindow.getInstance().setNativeWindowListener(new NativeWindow.NativeWindowListener() {
+            @Override
+            public void onInitWindow(long nativeWindowPtr) {
+                load_emptyWindow(NativeWindow.getInstance().getNativeWindowPtr());
+            }
+        });
     }
 
     // load the native library

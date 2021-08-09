@@ -32,6 +32,7 @@ public class NativeWindow {
     private static final String TAG = "NativeWindow";
     private boolean loaded = false;
     private long nativeWindowPtr = 0;
+    private NativeWindowListener nativeWindowListener;
 
     // the singleton holder
     private static class NativeWindowHolder {
@@ -80,6 +81,9 @@ public class NativeWindow {
             if (nativeWindowPtr == 0) {
                 nativeWindowPtr = window_init(width, height);
             }
+            if (nativeWindowListener != null) {
+                nativeWindowListener.onInitWindow(nativeWindowPtr);
+            }
         } catch (Throwable e) {
             e.printStackTrace();
         }
@@ -119,6 +123,14 @@ public class NativeWindow {
 
     public long getNativeWindowPtr() {
         return nativeWindowPtr;
+    }
+
+    public void setNativeWindowListener(NativeWindowListener nativeWindowListener) {
+        this.nativeWindowListener = nativeWindowListener;
+    }
+
+    public interface NativeWindowListener {
+        public void onInitWindow(long nativeWindowPtr);
     }
 
     private static native long window_init(int width, int height);

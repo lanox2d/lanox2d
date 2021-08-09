@@ -26,9 +26,15 @@
 #include <jni.h>
 
 /* //////////////////////////////////////////////////////////////////////////////////////
+ * declaration
+ */
+lx_void_t lx_jni_javavm_set(JavaVM* jvm, lx_int_t jversion);
+
+/* //////////////////////////////////////////////////////////////////////////////////////
  * interfaces
  */
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* jvm, lx_pointer_t reserved) {
+    lx_jni_javavm_set(jvm, JNI_VERSION_1_4);
     return JNI_VERSION_1_4;
 }
 

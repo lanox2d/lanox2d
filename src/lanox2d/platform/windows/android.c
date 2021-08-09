@@ -98,7 +98,6 @@ lx_window_ref_t lx_window_init_android(lx_size_t width, lx_size_t height, lx_cha
         window->base.exit        = lx_window_android_exit;
         window->base.pixfmt      = LX_PIXFMT_XRGB8888;
 
-#if 0
         // init device
 #if defined(LX_CONFIG_DEVICE_HAVE_OPENGL)
         window->base.device = lx_device_init_from_opengl(width, height, width, height);
@@ -108,7 +107,7 @@ lx_window_ref_t lx_window_init_android(lx_size_t width, lx_size_t height, lx_cha
         // init canvas
         window->base.canvas = lx_canvas_init(window->base.device);
         lx_assert_and_check_break(window->base.canvas);
-#endif
+
         // ok
         ok = lx_true;
 

@@ -42,10 +42,69 @@ static lx_bool_t lx_gl_api_init() {
     do {
         // load v2 library first
         lx_dlimage_ref_t library = lx_null;
-        if ((library = lx_dlopen("libGLESv2.so", LX_RTLD_LAZY))) {
+        if ((library = lx_dlopen("libGLESv3.so", LX_RTLD_LAZY))) {
             // load interfaces for common
             LX_GL_API_LOAD_D(library, glActiveTexture);
-            LX_GL_API_LOAD_D(library, glAlphaFunc);
+            LX_GL_API_LOAD_D(library, glBindTexture);
+            LX_GL_API_LOAD_D(library, glBlendFunc);
+            LX_GL_API_LOAD_D(library, glClear);
+            LX_GL_API_LOAD_D(library, glClearColor);
+            LX_GL_API_LOAD_D(library, glClearStencil);
+            LX_GL_API_LOAD_D(library, glColorMask);
+            LX_GL_API_LOAD_D(library, glDeleteTextures);
+            LX_GL_API_LOAD_D(library, glDisable);
+            LX_GL_API_LOAD_D(library, glDrawArrays);
+            LX_GL_API_LOAD_D(library, glEnable);
+            LX_GL_API_LOAD_D(library, glGenTextures);
+            LX_GL_API_LOAD_D(library, glGetString);
+            LX_GL_API_LOAD_D(library, glIsTexture);
+            LX_GL_API_LOAD_D(library, glPixelStorei);
+            LX_GL_API_LOAD_D(library, glScissor);
+            LX_GL_API_LOAD_D(library, glStencilFunc);
+            LX_GL_API_LOAD_D(library, glStencilMask);
+            LX_GL_API_LOAD_D(library, glStencilOp);
+            LX_GL_API_LOAD_D(library, glTexImage2D);
+            LX_GL_API_LOAD_D(library, glTexParameterf);
+            LX_GL_API_LOAD_D(library, glTexParameteri);
+            LX_GL_API_LOAD_D(library, glViewport);
+
+#if LX_GL_API_VERSION >= 20
+            LX_GL_API_LOAD_D(library, glAttachShader);
+            LX_GL_API_LOAD_D(library, glCompileShader);
+            LX_GL_API_LOAD_D(library, glCreateProgram);
+            LX_GL_API_LOAD_D(library, glCreateShader);
+            LX_GL_API_LOAD_D(library, glDeleteProgram);
+            LX_GL_API_LOAD_D(library, glDeleteShader);
+            LX_GL_API_LOAD_D(library, glDisableVertexAttribArray);
+            LX_GL_API_LOAD_D(library, glEnableVertexAttribArray);
+            LX_GL_API_LOAD_D(library, glGetAttribLocation);
+            LX_GL_API_LOAD_D(library, glGetProgramiv);
+            LX_GL_API_LOAD_D(library, glGetProgramInfoLog);
+            LX_GL_API_LOAD_D(library, glGetShaderiv);
+            LX_GL_API_LOAD_D(library, glGetShaderInfoLog);
+            LX_GL_API_LOAD_D(library, glGetUniformLocation);
+            LX_GL_API_LOAD_D(library, glLinkProgram);
+            LX_GL_API_LOAD_D(library, glShaderSource);
+            LX_GL_API_LOAD_D(library, glUniform1i);
+            LX_GL_API_LOAD_D(library, glUniformMatrix4fv);
+            LX_GL_API_LOAD_D(library, glUseProgram);
+            LX_GL_API_LOAD_D(library, glVertexAttrib4f);
+            LX_GL_API_LOAD_D(library, glVertexAttribPointer);
+            LX_GL_API_LOAD_D(library, glGetError);
+            LX_GL_API_LOAD_D(library, glBindBuffer);
+            LX_GL_API_LOAD_D(library, glBufferData);
+            LX_GL_API_LOAD_D(library, glDeleteBuffers);
+#endif
+
+#if LX_GL_API_VERSION >= 30
+            LX_GL_API_LOAD_D(library, glGenVertexArrays);
+            LX_GL_API_LOAD_D(library, glBindVertexArray);
+            LX_GL_API_LOAD_D(library, glDeleteVertexArrays);
+#endif
+        }
+        else if ((library = lx_dlopen("libGLESv2.so", LX_RTLD_LAZY))) {
+            // load interfaces for common
+            LX_GL_API_LOAD_D(library, glActiveTexture);
             LX_GL_API_LOAD_D(library, glBindTexture);
             LX_GL_API_LOAD_D(library, glBlendFunc);
             LX_GL_API_LOAD_D(library, glClear);
