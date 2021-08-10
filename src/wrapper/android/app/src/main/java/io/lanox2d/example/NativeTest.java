@@ -24,15 +24,12 @@ public class NativeTest {
         load();
     }
 
-    // init test
-    public void init() {
-        NativeWindow.getInstance().setNativeWindowListener(new NativeWindow.NativeWindowListener() {
-            @Override
-            public void onInitWindow(long nativeWindowPtr) {
-                //load_emptyWindow(NativeWindow.getInstance().getNativeWindowPtr());
-                load_shapeWindow(NativeWindow.getInstance().getNativeWindowPtr());
-            }
-        });
+    public void loadEmptyWindow() {
+        load_emptyWindow(NativeWindow.getInstance().getNativeWindowPtr());
+    }
+
+    public void loadShapeWindow() {
+        load_shapeWindow(NativeWindow.getInstance().getNativeWindowPtr());
     }
 
     // load the native library
@@ -60,6 +57,6 @@ public class NativeTest {
         return loaded;
     }
 
-    private static native void load_emptyWindow(long nativeWindowPtr);
-    private static native void load_shapeWindow(long nativeWindowPtr);
+    public static native void load_emptyWindow(long nativeWindowPtr);
+    public static native void load_shapeWindow(long nativeWindowPtr);
 }

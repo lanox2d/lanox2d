@@ -82,7 +82,7 @@ public class NativeWindow {
                 nativeWindowPtr = window_init(width, height);
             }
             if (nativeWindowListener != null) {
-                nativeWindowListener.onInitWindow(nativeWindowPtr);
+                nativeWindowListener.onInitWindow(width, height);
             }
         } catch (Throwable e) {
             e.printStackTrace();
@@ -105,6 +105,9 @@ public class NativeWindow {
         try {
             if (loaded && nativeWindowPtr != 0) {
                 window_draw(nativeWindowPtr);
+                if (nativeWindowListener != null) {
+                    nativeWindowListener.onDrawWindow();
+                }
             }
         } catch (Throwable e) {
             e.printStackTrace();
@@ -115,6 +118,9 @@ public class NativeWindow {
         try {
             if (loaded && nativeWindowPtr != 0) {
                 window_resize(nativeWindowPtr, width, height);
+                if (nativeWindowListener != null) {
+                    nativeWindowListener.onResizeWindow(width, height);
+                }
             }
         } catch (Throwable e) {
             e.printStackTrace();
@@ -130,7 +136,9 @@ public class NativeWindow {
     }
 
     public interface NativeWindowListener {
-        public void onInitWindow(long nativeWindowPtr);
+        public void onInitWindow(int width, int height);
+        public void onDrawWindow();
+        public void onResizeWindow(int width, int height);
     }
 
     private static native long window_init(int width, int height);
