@@ -59,3 +59,18 @@ JNIEXPORT lx_void_t Java_io_lanox2d_lib_NativeWindow_window_1resize(JNIEnv* env,
         lx_window_resize((lx_window_ref_t)window, width, height);
     }
 }
+
+JNIEXPORT lx_void_t Java_io_lanox2d_lib_NativeWindow_window_1touchMove(JNIEnv* env, jclass jthis, jlong window, jfloat x, jfloat y) {
+    if (window) {
+        lx_event_t event = {0};
+        lx_touch_t touches[1];
+        event.type            = LX_EVENT_TYPE_TOUCH;
+        event.u.touch.code    = LX_TOUCH_MOVED;
+        event.u.touch.count   = 1;
+        event.u.touch.touches = touches;
+        lx_point_make(&touches[0].start, x, y);
+        lx_point_make(&touches[0].prev,  x, y);
+        lx_point_make(&touches[0].point, x, y);
+        lx_window_notify((lx_window_ref_t)window, &event);
+    }
+}

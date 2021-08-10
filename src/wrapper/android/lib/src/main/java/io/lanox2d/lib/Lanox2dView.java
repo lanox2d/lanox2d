@@ -24,6 +24,8 @@ import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.View;
 
 import io.lanox2d.lib.common.Logger;
 
@@ -55,5 +57,17 @@ public class Lanox2dView extends GLSurfaceView {
         // init focus
         requestFocus();
         setFocusableInTouchMode(true);
+
+        // init touch event
+        setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    if (event.getPointerCount() == 1) {
+                        NativeWindow.getInstance().touchMove(event.getX(0), event.getY(0));
+                    }
+                }
+                return true;
+            }
+        });
     }
 }

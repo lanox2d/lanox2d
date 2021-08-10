@@ -14,7 +14,6 @@ static lx_size_t        g_cap = LX_PAINT_STROKE_CAP_BUTT;
 static lx_size_t        g_join = LX_PAINT_STROKE_JOIN_MITER;
 static lx_float_t       g_width = 1.0f;
 static lx_byte_t        g_alpha = 255;
-static lx_bool_t        g_transform = lx_false;
 static lx_entry_t*      g_entry = lx_null;
 static lx_size_t        g_shader = 0;
 static lx_shader_ref_t  g_shaders[3] = {0};
@@ -104,41 +103,45 @@ static lx_void_t on_event(lx_window_ref_t window, lx_event_ref_t event) {
         case 'a':
             g_alpha -= 15;
             break;
-        case 't':
-            g_transform = !g_transform;
-            break;
         case 's':
             g_shader = (g_shader + 1) % 3;
         default:
             break;
         }
-    } else if (event->type == LX_EVENT_TYPE_MOUSE) {
-        if (event->u.mouse.code == LX_MOUSE_MOVE) {
-            lx_float_t x = event->u.mouse.cursor.x;
-            lx_float_t y = event->u.mouse.cursor.y;
-            if (g_transform) {
-                lx_float_t an = 0;
-                lx_float_t dw = (lx_float_t)lx_window_width(window);
-                lx_float_t dh = (lx_float_t)lx_window_height(window);
-                lx_float_t x0 = dw / 2;
-                lx_float_t y0 = dh / 2;
-                lx_float_t dx = x > x0? (x - x0) : (x0 - x);
-                lx_float_t dy = y > y0? (y - y0) : (y0 - y);
-                dx = dx * 2;
-                dy = dy * 2;
-                if (y == y0) an = 0;
-                else if (x == x0) an = 90.0f;
-                else an = lx_atanf(dy / dx) * 180 / LX_PI;
-                if (y < y0 && x < x0) an = 180.0f - an;
-                if (y > y0 && x < x0) an += 180.0f;
-                if (y > y0 && x > x0) an = 360.0f - an;
-                an = -an;
-                dx = dx * 4;
-                dy = dy * 4;
-                lx_matrix_init_translate(&g_matrix, x0, y0);
-                lx_matrix_scale(&g_matrix, dx / dw, dy / dh);
-                lx_matrix_rotate(&g_matrix, an);
-            }
+    } else if (event->type == LX_EVENT_TYPE_MOUSE || event->type == LX_EVENT_TYPE_TOUCH) {
+        lx_float_t x, y;
+        lx_bool_t transform = lx_false;
+        if (event->type == LX_EVENT_TYPE_MOUSE && event->u.mouse.code == LX_MOUSE_MOVE && event->u.mouse.button == LX_MOUSE_BUTTON_LEFT) {
+            x = event->u.mouse.cursor.x;
+            y = event->u.mouse.cursor.y;
+            transform = lx_true;
+        } else if (event->type == LX_EVENT_TYPE_TOUCH && event->u.touch.code == LX_TOUCH_MOVED) {
+            x = event->u.touch.touches[0].point.x;
+            y = event->u.touch.touches[0].point.y;
+            transform = lx_true;
+        }
+        if (transform) {
+            lx_float_t an = 0;
+            lx_float_t dw = (lx_float_t)lx_window_width(window);
+            lx_float_t dh = (lx_float_t)lx_window_height(window);
+            lx_float_t x0 = dw / 2;
+            lx_float_t y0 = dh / 2;
+            lx_float_t dx = x > x0? (x - x0) : (x0 - x);
+            lx_float_t dy = y > y0? (y - y0) : (y0 - y);
+            dx = dx * 2;
+            dy = dy * 2;
+            if (y == y0) an = 0;
+            else if (x == x0) an = 90.0f;
+            else an = lx_atanf(dy / dx) * 180 / LX_PI;
+            if (y < y0 && x < x0) an = 180.0f - an;
+            if (y > y0 && x < x0) an += 180.0f;
+            if (y > y0 && x > x0) an = 360.0f - an;
+            an = -an;
+            dx = dx * 4;
+            dy = dy * 4;
+            lx_matrix_init_translate(&g_matrix, x0, y0);
+            lx_matrix_scale(&g_matrix, dx / dw, dy / dh);
+            lx_matrix_rotate(&g_matrix, an);
         }
     }
     if (g_entry->on_event) {

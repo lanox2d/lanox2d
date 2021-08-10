@@ -55,5 +55,8 @@ task("aar_upload")
         os.cd(os.scriptdir())
         os.exec("./gradlew lib:uploadArchives")
     end)
+task_end()
 
-includes("lib/jni", "app/jni")
+if is_plat("android") then
+    includes("lib/jni", "app/jni")
+end

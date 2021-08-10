@@ -137,6 +137,13 @@ lx_void_t lx_window_resize(lx_window_ref_t self, lx_size_t width, lx_size_t heig
     }
 }
 
+lx_void_t lx_window_notify(lx_window_ref_t self, lx_event_ref_t event) {
+    lx_window_t* window = (lx_window_t*)self;
+    if (window && window->on_event && event) {
+        window->on_event(self, event);
+    }
+}
+
 lx_void_t lx_window_fullscreen(lx_window_ref_t self, lx_bool_t is_fullscreen) {
     lx_window_t* window = (lx_window_t*)self;
     if (window && window->fullscreen) {

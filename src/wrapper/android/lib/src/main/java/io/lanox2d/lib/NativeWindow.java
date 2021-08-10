@@ -127,6 +127,16 @@ public class NativeWindow {
         }
     }
 
+    public void touchMove(float x, float y) {
+        try {
+            if (loaded && nativeWindowPtr != 0) {
+                window_touchMove(nativeWindowPtr, x, y);
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
     public long getNativeWindowPtr() {
         return nativeWindowPtr;
     }
@@ -145,4 +155,5 @@ public class NativeWindow {
     private static native void window_exit(long nativeWindowPtr);
     private static native void window_draw(long nativeWindowPtr);
     private static native void window_resize(long nativeWindowPtr, int width, int height);
+    private static native void window_touchMove(long nativeWindowPtr, float x, float y);
 }

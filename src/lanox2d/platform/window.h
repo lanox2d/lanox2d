@@ -187,6 +187,13 @@ lx_void_t               lx_window_draw(lx_window_ref_t window);
  */
 lx_void_t               lx_window_resize(lx_window_ref_t window, lx_size_t width, lx_size_t height);
 
+/* notify window event
+ *
+ * @param window        the window
+ * @param event         the event
+ */
+lx_void_t               lx_window_notify(lx_window_ref_t window, lx_event_ref_t event);
+
 /*! enter or leave the fullscreen (only for the desktop window)
  *
  * @param window        the window
