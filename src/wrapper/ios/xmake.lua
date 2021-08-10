@@ -25,7 +25,7 @@ task("ipa_install")
     end)
 
 task("ipa_test")
-    set_menu {usage = "xmake apk_test [options]", description = "install and test iphoneos ipa.", options = {
+    set_menu {usage = "xmake ipa_test [options]", description = "install and test iphoneos ipa.", options = {
         {'t', "target_minver", "kv", nil, "Set the target minver."}
     }}
     on_run(function ()
