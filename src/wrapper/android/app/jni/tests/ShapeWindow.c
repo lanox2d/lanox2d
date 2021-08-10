@@ -29,12 +29,15 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * interfaces
  */
-JNIEXPORT lx_void_t Java_io_lanox2d_example_NativeTest_load_1shapeWindow(JNIEnv* env, jclass jthis, jlong window) {
-    lx_trace_i("load_shapeWindow: %p", (lx_window_ref_t)window);
+JNIEXPORT lx_void_t Java_io_lanox2d_example_NativeTest_load_1shapeWindow(JNIEnv* env, jclass jthis, jlong window, jstring testName) {
+    lx_char_t const* testName_cstr = (*env)->GetStringUTFChars(env, testName, lx_null);
+    lx_trace_i("load_shapeWindow: %s", testName_cstr);
     if (window) {
-        static lx_char_t* argv[] = {"", "tiger", lx_null};
+        static lx_char_t* argv[] = {"", lx_null, lx_null};
+        argv[1] = (lx_char_t*)testName_cstr;
         window_init((lx_window_ref_t)window, 2, argv);
         (lx_void_t)window_exit;
     }
+    (*env)->ReleaseStringUTFChars(env, testName, testName_cstr);
 }
 

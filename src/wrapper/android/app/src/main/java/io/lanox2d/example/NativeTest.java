@@ -28,8 +28,8 @@ public class NativeTest {
         load_emptyWindow(NativeWindow.getInstance().getNativeWindowPtr());
     }
 
-    public void loadShapeWindow() {
-        load_shapeWindow(NativeWindow.getInstance().getNativeWindowPtr());
+    public void loadShapeWindow(String testName) {
+        load_shapeWindow(NativeWindow.getInstance().getNativeWindowPtr(), testName);
     }
 
     // load the native library
@@ -58,5 +58,5 @@ public class NativeTest {
     }
 
     public static native void load_emptyWindow(long nativeWindowPtr);
-    public static native void load_shapeWindow(long nativeWindowPtr);
+    public static native void load_shapeWindow(long nativeWindowPtr, String testName);
 }
