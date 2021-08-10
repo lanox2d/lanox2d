@@ -1,0 +1,6 @@
+target("Lanox2d")
+    set_default(false)
+    add_deps("lanox2d")
+    add_rules("xcode.framework")
+    add_files("*.m")
+    add_files("Info.plist")
