@@ -39,7 +39,8 @@ lx_int_t lx_puts(lx_char_t const* s) {
 #if defined(LX_CONFIG_OS_ANDROID)
     return __android_log_print(ANDROID_LOG_INFO, "lanox2d", "%s", s);
 #elif defined(LX_CONFIG_OS_IOS)
-    return os_log(OS_LOG_DEFAULT, "[lanox2d]: %s", s);
+    os_log(OS_LOG_DEFAULT, "[lanox2d]: %s", s);
+    return 1;
 #else
     return fputs(s, stdout);
 #endif
