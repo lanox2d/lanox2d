@@ -177,6 +177,7 @@
 			buildConfigurationList = BFBF30A726C2CC180036AEB3 /* Build configuration list for PBXNativeTarget "Lanox2d" */;
 			buildPhases = (
 				BFBF309626C2CC180036AEB3 /* Headers */,
+				BFD6161626C4155D00484733 /* ShellScript */,
 				BFBF309726C2CC180036AEB3 /* Sources */,
 				BFBF309826C2CC180036AEB3 /* Frameworks */,
 				BFBF309926C2CC180036AEB3 /* Resources */,
@@ -245,6 +246,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		BFD6161626C4155D00484733 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd ../../..\n$HOME/.local/bin/xmake package lanox2d\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		BFAB860C26C2CAA100CCDD70 /* Sources */ = {
@@ -450,7 +471,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				HEADER_SEARCH_PATHS = ../../;
+				HEADER_SEARCH_PATHS = ../../../build/packages/l/lanox2d/iphoneos/arm64/releasedbg/include;
 				INFOPLIST_FILE = Lanox2d/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -476,7 +497,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				HEADER_SEARCH_PATHS = ../../;
+				HEADER_SEARCH_PATHS = ../../../build/packages/l/lanox2d/iphoneos/arm64/releasedbg/include;
 				INFOPLIST_FILE = Lanox2d/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
