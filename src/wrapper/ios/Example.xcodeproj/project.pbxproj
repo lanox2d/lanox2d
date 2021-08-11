@@ -263,7 +263,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd ../../..\n$HOME/.local/bin/xmake package lanox2d\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd ../../..\n$HOME/.local/bin/xmake m package -p iphoneos -f \"-y -m releasedbg\" -a \"x86_64,arm64,armv7\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -471,7 +471,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				HEADER_SEARCH_PATHS = ../../../build/packages/l/lanox2d/iphoneos/arm64/releasedbg/include;
+				HEADER_SEARCH_PATHS = "../../../build/packages/l/lanox2d/iphoneos/$(CURRENT_ARCH)/releasedbg/include";
 				INFOPLIST_FILE = Lanox2d/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -497,7 +497,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				HEADER_SEARCH_PATHS = ../../../build/packages/l/lanox2d/iphoneos/arm64/releasedbg/include;
+				HEADER_SEARCH_PATHS = "../../../build/packages/l/lanox2d/iphoneos/$(CURRENT_ARCH)/releasedbg/include";
 				INFOPLIST_FILE = Lanox2d/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
