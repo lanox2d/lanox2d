@@ -20,9 +20,12 @@
  */
 
 #import "Lanox2dViewController.h"
+#import "Lanox2dView.h"
 
 @interface Lanox2dViewController () {
 }
+
+@property (strong, atomic) Lanox2dView* lanox2dView;
 @end
 
 @implementation Lanox2dViewController
@@ -31,18 +34,13 @@
     
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        NSLog(@"initWithNibName");
-    }
-    return self;
-}
-
-
 - (void)viewDidLoad {
     [super viewDidLoad];
-    NSLog(@"viewDidLoad");
+
+    // init lanox2d view
+    CGRect screenBounds = [[UIScreen mainScreen] bounds];
+    self.lanox2dView = [[Lanox2dView alloc] initWithFrame:screenBounds];
+    [self.view addSubview:self.lanox2dView];
 }
 
 @end
