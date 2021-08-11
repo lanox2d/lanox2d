@@ -19,6 +19,8 @@
 		BFBF30A326C2CC180036AEB3 /* Lanox2d.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF309B26C2CC180036AEB3 /* Lanox2d.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BFBF30AA26C2CC8E0036AEB3 /* Lanox2dView.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF30A826C2CC8E0036AEB3 /* Lanox2dView.h */; };
 		BFBF30AB26C2CC8E0036AEB3 /* Lanox2dView.m in Sources */ = {isa = PBXBuildFile; fileRef = BFBF30A926C2CC8E0036AEB3 /* Lanox2dView.m */; };
+		BFEE2D2226C3D3370081E74A /* Lanox2dViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = BFEE2D2026C3D3370081E74A /* Lanox2dViewController.h */; };
+		BFEE2D2326C3D3370081E74A /* Lanox2dViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFEE2D2126C3D3370081E74A /* Lanox2dViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +65,8 @@
 		BFBF309E26C2CC180036AEB3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BFBF30A826C2CC8E0036AEB3 /* Lanox2dView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lanox2dView.h; sourceTree = "<group>"; };
 		BFBF30A926C2CC8E0036AEB3 /* Lanox2dView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Lanox2dView.m; sourceTree = "<group>"; };
+		BFEE2D2026C3D3370081E74A /* Lanox2dViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lanox2dViewController.h; sourceTree = "<group>"; };
+		BFEE2D2126C3D3370081E74A /* Lanox2dViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Lanox2dViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,6 +131,8 @@
 				BFBF309E26C2CC180036AEB3 /* Info.plist */,
 				BFBF30A826C2CC8E0036AEB3 /* Lanox2dView.h */,
 				BFBF30A926C2CC8E0036AEB3 /* Lanox2dView.m */,
+				BFEE2D2026C3D3370081E74A /* Lanox2dViewController.h */,
+				BFEE2D2126C3D3370081E74A /* Lanox2dViewController.m */,
 			);
 			path = Lanox2d;
 			sourceTree = "<group>";
@@ -139,6 +145,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BFBF30AA26C2CC8E0036AEB3 /* Lanox2dView.h in Headers */,
+				BFEE2D2226C3D3370081E74A /* Lanox2dViewController.h in Headers */,
 				BFBF309F26C2CC180036AEB3 /* Lanox2d.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -256,6 +263,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BFBF30AB26C2CC8E0036AEB3 /* Lanox2dView.m in Sources */,
+				BFEE2D2326C3D3370081E74A /* Lanox2dViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -404,6 +412,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 43AAQM58X3;
 				INFOPLIST_FILE = Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -420,6 +429,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 43AAQM58X3;
 				INFOPLIST_FILE = Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

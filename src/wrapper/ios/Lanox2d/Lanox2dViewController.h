@@ -15,16 +15,15 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        Lanox2dView.h
+ * @file        Lanox2dViewController.h
  *
  */
 
-#import <UIKIt/UIKIt.h>
+#import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface Lanox2dView : UIView
-
+@interface Lanox2dViewController : UIViewController
 
 @end
 

@@ -15,17 +15,34 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        Lanox2dView.h
+ * @file        Lanox2dViewController.m
  *
  */
 
-#import <UIKIt/UIKIt.h>
+#import "Lanox2dViewController.h"
 
-NS_ASSUME_NONNULL_BEGIN
-
-@interface Lanox2dView : UIView
-
-
+@interface Lanox2dViewController () {
+}
 @end
 
-NS_ASSUME_NONNULL_END
+@implementation Lanox2dViewController
+
+- (void)dealloc {
+    
+}
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        NSLog(@"initWithNibName");
+    }
+    return self;
+}
+
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    NSLog(@"viewDidLoad");
+}
+
+@end
