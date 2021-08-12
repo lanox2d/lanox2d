@@ -16,7 +16,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+
+#if 0
+    // init lanox2d view
+    CGRect screenBounds = [[UIScreen mainScreen] bounds];
+    self.lanox2dView = [[Lanox2dView alloc] initWithFrame:screenBounds];
+    [self.view addSubview:self.lanox2dView];
+#endif
 }
 
 

@@ -20,6 +20,7 @@
  */
 
 #import <Foundation/Foundation.h>
+//#import <Lanox2d/Lanox2dView.h>
 
 //! Project version number for Lanox2d.
 FOUNDATION_EXPORT double Lanox2dVersionNumber;

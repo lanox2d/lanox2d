@@ -31,7 +31,7 @@
 @implementation Lanox2dViewController
 
 - (void)dealloc {
-    
+
 }
 
 - (void)viewDidLoad {
