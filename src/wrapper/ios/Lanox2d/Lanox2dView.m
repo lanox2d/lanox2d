@@ -41,7 +41,6 @@
     GLuint          _glRenderStencilMssa;
     CADisplayLink*  _displayLink;
 }
-@property (nonatomic) lx_window_ref_t window;
 @end
 
 @implementation Lanox2dView
