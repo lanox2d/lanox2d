@@ -479,6 +479,8 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = "../../../build/packages/l/lanox2d/iphoneos/$(CURRENT_ARCH)/releasedbg/lib";
+				OTHER_LDFLAGS = "-llanox2d";
 				PRODUCT_BUNDLE_IDENTIFIER = io.lanox2d.Lanox2d;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -505,6 +507,8 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = "../../../build/packages/l/lanox2d/iphoneos/$(CURRENT_ARCH)/releasedbg/lib";
+				OTHER_LDFLAGS = "-llanox2d";
 				PRODUCT_BUNDLE_IDENTIFIER = io.lanox2d.Lanox2d;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
