@@ -27,6 +27,7 @@
 #import <OpenGLES/ES2/glext.h>
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/EAGLDrawable.h>
+#import "lanox2d/lanox2d.h"
 
 @interface Lanox2dView() {
     EAGLContext*    _glContext;
@@ -40,6 +41,7 @@
     GLuint          _glRenderStencilMssa;
     CADisplayLink*  _displayLink;
 }
+@property (nonatomic) lx_window_ref_t window;
 @end
 
 @implementation Lanox2dView
@@ -80,7 +82,7 @@
     [self glFrameInit];
 
     // init window
-    self.window = lx_window_init(frame.size.width, frame.size.height, lx_null);
+    _window = lx_window_init(frame.size.width, frame.size.height, lx_null);
 
     // start display link
     _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkHandle:)];
@@ -96,9 +98,9 @@
     _displayLink = nil;
 
     // exit window
-    if (self.window) {
-        lx_window_exit(self.window);
-        self.window = lx_null;
+    if (_window) {
+        lx_window_exit(_window);
+        _window = lx_null;
     }
 
     // exit frame

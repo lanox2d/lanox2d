@@ -7,11 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-//#import <Lanox2d/Lanox2dView.h>
 
 @interface ViewController : UIViewController
-
-//@property (strong, atomic) Lanox2dView* lanox2dView;
 
 @end
 

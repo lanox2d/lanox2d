@@ -7,9 +7,10 @@
 //
 
 #import "ViewController.h"
+#import <Lanox2d/Lanox2d.h>
 
 @interface ViewController ()
-
+//@property (strong, atomic) Lanox2dView* lanox2dView;
 @end
 
 @implementation ViewController

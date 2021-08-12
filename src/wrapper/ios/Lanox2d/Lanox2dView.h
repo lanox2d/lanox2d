@@ -20,12 +20,10 @@
  */
 
 #import <UIKit/UIKit.h>
-#import "lanox2d/lanox2d.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface Lanox2dView : UIView
-@property (nonatomic) lx_window_ref_t window;
 @end
 
 NS_ASSUME_NONNULL_END
