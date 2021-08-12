@@ -7,7 +7,8 @@
 //
 
 #import "ViewController.h"
-#import <Lanox2d.h>
+#import "lanox2d/lanox2d.h"
+#import "Lanox2dView.h"
 #include "../../../examples/window.c"
 
 @interface ViewController ()
@@ -18,7 +19,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     NSLog(@"init");
 
     // init lanox2d view
@@ -26,13 +27,11 @@
     self.lanox2dView = [[Lanox2dView alloc] initWithFrame:screenBounds];
     [self.view addSubview:self.lanox2dView];
 
-#if 0
     lx_window_ref_t window = self.lanox2dView.window;
     if (window) {
         lx_window_on_draw(window, on_draw);
         lx_window_on_event(window, on_event);
     }
-#endif
 }
 
 

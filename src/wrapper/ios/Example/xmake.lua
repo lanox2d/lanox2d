@@ -1,6 +1,7 @@
 target("Example")
     set_default(false)
-    add_deps("Lanox2d")
+    add_deps("lanox2d")
     add_rules("xcode.application")
     add_files("*.m", "**.storyboard", "*.xcassets")
     add_files("Info.plist")
+    add_defines("LX_NOMAIN_ENTRY")
