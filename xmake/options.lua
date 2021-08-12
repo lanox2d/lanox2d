@@ -25,7 +25,7 @@ option("pixfmt")
 -- bitmap option
 option("bitmap")
     set_showmenu(true)
-    set_default("png")
+    --set_default("png")
     set_values("bmp", "jpg", "png")
     set_description("Enable bitmap formats")
     after_check(function (option)
@@ -48,7 +48,7 @@ option("window")
                 option:set_value("glfw")
             elseif is_plat("android") then
                 option:set_value("android")
-            elseif is_plat("ios") then
+            elseif is_plat("iphoneos") then
                 option:set_value("ios")
             end
         end

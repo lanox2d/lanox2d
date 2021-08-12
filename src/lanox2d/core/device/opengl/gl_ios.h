@@ -25,11 +25,16 @@
  * includes
  */
 #include "gl.h"
+#define GLES_SILENCE_DEPRECATION
 #if LX_GL_API_VERSION >= 30
-#    include <OpenGL/gl3.h>
+#   include <OpenGLES/ES3/gl.h>
+#   include <OpenGLES/ES3/glext.h>
+#elif LX_GL_API_VERSION >= 20
+#   include <OpenGLES/ES2/gl.h>
+#   include <OpenGLES/ES2/glext.h>
 #else
-#    include <OpenGL/gl.h>
-#    include <OpenGL/glu.h>
+#   include <OpenGLES/ES1/gl.h>
+#   include <OpenGLES/ES1/glext.h>
 #endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -45,7 +50,6 @@ static lx_bool_t lx_gl_api_init() {
     do {
         // load interfaces for common
         LX_GL_API_LOAD_S(glActiveTexture);
-        LX_GL_API_LOAD_S(glAlphaFunc);
         LX_GL_API_LOAD_S(glBindTexture);
         LX_GL_API_LOAD_S(glBlendFunc);
         LX_GL_API_LOAD_S(glClear);

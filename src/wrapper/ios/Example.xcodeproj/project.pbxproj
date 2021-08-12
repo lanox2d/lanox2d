@@ -14,9 +14,6 @@
 		BFAB862026C2CAA400CCDD70 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFAB861F26C2CAA400CCDD70 /* Assets.xcassets */; };
 		BFAB862326C2CAA400CCDD70 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFAB862126C2CAA400CCDD70 /* LaunchScreen.storyboard */; };
 		BFAB862626C2CAA400CCDD70 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAB862526C2CAA400CCDD70 /* main.m */; };
-		BFEBED6226C53D6C00CFDAC0 /* Lanox2d.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFEBED6126C53D6C00CFDAC0 /* Lanox2d.framework */; };
-		BFEBED6426C53DDF00CFDAC0 /* Lanox2d.framework in Sources */ = {isa = PBXBuildFile; fileRef = BFEBED6126C53D6C00CFDAC0 /* Lanox2d.framework */; };
-		BFEBF06926C5558500CFDAC0 /* Lanox2d.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BFEBED6126C53D6C00CFDAC0 /* Lanox2d.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,7 +23,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				BFEBF06926C5558500CFDAC0 /* Lanox2d.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -46,7 +42,6 @@
 		BFAB862226C2CAA400CCDD70 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BFAB862426C2CAA400CCDD70 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BFAB862526C2CAA400CCDD70 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		BFEBED6126C53D6C00CFDAC0 /* Lanox2d.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lanox2d.framework; path = ../../../build/iphoneos/universal/releasedbg/Lanox2d.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,7 +49,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BFEBED6226C53D6C00CFDAC0 /* Lanox2d.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,7 +60,6 @@
 			children = (
 				BFAB861226C2CAA100CCDD70 /* Example */,
 				BFAB861126C2CAA100CCDD70 /* Products */,
-				BFEBED5F26C53D4200CFDAC0 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -94,14 +87,6 @@
 				BFAB862526C2CAA400CCDD70 /* main.m */,
 			);
 			path = Example;
-			sourceTree = "<group>";
-		};
-		BFEBED5F26C53D4200CFDAC0 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				BFEBED6126C53D6C00CFDAC0 /* Lanox2d.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -187,7 +172,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd ../../../\nexport XMAKE_COLORTERM=nocolor\n$HOME/.local/bin/xmake pod_build -m debug\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd ../../../\nexport XMAKE_COLORTERM=nocolor\n$HOME/.local/bin/xmake pod_build -m debug\n#$HOME/.local/bin/xmake pod_build -m releasedbg\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -196,7 +181,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BFEBED6426C53DDF00CFDAC0 /* Lanox2d.framework in Sources */,
 				BFAB861B26C2CAA200CCDD70 /* ViewController.m in Sources */,
 				BFAB861526C2CAA100CCDD70 /* AppDelegate.m in Sources */,
 				BFAB862626C2CAA400CCDD70 /* main.m in Sources */,
@@ -343,16 +327,17 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 43AAQM58X3;
-				FRAMEWORK_SEARCH_PATHS = ../../../build/iphoneos/universal;
-				HEADER_SEARCH_PATHS = ../../../build/iphoneos/universal/Lanox2d.framework/Headers;
+				FRAMEWORK_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "../../../build/packages/l/lanox2d/iphoneos/$(CURRENT_ARCH)/debug/include";
 				INFOPLIST_FILE = Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/Frameworks/Lanox2d.framework",
 				);
+				LIBRARY_SEARCH_PATHS = "../../../build/packages/l/lanox2d/iphoneos/$(CURRENT_ARCH)/debug/lib";
 				OTHER_CFLAGS = "-DLX_NOMAIN_ENTRY";
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-llanox2d";
 				PRODUCT_BUNDLE_IDENTIFIER = io.lanox2d.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -367,16 +352,17 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 43AAQM58X3;
-				FRAMEWORK_SEARCH_PATHS = ../../../build/iphoneos/universal;
-				HEADER_SEARCH_PATHS = ../../../build/iphoneos/universal/Lanox2d.framework/Headers;
+				FRAMEWORK_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "../../../build/packages/l/lanox2d/iphoneos/$(CURRENT_ARCH)/releasedbg/include";
 				INFOPLIST_FILE = Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/Frameworks/Lanox2d.framework",
 				);
+				LIBRARY_SEARCH_PATHS = "../../../build/packages/l/lanox2d/iphoneos/$(CURRENT_ARCH)/releasedbg/include";
 				OTHER_CFLAGS = "-DLX_NOMAIN_ENTRY";
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-llanox2d";
 				PRODUCT_BUNDLE_IDENTIFIER = io.lanox2d.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";

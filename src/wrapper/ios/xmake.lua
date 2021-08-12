@@ -46,40 +46,16 @@ task("pod_build")
         import("core.project.config")
         local outputdir = path.join(config.buildir(), "iphoneos")
         local mode = option.get("mode") or "releasedbg"
-        -- build Lanox2d.framework for each archs
-        for _, arch in ipairs({"armv7", "arm64", "x86_64"}) do
-            local argv = {"f", "-p", "iphoneos", "-a", arch, "-m", mode, "-c", "-y"}
-            if option.get("verbose") then
-                table.insert(argv, "-v")
-            end
-            local target_minver = option.get("target_minver")
-            if target_minver then
-                table.insert(argv, "--target_minver=" .. target_minver)
-            end
-            os.execv(os.programfile(), argv)
-
-            local argv = {"-r", "Lanox2d"}
-            if option.get("verbose") then
-                table.insert(argv, "-v")
-            end
-            os.execv(os.programfile(), argv)
-            os.execv(os.programfile(), {"install", "-o", path.join(outputdir, arch, mode, "install"), "lanox2d"})
+        local configs = "-y -m " .. mode
+        local target_minver = option.get("target_minver")
+        if target_minver then
+            configs = configs .. " --target_minver=" .. target_minver
         end
-        -- generate universal Lanox2d.framework
-        local lipoargs = ""
-        for _, arch in ipairs({"armv7", "arm64", "x86_64"}) do
-            local targetfile = path.join(outputdir, arch, mode, "Lanox2d.framework", "Versions", "A", "Lanox2d")
-            lipoargs = format("%s -arch %s %s", lipoargs, arch, targetfile)
+        local argv = {"m", "package", "-p", "iphoneos", "-f", configs, "-a", "armv7,arm64,x86_64"}
+        if option.get("verbose") then
+            table.insert(argv, "-v")
         end
-        local libraryfile = os.tmpfile()
-        lipoargs = format("-create %s -output %s", lipoargs, libraryfile)
-        os.execv(os.programfile(), {"l", "lipo", lipoargs})
-        os.tryrm(path.join(outputdir, "universal/Lanox2d.framework"))
-        os.vmv(path.join(outputdir, "arm64", mode, "Lanox2d.framework"), path.join(outputdir, "universal/Lanox2d.framework"))
-        os.tryrm(path.join(outputdir, "armv7", mode, "Lanox2d.framework"))
-        os.tryrm(path.join(outputdir, "x86_64", mode, "Lanox2d.framework"))
-        os.vcp(libraryfile, path.join(outputdir, "universal/Lanox2d.framework/Versions/A/Lanox2d"))
-        os.vcp(path.join(outputdir, "arm64", mode, "install", "include", "lanox2d"), path.join(outputdir, "universal/Lanox2d.framework/Headers/lanox2d"))
+        os.execv(os.programfile(), argv)
     end)
 task_end()
 

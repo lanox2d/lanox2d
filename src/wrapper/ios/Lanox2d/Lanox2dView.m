@@ -81,7 +81,7 @@
     [self glFrameInit];
 
     // init window
-    _window = lx_window_init(frame.size.width, frame.size.height, lx_null);
+//    _window = lx_window_init(frame.size.width, frame.size.height, lx_null);
 
     // start display link
     _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkHandle:)];
