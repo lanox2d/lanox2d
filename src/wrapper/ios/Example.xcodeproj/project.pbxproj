@@ -335,9 +335,16 @@
 					"@executable_path/Frameworks",
 					"@executable_path/Frameworks/Lanox2d.framework",
 				);
-				LIBRARY_SEARCH_PATHS = "../../../build/packages/l/lanox2d/iphoneos/$(CURRENT_ARCH)/debug/lib";
+				LIBRARY_SEARCH_PATHS = (
+					"../../../build/packages/l/lanox2d/iphoneos/$(CURRENT_ARCH)/debug/lib",
+					../../../build/packages/l/libpng/v1.6.37/8f17cb695b2c427db8f52fda3aeea0fc/lib,
+				);
 				OTHER_CFLAGS = "-DLX_NOMAIN_ENTRY";
-				OTHER_LDFLAGS = "-llanox2d";
+				OTHER_LDFLAGS = (
+					"-llanox2d",
+					"-lpng",
+					"-lz",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.lanox2d.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -360,9 +367,16 @@
 					"@executable_path/Frameworks",
 					"@executable_path/Frameworks/Lanox2d.framework",
 				);
-				LIBRARY_SEARCH_PATHS = "../../../build/packages/l/lanox2d/iphoneos/$(CURRENT_ARCH)/releasedbg/include";
+				LIBRARY_SEARCH_PATHS = (
+					"../../../build/packages/l/lanox2d/iphoneos/$(CURRENT_ARCH)/releasedbg/lib",
+					../../../build/packages/l/libpng/v1.6.37/8f17cb695b2c427db8f52fda3aeea0fc/lib,
+				);
 				OTHER_CFLAGS = "-DLX_NOMAIN_ENTRY";
-				OTHER_LDFLAGS = "-llanox2d";
+				OTHER_LDFLAGS = (
+					"-llanox2d",
+					"-lpng",
+					"-lz",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.lanox2d.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";

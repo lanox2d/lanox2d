@@ -45,8 +45,9 @@ task("pod_build")
         import("core.base.option")
         import("core.project.config")
         local outputdir = path.join(config.buildir(), "iphoneos")
+        local packagedir = path.join(config.buildir(), "packages")
         local mode = option.get("mode") or "releasedbg"
-        local configs = "-y -m " .. mode
+        local configs = "-c -y -m " .. mode
         local target_minver = option.get("target_minver")
         if target_minver then
             configs = configs .. " --target_minver=" .. target_minver
@@ -55,7 +56,9 @@ task("pod_build")
         if option.get("verbose") then
             table.insert(argv, "-v")
         end
+        os.tryrm(packagedir)
         os.execv(os.programfile(), argv)
+        os.execv(os.programfile(), {"require", "--export", "--packagedir=" .. packagedir})
     end)
 task_end()
 
