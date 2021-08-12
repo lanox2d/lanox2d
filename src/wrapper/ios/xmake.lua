@@ -77,7 +77,7 @@ task("pod_build")
         os.tryrm(path.join(outputdir, "armv7/releasedbg/Lanox2d.framework"))
         os.tryrm(path.join(outputdir, "x86_64/releasedbg/Lanox2d.framework"))
         os.vcp(libraryfile, path.join(outputdir, "universal/releasedbg/Lanox2d.framework/Versions/A/Lanox2d"))
-        os.vcp(path.join(outputdir, "arm64", "releasedbg", "install", "include", "lanox2d"), path.join(outputdir, "universal/releasedbg/Lanox2d.framework/Headers/lanox2d"))
+        os.vcp(path.join(outputdir, "arm64", "releasedbg", "install", "include", "lanox2d"), path.join(outputdir, "universal/releasedbg/Lanox2d.framework/Headers/core/lanox2d"))
     end)
 task_end()
 

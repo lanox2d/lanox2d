@@ -16,6 +16,7 @@
 		BFAB862626C2CAA400CCDD70 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAB862526C2CAA400CCDD70 /* main.m */; };
 		BFEBED6226C53D6C00CFDAC0 /* Lanox2d.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFEBED6126C53D6C00CFDAC0 /* Lanox2d.framework */; };
 		BFEBED6426C53DDF00CFDAC0 /* Lanox2d.framework in Sources */ = {isa = PBXBuildFile; fileRef = BFEBED6126C53D6C00CFDAC0 /* Lanox2d.framework */; };
+		BFEBF06926C5558500CFDAC0 /* Lanox2d.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BFEBED6126C53D6C00CFDAC0 /* Lanox2d.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				BFEBF06926C5558500CFDAC0 /* Lanox2d.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -185,7 +187,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd ../../\nexport XMAKE_COLORTERM=nocolor\n$HOME/.local/bin/xmake pod_build\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd ../../../\nexport XMAKE_COLORTERM=nocolor\n$HOME/.local/bin/xmake pod_build\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -341,11 +343,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 43AAQM58X3;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = ../../../build/iphoneos/universal/releasedbg;
+				HEADER_SEARCH_PATHS = ../../../build/iphoneos/universal/releasedbg/Lanox2d.framework/Headers;
 				INFOPLIST_FILE = Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+					"@executable_path/Frameworks/Lanox2d.framework",
 				);
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
@@ -363,11 +367,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 43AAQM58X3;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = ../../../build/iphoneos/universal/releasedbg;
+				HEADER_SEARCH_PATHS = ../../../build/iphoneos/universal/releasedbg/Lanox2d.framework/Headers;
 				INFOPLIST_FILE = Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+					"@executable_path/Frameworks/Lanox2d.framework",
 				);
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";

@@ -7,23 +7,23 @@
 //
 
 #import "ViewController.h"
-#import <Lanox2d/Lanox2d.h>
+#import <Lanox2d.h>
 
 @interface ViewController ()
-//@property (strong, atomic) Lanox2dView* lanox2dView;
+@property (strong) Lanox2dView* lanox2dView;
 @end
 
 @implementation ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    NSLog(@"init");
 
-#if 0
     // init lanox2d view
     CGRect screenBounds = [[UIScreen mainScreen] bounds];
     self.lanox2dView = [[Lanox2dView alloc] initWithFrame:screenBounds];
     [self.view addSubview:self.lanox2dView];
-#endif
 }
 
 
