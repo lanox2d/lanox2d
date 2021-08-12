@@ -187,7 +187,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd ../../../\nexport XMAKE_COLORTERM=nocolor\n$HOME/.local/bin/xmake pod_build\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd ../../../\nexport XMAKE_COLORTERM=nocolor\n$HOME/.local/bin/xmake pod_build -m debug\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -343,15 +343,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 43AAQM58X3;
-				FRAMEWORK_SEARCH_PATHS = ../../../build/iphoneos/universal/releasedbg;
-				HEADER_SEARCH_PATHS = ../../../build/iphoneos/universal/releasedbg/Lanox2d.framework/Headers;
+				FRAMEWORK_SEARCH_PATHS = ../../../build/iphoneos/universal;
+				HEADER_SEARCH_PATHS = ../../../build/iphoneos/universal/Lanox2d.framework/Headers;
 				INFOPLIST_FILE = Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/Frameworks/Lanox2d.framework",
 				);
-				OTHER_CFLAGS = "";
+				OTHER_CFLAGS = "-DLX_NOMAIN_ENTRY";
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = io.lanox2d.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -367,15 +367,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 43AAQM58X3;
-				FRAMEWORK_SEARCH_PATHS = ../../../build/iphoneos/universal/releasedbg;
-				HEADER_SEARCH_PATHS = ../../../build/iphoneos/universal/releasedbg/Lanox2d.framework/Headers;
+				FRAMEWORK_SEARCH_PATHS = ../../../build/iphoneos/universal;
+				HEADER_SEARCH_PATHS = ../../../build/iphoneos/universal/Lanox2d.framework/Headers;
 				INFOPLIST_FILE = Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/Frameworks/Lanox2d.framework",
 				);
-				OTHER_CFLAGS = "";
+				OTHER_CFLAGS = "-DLX_NOMAIN_ENTRY";
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = io.lanox2d.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";

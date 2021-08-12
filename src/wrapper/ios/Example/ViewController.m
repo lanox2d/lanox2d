@@ -26,11 +26,13 @@
     self.lanox2dView = [[Lanox2dView alloc] initWithFrame:screenBounds];
     [self.view addSubview:self.lanox2dView];
 
+#if 1
     lx_window_ref_t window = self.lanox2dView.window;
     if (window) {
         lx_window_on_draw(window, on_draw);
         lx_window_on_event(window, on_event);
     }
+#endif
 }
 
 
