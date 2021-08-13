@@ -75,7 +75,7 @@
     [self glFrameInit];
 
     // init window
-    _lanox2dWindow = lx_window_init(frame.size.width, frame.size.height, lx_null);
+    _lanox2dWindow = lx_window_init(frame.size.width * glLayer.contentsScale, frame.size.height * glLayer.contentsScale, lx_null);
 
     // start display link
     _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkHandle:)];
