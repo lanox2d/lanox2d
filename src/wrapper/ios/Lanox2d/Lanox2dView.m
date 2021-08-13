@@ -77,6 +77,12 @@
     // init window
     _lanox2dWindow = lx_window_init(frame.size.width * glLayer.contentsScale, frame.size.height * glLayer.contentsScale, lx_null);
 
+    // init move gesture
+    UIPanGestureRecognizer* moveGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action: @selector(onTouchMove:)];
+    [moveGesture setMinimumNumberOfTouches:1];
+    [moveGesture setMaximumNumberOfTouches:1];
+    [self addGestureRecognizer:moveGesture];
+
     // start display link
     _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkHandle:)];
     [_displayLink setPaused:NO];
@@ -162,6 +168,22 @@
             lx_window_draw(_lanox2dWindow);
         }
         [self draw];
+    }
+}
+
+- (void)onTouchMove:(UIPanGestureRecognizer *)recognizer {
+	CGPoint pt = [recognizer locationInView:self];
+    if (_lanox2dWindow) {
+        lx_event_t event = {0};
+        lx_touch_t touches[1];
+        event.type            = LX_EVENT_TYPE_TOUCH;
+        event.u.touch.code    = LX_TOUCH_MOVED;
+        event.u.touch.count   = 1;
+        event.u.touch.touches = touches;
+        lx_point_make(&touches[0].start, pt.x, pt.y);
+        lx_point_make(&touches[0].prev,  pt.x, pt.y);
+        lx_point_make(&touches[0].point, pt.x, pt.y);
+        lx_window_notify(_lanox2dWindow, &event);
     }
 }
 
