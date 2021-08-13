@@ -21,10 +21,8 @@
 
 #import "Lanox2dView.h"
 #import <OpenGLES/EAGL.h>
-#import <OpenGLES/ES1/gl.h>
-#import <OpenGLES/ES1/glext.h>
-#import <OpenGLES/ES2/gl.h>
-#import <OpenGLES/ES2/glext.h>
+#import <OpenGLES/ES3/gl.h>
+#import <OpenGLES/ES3/glext.h>
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/EAGLDrawable.h>
 #import "lanox2d/lanox2d.h"
@@ -35,10 +33,6 @@
     GLuint          _glRenderColor;
     GLint           _glWidth;
     GLint           _glHeight;
-    GLuint          _glRenderStencil;
-    GLuint          _glFrameMsaa;
-    GLuint          _glRenderColorMsaa;
-    GLuint          _glRenderStencilMssa;
     CADisplayLink*  _displayLink;
 }
 @end
@@ -74,14 +68,14 @@
     }
 
     // init gl context
-    _glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+    _glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
     [EAGLContext setCurrentContext:_glContext];
 
     // init frame
     [self glFrameInit];
 
     // init window
-//    _window = lx_window_init(frame.size.width, frame.size.height, lx_null);
+    _window = lx_window_init(frame.size.width, frame.size.height, lx_null);
 
     // start display link
     _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkHandle:)];
@@ -128,31 +122,6 @@
     // get width & height
     glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &_glWidth);
     glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &_glHeight);
-
-    // add stencil render to frame
-    glGenRenderbuffers(1, &_glRenderStencil);
-    glBindRenderbuffer(GL_RENDERBUFFER, _glRenderStencil);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_STENCIL_INDEX8, _glWidth, _glHeight);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _glRenderStencil);
-    lx_assert_and_check_return(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
-
-    // init mssa frame
-    glGenFramebuffers(1, &_glFrameMsaa);
-    glBindFramebuffer(GL_FRAMEBUFFER, _glFrameMsaa);
-
-    // add color render to the mssa frame
-    glGenRenderbuffers(1, &_glRenderColorMsaa);
-    glBindRenderbuffer(GL_RENDERBUFFER, _glRenderColorMsaa);
-    glRenderbufferStorageMultisampleAPPLE(GL_RENDERBUFFER, 4, GL_RGBA8_OES, _glWidth, _glHeight);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _glRenderColorMsaa);
-    lx_assert_and_check_return(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
-
-    // add stencil render to the mssa frame
-    glGenRenderbuffers(1, &_glRenderStencilMssa);
-    glBindRenderbuffer(GL_RENDERBUFFER, _glRenderStencilMssa);
-    glRenderbufferStorageMultisampleAPPLE(GL_RENDERBUFFER, 4, GL_STENCIL_INDEX8, _glWidth, _glHeight);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _glRenderStencilMssa);
-    lx_assert_and_check_return(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
 }
 
 - (void)glFrameExit {
@@ -168,40 +137,11 @@
         glDeleteRenderbuffers(1, &_glRenderColor);
         _glRenderColor = 0;
     }
-
-    // free stencil render
-    if (_glRenderStencil) {
-        glDeleteRenderbuffers(1, &_glRenderStencil);
-        _glRenderStencil = 0;
-    }
-
-    // free frame for mssa
-    if (_glFrameMsaa) {
-        glDeleteFramebuffers(1, &_glFrameMsaa);
-        _glFrameMsaa = 0;
-    }
-
-    // free color render for mssa
-    if (_glRenderColorMsaa) {
-        glDeleteRenderbuffers(1, &_glRenderColorMsaa);
-        _glRenderColorMsaa = 0;
-    }
-
-    // free stencil render for mssa
-    if (_glRenderStencilMssa) {
-        glDeleteRenderbuffers(1, &_glRenderStencilMssa);
-        _glRenderStencilMssa = 0;
-    }
 }
 
 - (BOOL)lock {
     if (_glFrame) {
-        if (lx_quality() > LX_QUALITY_LOW) {
-            glBindFramebuffer(GL_FRAMEBUFFER, _glFrameMsaa);
-            glBindRenderbuffer(GL_RENDERBUFFER, _glRenderColorMsaa);
-        } else {
-            glBindFramebuffer(GL_FRAMEBUFFER, _glFrame);
-        }
+        glBindFramebuffer(GL_FRAMEBUFFER, _glFrame);
         return YES;
     }
     return NO;
@@ -209,15 +149,7 @@
 
 - (void)draw {
     if (_glFrame) {
-        if (lx_quality() > LX_QUALITY_LOW) {
-            glBindFramebuffer(GL_READ_FRAMEBUFFER_APPLE, _glFrameMsaa);
-            glBindFramebuffer(GL_DRAW_FRAMEBUFFER_APPLE, _glFrame);
-            glResolveMultisampleFramebufferAPPLE();
-            glBindFramebuffer(GL_FRAMEBUFFER, _glFrame);
-            glBindRenderbuffer(GL_RENDERBUFFER, _glRenderColor);
-        } else {
-            glBindRenderbuffer(GL_RENDERBUFFER, _glRenderColor);
-        }
+        glBindRenderbuffer(GL_RENDERBUFFER, _glRenderColor);
     }
     if (_glContext) {
         [_glContext presentRenderbuffer:GL_RENDERBUFFER];
