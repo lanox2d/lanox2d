@@ -25,7 +25,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface Lanox2dView : UIView
-@property (nonatomic) lx_window_ref_t window;
+@property (nonatomic) lx_window_ref_t lanox2dWindow;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -75,7 +75,7 @@
     [self glFrameInit];
 
     // init window
-    _window = lx_window_init(frame.size.width, frame.size.height, lx_null);
+    _lanox2dWindow = lx_window_init(frame.size.width, frame.size.height, lx_null);
 
     // start display link
     _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkHandle:)];
@@ -91,9 +91,9 @@
     _displayLink = nil;
 
     // exit window
-    if (_window) {
-        lx_window_exit(_window);
-        _window = lx_null;
+    if (_lanox2dWindow) {
+        lx_window_exit(_lanox2dWindow);
+        _lanox2dWindow = lx_null;
     }
 
     // exit frame
@@ -158,8 +158,9 @@
 
 - (void)displayLinkHandle:(CADisplayLink *)link {
     if ([self lock]) {
-        glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        if (_lanox2dWindow) {
+            lx_window_draw(_lanox2dWindow);
+        }
         [self draw];
     }
 }
