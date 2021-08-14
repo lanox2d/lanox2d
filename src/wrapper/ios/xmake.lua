@@ -44,21 +44,27 @@ task("pod_build")
     on_run(function ()
         import("core.base.option")
         import("core.project.config")
-        local outputdir = path.join(config.buildir(), "iphoneos")
-        local packagedir = path.join(config.buildir(), "packages")
+        local outputdir = path.join(config.buildir(), "iphoneos", "install")
         local mode = option.get("mode") or "releasedbg"
-        local configs = "-c -y -m " .. mode
-        local target_minver = option.get("target_minver")
-        if target_minver then
-            configs = configs .. " --target_minver=" .. target_minver
+        os.tryrm(outputdir)
+        for _, arch in ipairs({"armv7", "arm64", "x86_64"}) do
+            local argv = {"f", "-c", "-p", "iphoneos", "-m", mode, "-a", arch}
+            if option.get("verbose") then
+                table.insert(argv, "-v")
+            end
+            local target_minver = option.get("target_minver")
+            if target_minver then
+                table.insert(argv, " --target_minver=" .. target_minver)
+            end
+            local packagedir = path.join(outputdir, arch, "packages")
+            os.execv(os.programfile(), argv)
+            os.execv(os.programfile())
+            os.execv(os.programfile(), {"install", "-o", path.join(outputdir, arch)})
+            os.execv(os.programfile(), {"require", "--export", "--packagedir=" .. packagedir})
+            for _, libfile in ipairs(os.files(path.join(packagedir, "**.a"))) do
+                os.cp(libfile, path.join(outputdir, arch, "lib"))
+            end
         end
-        local argv = {"m", "package", "-p", "iphoneos", "-f", configs, "-a", "armv7,arm64,x86_64"}
-        if option.get("verbose") then
-            table.insert(argv, "-v")
-        end
-        os.tryrm(packagedir)
-        os.execv(os.programfile(), argv)
-        os.execv(os.programfile(), {"require", "--export", "--packagedir=" .. packagedir})
     end)
 task_end()
 

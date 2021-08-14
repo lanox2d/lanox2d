@@ -328,17 +328,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 43AAQM58X3;
 				FRAMEWORK_SEARCH_PATHS = "";
-				HEADER_SEARCH_PATHS = "../../../build/packages/l/lanox2d/iphoneos/$(CURRENT_ARCH)/debug/include";
+				HEADER_SEARCH_PATHS = "../../../build/iphoneos/install/$(CURRENT_ARCH)/include";
 				INFOPLIST_FILE = Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/Frameworks/Lanox2d.framework",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"../../../build/packages/l/lanox2d/iphoneos/$(CURRENT_ARCH)/debug/lib",
-					../../../build/packages/l/libpng/v1.6.37/8f17cb695b2c427db8f52fda3aeea0fc/lib,
-				);
+				LIBRARY_SEARCH_PATHS = "../../../build/iphoneos/install/$(CURRENT_ARCH)/lib";
 				OTHER_CFLAGS = "-DLX_NOMAIN_ENTRY";
 				OTHER_LDFLAGS = (
 					"-llanox2d",
@@ -360,17 +357,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 43AAQM58X3;
 				FRAMEWORK_SEARCH_PATHS = "";
-				HEADER_SEARCH_PATHS = "../../../build/packages/l/lanox2d/iphoneos/$(CURRENT_ARCH)/releasedbg/include";
+				HEADER_SEARCH_PATHS = "../../../build/iphoneos/install/$(CURRENT_ARCH)/include";
 				INFOPLIST_FILE = Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/Frameworks/Lanox2d.framework",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"../../../build/packages/l/lanox2d/iphoneos/$(CURRENT_ARCH)/releasedbg/lib",
-					../../../build/packages/l/libpng/v1.6.37/8f17cb695b2c427db8f52fda3aeea0fc/lib,
-				);
+				LIBRARY_SEARCH_PATHS = "../../../build/iphoneos/install/$(CURRENT_ARCH)/lib";
 				OTHER_CFLAGS = "-DLX_NOMAIN_ENTRY";
 				OTHER_LDFLAGS = (
 					"-llanox2d",
