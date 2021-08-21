@@ -73,6 +73,9 @@ target("lanox2d")
             add_rules("utils.bin2c", {extensions = {".vs", ".fs"}})
         end
     end
+    if is_config("device", "metal") then
+        add_files("core/device/metal/**.c")
+    end
     if is_config("device", "skia") then
         set_languages("c++14")
         add_files("core/device/skia/**.cc")

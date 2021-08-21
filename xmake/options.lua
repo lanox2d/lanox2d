@@ -64,15 +64,17 @@ option("window")
 option("device")
     set_showmenu(true)
     set_description("Set renderer device")
-    set_values("bitmap", "opengl", "skia")
+    set_values("bitmap", "opengl", "metal", "skia")
     add_deps("window")
     on_check(function (option)
         if not option:value() then
             local window = option:dep("window"):value()
             if window == "sdl" or window == "fbdev" then
                 option:set_value("bitmap")
-            elseif window == "glut" or window == "glfw" or window == "android" or window == "ios" then
+            elseif window == "glut" or window == "glfw" or window == "android" then
                 option:set_value("opengl")
+            elseif window == "ios" then
+                option:set_value("metal")
             end
         end
     end)

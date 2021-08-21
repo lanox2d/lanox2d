@@ -8,7 +8,13 @@
 
 #import "ViewController.h"
 #import "lanox2d/lanox2d.h"
-#import "Lanox2dGLView.h"
+#ifdef LX_CONFIG_DEVICE_HAVE_METAL
+#   import "Lanox2dMetalView.h"
+#   define Lanox2dView Lanox2dMetalView
+#else
+#   import "Lanox2dGLView.h"
+#   define Lanox2dView Lanox2dGLView
+#endif
 
 //#define TEST_EMPTY_WINDOW
 #define TEST_SHAPE_WINDOW
@@ -21,7 +27,7 @@
 
 @interface ViewController ()
 {
-    Lanox2dGLView*  _lanox2dView;
+    Lanox2dView*    _lanox2dView;
     UILabel*        _infoView;
     CADisplayLink*  _displayLink;
     float           _fpsCount;
@@ -36,7 +42,7 @@
 
     // init lanox2d view
     CGRect screenBounds = [[UIScreen mainScreen] bounds];
-    _lanox2dView = [[Lanox2dGLView alloc] initWithFrame:screenBounds];
+    _lanox2dView = [[Lanox2dView alloc] initWithFrame:screenBounds];
     [self.view addSubview:_lanox2dView];
 
     // init info view

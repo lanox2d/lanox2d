@@ -23,7 +23,6 @@
  * includes
  */
 #include "device.h"
-#include "renderer.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
@@ -33,23 +32,15 @@ static lx_void_t lx_device_metal_draw_clear(lx_device_ref_t self, lx_color_t col
 }
 
 static lx_void_t lx_device_metal_draw_lines(lx_device_ref_t self, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds) {
-    lx_metal_device_t* device = (lx_metal_device_t*)self;
-    lx_assert(device && points && count);
 }
 
 static lx_void_t lx_device_metal_draw_points(lx_device_ref_t self, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds) {
-    lx_metal_device_t* device = (lx_metal_device_t*)self;
-    lx_assert(device && points && count);
 }
 
 static lx_void_t lx_device_metal_draw_polygon(lx_device_ref_t self, lx_polygon_ref_t polygon, lx_shape_ref_t hint, lx_rect_ref_t bounds) {
-    lx_metal_device_t* device = (lx_metal_device_t*)self;
-    lx_assert(device && polygon);
 }
 
 static lx_void_t lx_device_metal_draw_path(lx_device_ref_t self, lx_path_ref_t path) {
-    lx_metal_device_t* device = (lx_metal_device_t*)self;
-    lx_assert(device && path);
 }
 
 static lx_void_t lx_device_metal_exit(lx_device_ref_t self) {

@@ -37,9 +37,10 @@ task("ipa_test")
     end)
 
 task("pod_build")
-    set_menu {usage = "xmake pod_build [options]", description = "build iphoneos libraries for pod.", options = {
+    set_menu {usage = "xmake pod_build [options]", description = "build pod libraries.", options = {
         {'t', "target_minver", "kv", nil, "Set the target minver."},
-        {'m', "mode", "kv", nil, "Set the complation mode."}
+        {'m', "mode", "kv", nil, "Set the complation mode."},
+        {'d', "device", "kv", "metal", "Set the renderer device."}
     }}
     on_run(function ()
         import("core.base.option")
@@ -55,6 +56,10 @@ task("pod_build")
             local target_minver = option.get("target_minver")
             if target_minver then
                 table.insert(argv, " --target_minver=" .. target_minver)
+            end
+            local device = option.get("device")
+            if device then
+                table.insert(argv, "--device=" .. device)
             end
             local packagedir = path.join(outputdir, arch, "packages")
             os.execv(os.programfile(), argv)

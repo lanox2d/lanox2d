@@ -15,30 +15,17 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        device.h
+ * @file        Lanox2dMetalView.h
  *
  */
-#ifndef LX_CORE_DEVICE_METAL_DEVICE_H
-#define LX_CORE_DEVICE_METAL_DEVICE_H
 
-/* //////////////////////////////////////////////////////////////////////////////////////
- * includes
- */
-#include "prefix.h"
-#include "../../tess/tess.h"
+#import <UIKit/UIKit.h>
+#import "lanox2d/lanox2d.h"
 
-/* //////////////////////////////////////////////////////////////////////////////////////
- * types
- */
+NS_ASSUME_NONNULL_BEGIN
 
-// the metal device type
-typedef struct lx_metal_device_t_ {
-    lx_device_t             base;
-    lx_window_ref_t         window;
-    lx_stroker_ref_t        stroker;
-    lx_tessellator_ref_t    tessellator;
-}lx_metal_device_t;
+@interface Lanox2dMetalView : UIView
+@property (nonatomic) lx_window_ref_t lanox2dWindow;
+@end
 
-#endif
-
-
+NS_ASSUME_NONNULL_END

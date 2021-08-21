@@ -23,7 +23,6 @@
  * includes
  */
 #include "prefix.h"
-#include "../../core/device/opengl/gl.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * types
@@ -101,6 +100,8 @@ lx_window_ref_t lx_window_init_ios(lx_size_t width, lx_size_t height, lx_char_t 
         // init device
 #if defined(LX_CONFIG_DEVICE_HAVE_OPENGL)
         window->base.device = lx_device_init_from_opengl(width, height, width, height);
+#elif defined(LX_CONFIG_DEVICE_HAVE_METAL)
+        window->base.device = lx_device_init_from_metal(width, height, width, height);
 #endif
         lx_assert_and_check_break(window->base.device);
 

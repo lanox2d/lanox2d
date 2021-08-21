@@ -172,7 +172,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd ../../../\nexport XMAKE_COLORTERM=nocolor\n$HOME/.local/bin/xmake pod_build -m debug\n#$HOME/.local/bin/xmake pod_build -m releasedbg\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd ../../../\nexport XMAKE_COLORTERM=nocolor\n$HOME/.local/bin/xmake pod_build -m debug -d metal\n#$HOME/.local/bin/xmake pod_build -m releasedbg\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

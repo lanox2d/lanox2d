@@ -54,6 +54,17 @@ lx_device_ref_t         lx_device_init_from_bitmap(lx_bitmap_ref_t bitmap);
  */
 lx_device_ref_t         lx_device_init_from_opengl(lx_size_t width, lx_size_t height, lx_size_t framewidth, lx_size_t frameheight);
 
+/*! init device from metal
+ *
+ * @param width         the window width
+ * @param height        the window height
+ * @param framewidth    the frame width
+ * @param frameheight   the frame height
+ *
+ * @return              the device
+ */
+lx_device_ref_t         lx_device_init_from_metal(lx_size_t width, lx_size_t height, lx_size_t framewidth, lx_size_t frameheight);
+
 /*! init device from skia
  *
  * @param width         the frame width
