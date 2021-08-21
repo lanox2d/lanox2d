@@ -4,6 +4,7 @@ set_xmakever("2.5.6")
 set_version("1.0.1", {build = "%Y%m%d%H%M"})
 set_warnings("all", "error")
 set_languages("c99")
+set_policy("package.requires_lock", true)
 
 -- complation modes
 add_rules("mode.release", "mode.debug", "mode.asan", "mode.minsizerel", "mode.releasedbg")

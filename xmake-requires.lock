@@ -1,0 +1,64 @@
+{
+    __meta__ = {
+        version = "1.0"
+    },
+    ["cmake#ddbdd8b8f76d455a8c0ef45fffe37160"] = {
+        arch = "x86_64",
+        buildhash = "a6d18f8c0bf347d980f8bb762583c91a",
+        name = "cmake",
+        plat = "macosx",
+        repo = {
+            branch = "master",
+            commit = "d0e1f98585a4ec31b056fe3bda65a4fe37e0b375",
+            url = "https://gitee.com/tboox/xmake-repo.git"
+        },
+        version = "3.21.0"
+    },
+    ["glfw#ddbdd8b8f76d455a8c0ef45fffe37160"] = {
+        arch = "x86_64",
+        buildhash = "a7a841d5126942309d89acd2cd1590ab",
+        name = "glfw",
+        plat = "macosx",
+        repo = {
+            branch = "master",
+            commit = "d0e1f98585a4ec31b056fe3bda65a4fe37e0b375",
+            url = "https://gitee.com/tboox/xmake-repo.git"
+        },
+        version = "3.3.4"
+    },
+    ["libpng#ddbdd8b8f76d455a8c0ef45fffe37160"] = {
+        arch = "x86_64",
+        buildhash = "facb90e2e40c4cdf96f505567d25af93",
+        name = "libpng",
+        plat = "macosx",
+        repo = {
+            branch = "master",
+            commit = "d0e1f98585a4ec31b056fe3bda65a4fe37e0b375",
+            url = "https://gitee.com/tboox/xmake-repo.git"
+        },
+        version = "v1.6.37"
+    },
+    ["opengl#ddbdd8b8f76d455a8c0ef45fffe37160"] = {
+        arch = "x86_64",
+        buildhash = "b2de373ce88a4eaa806b6a0791ec3be6",
+        name = "opengl",
+        plat = "macosx",
+        repo = {
+            branch = "master",
+            commit = "d0e1f98585a4ec31b056fe3bda65a4fe37e0b375",
+            url = "https://gitee.com/tboox/xmake-repo.git"
+        }
+    },
+    ["zlib#ddbdd8b8f76d455a8c0ef45fffe37160"] = {
+        arch = "x86_64",
+        buildhash = "b76a297309d14c09b42cfe3927260a51",
+        name = "zlib",
+        plat = "macosx",
+        repo = {
+            branch = "master",
+            commit = "d0e1f98585a4ec31b056fe3bda65a4fe37e0b375",
+            url = "https://gitee.com/tboox/xmake-repo.git"
+        },
+        version = "1.2.11"
+    }
+}
