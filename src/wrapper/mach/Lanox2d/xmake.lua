@@ -12,6 +12,6 @@ target("lanox2d")
         add_frameworks("OpenGLES", "QuartzCore")
     elseif is_config("device", "metal") then
         add_files("Lanox2dMetalView.m")
-        add_frameworks("MetalKit", "QuartzCore")
+        add_frameworks("MetalKit", "Metal")
     end
 

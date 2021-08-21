@@ -33,7 +33,14 @@
 
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
+        [self metalInit];
     }
     return self;
 }
+
+- (void)metalInit {
+    self.device = MTLCreateSystemDefaultDevice();
+    NSAssert(self.device, @"Metal is not supported on this device");
+}
+
 @end

@@ -49,6 +49,12 @@
 		BFD9A33126D0D4A000FE500D /* macOS.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; name = macOS.entitlements; path = Example/macOS/macOS.entitlements; sourceTree = SOURCE_ROOT; };
 		BFD9A33226D0D4A000FE500D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = Info.plist; path = Example/macOS/Info.plist; sourceTree = SOURCE_ROOT; };
 		BFD9A34026D0D5AA00FE500D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Example/macOS/Base.lproj/Main.storyboard; sourceTree = SOURCE_ROOT; };
+		BFD9A34326D127FE00FE500D /* Lanox2dGLView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Lanox2dGLView.m; sourceTree = "<group>"; };
+		BFD9A34526D127FE00FE500D /* Lanox2dView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lanox2dView.h; sourceTree = "<group>"; };
+		BFD9A34626D127FE00FE500D /* Lanox2dMetalView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lanox2dMetalView.h; sourceTree = "<group>"; };
+		BFD9A34726D127FE00FE500D /* Lanox2dGLView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lanox2dGLView.h; sourceTree = "<group>"; };
+		BFD9A34926D127FE00FE500D /* Lanox2dMetalView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Lanox2dMetalView.m; sourceTree = "<group>"; };
+		BFD9A34A26D127FE00FE500D /* Lanox2d.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lanox2d.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				BFAB861226C2CAA100CCDD70 /* Example */,
+				BFD9A34226D127FE00FE500D /* Lanox2d */,
 				BFAB861126C2CAA100CCDD70 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -122,6 +129,19 @@
 				BFD9A32826D0CBA600FE500D /* Info.plist */,
 			);
 			path = iOS;
+			sourceTree = "<group>";
+		};
+		BFD9A34226D127FE00FE500D /* Lanox2d */ = {
+			isa = PBXGroup;
+			children = (
+				BFD9A34326D127FE00FE500D /* Lanox2dGLView.m */,
+				BFD9A34526D127FE00FE500D /* Lanox2dView.h */,
+				BFD9A34626D127FE00FE500D /* Lanox2dMetalView.h */,
+				BFD9A34726D127FE00FE500D /* Lanox2dGLView.h */,
+				BFD9A34926D127FE00FE500D /* Lanox2dMetalView.m */,
+				BFD9A34A26D127FE00FE500D /* Lanox2d.h */,
+			);
+			path = Lanox2d;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -20,17 +20,11 @@
  */
 
 #import "lanox2d/lanox2d.h"
-#ifdef LX_CONFIG_OS_MACOSX
-#   import <AppKit/AppKit.h>
-#   define PlatformView NSView
-#else
-#   import <UIKit/UIKit.h>
-#   define PlatformView UIView
-#endif
+#import <MetalKit/MetalKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface Lanox2dMetalView : PlatformView
+@interface Lanox2dMetalView : MTKView
 @property (nonatomic) lx_window_ref_t lanox2dWindow;
 @end
 
