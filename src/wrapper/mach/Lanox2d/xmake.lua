@@ -7,7 +7,7 @@ target("lanox2d")
     else
         add_frameworks("UIKit")
     end
-    if is_config("device", "opengl") then
+    if is_plat("iphoneos") and is_config("device", "opengl") then
         add_files("Lanox2dGLView.m")
         add_frameworks("OpenGLES", "QuartzCore")
     elseif is_config("device", "metal") then

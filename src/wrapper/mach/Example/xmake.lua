@@ -1,5 +1,9 @@
 target("Example")
-    set_default(false)
+    if has_config("examples") and is_config("window", "mach") then
+        set_default(true)
+    else
+        set_default(false)
+    end
     add_deps("lanox2d")
     add_rules("xcode.application")
     add_files("*.m", "*.xcassets")
