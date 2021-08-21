@@ -27,6 +27,7 @@
 @implementation Lanox2dMetalRenderer {
     id<MTLDevice> _device;
     id <Lanox2dViewDelegate> _delegate;
+    CFTimeInterval _basetime;
 }
 
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView delegate:(id)delegate {
@@ -34,6 +35,7 @@
     if(self) {
         _device = mtkView.device;
         _delegate = delegate;
+        _basetime = (CFTimeInterval)lx_mclock();
     }
     return self;
 }
@@ -44,7 +46,7 @@
 
 - (void)drawInMTKView:(nonnull MTKView *)view {
     if (_delegate) {
-        [_delegate onDrawFrame: (CFTimeInterval)((lx_double_t)lx_mclock() / 1000)];
+        [_delegate onDrawFrame: (CFTimeInterval)((lx_mclock() - _basetime) / 1000)];
     }
 }
 
