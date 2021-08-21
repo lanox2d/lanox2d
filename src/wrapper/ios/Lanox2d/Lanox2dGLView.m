@@ -15,11 +15,11 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        Lanox2dView.m
+ * @file        Lanox2dGLView.m
  *
  */
 
-#import "Lanox2dView.h"
+#import "Lanox2dGLView.h"
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/ES3/gl.h>
 #import <OpenGLES/ES3/glext.h>
@@ -27,7 +27,7 @@
 #import <OpenGLES/EAGLDrawable.h>
 #import "lanox2d/lanox2d.h"
 
-@interface Lanox2dView() {
+@interface Lanox2dGLView() {
     EAGLContext*    _glContext;
     GLuint          _glFrame;
     GLuint          _glRenderColor;
@@ -37,7 +37,7 @@
 }
 @end
 
-@implementation Lanox2dView
+@implementation Lanox2dGLView
 
 + (Class) layerClass {
     return [CAEAGLLayer class];

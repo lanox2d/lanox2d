@@ -8,7 +8,7 @@
 
 #import "ViewController.h"
 #import "lanox2d/lanox2d.h"
-#import "Lanox2dView.h"
+#import "Lanox2dGLView.h"
 
 //#define TEST_EMPTY_WINDOW
 #define TEST_SHAPE_WINDOW
@@ -21,7 +21,7 @@
 
 @interface ViewController ()
 {
-    Lanox2dView*    _lanox2dView;
+    Lanox2dGLView*  _lanox2dView;
     UILabel*        _infoView;
     CADisplayLink*  _displayLink;
     float           _fpsCount;
@@ -36,15 +36,15 @@
 
     // init lanox2d view
     CGRect screenBounds = [[UIScreen mainScreen] bounds];
-    _lanox2dView = [[Lanox2dView alloc] initWithFrame:screenBounds];
+    _lanox2dView = [[Lanox2dGLView alloc] initWithFrame:screenBounds];
     [self.view addSubview:_lanox2dView];
-    
+
     // init info view
     CGRect infoBounds = CGRectMake(screenBounds.origin.x + screenBounds.size.width - 100, screenBounds.origin.y + 30, 100, 30);
     _infoView = [[UILabel alloc] initWithFrame:infoBounds];
     [_infoView setTextColor:[UIColor redColor]];
     [self.view addSubview:_infoView];
-    
+
     // init display link for fps
     _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkHandle:)];
     [_displayLink setPaused:NO];

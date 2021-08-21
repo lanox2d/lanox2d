@@ -48,7 +48,7 @@ task("pod_build")
         local mode = option.get("mode") or "releasedbg"
         os.tryrm(outputdir)
         for _, arch in ipairs({"armv7", "arm64", "x86_64"}) do
-            local argv = {"f", "-c", "-p", "iphoneos", "-m", mode, "-a", arch}
+            local argv = {"f", "-y", "-c", "-p", "iphoneos", "-m", mode, "-a", arch}
             if option.get("verbose") then
                 table.insert(argv, "-v")
             end

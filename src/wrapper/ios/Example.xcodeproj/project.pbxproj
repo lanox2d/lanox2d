@@ -333,7 +333,6 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
-					"@executable_path/Frameworks/Lanox2d.framework",
 				);
 				LIBRARY_SEARCH_PATHS = "../../../build/iphoneos/install/$(CURRENT_ARCH)/lib";
 				OTHER_CFLAGS = "-DLX_NOMAIN_ENTRY";
@@ -362,7 +361,6 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
-					"@executable_path/Frameworks/Lanox2d.framework",
 				);
 				LIBRARY_SEARCH_PATHS = "../../../build/iphoneos/install/$(CURRENT_ARCH)/lib";
 				OTHER_CFLAGS = "-DLX_NOMAIN_ENTRY";

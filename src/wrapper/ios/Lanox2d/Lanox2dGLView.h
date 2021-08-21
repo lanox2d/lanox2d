@@ -15,7 +15,7 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        Lanox2dView.h
+ * @file        Lanox2dGLView.h
  *
  */
 
@@ -24,7 +24,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface Lanox2dView : UIView
+@interface Lanox2dGLView : UIView
 @property (nonatomic) lx_window_ref_t lanox2dWindow;
 @end
 

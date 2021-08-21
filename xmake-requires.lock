@@ -26,6 +26,42 @@
         },
         version = "3.3.4"
     },
+    ["libpng#065ebf848e724c018b50ff0d1dd71049"] = {
+        arch = "armv7",
+        buildhash = "d8578616f2b4453a82c50ca0df722507",
+        name = "libpng",
+        plat = "iphoneos",
+        repo = {
+            branch = "master",
+            commit = "d0e1f98585a4ec31b056fe3bda65a4fe37e0b375",
+            url = "https://gitee.com/tboox/xmake-repo.git"
+        },
+        version = "v1.6.37"
+    },
+    ["libpng#0dd8531c03dc48f8a1a68170682410ab"] = {
+        arch = "arm64",
+        buildhash = "07b265612e2c428e9bbf3618201b6ae0",
+        name = "libpng",
+        plat = "iphoneos",
+        repo = {
+            branch = "master",
+            commit = "d0e1f98585a4ec31b056fe3bda65a4fe37e0b375",
+            url = "https://gitee.com/tboox/xmake-repo.git"
+        },
+        version = "v1.6.37"
+    },
+    ["libpng#a32a99c048ff40a6a40a0aa36dda56d5"] = {
+        arch = "x86_64",
+        buildhash = "8f17cb695b2c427db8f52fda3aeea0fc",
+        name = "libpng",
+        plat = "iphoneos",
+        repo = {
+            branch = "master",
+            commit = "d0e1f98585a4ec31b056fe3bda65a4fe37e0b375",
+            url = "https://gitee.com/tboox/xmake-repo.git"
+        },
+        version = "v1.6.37"
+    },
     ["libpng#ddbdd8b8f76d455a8c0ef45fffe37160"] = {
         arch = "x86_64",
         buildhash = "facb90e2e40c4cdf96f505567d25af93",
@@ -48,6 +84,42 @@
             commit = "d0e1f98585a4ec31b056fe3bda65a4fe37e0b375",
             url = "https://gitee.com/tboox/xmake-repo.git"
         }
+    },
+    ["zlib#065ebf848e724c018b50ff0d1dd71049"] = {
+        arch = "armv7",
+        buildhash = "ea6d91320d6740b2954bd4cb69ac4cb9",
+        name = "zlib",
+        plat = "iphoneos",
+        repo = {
+            branch = "master",
+            commit = "d0e1f98585a4ec31b056fe3bda65a4fe37e0b375",
+            url = "https://gitee.com/tboox/xmake-repo.git"
+        },
+        version = "1.2.11"
+    },
+    ["zlib#0dd8531c03dc48f8a1a68170682410ab"] = {
+        arch = "arm64",
+        buildhash = "3e3c573d316845d2bd0b6b7bab138da6",
+        name = "zlib",
+        plat = "iphoneos",
+        repo = {
+            branch = "master",
+            commit = "d0e1f98585a4ec31b056fe3bda65a4fe37e0b375",
+            url = "https://gitee.com/tboox/xmake-repo.git"
+        },
+        version = "1.2.11"
+    },
+    ["zlib#a32a99c048ff40a6a40a0aa36dda56d5"] = {
+        arch = "x86_64",
+        buildhash = "569ccb6ed78742158bf15ce59e2e8580",
+        name = "zlib",
+        plat = "iphoneos",
+        repo = {
+            branch = "master",
+            commit = "d0e1f98585a4ec31b056fe3bda65a4fe37e0b375",
+            url = "https://gitee.com/tboox/xmake-repo.git"
+        },
+        version = "1.2.11"
     },
     ["zlib#ddbdd8b8f76d455a8c0ef45fffe37160"] = {
         arch = "x86_64",
