@@ -49,12 +49,12 @@
 		BFD9A33126D0D4A000FE500D /* macOS.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; name = macOS.entitlements; path = Example/macOS/macOS.entitlements; sourceTree = SOURCE_ROOT; };
 		BFD9A33226D0D4A000FE500D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = Info.plist; path = Example/macOS/Info.plist; sourceTree = SOURCE_ROOT; };
 		BFD9A34026D0D5AA00FE500D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Example/macOS/Base.lproj/Main.storyboard; sourceTree = SOURCE_ROOT; };
-		BFD9A34326D127FE00FE500D /* Lanox2dGLView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Lanox2dGLView.m; sourceTree = "<group>"; };
 		BFD9A34526D127FE00FE500D /* Lanox2dView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lanox2dView.h; sourceTree = "<group>"; };
-		BFD9A34626D127FE00FE500D /* Lanox2dMetalView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lanox2dMetalView.h; sourceTree = "<group>"; };
-		BFD9A34726D127FE00FE500D /* Lanox2dGLView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lanox2dGLView.h; sourceTree = "<group>"; };
-		BFD9A34926D127FE00FE500D /* Lanox2dMetalView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Lanox2dMetalView.m; sourceTree = "<group>"; };
 		BFD9A34A26D127FE00FE500D /* Lanox2d.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lanox2d.h; sourceTree = "<group>"; };
+		BFD9A34E26D1292B00FE500D /* Lanox2dMetalView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lanox2dMetalView.h; sourceTree = "<group>"; };
+		BFD9A34F26D1292B00FE500D /* Lanox2dMetalView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Lanox2dMetalView.m; sourceTree = "<group>"; };
+		BFD9A35126D1292B00FE500D /* Lanox2dGLView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Lanox2dGLView.m; sourceTree = "<group>"; };
+		BFD9A35226D1292B00FE500D /* Lanox2dGLView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lanox2dGLView.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,14 +134,30 @@
 		BFD9A34226D127FE00FE500D /* Lanox2d */ = {
 			isa = PBXGroup;
 			children = (
-				BFD9A34326D127FE00FE500D /* Lanox2dGLView.m */,
+				BFD9A34D26D1292B00FE500D /* metal */,
+				BFD9A35026D1292B00FE500D /* opengl */,
 				BFD9A34526D127FE00FE500D /* Lanox2dView.h */,
-				BFD9A34626D127FE00FE500D /* Lanox2dMetalView.h */,
-				BFD9A34726D127FE00FE500D /* Lanox2dGLView.h */,
-				BFD9A34926D127FE00FE500D /* Lanox2dMetalView.m */,
 				BFD9A34A26D127FE00FE500D /* Lanox2d.h */,
 			);
 			path = Lanox2d;
+			sourceTree = "<group>";
+		};
+		BFD9A34D26D1292B00FE500D /* metal */ = {
+			isa = PBXGroup;
+			children = (
+				BFD9A34E26D1292B00FE500D /* Lanox2dMetalView.h */,
+				BFD9A34F26D1292B00FE500D /* Lanox2dMetalView.m */,
+			);
+			path = metal;
+			sourceTree = "<group>";
+		};
+		BFD9A35026D1292B00FE500D /* opengl */ = {
+			isa = PBXGroup;
+			children = (
+				BFD9A35126D1292B00FE500D /* Lanox2dGLView.m */,
+				BFD9A35226D1292B00FE500D /* Lanox2dGLView.h */,
+			);
+			path = opengl;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

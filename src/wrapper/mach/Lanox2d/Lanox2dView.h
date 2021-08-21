@@ -21,9 +21,9 @@
 
 #import "lanox2d/lanox2d.h"
 #ifdef LX_CONFIG_DEVICE_HAVE_METAL
-#   import "Lanox2dMetalView.h"
+#   import "metal/Lanox2dMetalView.h"
 #   define Lanox2dView Lanox2dMetalView
 #else
-#   import "Lanox2dGLView.h"
+#   import "opengl/Lanox2dGLView.h"
 #   define Lanox2dView Lanox2dGLView
 #endif
