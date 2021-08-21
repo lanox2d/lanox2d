@@ -25,7 +25,7 @@ option("pixfmt")
 -- bitmap option
 option("bitmap")
     set_showmenu(true)
-    set_default("png")
+--    set_default("png")
     set_values("bmp", "jpg", "png")
     set_description("Enable bitmap formats")
     after_check(function (option)

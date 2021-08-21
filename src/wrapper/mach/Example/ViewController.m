@@ -20,10 +20,12 @@
 @interface ViewController ()
 {
     Lanox2dView*    _lanox2dView;
+#ifdef LX_CONFIG_OS_IOS
     UILabel*        _infoView;
     CADisplayLink*  _displayLink;
     float           _fpsCount;
     float           _fpsTime;
+#endif
 }
 @end
 
@@ -33,10 +35,15 @@
     [super viewDidLoad];
 
     // init lanox2d view
+#ifdef LX_CONFIG_OS_MACOSX
+    CGRect screenBounds = [[NSScreen mainScreen] frame];
+#else
     CGRect screenBounds = [[UIScreen mainScreen] bounds];
+#endif
     _lanox2dView = [[Lanox2dView alloc] initWithFrame:screenBounds];
     [self.view addSubview:_lanox2dView];
 
+#ifdef LX_CONFIG_OS_IOS
     // init info view
     CGRect infoBounds = CGRectMake(screenBounds.origin.x + screenBounds.size.width - 100, screenBounds.origin.y + 30, 100, 30);
     _infoView = [[UILabel alloc] initWithFrame:infoBounds];
@@ -47,7 +54,8 @@
     _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkHandle:)];
     [_displayLink setPaused:NO];
     [_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-
+#endif
+    
 #ifdef TEST_EMPTY_WINDOW
     [self initEmptyWindow];
 #endif
@@ -57,6 +65,7 @@
 #endif
 }
 
+#ifdef LX_CONFIG_OS_IOS
 - (void)displayLinkHandle:(CADisplayLink *)link {
     float time = link.timestamp;
     if (!_fpsTime) {
@@ -71,6 +80,7 @@
         _fpsTime = time;
     }
 }
+#endif
 
 #ifdef TEST_EMPTY_WINDOW
 - (void)initEmptyWindow {

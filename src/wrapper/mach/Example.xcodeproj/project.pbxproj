@@ -10,10 +10,13 @@
 		BFAB861526C2CAA100CCDD70 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAB861426C2CAA100CCDD70 /* AppDelegate.m */; };
 		BFAB861826C2CAA200CCDD70 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAB861726C2CAA200CCDD70 /* SceneDelegate.m */; };
 		BFAB861B26C2CAA200CCDD70 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAB861A26C2CAA200CCDD70 /* ViewController.m */; };
-		BFAB861E26C2CAA200CCDD70 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFAB861C26C2CAA200CCDD70 /* Main.storyboard */; };
-		BFAB862026C2CAA400CCDD70 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFAB861F26C2CAA400CCDD70 /* Assets.xcassets */; };
-		BFAB862326C2CAA400CCDD70 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFAB862126C2CAA400CCDD70 /* LaunchScreen.storyboard */; };
 		BFAB862626C2CAA400CCDD70 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAB862526C2CAA400CCDD70 /* main.m */; };
+		BFD9A32926D0CBA600FE500D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFD9A32426D0CBA600FE500D /* LaunchScreen.storyboard */; };
+		BFD9A32A26D0CBA600FE500D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFD9A32626D0CBA600FE500D /* Main.storyboard */; };
+		BFD9A32E26D0CD6F00FE500D /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAB861A26C2CAA200CCDD70 /* ViewController.m */; };
+		BFD9A32F26D0CD6F00FE500D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAB862526C2CAA400CCDD70 /* main.m */; };
+		BFD9A33626D0D4A100FE500D /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFD9A33226D0D4A000FE500D /* Info.plist */; };
+		BFD9A34126D0D5AA00FE500D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFD9A33F26D0D5AA00FE500D /* Main.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -37,15 +40,26 @@
 		BFAB861726C2CAA200CCDD70 /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
 		BFAB861926C2CAA200CCDD70 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		BFAB861A26C2CAA200CCDD70 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		BFAB861D26C2CAA200CCDD70 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		BFAB861F26C2CAA400CCDD70 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		BFAB862226C2CAA400CCDD70 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		BFAB862426C2CAA400CCDD70 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BFAB862526C2CAA400CCDD70 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		BFD9A30F26D0CAB600FE500D /* Example-macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example-macOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BFD9A32526D0CBA600FE500D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		BFD9A32726D0CBA600FE500D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		BFD9A32826D0CBA600FE500D /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BFD9A33126D0D4A000FE500D /* macOS.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; name = macOS.entitlements; path = Example/macOS/macOS.entitlements; sourceTree = SOURCE_ROOT; };
+		BFD9A33226D0D4A000FE500D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = Info.plist; path = Example/macOS/Info.plist; sourceTree = SOURCE_ROOT; };
+		BFD9A34026D0D5AA00FE500D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Example/macOS/Base.lproj/Main.storyboard; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		BFAB860D26C2CAA100CCDD70 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BFD9A30C26D0CAB600FE500D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -67,6 +81,7 @@
 			isa = PBXGroup;
 			children = (
 				BFAB861026C2CAA100CCDD70 /* Example-iOS.app */,
+				BFD9A30F26D0CAB600FE500D /* Example-macOS.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -74,19 +89,39 @@
 		BFAB861226C2CAA100CCDD70 /* Example */ = {
 			isa = PBXGroup;
 			children = (
+				BFAB861926C2CAA200CCDD70 /* ViewController.h */,
+				BFAB861A26C2CAA200CCDD70 /* ViewController.m */,
+				BFAB861F26C2CAA400CCDD70 /* Assets.xcassets */,
+				BFAB862526C2CAA400CCDD70 /* main.m */,
+				BFD9A31026D0CAB600FE500D /* macOS */,
+				BFD9A32326D0CBA600FE500D /* iOS */,
+			);
+			path = Example;
+			sourceTree = "<group>";
+		};
+		BFD9A31026D0CAB600FE500D /* macOS */ = {
+			isa = PBXGroup;
+			children = (
+				BFD9A33F26D0D5AA00FE500D /* Main.storyboard */,
+				BFD9A33226D0D4A000FE500D /* Info.plist */,
+				BFD9A33126D0D4A000FE500D /* macOS.entitlements */,
+			);
+			name = macOS;
+			path = ../macOS;
+			sourceTree = "<group>";
+		};
+		BFD9A32326D0CBA600FE500D /* iOS */ = {
+			isa = PBXGroup;
+			children = (
 				BFAB861326C2CAA100CCDD70 /* AppDelegate.h */,
 				BFAB861426C2CAA100CCDD70 /* AppDelegate.m */,
 				BFAB861626C2CAA100CCDD70 /* SceneDelegate.h */,
 				BFAB861726C2CAA200CCDD70 /* SceneDelegate.m */,
-				BFAB861926C2CAA200CCDD70 /* ViewController.h */,
-				BFAB861A26C2CAA200CCDD70 /* ViewController.m */,
-				BFAB861C26C2CAA200CCDD70 /* Main.storyboard */,
-				BFAB861F26C2CAA400CCDD70 /* Assets.xcassets */,
-				BFAB862126C2CAA400CCDD70 /* LaunchScreen.storyboard */,
-				BFAB862426C2CAA400CCDD70 /* Info.plist */,
-				BFAB862526C2CAA400CCDD70 /* main.m */,
+				BFD9A32426D0CBA600FE500D /* LaunchScreen.storyboard */,
+				BFD9A32626D0CBA600FE500D /* Main.storyboard */,
+				BFD9A32826D0CBA600FE500D /* Info.plist */,
 			);
-			path = Example;
+			path = iOS;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -111,6 +146,24 @@
 			productReference = BFAB861026C2CAA100CCDD70 /* Example-iOS.app */;
 			productType = "com.apple.product-type.application";
 		};
+		BFD9A30E26D0CAB600FE500D /* Example-macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BFD9A32026D0CAB800FE500D /* Build configuration list for PBXNativeTarget "Example-macOS" */;
+			buildPhases = (
+				BFD9A33026D0CE4E00FE500D /* Run Script */,
+				BFD9A30B26D0CAB600FE500D /* Sources */,
+				BFD9A30C26D0CAB600FE500D /* Frameworks */,
+				BFD9A30D26D0CAB600FE500D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Example-macOS";
+			productName = "Example-macOS";
+			productReference = BFD9A30F26D0CAB600FE500D /* Example-macOS.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -121,6 +174,9 @@
 				ORGANIZATIONNAME = lanox2d;
 				TargetAttributes = {
 					BFAB860F26C2CAA100CCDD70 = {
+						CreatedOnToolsVersion = 11.5;
+					};
+					BFD9A30E26D0CAB600FE500D = {
 						CreatedOnToolsVersion = 11.5;
 					};
 				};
@@ -139,6 +195,7 @@
 			projectRoot = "";
 			targets = (
 				BFAB860F26C2CAA100CCDD70 /* Example-iOS */,
+				BFD9A30E26D0CAB600FE500D /* Example-macOS */,
 			);
 		};
 /* End PBXProject section */
@@ -148,9 +205,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BFAB862326C2CAA400CCDD70 /* LaunchScreen.storyboard in Resources */,
-				BFAB862026C2CAA400CCDD70 /* Assets.xcassets in Resources */,
-				BFAB861E26C2CAA200CCDD70 /* Main.storyboard in Resources */,
+				BFD9A32A26D0CBA600FE500D /* Main.storyboard in Resources */,
+				BFD9A32926D0CBA600FE500D /* LaunchScreen.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BFD9A30D26D0CAB600FE500D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BFD9A33626D0D4A100FE500D /* Info.plist in Resources */,
+				BFD9A34126D0D5AA00FE500D /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -174,6 +239,24 @@
 			shellPath = /bin/sh;
 			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd ../../../\nexport XMAKE_COLORTERM=nocolor\n$HOME/.local/bin/xmake pod_build -p iphoneos -m debug -d opengl\n#$HOME/.local/bin/xmake pod_build -p iphoneos -m debug -d metal\n#$HOME/.local/bin/xmake pod_build -p iphoneos -m releasedbg -d opengl\n#$HOME/.local/bin/xmake pod_build -p iphoneos -m releasedbg -d metal\n\n";
 		};
+		BFD9A33026D0CE4E00FE500D /* Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd ../../../\nexport XMAKE_COLORTERM=nocolor\n$HOME/.local/bin/xmake pod_build -p macosx -m debug -d metal\n#$HOME/.local/bin/xmake pod_build -p macosx -m releasedbg -d metal\n\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -188,23 +271,40 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BFD9A30B26D0CAB600FE500D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BFD9A32E26D0CD6F00FE500D /* ViewController.m in Sources */,
+				BFD9A32F26D0CD6F00FE500D /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		BFAB861C26C2CAA200CCDD70 /* Main.storyboard */ = {
+		BFD9A32426D0CBA600FE500D /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				BFAB861D26C2CAA200CCDD70 /* Base */,
+				BFD9A32526D0CBA600FE500D /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		BFD9A32626D0CBA600FE500D /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BFD9A32726D0CBA600FE500D /* Base */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
-		BFAB862126C2CAA400CCDD70 /* LaunchScreen.storyboard */ = {
+		BFD9A33F26D0D5AA00FE500D /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				BFAB862226C2CAA400CCDD70 /* Base */,
+				BFD9A34026D0D5AA00FE500D /* Base */,
 			);
-			name = LaunchScreen.storyboard;
+			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -329,22 +429,15 @@
 				DEVELOPMENT_TEAM = 43AAQM58X3;
 				FRAMEWORK_SEARCH_PATHS = "";
 				HEADER_SEARCH_PATHS = "../../../build/iphoneos/install/$(CURRENT_ARCH)/include";
-				INFOPLIST_FILE = Example/Info.plist;
+				INFOPLIST_FILE = Example/iOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "../../../build/iphoneos/install/$(CURRENT_ARCH)/lib";
-				OTHER_CFLAGS = (
-					"-DTARGET_IOS",
-					"-DLX_NOMAIN_ENTRY",
-				);
-				OTHER_LDFLAGS = (
-					"-llanox2d",
-					"-lpng",
-					"-lz",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.lanox2d.Example;
+				OTHER_CFLAGS = "-DLX_NOMAIN_ENTRY";
+				OTHER_LDFLAGS = "-llanox2d";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.lanox2d.Example-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USE_HEADERMAP = YES;
@@ -360,25 +453,64 @@
 				DEVELOPMENT_TEAM = 43AAQM58X3;
 				FRAMEWORK_SEARCH_PATHS = "";
 				HEADER_SEARCH_PATHS = "../../../build/iphoneos/install/$(CURRENT_ARCH)/include";
-				INFOPLIST_FILE = Example/Info.plist;
+				INFOPLIST_FILE = Example/iOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "../../../build/iphoneos/install/$(CURRENT_ARCH)/lib";
-				OTHER_CFLAGS = (
-					"-DTARGET_IOS",
-					"-DLX_NOMAIN_ENTRY",
-				);
-				OTHER_LDFLAGS = (
-					"-llanox2d",
-					"-lpng",
-					"-lz",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.lanox2d.Example;
+				OTHER_CFLAGS = "-DLX_NOMAIN_ENTRY";
+				OTHER_LDFLAGS = "-llanox2d";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.lanox2d.Example-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USE_HEADERMAP = YES;
+			};
+			name = Release;
+		};
+		BFD9A32126D0CAB800FE500D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Example-macOS/Example_macOS.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				HEADER_SEARCH_PATHS = "../../../build/macosx/install/$(CURRENT_ARCH)/include";
+				INFOPLIST_FILE = Example/macOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = "../../../build/macosx/install/$(CURRENT_ARCH)/lib";
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				OTHER_CFLAGS = "-DLX_NOMAIN_ENTRY";
+				OTHER_LDFLAGS = "-llanox2d";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.lanox2d.Example-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		BFD9A32226D0CAB800FE500D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Example-macOS/Example_macOS.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				HEADER_SEARCH_PATHS = "../../../build/macosx/install/$(CURRENT_ARCH)/include";
+				INFOPLIST_FILE = Example/macOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = "../../../build/macosx/install/$(CURRENT_ARCH)/lib";
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				OTHER_CFLAGS = "-DLX_NOMAIN_ENTRY";
+				OTHER_LDFLAGS = "-llanox2d";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.lanox2d.Example-macOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
@@ -399,6 +531,15 @@
 			buildConfigurations = (
 				BFAB862A26C2CAA400CCDD70 /* Debug */,
 				BFAB862B26C2CAA400CCDD70 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BFD9A32026D0CAB800FE500D /* Build configuration list for PBXNativeTarget "Example-macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BFD9A32126D0CAB800FE500D /* Debug */,
+				BFD9A32226D0CAB800FE500D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
