@@ -27,7 +27,7 @@
 #import <OpenGLES/EAGLDrawable.h>
 #import "lanox2d/lanox2d.h"
 
-@interface Lanox2dGLView() {
+@implementation Lanox2dGLView {
     EAGLContext*    _glContext;
     GLuint          _glFrame;
     GLuint          _glRenderColor;
@@ -35,9 +35,6 @@
     GLint           _glHeight;
     CADisplayLink*  _displayLink;
 }
-@end
-
-@implementation Lanox2dGLView
 
 + (Class) layerClass {
     return [CAEAGLLayer class];

@@ -55,6 +55,8 @@
 		BFD9A34F26D1292B00FE500D /* Lanox2dMetalView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Lanox2dMetalView.m; sourceTree = "<group>"; };
 		BFD9A35126D1292B00FE500D /* Lanox2dGLView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Lanox2dGLView.m; sourceTree = "<group>"; };
 		BFD9A35226D1292B00FE500D /* Lanox2dGLView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lanox2dGLView.h; sourceTree = "<group>"; };
+		BFD9A35326D1297A00FE500D /* Lanox2dMetalRenderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lanox2dMetalRenderer.h; sourceTree = "<group>"; };
+		BFD9A35426D1297A00FE500D /* Lanox2dMetalRenderer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Lanox2dMetalRenderer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +147,8 @@
 		BFD9A34D26D1292B00FE500D /* metal */ = {
 			isa = PBXGroup;
 			children = (
+				BFD9A35326D1297A00FE500D /* Lanox2dMetalRenderer.h */,
+				BFD9A35426D1297A00FE500D /* Lanox2dMetalRenderer.m */,
 				BFD9A34E26D1292B00FE500D /* Lanox2dMetalView.h */,
 				BFD9A34F26D1292B00FE500D /* Lanox2dMetalView.m */,
 			);

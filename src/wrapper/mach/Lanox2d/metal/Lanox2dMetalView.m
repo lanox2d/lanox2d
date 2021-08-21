@@ -20,13 +20,12 @@
  */
 
 #import "Lanox2dMetalView.h"
+#import "Lanox2dMetalRenderer.h"
 #import "lanox2d/lanox2d.h"
 
-@interface Lanox2dMetalView() {
+@implementation Lanox2dMetalView {
+    Lanox2dMetalRenderer* _renderer;
 }
-@end
-
-@implementation Lanox2dMetalView
 
 - (void)dealloc {
 }
@@ -39,8 +38,18 @@
 }
 
 - (void)metalInit {
+    
+    // init device
     self.device = MTLCreateSystemDefaultDevice();
-    NSAssert(self.device, @"Metal is not supported on this device");
+    NSAssert(self.device, @"metal is not supported on this device");
+    
+    // init renderer
+    _renderer = [[Lanox2dMetalRenderer alloc] initWithMetalKitView:self];
+    NSAssert(_renderer, @"init renderer failed");
+
+    // init our renderer with the view size
+    [_renderer mtkView:self drawableSizeWillChange:self.drawableSize];
+    self.delegate = _renderer;
 }
 
 @end
