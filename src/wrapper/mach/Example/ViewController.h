@@ -7,6 +7,13 @@
 //
 
 #include "Lanox2d.h"
+#ifdef LX_CONFIG_OS_MACOSX
+#   import <AppKit/AppKit.h>
+#   define PlatformViewController NSViewController
+#else
+#   import <UIKit/UIKit.h>
+#   define PlatformViewController UIViewController
+#endif
 
 @interface ViewController : PlatformViewController
 
