@@ -2,7 +2,11 @@ target("lanox2d")
     add_mflags("-Wno-error=deprecated-declarations")
     add_headerfiles("*.h")
     add_includedirs(".", {public = true})
-    add_frameworks("UIKit")
+    if is_plat("macosx") then
+        add_frameworks("AppKit")
+    else
+        add_frameworks("UIKit")
+    end
     if is_config("device", "opengl") then
         add_files("Lanox2dGLView.m")
         add_frameworks("OpenGLES", "QuartzCore")
@@ -10,3 +14,4 @@ target("lanox2d")
         add_files("Lanox2dMetalView.m")
         add_frameworks("MetalKit", "QuartzCore")
     end
+

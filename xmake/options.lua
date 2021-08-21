@@ -40,16 +40,16 @@ option("bitmap")
 -- window option
 option("window")
     set_showmenu(true)
-    set_values("sdl", "glut", "glfw", "fbdev", "android", "ios")
+    set_values("sdl", "glut", "glfw", "fbdev", "android", "mach")
     set_description("Set renderer window")
     on_check(function (option)
         if not option:value() then
-            if is_plat("macosx", "linux", "windows") then
+            if is_plat("linux", "windows") then
                 option:set_value("glfw")
             elseif is_plat("android") then
                 option:set_value("android")
-            elseif is_plat("iphoneos") then
-                option:set_value("ios")
+            elseif is_plat("iphoneos", "macosx") then
+                option:set_value("mach")
             end
         end
     end)
@@ -73,7 +73,7 @@ option("device")
                 option:set_value("bitmap")
             elseif window == "glut" or window == "glfw" or window == "android" then
                 option:set_value("opengl")
-            elseif window == "ios" then
+            elseif window == "mach" then
                 option:set_value("metal")
             end
         end

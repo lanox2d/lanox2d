@@ -15,17 +15,28 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        Lanox2dGLView.h
+ * @file        Lanox2d.h
  *
  */
 
-#import <UIKit/UIKit.h>
-#import "lanox2d/lanox2d.h"
+#import <Foundation/Foundation.h>
+#import "Lanox2dView.h"
+#ifdef LX_CONFIG_OS_MACOSX
+#   import <AppKit/AppKit.h>
+#   define PlatformView NSView
+#   define PlatformViewController NSViewController
+#else
+#   import <UIKit/UIKit.h>
+#   define PlatformView UIView
+#   define PlatformViewController UIViewController
+#endif
 
-NS_ASSUME_NONNULL_BEGIN
+//! Project version number for Lanox2d.
+FOUNDATION_EXPORT double Lanox2dVersionNumber;
 
-@interface Lanox2dGLView : UIView
-@property (nonatomic) lx_window_ref_t lanox2dWindow;
-@end
+//! Project version string for Lanox2d.
+FOUNDATION_EXPORT const unsigned char Lanox2dVersionString[];
 
-NS_ASSUME_NONNULL_END
+// In this header, you should import all the public headers of your framework using statements like #import <Lanox2d/PublicHeader.h>
+
+

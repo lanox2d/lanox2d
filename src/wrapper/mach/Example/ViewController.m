@@ -7,14 +7,6 @@
 //
 
 #import "ViewController.h"
-#import "lanox2d/lanox2d.h"
-#ifdef LX_CONFIG_DEVICE_HAVE_METAL
-#   import "Lanox2dMetalView.h"
-#   define Lanox2dView Lanox2dMetalView
-#else
-#   import "Lanox2dGLView.h"
-#   define Lanox2dView Lanox2dGLView
-#endif
 
 //#define TEST_EMPTY_WINDOW
 #define TEST_SHAPE_WINDOW

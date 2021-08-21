@@ -40,16 +40,19 @@ task("pod_build")
     set_menu {usage = "xmake pod_build [options]", description = "build pod libraries.", options = {
         {'t', "target_minver", "kv", nil, "Set the target minver."},
         {'m', "mode", "kv", nil, "Set the complation mode."},
-        {'d', "device", "kv", "metal", "Set the renderer device."}
+        {'d', "device", "kv", "metal", "Set the renderer device."},
+        {'p', "plat", "kv", nil, "Set the complation platform."}
     }}
     on_run(function ()
         import("core.base.option")
         import("core.project.config")
-        local outputdir = path.join(config.buildir(), "iphoneos", "install")
+        local plat = option.get("plat")
+        local outputdir = path.join(config.buildir(), plat, "install")
         local mode = option.get("mode") or "releasedbg"
+        local archs = plat == "iphoneos" and {"armv7", "arm64", "x86_64"} or {"x86_64"}
         os.tryrm(outputdir)
-        for _, arch in ipairs({"armv7", "arm64", "x86_64"}) do
-            local argv = {"f", "-y", "-c", "-p", "iphoneos", "-m", mode, "-a", arch}
+        for _, arch in ipairs(archs) do
+            local argv = {"f", "-y", "-c", "-p", plat, "-m", mode, "-a", arch}
             if option.get("verbose") then
                 table.insert(argv, "-v")
             end
@@ -73,6 +76,6 @@ task("pod_build")
     end)
 task_end()
 
-if is_plat("iphoneos") then
+if is_plat("iphoneos", "macosx") then
     includes("Lanox2d", "Example")
 end

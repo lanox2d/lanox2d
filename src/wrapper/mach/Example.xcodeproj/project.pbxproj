@@ -30,7 +30,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		BFAB861026C2CAA100CCDD70 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BFAB861026C2CAA100CCDD70 /* Example-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFAB861326C2CAA100CCDD70 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		BFAB861426C2CAA100CCDD70 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		BFAB861626C2CAA100CCDD70 /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
@@ -66,7 +66,7 @@
 		BFAB861126C2CAA100CCDD70 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				BFAB861026C2CAA100CCDD70 /* Example.app */,
+				BFAB861026C2CAA100CCDD70 /* Example-iOS.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -92,9 +92,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		BFAB860F26C2CAA100CCDD70 /* Example */ = {
+		BFAB860F26C2CAA100CCDD70 /* Example-iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BFAB862926C2CAA400CCDD70 /* Build configuration list for PBXNativeTarget "Example" */;
+			buildConfigurationList = BFAB862926C2CAA400CCDD70 /* Build configuration list for PBXNativeTarget "Example-iOS" */;
 			buildPhases = (
 				BF79CA4D26C4F1B5006B47CE /* ShellScript */,
 				BFAB860C26C2CAA100CCDD70 /* Sources */,
@@ -106,9 +106,9 @@
 			);
 			dependencies = (
 			);
-			name = Example;
+			name = "Example-iOS";
 			productName = Example;
-			productReference = BFAB861026C2CAA100CCDD70 /* Example.app */;
+			productReference = BFAB861026C2CAA100CCDD70 /* Example-iOS.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -138,7 +138,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				BFAB860F26C2CAA100CCDD70 /* Example */,
+				BFAB860F26C2CAA100CCDD70 /* Example-iOS */,
 			);
 		};
 /* End PBXProject section */
@@ -172,7 +172,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd ../../../\nexport XMAKE_COLORTERM=nocolor\n$HOME/.local/bin/xmake pod_build -m debug -d metal\n#$HOME/.local/bin/xmake pod_build -m releasedbg\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd ../../../\nexport XMAKE_COLORTERM=nocolor\n$HOME/.local/bin/xmake pod_build -p iphoneos -m debug -d opengl\n#$HOME/.local/bin/xmake pod_build -p iphoneos -m debug -d metal\n#$HOME/.local/bin/xmake pod_build -p iphoneos -m releasedbg -d opengl\n#$HOME/.local/bin/xmake pod_build -p iphoneos -m releasedbg -d metal\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -335,7 +335,10 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "../../../build/iphoneos/install/$(CURRENT_ARCH)/lib";
-				OTHER_CFLAGS = "-DLX_NOMAIN_ENTRY";
+				OTHER_CFLAGS = (
+					"-DTARGET_IOS",
+					"-DLX_NOMAIN_ENTRY",
+				);
 				OTHER_LDFLAGS = (
 					"-llanox2d",
 					"-lpng",
@@ -363,7 +366,10 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "../../../build/iphoneos/install/$(CURRENT_ARCH)/lib";
-				OTHER_CFLAGS = "-DLX_NOMAIN_ENTRY";
+				OTHER_CFLAGS = (
+					"-DTARGET_IOS",
+					"-DLX_NOMAIN_ENTRY",
+				);
 				OTHER_LDFLAGS = (
 					"-llanox2d",
 					"-lpng",
@@ -388,7 +394,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BFAB862926C2CAA400CCDD70 /* Build configuration list for PBXNativeTarget "Example" */ = {
+		BFAB862926C2CAA400CCDD70 /* Build configuration list for PBXNativeTarget "Example-iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BFAB862A26C2CAA400CCDD70 /* Debug */,

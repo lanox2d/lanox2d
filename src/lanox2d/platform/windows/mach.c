@@ -15,7 +15,7 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        ios.c
+ * @file        mach.c
  *
  */
 
@@ -28,25 +28,25 @@
  * types
  */
 
-// the ios window type
-typedef struct lx_window_ios_t_ {
+// the mach window type
+typedef struct lx_window_mach_t_ {
     lx_window_t     base;
-} lx_window_ios_t;
+} lx_window_mach_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
 
-static lx_void_t lx_window_ios_draw(lx_window_ref_t self) {
-    lx_window_ios_t* window = (lx_window_ios_t*)self;
+static lx_void_t lx_window_mach_draw(lx_window_ref_t self) {
+    lx_window_mach_t* window = (lx_window_mach_t*)self;
     lx_assert(window && window->base.on_draw);
 
     // do draw
     window->base.on_draw((lx_window_ref_t)window, window->base.canvas);
 }
 
-static lx_void_t lx_window_ios_resize(lx_window_ref_t self, lx_size_t width, lx_size_t height) {
-    lx_window_ios_t* window = (lx_window_ios_t*)self;
+static lx_void_t lx_window_mach_resize(lx_window_ref_t self, lx_size_t width, lx_size_t height) {
+    lx_window_mach_t* window = (lx_window_mach_t*)self;
     lx_check_return(width && height);
 
     lx_event_t event = {0};
@@ -59,8 +59,8 @@ static lx_void_t lx_window_ios_resize(lx_window_ref_t self, lx_size_t width, lx_
     }
 }
 
-static lx_void_t lx_window_ios_exit(lx_window_ref_t self) {
-    lx_window_ios_t* window = (lx_window_ios_t*)self;
+static lx_void_t lx_window_mach_exit(lx_window_ref_t self) {
+    lx_window_mach_t* window = (lx_window_mach_t*)self;
     if (window) {
         if (window->base.canvas) {
             lx_canvas_exit(window->base.canvas);
@@ -77,24 +77,24 @@ static lx_void_t lx_window_ios_exit(lx_window_ref_t self) {
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_window_ref_t lx_window_init_ios(lx_size_t width, lx_size_t height, lx_char_t const* title) {
-    lx_bool_t        ok = lx_false;
-    lx_window_ios_t* window = lx_null;
+lx_window_ref_t lx_window_init_mach(lx_size_t width, lx_size_t height, lx_char_t const* title) {
+    lx_bool_t         ok = lx_false;
+    lx_window_mach_t* window = lx_null;
     do {
 
         // check
         lx_assert_and_check_break(width && height);
 
         // init window
-        window = lx_malloc0_type(lx_window_ios_t);
+        window = lx_malloc0_type(lx_window_mach_t);
         lx_assert_and_check_break(window);
 
         window->base.width       = (lx_uint16_t)width;
         window->base.height      = (lx_uint16_t)height;
         window->base.title       = title;
-        window->base.draw        = lx_window_ios_draw;
-        window->base.resize      = lx_window_ios_resize;
-        window->base.exit        = lx_window_ios_exit;
+        window->base.draw        = lx_window_mach_draw;
+        window->base.resize      = lx_window_mach_resize;
+        window->base.exit        = lx_window_mach_exit;
         window->base.pixfmt      = LX_PIXFMT_XRGB8888;
 
         // init device

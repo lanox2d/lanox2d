@@ -15,16 +15,22 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        Lanox2dMetalView.h
+ * @file        Lanox2dGLView.h
  *
  */
 
-#import <UIKit/UIKit.h>
 #import "lanox2d/lanox2d.h"
+#ifdef LX_CONFIG_OS_MACOSX
+#   import <AppKit/AppKit.h>
+#   define PlatformView NSView
+#else
+#   import <UIKit/UIKit.h>
+#   define PlatformView UIView
+#endif
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface Lanox2dMetalView : UIView
+@interface Lanox2dGLView : PlatformView
 @property (nonatomic) lx_window_ref_t lanox2dWindow;
 @end
 

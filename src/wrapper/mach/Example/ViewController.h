@@ -6,9 +6,9 @@
 //  Copyright © 2021 lanox2d. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#include "Lanox2d.h"
 
-@interface ViewController : UIViewController
+@interface ViewController : PlatformViewController
 
 @end
 
