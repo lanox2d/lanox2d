@@ -15,22 +15,19 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        Lanox2dGLView.h
+ * @file        Lanox2dMetalView.h
  *
  */
 
 #import "lanox2d/lanox2d.h"
-#ifdef LX_CONFIG_OS_MACOSX
-#   import <AppKit/AppKit.h>
-#   define Lanox2dPlatformView NSView
-#else
-#   import <UIKit/UIKit.h>
-#   define Lanox2dPlatformView UIView
-#endif
+#import <MetalKit/MetalKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface Lanox2dGLView : Lanox2dPlatformView
+@interface Lanox2dMetalView : MTKView
+
+- (id)initWithFrame:(CGRect)frame delegate:(id)delegate;
+
 @property (nonatomic) lx_window_ref_t lanox2dWindow;
 @end
 

@@ -15,7 +15,7 @@
 #   define PlatformViewController UIViewController
 #endif
 
-@interface ViewController : PlatformViewController
+@interface ViewController : PlatformViewController<Lanox2dViewDelegate>
 
 @end
 

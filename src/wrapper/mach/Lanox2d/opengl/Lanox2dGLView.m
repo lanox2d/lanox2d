@@ -25,6 +25,7 @@
 #import <OpenGLES/ES3/glext.h>
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/EAGLDrawable.h>
+#import "../Lanox2dViewDelegate.h"
 #import "lanox2d/lanox2d.h"
 
 @implementation Lanox2dGLView {
@@ -34,6 +35,7 @@
     GLint           _glWidth;
     GLint           _glHeight;
     CADisplayLink*  _displayLink;
+    id <Lanox2dViewDelegate> _delegate;
 }
 
 + (Class) layerClass {
@@ -44,9 +46,10 @@
     [self glExit];
 }
 
-- (id)initWithFrame:(CGRect)frame {
+- (id)initWithFrame:(CGRect)frame delegate:(id)delegate {
     if (self = [super initWithFrame:frame]) {
         [self glInit:frame];
+        _delegate = delegate;
     }
     return self;
 }
@@ -161,6 +164,9 @@
 
 - (void)displayLinkHandle:(CADisplayLink *)link {
     if ([self lock]) {
+        if (_delegate) {
+            [_delegate onDrawFrame: link.timestamp];
+        }
         if (_lanox2dWindow) {
             lx_window_draw(_lanox2dWindow);
         }

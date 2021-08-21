@@ -30,21 +30,21 @@
 - (void)dealloc {
 }
 
-- (id)initWithFrame:(CGRect)frame {
+- (id)initWithFrame:(CGRect)frame delegate:(id)delegate {
     if (self = [super initWithFrame:frame]) {
-        [self metalInit];
+        [self metalInit:delegate];
     }
     return self;
 }
 
-- (void)metalInit {
-    
+- (void)metalInit:(id)delegate {
+
     // init device
     self.device = MTLCreateSystemDefaultDevice();
     NSAssert(self.device, @"metal is not supported on this device");
-    
+
     // init renderer
-    _renderer = [[Lanox2dMetalRenderer alloc] initWithMetalKitView:self];
+    _renderer = [[Lanox2dMetalRenderer alloc] initWithMetalKitView:self delegate:delegate];
     NSAssert(_renderer, @"init renderer failed");
 
     // init our renderer with the view size

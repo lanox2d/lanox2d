@@ -20,6 +20,7 @@
  */
 
 #import "lanox2d/lanox2d.h"
+#import "Lanox2dViewDelegate.h"
 #ifdef LX_CONFIG_DEVICE_HAVE_METAL
 #   import "metal/Lanox2dMetalView.h"
 #   define Lanox2dView Lanox2dMetalView

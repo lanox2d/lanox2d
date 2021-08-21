@@ -31,6 +31,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface Lanox2dGLView : PlatformView
+- (id)initWithFrame:(CGRect)frame delegate:(id)delegate;
 @property (nonatomic) lx_window_ref_t lanox2dWindow;
 @end
 

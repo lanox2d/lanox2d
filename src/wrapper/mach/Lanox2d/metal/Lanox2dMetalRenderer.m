@@ -20,15 +20,20 @@
 */
 
 #import "Lanox2dMetalRenderer.h"
+#import "Lanox2dMetalView.h"
+#import "../Lanox2dViewDelegate.h"
+#import "lanox2d/lanox2d.h"
 
 @implementation Lanox2dMetalRenderer {
     id<MTLDevice> _device;
+    id <Lanox2dViewDelegate> _delegate;
 }
 
-- (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView {
+- (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView delegate:(id)delegate {
     self = [super init];
     if(self) {
         _device = mtkView.device;
+        _delegate = delegate;
     }
     return self;
 }
@@ -38,7 +43,9 @@
 }
 
 - (void)drawInMTKView:(nonnull MTKView *)view {
-    NSLog(@"drawInMTKView");
+    if (_delegate) {
+        [_delegate onDrawFrame: (CFTimeInterval)((lx_double_t)lx_mclock() / 1000)];
+    }
 }
 
 @end

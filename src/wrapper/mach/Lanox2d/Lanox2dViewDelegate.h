@@ -15,18 +15,13 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        Lanox2dMetalView.h
+ * @file        Lanox2dViewDelegate.h
  *
  */
 
-#import "lanox2d/lanox2d.h"
-#import <MetalKit/MetalKit.h>
+#import <Foundation/Foundation.h>
 
-NS_ASSUME_NONNULL_BEGIN
-
-@interface Lanox2dMetalView : MTKView
-- (id)initWithFrame:(CGRect)frame delegate:(id)delegate;
-@property (nonatomic) lx_window_ref_t lanox2dWindow;
+@protocol Lanox2dViewDelegate <NSObject>
+@required
+- (void)onDrawFrame:(CFTimeInterval)timestamp;
 @end
-
-NS_ASSUME_NONNULL_END

@@ -20,11 +20,10 @@
 @interface ViewController ()
 {
     Lanox2dView*    _lanox2dView;
-#ifdef LX_CONFIG_OS_IOS
-    UILabel*        _infoView;
-    CADisplayLink*  _displayLink;
     float           _fpsCount;
     float           _fpsTime;
+#ifdef LX_CONFIG_OS_IOS
+    UILabel*        _infoView;
 #endif
 }
 @end
@@ -40,7 +39,7 @@
 #else
     CGRect screenBounds = [[UIScreen mainScreen] bounds];
 #endif
-    _lanox2dView = [[Lanox2dView alloc] initWithFrame:screenBounds];
+    _lanox2dView = [[Lanox2dView alloc] initWithFrame:screenBounds delegate:self];
     [self.view addSubview:_lanox2dView];
 
 #ifdef LX_CONFIG_OS_IOS
@@ -49,11 +48,6 @@
     _infoView = [[UILabel alloc] initWithFrame:infoBounds];
     [_infoView setTextColor:[UIColor redColor]];
     [self.view addSubview:_infoView];
-
-    // init display link for fps
-    _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkHandle:)];
-    [_displayLink setPaused:NO];
-    [_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
 #endif
     
 #ifdef TEST_EMPTY_WINDOW
@@ -65,9 +59,8 @@
 #endif
 }
 
-#ifdef LX_CONFIG_OS_IOS
-- (void)displayLinkHandle:(CADisplayLink *)link {
-    float time = link.timestamp;
+- (void)onDrawFrame:(CFTimeInterval)timestamp {
+    float time = timestamp;
     if (!_fpsTime) {
         _fpsTime = time;
     } else {
@@ -75,12 +68,13 @@
     }
     if (time > _fpsTime + 1) {
         float framerate = _fpsCount / (time - _fpsTime);
+#ifdef LX_CONFIG_OS_IOS
         [_infoView setText:[NSString stringWithFormat:@"%0.02f fps", framerate]];
+#endif
         _fpsCount = 0;
         _fpsTime = time;
     }
 }
-#endif
 
 #ifdef TEST_EMPTY_WINDOW
 - (void)initEmptyWindow {
