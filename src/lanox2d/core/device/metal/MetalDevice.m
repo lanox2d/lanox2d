@@ -27,6 +27,7 @@
     id<MTLCommandQueue>         _commandQueue;
     id<MTLCommandBuffer>        _commandBuffer;
     id<MTLRenderCommandEncoder> _renderEncoder;
+    id<MTLRenderPipelineState>  _pipelineState;
 }
 
 - (nonnull instancetype)initWithView:(nonnull MTKView*)mtkView {
@@ -49,6 +50,31 @@
 
     // init command queue
     _commandQueue = [_device newCommandQueue];
+
+#if 1
+    // Load all the shader files with a .metal file extension in the project.
+    id<MTLLibrary> defaultLibrary = [_device newDefaultLibrary];
+
+    id<MTLFunction> vertexFunction = [defaultLibrary newFunctionWithName:@"vertexShader"];
+    id<MTLFunction> fragmentFunction = [defaultLibrary newFunctionWithName:@"fragmentShader"];
+
+    // Configure a pipeline descriptor that is used to create a pipeline state.
+    MTLRenderPipelineDescriptor *pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
+    pipelineStateDescriptor.label = @"Simple Pipeline";
+    pipelineStateDescriptor.vertexFunction = vertexFunction;
+    pipelineStateDescriptor.fragmentFunction = fragmentFunction;
+    pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
+
+    NSError *error;
+    _pipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+                                                             error:&error];
+
+    // Pipeline State creation could fail if the pipeline descriptor isn't set up properly.
+    //  If the Metal API validation is enabled, you can find out more information about what
+    //  went wrong.  (Metal API validation is enabled by default when a debug build is run
+    //  from Xcode.)
+    NSAssert(_pipelineState, @"Failed to create pipeline state: %@", error);
+#endif
 }
 
 - (lx_bool_t)drawLock {
@@ -65,6 +91,7 @@
         _renderEncoder = [_commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
         _renderEncoder.label = @"Lanox2dRenderEncoder";
 
+        [self drawTest];
 
         // ok
         return lx_true;
@@ -80,6 +107,47 @@
         [_commandBuffer presentDrawable:_view.currentDrawable];
         [_commandBuffer commit];
     }
+}
+
+- (lx_void_t)drawTest {
+
+#define AAPLVertexInputIndexVertices     0
+#define AAPLVertexInputIndexViewportSize 1
+
+    typedef struct
+    {
+        vector_float2 position;
+        vector_float4 color;
+    } AAPLVertex;
+
+    static const AAPLVertex triangleVertices[] = {
+        // 2D positions,    RGBA colors
+        { {  250,  -250 }, { 1, 0, 0, 1 } },
+        { { -250,  -250 }, { 0, 1, 0, 1 } },
+        { {    0,   250 }, { 0, 0, 1, 1 } },
+    };
+
+    // Set the region of the drawable to draw into.
+    [_renderEncoder setViewport:(MTLViewport){0.0, 0.0, _view.drawableSize.width, _view.drawableSize.height, 0.0, 1.0 }];
+
+    [_renderEncoder setRenderPipelineState:_pipelineState];
+
+    // Pass in the parameter data.
+    [_renderEncoder setVertexBytes:triangleVertices
+                           length:sizeof(triangleVertices)
+                          atIndex:AAPLVertexInputIndexVertices];
+
+    static vector_uint2 _viewportSize;
+    _viewportSize.x = _view.drawableSize.width;
+    _viewportSize.y = _view.drawableSize.height;
+    [_renderEncoder setVertexBytes:&_viewportSize
+                           length:sizeof(_viewportSize)
+                          atIndex:AAPLVertexInputIndexViewportSize];
+
+    // Draw the triangle.
+    [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
+                      vertexStart:0
+                      vertexCount:3];
 }
 
 - (lx_void_t)drawClear:(lx_color_t)color {
