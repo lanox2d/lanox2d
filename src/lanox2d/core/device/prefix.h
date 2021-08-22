@@ -46,6 +46,8 @@ typedef struct lx_device_t_ {
     lx_void_t           (*draw_lines)(lx_device_ref_t device, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds);
     lx_void_t           (*draw_points)(lx_device_ref_t device, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds);
     lx_void_t           (*draw_polygon)(lx_device_ref_t device, lx_polygon_ref_t polygon, lx_shape_ref_t hint, lx_rect_ref_t bounds);
+    lx_bool_t           (*draw_lock)(lx_device_ref_t device);
+    lx_void_t           (*draw_commit)(lx_device_ref_t device);
     lx_void_t           (*exit)(lx_device_ref_t device);
 }lx_device_t;
 

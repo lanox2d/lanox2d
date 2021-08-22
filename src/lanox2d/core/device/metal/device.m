@@ -28,6 +28,21 @@
  * private implementation
  */
 
+static lx_bool_t lx_device_metal_draw_lock(lx_device_ref_t self) {
+    lx_metal_device_t* device = (lx_metal_device_t*)self;
+    if (device) {
+        return [device->device drawLock];
+    }
+    return lx_false;
+}
+
+static lx_void_t lx_device_metal_draw_commit(lx_device_ref_t self) {
+    lx_metal_device_t* device = (lx_metal_device_t*)self;
+    if (device) {
+        [device->device drawCommit];
+    }
+}
+
 static lx_void_t lx_device_metal_draw_clear(lx_device_ref_t self, lx_color_t color) {
     lx_metal_device_t* device = (lx_metal_device_t*)self;
     if (device) {
@@ -89,8 +104,10 @@ lx_device_ref_t lx_device_init_from_metal(lx_size_t width, lx_size_t height, lx_
         device->base.draw_points  = lx_device_metal_draw_points;
         device->base.draw_polygon = lx_device_metal_draw_polygon;
         device->base.draw_path    = lx_device_metal_draw_path;
+        device->base.draw_lock    = lx_device_metal_draw_lock;
+        device->base.draw_commit  = lx_device_metal_draw_commit;
         device->base.exit         = lx_device_metal_exit;
-        device->device            = [[MetalDevice alloc] initWithMetalDevice:(__bridge_transfer id<MTLDevice>)devdata];
+        device->device            = [[MetalDevice alloc] initWithView:(__bridge_transfer MTKView*)devdata];
 
         // ok
         ok = lx_true;

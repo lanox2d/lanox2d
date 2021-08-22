@@ -279,7 +279,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd ../../../\nexport XMAKE_COLORTERM=nocolor\n$HOME/.local/bin/xmake pod_build -p iphoneos -m debug -d opengl\n#$HOME/.local/bin/xmake pod_build -p iphoneos -m debug -d metal\n#$HOME/.local/bin/xmake pod_build -p iphoneos -m releasedbg -d opengl\n#$HOME/.local/bin/xmake pod_build -p iphoneos -m releasedbg -d metal\n\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd ../../../\nexport XMAKE_COLORTERM=nocolor\n#$HOME/.local/bin/xmake pod_build -p iphoneos -m debug -d opengl\n$HOME/.local/bin/xmake pod_build -p iphoneos -m debug -d metal\n#$HOME/.local/bin/xmake pod_build -p iphoneos -m releasedbg -d opengl\n#$HOME/.local/bin/xmake pod_build -p iphoneos -m releasedbg -d metal\n\n";
 		};
 		BFD9A33026D0CE4E00FE500D /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;

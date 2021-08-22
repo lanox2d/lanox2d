@@ -39,10 +39,12 @@ typedef struct lx_window_mach_t_ {
 
 static lx_void_t lx_window_mach_draw(lx_window_ref_t self) {
     lx_window_mach_t* window = (lx_window_mach_t*)self;
-    lx_assert(window && window->base.on_draw);
+    lx_assert(window && window->base.device && window->base.on_draw);
 
-    // do draw
-    window->base.on_draw((lx_window_ref_t)window, window->base.canvas);
+    if (lx_device_draw_lock(window->base.device)) {
+        window->base.on_draw((lx_window_ref_t)window, window->base.canvas);
+        lx_device_draw_commit(window->base.device);
+    }
 }
 
 static lx_void_t lx_window_mach_resize(lx_window_ref_t self, lx_size_t width, lx_size_t height) {

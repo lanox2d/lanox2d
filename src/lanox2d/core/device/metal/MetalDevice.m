@@ -22,31 +22,55 @@
 #import "MetalDevice.h"
 
 @implementation MetalDevice {
-    id<MTLDevice> _device;
+    MTKView*            _view;
+    id<MTLDevice>       _device;
+    id<MTLCommandQueue> _commandQueue;
 }
 
-- (nonnull instancetype)initWithMetalDevice:(nonnull id<MTLDevice>)mtlDevice {
+- (nonnull instancetype)initWithView:(nonnull MTKView*)mtkView {
     self = [super init];
     if(self) {
-        _device = mtlDevice;
+        [self initDevice:mtkView];
     }
     return self;
 }
 
-- (void)drawClear:(lx_color_t)color {
-    lx_trace_i("drawClear");
+- (lx_void_t)initDevice:(nonnull MTKView*)mtkView {
+
+    // init view
+    _view = mtkView;
+
+    // init device
+    _view.device = MTLCreateSystemDefaultDevice();
+    NSAssert(_view.device, @"metal is not supported on this device");
+    _device = _view.device;
+
+    // init command queue
+    _commandQueue = [_device newCommandQueue];
 }
 
-- (void)drawLines:(nonnull lx_point_ref_t)points count:(lx_size_t)count bounds:(nullable lx_rect_ref_t)bounds {
+- (lx_bool_t)drawLock {
+    lx_trace_i("drawLock");
+    return lx_true;
 }
 
-- (void)drawPoints:(nonnull lx_point_ref_t)points count:(lx_size_t)count bounds:(nullable lx_rect_ref_t)bounds {
+- (lx_void_t)drawCommit {
+    lx_trace_i("drawCommit");
 }
 
-- (void)drawPolygon:(nonnull lx_polygon_ref_t)polygon hint:(nullable lx_shape_ref_t)hint bounds:(nullable lx_rect_ref_t)bounds {
+- (lx_void_t)drawClear:(lx_color_t)color {
 }
 
-- (void)drawPath:(nonnull lx_path_ref_t)path {
+- (lx_void_t)drawLines:(nonnull lx_point_ref_t)points count:(lx_size_t)count bounds:(nullable lx_rect_ref_t)bounds {
+}
+
+- (lx_void_t)drawPoints:(nonnull lx_point_ref_t)points count:(lx_size_t)count bounds:(nullable lx_rect_ref_t)bounds {
+}
+
+- (lx_void_t)drawPolygon:(nonnull lx_polygon_ref_t)polygon hint:(nullable lx_shape_ref_t)hint bounds:(nullable lx_rect_ref_t)bounds {
+}
+
+- (lx_void_t)drawPath:(nonnull lx_path_ref_t)path {
 }
 
 @end

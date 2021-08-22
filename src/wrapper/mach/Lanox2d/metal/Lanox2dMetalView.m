@@ -40,10 +40,9 @@
 
 - (void)metalInit:(id)delegate {
 
-    // init device
-    self.device = MTLCreateSystemDefaultDevice();
-    NSAssert(self.device, @"metal is not supported on this device");
-
+    // init window
+    _lanox2dWindow = lx_window_init(self.drawableSize.width, self.drawableSize.height, lx_null, (__bridge lx_cpointer_t)self);
+    
     // init renderer
     _renderer = [[Lanox2dMetalRenderer alloc] initWithMetalKitView:self delegate:delegate];
     NSAssert(_renderer, @"init renderer failed");
@@ -51,9 +50,6 @@
     // init our renderer with the view size
     [_renderer mtkView:self drawableSizeWillChange:self.drawableSize];
     self.delegate = _renderer;
-
-    // init window
-    _lanox2dWindow = lx_window_init(self.drawableSize.width, self.drawableSize.height, lx_null, (__bridge lx_cpointer_t)self.device);
 }
 
 - (void)metalExit {

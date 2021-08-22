@@ -124,6 +124,20 @@ lx_void_t               lx_device_bind_matrix(lx_device_ref_t device, lx_matrix_
  */
 lx_void_t               lx_device_bind_clipper(lx_device_ref_t device, lx_clipper_ref_t clipper);
 
+/*! lock draw (optional), it is only for metal now.
+ *
+ * @param device        the device
+ *
+ * @return              lx_true or lx_false
+ */
+lx_bool_t               lx_device_draw_lock(lx_device_ref_t device);
+
+/*! commit draw (optional), it is only for metal now.
+ *
+ * @param device        the device
+ */
+lx_void_t               lx_device_draw_commit(lx_device_ref_t device);
+
 /*! clear draw and fill the given color
  *
  * @param device        the device

@@ -25,7 +25,6 @@
 #import "lanox2d/lanox2d.h"
 
 @implementation Lanox2dMetalRenderer {
-    id<MTLDevice> _device;
     id <Lanox2dViewDelegate> _delegate;
     CFTimeInterval _basetime;
 }
@@ -33,7 +32,6 @@
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView delegate:(id)delegate {
     self = [super init];
     if(self) {
-        _device = mtkView.device;
         _delegate = delegate;
         _basetime = (CFTimeInterval)lx_mclock();
     }
