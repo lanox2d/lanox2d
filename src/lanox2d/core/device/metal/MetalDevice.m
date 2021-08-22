@@ -22,9 +22,10 @@
 #import "MetalDevice.h"
 
 @implementation MetalDevice {
-    MTKView*            _view;
-    id<MTLDevice>       _device;
-    id<MTLCommandQueue> _commandQueue;
+    MTKView*             _view;
+    id<MTLDevice>        _device;
+    id<MTLCommandQueue>  _commandQueue;
+    id<MTLCommandBuffer> _commandBuffer;
 }
 
 - (nonnull instancetype)initWithView:(nonnull MTKView*)mtkView {
@@ -50,12 +51,33 @@
 }
 
 - (lx_bool_t)drawLock {
-    lx_trace_i("drawLock");
-    return lx_true;
+
+    // create a new command buffer for each render pass to the current drawable.
+    _commandBuffer = [_commandQueue commandBuffer];
+    _commandBuffer.label = @"Lanox2dCommand";
+
+    // obtain a renderPassDescriptor generated from the view's drawable textures.
+    MTLRenderPassDescriptor* renderPassDescriptor = _view.currentRenderPassDescriptor;
+    if (renderPassDescriptor != nil) {
+
+        // create a render command encoder.
+        id<MTLRenderCommandEncoder> renderEncoder = [_commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+        renderEncoder.label = @"Lanox2dRenderEncoder";
+
+
+        [renderEncoder endEncoding];
+
+        // ok
+        return lx_true;
+    }
+    return lx_false;
 }
 
 - (lx_void_t)drawCommit {
-    lx_trace_i("drawCommit");
+    if (_commandBuffer != nil) {
+        [_commandBuffer presentDrawable:_view.currentDrawable];
+        [_commandBuffer commit];
+    }
 }
 
 - (lx_void_t)drawClear:(lx_color_t)color {
