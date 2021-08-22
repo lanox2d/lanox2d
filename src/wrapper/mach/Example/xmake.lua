@@ -14,3 +14,4 @@ target("Example")
         add_files("iOS/*.m", "iOS/**.storyboard", "iOS/Info.plist")
         add_includedirs("iOS")
     end
+    add_files("*.metal")
