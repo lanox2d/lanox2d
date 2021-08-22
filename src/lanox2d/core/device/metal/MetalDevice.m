@@ -22,10 +22,11 @@
 #import "MetalDevice.h"
 
 @implementation MetalDevice {
-    MTKView*             _view;
-    id<MTLDevice>        _device;
-    id<MTLCommandQueue>  _commandQueue;
-    id<MTLCommandBuffer> _commandBuffer;
+    MTKView*                    _view;
+    id<MTLDevice>               _device;
+    id<MTLCommandQueue>         _commandQueue;
+    id<MTLCommandBuffer>        _commandBuffer;
+    id<MTLRenderCommandEncoder> _renderEncoder;
 }
 
 - (nonnull instancetype)initWithView:(nonnull MTKView*)mtkView {
@@ -61,11 +62,9 @@
     if (renderPassDescriptor != nil) {
 
         // create a render command encoder.
-        id<MTLRenderCommandEncoder> renderEncoder = [_commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
-        renderEncoder.label = @"Lanox2dRenderEncoder";
+        _renderEncoder = [_commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+        _renderEncoder.label = @"Lanox2dRenderEncoder";
 
-
-        [renderEncoder endEncoding];
 
         // ok
         return lx_true;
@@ -74,6 +73,9 @@
 }
 
 - (lx_void_t)drawCommit {
+    if (_renderEncoder) {
+        [_renderEncoder endEncoding];
+    }
     if (_commandBuffer != nil) {
         [_commandBuffer presentDrawable:_view.currentDrawable];
         [_commandBuffer commit];
