@@ -15,7 +15,7 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        device.c
+ * @file        device.m
  *
  */
 
@@ -29,18 +29,38 @@
  */
 
 static lx_void_t lx_device_metal_draw_clear(lx_device_ref_t self, lx_color_t color) {
+    lx_metal_device_t* device = (lx_metal_device_t*)self;
+    if (device) {
+        [device->device drawClear:color];
+    }
 }
 
 static lx_void_t lx_device_metal_draw_lines(lx_device_ref_t self, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds) {
+    lx_metal_device_t* device = (lx_metal_device_t*)self;
+    if (device) {
+        [device->device drawLines:points count:count bounds:bounds];
+    }
 }
 
 static lx_void_t lx_device_metal_draw_points(lx_device_ref_t self, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds) {
+    lx_metal_device_t* device = (lx_metal_device_t*)self;
+    if (device) {
+        [device->device drawPoints:points count:count bounds:bounds];
+    }
 }
 
 static lx_void_t lx_device_metal_draw_polygon(lx_device_ref_t self, lx_polygon_ref_t polygon, lx_shape_ref_t hint, lx_rect_ref_t bounds) {
+    lx_metal_device_t* device = (lx_metal_device_t*)self;
+    if (device) {
+        [device->device drawPolygon:polygon hint:hint bounds:bounds];
+    }
 }
 
 static lx_void_t lx_device_metal_draw_path(lx_device_ref_t self, lx_path_ref_t path) {
+    lx_metal_device_t* device = (lx_metal_device_t*)self;
+    if (device) {
+        [device->device drawPath:path];
+    }
 }
 
 static lx_void_t lx_device_metal_exit(lx_device_ref_t self) {
@@ -70,7 +90,7 @@ lx_device_ref_t lx_device_init_from_metal(lx_size_t width, lx_size_t height, lx_
         device->base.draw_polygon = lx_device_metal_draw_polygon;
         device->base.draw_path    = lx_device_metal_draw_path;
         device->base.exit         = lx_device_metal_exit;
-        device->mtldevice         = (__bridge_transfer id<MTLDevice>)devdata;
+        device->device            = [[MetalDevice alloc] initWithMetalDevice:(__bridge_transfer id<MTLDevice>)devdata];
 
         // ok
         ok = lx_true;

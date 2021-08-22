@@ -22,5 +22,5 @@
 #import <MetalKit/MetalKit.h>
 
 @interface Lanox2dMetalRenderer : NSObject<MTKViewDelegate>
-- (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView delegate:(_Nullable id)delegate;
+- (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView delegate:(nullable id)delegate;
 @end

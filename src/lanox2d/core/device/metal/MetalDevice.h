@@ -15,24 +15,22 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        Lanox2dGLView.h
+ * @file        MetalDevice.h
  *
  */
 
-#import "lanox2d/lanox2d.h"
-#ifdef LX_CONFIG_OS_MACOSX
-#   import <AppKit/AppKit.h>
-#   define PlatformView NSView
-#else
-#   import <UIKit/UIKit.h>
-#   define PlatformView UIView
-#endif
+#import "prefix.h"
 
-NS_ASSUME_NONNULL_BEGIN
+@interface MetalDevice : NSObject
 
-@interface Lanox2dGLView : PlatformView
-- (id)initWithFrame:(CGRect)frame delegate:(nullable id)delegate;
-@property (nonatomic) lx_window_ref_t lanox2dWindow;
+- (nonnull instancetype)initWithMetalDevice:(nonnull id<MTLDevice>)mtlDevice;
+
+- (void)drawClear:(lx_color_t)color;
+- (void)drawLines:(nonnull lx_point_ref_t)points count:(lx_size_t)count bounds:(nullable lx_rect_ref_t)bounds;
+- (void)drawPoints:(nonnull lx_point_ref_t)points count:(lx_size_t)count bounds:(nullable lx_rect_ref_t)bounds;
+- (void)drawPolygon:(nonnull lx_polygon_ref_t)polygon hint:(nullable lx_shape_ref_t)hint bounds:(nullable lx_rect_ref_t)bounds;
+- (void)drawPath:(nonnull lx_path_ref_t)path;
+
 @end
 
-NS_ASSUME_NONNULL_END
+
