@@ -37,6 +37,7 @@ typedef struct lx_metal_device_t_ {
     lx_window_ref_t         window;
     lx_stroker_ref_t        stroker;
     lx_tessellator_ref_t    tessellator;
+    id<MTLDevice>           mtldevice;
 }lx_metal_device_t;
 
 #endif

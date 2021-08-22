@@ -29,6 +29,7 @@
 #include "../../paint.h"
 #include "../../private/stroker.h"
 #include "../../../platform/window.h"
+#import <MetalKit/MetalKit.h>
 
 #endif
 
