@@ -53,7 +53,12 @@
 
 #if 1
     // Load all the shader files with a .metal file extension in the project.
-    id<MTLLibrary> defaultLibrary = [_device newDefaultLibrary];
+    //id<MTLLibrary> defaultLibrary = [_device newDefaultLibrary];
+
+    // https://developer.apple.com/documentation/metal/libraries/building_a_library_with_metal_s_command-line_tools
+    NSError *error;
+    id<MTLLibrary> defaultLibrary = [_device newLibraryWithFile:@"/tmp/test.metallib" error:&error];
+
 
     id<MTLFunction> vertexFunction = [defaultLibrary newFunctionWithName:@"vertexShader"];
     id<MTLFunction> fragmentFunction = [defaultLibrary newFunctionWithName:@"fragmentShader"];
@@ -65,7 +70,6 @@
     pipelineStateDescriptor.fragmentFunction = fragmentFunction;
     pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
 
-    NSError *error;
     _pipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
                                                              error:&error];
 
