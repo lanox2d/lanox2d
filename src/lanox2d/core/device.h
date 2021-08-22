@@ -58,12 +58,11 @@ lx_device_ref_t         lx_device_init_from_opengl(lx_size_t width, lx_size_t he
  *
  * @param width         the window width
  * @param height        the window height
- * @param framewidth    the frame width
- * @param frameheight   the frame height
+ * @param devdata       the device data
  *
  * @return              the device
  */
-lx_device_ref_t         lx_device_init_from_metal(lx_size_t width, lx_size_t height, lx_size_t framewidth, lx_size_t frameheight);
+lx_device_ref_t         lx_device_init_from_metal(lx_size_t width, lx_size_t height, lx_cpointer_t devdata);
 
 /*! init device from skia
  *

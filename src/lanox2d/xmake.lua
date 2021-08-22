@@ -74,7 +74,7 @@ target("lanox2d")
         end
     end
     if is_config("device", "metal") then
-        add_files("core/device/metal/**.c")
+        add_files("core/device/metal/**.m")
     end
     if is_config("device", "skia") then
         set_languages("c++14")

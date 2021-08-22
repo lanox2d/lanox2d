@@ -53,10 +53,10 @@ static lx_void_t lx_device_metal_exit(lx_device_ref_t self) {
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_device_ref_t lx_device_init_from_metal(lx_size_t width, lx_size_t height, lx_size_t framewidth, lx_size_t frameheight) {
+lx_device_ref_t lx_device_init_from_metal(lx_size_t width, lx_size_t height, lx_cpointer_t devdata) {
     lx_assert_and_check_return_val(width && height, lx_null);
 
-    lx_bool_t           ok = lx_false;
+    lx_bool_t          ok = lx_false;
     lx_metal_device_t* device = lx_null;
     do {
 
