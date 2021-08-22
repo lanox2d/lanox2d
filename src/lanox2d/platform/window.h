@@ -77,10 +77,11 @@ typedef lx_void_t       (*lx_window_on_resize_t)(lx_window_ref_t window, lx_canv
  * @param width         the window width
  * @param height        the window height
  * @param title         the window title
+ * @param devdata       the private device data
  *
  * @return              the window
  */
-lx_window_ref_t         lx_window_init(lx_size_t width, lx_size_t height, lx_char_t const* title);
+lx_window_ref_t         lx_window_init(lx_size_t width, lx_size_t height, lx_char_t const* title, lx_cpointer_t devdata);
 
 /*! get window width
  *

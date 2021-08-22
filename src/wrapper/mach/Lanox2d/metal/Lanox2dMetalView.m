@@ -28,6 +28,7 @@
 }
 
 - (void)dealloc {
+    [self metalExit];
 }
 
 - (id)initWithFrame:(CGRect)frame delegate:(id)delegate {
@@ -50,6 +51,18 @@
     // init our renderer with the view size
     [_renderer mtkView:self drawableSizeWillChange:self.drawableSize];
     self.delegate = _renderer;
+
+    // init window
+    _lanox2dWindow = lx_window_init(self.drawableSize.width, self.drawableSize.height, lx_null, (__bridge lx_cpointer_t)self.device);
+}
+
+- (void)metalExit {
+
+    // exit window
+    if (_lanox2dWindow) {
+        lx_window_exit(_lanox2dWindow);
+        _lanox2dWindow = lx_null;
+    }
 }
 
 @end

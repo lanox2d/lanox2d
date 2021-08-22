@@ -40,13 +40,17 @@
     return self;
 }
 
-- (void)mtkView:(nonnull MTKView *)view drawableSizeWillChange:(CGSize)size {
+- (void)mtkView:(nonnull MTKView *)mtkView drawableSizeWillChange:(CGSize)size {
     NSLog(@"drawableSizeWillChange");
 }
 
-- (void)drawInMTKView:(nonnull MTKView *)view {
+- (void)drawInMTKView:(nonnull MTKView *)mtkView {
     if (_delegate) {
         [_delegate onDrawFrame: (CFTimeInterval)((lx_mclock() - _basetime) / 1000)];
+    }
+    Lanox2dMetalView* view = (Lanox2dMetalView*)mtkView;
+    if (view.lanox2dWindow) {
+        lx_window_draw(view.lanox2dWindow);
     }
 }
 

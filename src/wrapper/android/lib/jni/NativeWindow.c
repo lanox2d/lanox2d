@@ -39,7 +39,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* jvm, lx_pointer_t reserved) {
 }
 
 JNIEXPORT jlong Java_io_lanox2d_lib_NativeWindow_window_1init(JNIEnv* env, jclass jthis, jint width, jint height) {
-    return (jlong)lx_window_init(width, height, lx_null);
+    return (jlong)lx_window_init(width, height, lx_null, lx_null);
 }
 
 JNIEXPORT lx_void_t Java_io_lanox2d_lib_NativeWindow_window_1exit(JNIEnv* env, jclass jthis, jlong window) {

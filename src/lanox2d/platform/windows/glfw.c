@@ -404,7 +404,7 @@ static lx_void_t lx_window_glfw_exit(lx_window_ref_t self) {
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_window_ref_t lx_window_init_glfw(lx_size_t width, lx_size_t height, lx_char_t const* title) {
+lx_window_ref_t lx_window_init_glfw(lx_size_t width, lx_size_t height, lx_char_t const* title, lx_cpointer_t devdata) {
     lx_bool_t         ok = lx_false;
     lx_window_glfw_t* window = lx_null;
     do {

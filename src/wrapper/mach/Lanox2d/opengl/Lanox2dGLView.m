@@ -29,12 +29,12 @@
 #import "lanox2d/lanox2d.h"
 
 @implementation Lanox2dGLView {
-    EAGLContext*    _glContext;
-    GLuint          _glFrame;
-    GLuint          _glRenderColor;
-    GLint           _glWidth;
-    GLint           _glHeight;
-    CADisplayLink*  _displayLink;
+    EAGLContext*             _glContext;
+    GLuint                   _glFrame;
+    GLuint                   _glRenderColor;
+    GLint                    _glWidth;
+    GLint                    _glHeight;
+    CADisplayLink*           _displayLink;
     id <Lanox2dViewDelegate> _delegate;
 }
 
@@ -75,7 +75,7 @@
     [self glFrameInit];
 
     // init window
-    _lanox2dWindow = lx_window_init(frame.size.width * glLayer.contentsScale, frame.size.height * glLayer.contentsScale, lx_null);
+    _lanox2dWindow = lx_window_init(frame.size.width * glLayer.contentsScale, frame.size.height * glLayer.contentsScale, lx_null, lx_null);
 
     // init move gesture
     UIPanGestureRecognizer* moveGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action: @selector(onTouchMove:)];

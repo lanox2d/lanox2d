@@ -42,19 +42,19 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_window_ref_t lx_window_init(lx_size_t width, lx_size_t height, lx_char_t const* title) {
+lx_window_ref_t lx_window_init(lx_size_t width, lx_size_t height, lx_char_t const* title, lx_cpointer_t devdata) {
 #if defined(LX_CONFIG_WINDOW_HAVE_SDL)
-    return lx_window_init_sdl(width, height, title);
+    return lx_window_init_sdl(width, height, title, devdata);
 #elif defined(LX_CONFIG_WINDOW_HAVE_GLUT)
-    return lx_window_init_glut(width, height, title);
+    return lx_window_init_glut(width, height, title, devdata);
 #elif defined(LX_CONFIG_WINDOW_HAVE_GLFW)
-    return lx_window_init_glfw(width, height, title);
+    return lx_window_init_glfw(width, height, title, devdata);
 #elif defined(LX_CONFIG_WINDOW_HAVE_FBDEV)
-    return lx_window_init_fbdev(width, height, title);
+    return lx_window_init_fbdev(width, height, title, devdata);
 #elif defined(LX_CONFIG_WINDOW_HAVE_ANDROID)
-    return lx_window_init_android(width, height, title);
+    return lx_window_init_android(width, height, title, devdata);
 #elif defined(LX_CONFIG_WINDOW_HAVE_MACH)
-    return lx_window_init_mach(width, height, title);
+    return lx_window_init_mach(width, height, title, devdata);
 #else
     lx_trace_e("window not found!");
     return lx_null;
