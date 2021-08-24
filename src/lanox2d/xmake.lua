@@ -74,7 +74,9 @@ target("lanox2d")
         end
     end
     if is_config("device", "metal") then
+        add_rules("utils.bin2c", {extensions = {".metal"}})
         add_files("core/device/metal/**.m")
+        add_files("core/device/metal/shaders/*.metal")
     end
     if is_config("device", "skia") then
         set_languages("c++14")

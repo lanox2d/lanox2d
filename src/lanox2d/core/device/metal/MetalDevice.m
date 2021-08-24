@@ -52,10 +52,26 @@
     _commandQueue = [_device newCommandQueue];
 
 #if 1
-    // Load all the shader files with a .metal file extension in the project.
-    id<MTLLibrary> defaultLibrary = [_device newDefaultLibrary];
 
-    //id<MTLLibrary> defaultLibrary = [_device newLibraryWithFile:@"/tmp/test.metallib" error:&error];
+    static lx_char_t const test_metal[] = {
+#   include "test.metal.h"
+    };
+
+    // Load all the shader files with a .metal file extension in the project.
+    //id<MTLLibrary> defaultLibrary = [_device newDefaultLibrary];
+
+    NSError *error;
+    id<MTLLibrary> defaultLibrary = [_device newLibraryWithSource:[NSString stringWithUTF8String:test_metal] options:nil error:&error];
+
+    /* https://code.woboq.org/qt5/qtbase/src/gui/rhi/qrhimetal.mm.html
+     *   dispatch_data_t data = dispatch_data_create(mtllib.shader().constData(),
+                                                    mtllib.shader().size(),
+                                                    dispatch_get_global_queue(0, 0),
+                                                    DISPATCH_DATA_DESTRUCTOR_DEFAULT);
+        NSError *err = nil;
+        id<MTLLibrary> lib = [dev newLibraryWithData: data error: &err];
+        dispatch_release(data);
+        */
 
 
     id<MTLFunction> vertexFunction = [defaultLibrary newFunctionWithName:@"vertexShader"];
@@ -68,7 +84,6 @@
     pipelineStateDescriptor.fragmentFunction = fragmentFunction;
     pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
 
-    NSError *error;
     _pipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
                                                              error:&error];
 
