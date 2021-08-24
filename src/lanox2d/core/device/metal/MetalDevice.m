@@ -62,18 +62,6 @@
 
     NSError *error;
     id<MTLLibrary> defaultLibrary = [_device newLibraryWithSource:[NSString stringWithUTF8String:test_metal] options:nil error:&error];
-
-    /* https://code.woboq.org/qt5/qtbase/src/gui/rhi/qrhimetal.mm.html
-     *   dispatch_data_t data = dispatch_data_create(mtllib.shader().constData(),
-                                                    mtllib.shader().size(),
-                                                    dispatch_get_global_queue(0, 0),
-                                                    DISPATCH_DATA_DESTRUCTOR_DEFAULT);
-        NSError *err = nil;
-        id<MTLLibrary> lib = [dev newLibraryWithData: data error: &err];
-        dispatch_release(data);
-        */
-
-
     id<MTLFunction> vertexFunction = [defaultLibrary newFunctionWithName:@"vertexShader"];
     id<MTLFunction> fragmentFunction = [defaultLibrary newFunctionWithName:@"fragmentShader"];
 
