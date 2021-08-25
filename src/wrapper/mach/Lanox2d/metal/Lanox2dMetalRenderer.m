@@ -39,7 +39,7 @@
 }
 
 - (void)mtkView:(nonnull MTKView *)mtkView drawableSizeWillChange:(CGSize)size {
-    NSLog(@"drawableSizeWillChange");
+    NSLog(@"drawableSizeWillChange: %fx%f", size.width, size.height);
 }
 
 - (void)drawInMTKView:(nonnull MTKView *)mtkView {
