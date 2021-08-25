@@ -33,6 +33,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		BF86508D26D6491B005917D1 /* RenderPipeline.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RenderPipeline.h; sourceTree = "<group>"; };
+		BF86508E26D6491B005917D1 /* MetalDevice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MetalDevice.h; sourceTree = "<group>"; };
+		BF86508F26D6491B005917D1 /* device.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = device.h; sourceTree = "<group>"; };
+		BF86509026D6491B005917D1 /* RenderPipeline.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RenderPipeline.m; sourceTree = "<group>"; };
+		BF86509226D6491B005917D1 /* solid.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = solid.metal; sourceTree = "<group>"; };
+		BF86509326D6491B005917D1 /* device.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = device.m; sourceTree = "<group>"; };
+		BF86509426D6491B005917D1 /* MetalDevice.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MetalDevice.m; sourceTree = "<group>"; };
+		BF86509526D6491B005917D1 /* prefix.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = prefix.h; sourceTree = "<group>"; };
 		BFAB861026C2CAA100CCDD70 /* Example-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFAB861326C2CAA100CCDD70 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		BFAB861426C2CAA100CCDD70 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -78,6 +86,38 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BF86508426D6491B005917D1 /* device */ = {
+			isa = PBXGroup;
+			children = (
+				BF86508C26D6491B005917D1 /* metal */,
+			);
+			name = device;
+			path = ../../../lanox2d/core/device;
+			sourceTree = "<group>";
+		};
+		BF86508C26D6491B005917D1 /* metal */ = {
+			isa = PBXGroup;
+			children = (
+				BF86509126D6491B005917D1 /* shaders */,
+				BF86508E26D6491B005917D1 /* MetalDevice.h */,
+				BF86509426D6491B005917D1 /* MetalDevice.m */,
+				BF86508D26D6491B005917D1 /* RenderPipeline.h */,
+				BF86509026D6491B005917D1 /* RenderPipeline.m */,
+				BF86508F26D6491B005917D1 /* device.h */,
+				BF86509326D6491B005917D1 /* device.m */,
+				BF86509526D6491B005917D1 /* prefix.h */,
+			);
+			path = metal;
+			sourceTree = "<group>";
+		};
+		BF86509126D6491B005917D1 /* shaders */ = {
+			isa = PBXGroup;
+			children = (
+				BF86509226D6491B005917D1 /* solid.metal */,
+			);
+			path = shaders;
+			sourceTree = "<group>";
+		};
 		BFAB860726C2CAA100CCDD70 = {
 			isa = PBXGroup;
 			children = (
@@ -137,6 +177,7 @@
 		BFD9A34226D127FE00FE500D /* Lanox2d */ = {
 			isa = PBXGroup;
 			children = (
+				BF86508426D6491B005917D1 /* device */,
 				BFD9A34D26D1292B00FE500D /* metal */,
 				BFD9A35026D1292B00FE500D /* opengl */,
 				BFD9A34526D127FE00FE500D /* Lanox2dView.h */,
