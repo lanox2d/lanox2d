@@ -33,6 +33,7 @@
 
 - (id)initWithFrame:(CGRect)frame delegate:(id)delegate {
     if (self = [super initWithFrame:frame]) {
+        [self setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
         [self metalInit:delegate];
     }
     return self;
