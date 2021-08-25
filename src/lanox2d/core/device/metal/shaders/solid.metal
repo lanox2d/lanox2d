@@ -1,17 +1,7 @@
-/*
-See LICENSE folder for this sample’s licensing information.
-
-Abstract:
-Metal shaders used for this sample
-*/
-
 #include <metal_stdlib>
+#include <simd/simd.h>
 
 using namespace metal;
-
-// Include header shared between this Metal shader code and C code executing Metal API commands.
-
-#include <simd/simd.h>
 
 // Buffer index values shared between shader and C code to ensure Metal shader buffer inputs
 // match Metal API buffer set calls.
@@ -49,8 +39,7 @@ struct RasterizerData
 vertex RasterizerData
 vertexShader(uint vertexID [[vertex_id]],
              constant AAPLVertex *vertices [[buffer(AAPLVertexInputIndexVertices)]],
-             constant vector_uint2 *viewportSizePointer [[buffer(AAPLVertexInputIndexViewportSize)]])
-{
+             constant vector_uint2 *viewportSizePointer [[buffer(AAPLVertexInputIndexViewportSize)]]) {
     RasterizerData out;
 
     // Index into the array of positions to get the current vertex.
@@ -72,9 +61,7 @@ vertexShader(uint vertexID [[vertex_id]],
     return out;
 }
 
-fragment float4 fragmentShader(RasterizerData in [[stage_in]])
-{
-    // Return the interpolated color.
+fragment float4 fragmentShader(RasterizerData in [[stage_in]]) {
     return in.color;
 }
 
