@@ -22,9 +22,7 @@
     Lanox2dView*    _lanox2dView;
     float           _fpsCount;
     double          _fpsTime;
-#ifdef LX_CONFIG_OS_MACOSX
-    NSTextField*    _infoView;
-#else
+#ifdef LX_CONFIG_OS_IOS
     UILabel*        _infoView;
 #endif
 }
@@ -34,19 +32,15 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
     // init lanox2d view
     CGRect frameBounds = [self.view frame];
     _lanox2dView = [[Lanox2dView alloc] initWithFrame:frameBounds delegate:self];
     [self.view addSubview:_lanox2dView];
 
     // init info view
+#ifdef LX_CONFIG_OS_IOS
     CGRect infoBounds = CGRectMake(frameBounds.origin.x + frameBounds.size.width - 100, frameBounds.origin.y + 30, 100, 30);
-#ifdef LX_CONFIG_OS_MACOSX
-    _infoView = [[NSTextField alloc] initWithFrame:infoBounds];
-    [_infoView setTextColor:[NSColor redColor]];
-    [self.view addSubview:_infoView];
-#else
     _infoView = [[UILabel alloc] initWithFrame:infoBounds];
     [_infoView setTextColor:[UIColor redColor]];
     [self.view addSubview:_infoView];
@@ -71,7 +65,7 @@
     if (time > _fpsTime + 1) {
         float framerate = (float)(_fpsCount / (time - _fpsTime));
 #ifdef LX_CONFIG_OS_MACOSX
-        [_infoView setStringValue:[NSString stringWithFormat:@"%0.02f fps", framerate]];
+        self.view.window.title = [NSString stringWithFormat:@"Lanox2d (%0.02f fps)", framerate];
 #else
         [_infoView setText:[NSString stringWithFormat:@"%0.02f fps", framerate]];
 #endif
