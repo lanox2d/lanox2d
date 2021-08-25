@@ -23,6 +23,8 @@
 
 @interface MetalLibrary : NSObject
 
+//- (id)initWithDevice:(id<MTLDevice>)device;
+
 @end
 
 
