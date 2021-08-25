@@ -15,12 +15,20 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        MetalLibrary.m
+ * @file        RenderPipeline.h
  *
  */
 
-#import "MetalLibrary.h"
+#import "prefix.h"
 
-@implementation MetalLibrary {
-}
+@interface RenderPipeline : NSObject
+
+- (id)initWithView:(MTKView*)view;
+
+- (id<MTLRenderPipelineState>)renderPipelineWithName:(NSString*)name shaderSource:(NSString*)source;
+- (id<MTLRenderPipelineState>)renderPipelineSolid;
+- (id<MTLRenderPipelineState>)renderPipelineTexture;
+
 @end
+
+

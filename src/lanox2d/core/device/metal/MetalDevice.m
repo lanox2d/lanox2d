@@ -20,6 +20,7 @@
  */
 
 #import "MetalDevice.h"
+#import "RenderPipeline.h"
 
 @implementation MetalDevice {
     MTKView*                    _view;
@@ -27,12 +28,12 @@
     id<MTLCommandQueue>         _commandQueue;
     id<MTLCommandBuffer>        _commandBuffer;
     id<MTLRenderCommandEncoder> _renderEncoder;
-    id<MTLRenderPipelineState>  _pipelineState;
+    RenderPipeline*             _renderPipeline;
 }
 
 - (nonnull instancetype)initWithView:(nonnull MTKView*)mtkView {
     self = [super init];
-    if(self) {
+    if (self) {
         [self initDevice:mtkView];
     }
     return self;
@@ -51,36 +52,8 @@
     // init command queue
     _commandQueue = [_device newCommandQueue];
 
-#if 1
-
-    static lx_char_t const test_metal[] = {
-#   include "test.metal.h"
-    };
-
-    // Load all the shader files with a .metal file extension in the project.
-    //id<MTLLibrary> defaultLibrary = [_device newDefaultLibrary];
-
-    NSError *error;
-    id<MTLLibrary> defaultLibrary = [_device newLibraryWithSource:[NSString stringWithUTF8String:test_metal] options:nil error:&error];
-    id<MTLFunction> vertexFunction = [defaultLibrary newFunctionWithName:@"vertexShader"];
-    id<MTLFunction> fragmentFunction = [defaultLibrary newFunctionWithName:@"fragmentShader"];
-
-    // Configure a pipeline descriptor that is used to create a pipeline state.
-    MTLRenderPipelineDescriptor *pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
-    pipelineStateDescriptor.label = @"Simple Pipeline";
-    pipelineStateDescriptor.vertexFunction = vertexFunction;
-    pipelineStateDescriptor.fragmentFunction = fragmentFunction;
-    pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
-
-    _pipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-                                                             error:&error];
-
-    // Pipeline State creation could fail if the pipeline descriptor isn't set up properly.
-    //  If the Metal API validation is enabled, you can find out more information about what
-    //  went wrong.  (Metal API validation is enabled by default when a debug build is run
-    //  from Xcode.)
-    NSAssert(_pipelineState, @"Failed to create pipeline state: %@", error);
-#endif
+    // init render pipeline
+    _renderPipeline = [[RenderPipeline alloc] initWithView:mtkView];
 }
 
 - (lx_bool_t)drawLock {
@@ -136,7 +109,8 @@
     // Set the region of the drawable to draw into.
     [_renderEncoder setViewport:(MTLViewport){0.0, 0.0, _view.drawableSize.width, _view.drawableSize.height, 0.0, 1.0 }];
 
-    [_renderEncoder setRenderPipelineState:_pipelineState];
+    id<MTLRenderPipelineState> pipelineState = [_renderPipeline renderPipelineSolid];
+    [_renderEncoder setRenderPipelineState:pipelineState];
 
     // Pass in the parameter data.
     [_renderEncoder setVertexBytes:triangleVertices
