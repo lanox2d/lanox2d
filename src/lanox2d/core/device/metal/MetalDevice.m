@@ -113,21 +113,15 @@
     [_renderEncoder setRenderPipelineState:pipelineState];
 
     // Pass in the parameter data.
-    [_renderEncoder setVertexBytes:triangleVertices
-                           length:sizeof(triangleVertices)
-                          atIndex:AAPLVertexInputIndexVertices];
+    [_renderEncoder setVertexBytes:triangleVertices length:sizeof(triangleVertices) atIndex:AAPLVertexInputIndexVertices];
 
     static vector_uint2 _viewportSize;
     _viewportSize.x = _view.drawableSize.width;
     _viewportSize.y = _view.drawableSize.height;
-    [_renderEncoder setVertexBytes:&_viewportSize
-                           length:sizeof(_viewportSize)
-                          atIndex:AAPLVertexInputIndexViewportSize];
+    [_renderEncoder setVertexBytes:&_viewportSize length:sizeof(_viewportSize) atIndex:AAPLVertexInputIndexViewportSize];
 
     // Draw the triangle.
-    [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
-                      vertexStart:0
-                      vertexCount:3];
+    [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:3];
 }
 
 - (lx_void_t)drawClear:(lx_color_t)color {

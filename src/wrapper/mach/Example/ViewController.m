@@ -36,27 +36,22 @@
     [super viewDidLoad];
 
     // init lanox2d view
-#ifdef LX_CONFIG_OS_MACOSX
-    CGRect screenBounds = [[NSScreen mainScreen] frame];
-#else
-    CGRect screenBounds = [[UIScreen mainScreen] bounds];
-#endif
-    _lanox2dView = [[Lanox2dView alloc] initWithFrame:screenBounds delegate:self];
+    CGRect frameBounds = [self.view frame];
+    _lanox2dView = [[Lanox2dView alloc] initWithFrame:frameBounds delegate:self];
     [self.view addSubview:_lanox2dView];
 
     // init info view
+    CGRect infoBounds = CGRectMake(frameBounds.origin.x + frameBounds.size.width - 100, frameBounds.origin.y + 30, 100, 30);
 #ifdef LX_CONFIG_OS_MACOSX
-    CGRect infoBounds = CGRectMake(screenBounds.origin.x + screenBounds.size.width - 100, screenBounds.origin.y + 30, 100, 30);
     _infoView = [[NSTextField alloc] initWithFrame:infoBounds];
     [_infoView setTextColor:[NSColor redColor]];
     [self.view addSubview:_infoView];
 #else
-    CGRect infoBounds = CGRectMake(screenBounds.origin.x + screenBounds.size.width - 100, screenBounds.origin.y + 30, 100, 30);
     _infoView = [[UILabel alloc] initWithFrame:infoBounds];
     [_infoView setTextColor:[UIColor redColor]];
     [self.view addSubview:_infoView];
 #endif
-    
+
 #ifdef TEST_EMPTY_WINDOW
     [self initEmptyWindow];
 #endif
