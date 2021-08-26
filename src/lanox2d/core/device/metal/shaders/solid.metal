@@ -1,12 +1,6 @@
 #include <metal_stdlib>
-#include <simd/simd.h>
 
 using namespace metal;
-
-struct VertexIn {
-    vector_float2 position;
-    float4 color;
-};
 
 struct VertexOut {
     float4 position [[position]];
@@ -14,14 +8,14 @@ struct VertexOut {
 };
 
 vertex VertexOut vertexShader(uint vertexID [[vertex_id]],
-                              constant VertexIn* vertices [[buffer(0)]],
+                              constant float2* vertices [[buffer(0)]],
                               constant vector_uint2* viewportSizePointer [[buffer(1)]],
                               constant float4* color [[buffer(2)]]) {
     VertexOut out;
-    float2 pixelSpacePosition = vertices[vertexID].position.xy;
+    float2 position = vertices[vertexID].xy;
     vector_float2 viewportSize = vector_float2(*viewportSizePointer);
     out.position = vector_float4(0.0, 0.0, 0.0, 1.0);
-    out.position.xy = pixelSpacePosition / (viewportSize / 2.0);
+    out.position.xy = position / (viewportSize / 2.0);
     out.color = *color;
     return out;
 }

@@ -90,17 +90,10 @@
 
 - (lx_void_t)drawTest {
 
-    typedef struct
-    {
-        vector_float2 position;
-        vector_float4 color;
-    } VertexIn;
-
-    const VertexIn triangleVertices[] = {
-        // 2D positions,    RGBA colors
-        { {  250,  -250 }, { 1, 0, 0, 1 } },
-        { { -250,  -250 }, { 0, 1, 0, 1 } },
-        { {    0,   250 }, { 0, 0, 1, 1 } },
+    const vector_float2 triangleVertices[] = {
+        {  250,  -250 },
+        { -250,  -250 },
+        {    0,   250 },
     };
 
     // Set the region of the drawable to draw into.
