@@ -19,6 +19,7 @@
  *
  */
 
+#import "matrix.h"
 #import "MetalDevice.h"
 #import "RenderPipeline.h"
 
@@ -114,6 +115,7 @@
     [_renderEncoder setVertexBytes:&color length:sizeof(color) atIndex:2];
 
     lx_metal_matrix_t matrixProject;
+    lx_metal_matrix_clear(&matrixProject);
     [_renderEncoder setVertexBytes:&matrixProject length:sizeof(matrixProject) atIndex:3];
 
     // Draw the triangle.
