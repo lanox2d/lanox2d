@@ -96,7 +96,7 @@
         vector_float4 color;
     } VertexIn;
 
-    static const VertexIn triangleVertices[] = {
+    const VertexIn triangleVertices[] = {
         // 2D positions,    RGBA colors
         { {  250,  -250 }, { 1, 0, 0, 1 } },
         { { -250,  -250 }, { 0, 1, 0, 1 } },
@@ -112,10 +112,13 @@
     // Pass in the parameter data.
     [_renderEncoder setVertexBytes:triangleVertices length:sizeof(triangleVertices) atIndex:0];
 
-    static vector_uint2 _viewportSize;
+    vector_uint2 _viewportSize;
     _viewportSize.x = _view.drawableSize.width;
     _viewportSize.y = _view.drawableSize.height;
     [_renderEncoder setVertexBytes:&_viewportSize length:sizeof(_viewportSize) atIndex:1];
+
+    vector_float4 color = {1, 0, 0, 1};
+    [_renderEncoder setVertexBytes:&color length:sizeof(color) atIndex:2];
 
     // Draw the triangle.
     [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:3];
