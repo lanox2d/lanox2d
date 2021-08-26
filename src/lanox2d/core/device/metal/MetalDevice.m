@@ -90,16 +90,13 @@
 
 - (lx_void_t)drawTest {
 
-#define AAPLVertexInputIndexVertices     0
-#define AAPLVertexInputIndexViewportSize 1
-
     typedef struct
     {
         vector_float2 position;
         vector_float4 color;
-    } AAPLVertex;
+    } VertexIn;
 
-    static const AAPLVertex triangleVertices[] = {
+    static const VertexIn triangleVertices[] = {
         // 2D positions,    RGBA colors
         { {  250,  -250 }, { 1, 0, 0, 1 } },
         { { -250,  -250 }, { 0, 1, 0, 1 } },
@@ -113,12 +110,12 @@
     [_renderEncoder setRenderPipelineState:pipelineState];
 
     // Pass in the parameter data.
-    [_renderEncoder setVertexBytes:triangleVertices length:sizeof(triangleVertices) atIndex:AAPLVertexInputIndexVertices];
+    [_renderEncoder setVertexBytes:triangleVertices length:sizeof(triangleVertices) atIndex:0];
 
     static vector_uint2 _viewportSize;
     _viewportSize.x = _view.drawableSize.width;
     _viewportSize.y = _view.drawableSize.height;
-    [_renderEncoder setVertexBytes:&_viewportSize length:sizeof(_viewportSize) atIndex:AAPLVertexInputIndexViewportSize];
+    [_renderEncoder setVertexBytes:&_viewportSize length:sizeof(_viewportSize) atIndex:1];
 
     // Draw the triangle.
     [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:3];
