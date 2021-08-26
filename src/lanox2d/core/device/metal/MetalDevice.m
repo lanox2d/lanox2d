@@ -113,7 +113,7 @@
     vector_float4 color = {1, 0, 0, 1};
     [_renderEncoder setVertexBytes:&color length:sizeof(color) atIndex:2];
 
-    matrix_float4x4 matrixProject;
+    lx_metal_matrix_t matrixProject;
     [_renderEncoder setVertexBytes:&matrixProject length:sizeof(matrixProject) atIndex:3];
 
     // Draw the triangle.

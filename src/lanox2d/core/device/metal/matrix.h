@@ -15,28 +15,31 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        prefix.h
+ * @file        matrix.h
  *
  */
-#ifndef LX_CORE_DEVICE_METAL_PREFIX_H
-#define LX_CORE_DEVICE_METAL_PREFIX_H
+#ifndef LX_CORE_DEVICE_METAL_MATRIX_H
+#define LX_CORE_DEVICE_METAL_MATRIX_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "../prefix.h"
-#include "../../path.h"
-#include "../../paint.h"
-#include "../../private/stroker.h"
-#include "../../../platform/window.h"
-#import <MetalKit/MetalKit.h>
+#include "prefix.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * types
+ * inline interfaces
  */
-typedef matrix_float4x4     lx_metal_matrix_t;
-typedef matrix_float4x4*    lx_metal_matrix_ref_t;
+
+/* init matrix
+ *
+ * @param sx        the x-scale
+ * @param kx        the x-skew
+ * @param ky        the y-skew
+ * @param sy        the y-scale
+ * @param tx        the x-translate
+ * @param ty        the y-translate
+ */
+static lx_inline lx_void_t lx_metal_matrix_init(lx_metal_matrix_ref_t matrix, lx_float_t sx, lx_float_t kx, lx_float_t ky, lx_float_t sy, lx_float_t tx, lx_float_t ty) {
+}
 
 #endif
-
-
