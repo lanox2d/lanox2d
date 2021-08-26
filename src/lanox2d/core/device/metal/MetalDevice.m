@@ -106,17 +106,12 @@
     // Pass in the parameter data.
     [_renderEncoder setVertexBytes:triangleVertices length:sizeof(triangleVertices) atIndex:0];
 
-    vector_uint2 _viewportSize;
-    _viewportSize.x = _view.drawableSize.width;
-    _viewportSize.y = _view.drawableSize.height;
-    [_renderEncoder setVertexBytes:&_viewportSize length:sizeof(_viewportSize) atIndex:1];
-
     vector_float4 color = {1, 0, 0, 1};
-    [_renderEncoder setVertexBytes:&color length:sizeof(color) atIndex:2];
+    [_renderEncoder setVertexBytes:&color length:sizeof(color) atIndex:1];
 
     lx_metal_matrix_t matrixProject;
-    lx_metal_matrix_clear(&matrixProject);
-    [_renderEncoder setVertexBytes:&matrixProject length:sizeof(matrixProject) atIndex:3];
+    lx_metal_matrix_init_scale(&matrixProject, 1.0f / _view.drawableSize.width, 1.0f / _view.drawableSize.height);
+    [_renderEncoder setVertexBytes:&matrixProject length:sizeof(matrixProject) atIndex:2];
 
     // Draw the triangle.
     [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:3];
