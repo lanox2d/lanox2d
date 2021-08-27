@@ -91,19 +91,11 @@
 
 - (lx_void_t)drawTest {
 
-#if 0
-    const vector_float2 triangleVertices[] = {
-        {  250,  -250 },
-        { -250,  -250 },
-        {    0,   250 },
-    };
-#elif 1
     const vector_float2 triangleVertices[] = {
         {  640,   0 },
         {  1280, 480 },
         {  0,   480 },
     };
-#endif
 
     // Set the region of the drawable to draw into.
     [_renderEncoder setViewport:(MTLViewport){0.0, 0.0, _view.drawableSize.width, _view.drawableSize.height, 0.0, 1.0 }];
@@ -137,12 +129,15 @@
      *
      */
     lx_metal_matrix_t matrixProject;
-#if 1
     lx_float_t w = _view.drawableSize.width;
     lx_float_t h = _view.drawableSize.height;
     lx_metal_matrix_orthof(&matrixProject, 0.0f, w, h, 0.0f, -1.0f, 1.0f);
-#endif
     [_renderEncoder setVertexBytes:&matrixProject length:sizeof(matrixProject) atIndex:2];
+
+    lx_metal_matrix_t matrixModel;
+    lx_metal_matrix_init_scale(&matrixModel, 0.5f, 0.5f);
+    lx_metal_matrix_translate(&matrixModel, 100, 100);
+    [_renderEncoder setVertexBytes:&matrixModel length:sizeof(matrixModel) atIndex:3];
 
     // Draw the triangle.
     [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:3];

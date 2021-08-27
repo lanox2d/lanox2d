@@ -10,11 +10,12 @@ struct VertexOut {
 vertex VertexOut vertexShader(uint vertexID [[vertex_id]],
                               constant float2* vertices [[buffer(0)]],
                               constant float4* color [[buffer(1)]],
-                              constant float4x4& matrixProject [[buffer(2)]]) {
+                              constant float4x4& matrixProject [[buffer(2)]],
+                              constant float4x4& matrixModel [[buffer(3)]]) {
     VertexOut out;
     float4 position = float4(0.0, 0.0, 0.0, 1.0);
     position.xy = vertices[vertexID].xy;
-    out.position = matrixProject * position;
+    out.position = matrixProject * matrixModel * position;
     out.color = *color;
     return out;
 }

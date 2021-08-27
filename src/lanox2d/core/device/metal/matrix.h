@@ -335,7 +335,7 @@ static lx_inline lx_void_t lx_metal_matrix_orthof(lx_metal_matrix_ref_t matrix, 
     lx_metal_matrix_clear(matrix);
     mx[0]  = 2.0f / (right - left);
     mx[5]  = 2.0f / (top - bottom);
-    mx[10] = -1.0f / (farp - nearp);
+    mx[10] = -1.0f / (farp - nearp); // @note z: (0, 1), opengl: (0, 2)
     mx[12] = -(right + left) / (right - left);
     mx[13] = -(top + bottom) / (top - bottom);
     mx[14] = -(farp + nearp) / (farp - nearp);
