@@ -91,11 +91,31 @@
 
 - (lx_void_t)drawTest {
 
+#if 0
     const vector_float2 triangleVertices[] = {
         {  250,  -250 },
         { -250,  -250 },
         {    0,   250 },
     };
+#elif 0
+    const vector_float2 triangleVertices[] = {
+        {  250,   0 },
+        {  500, 500 },
+        {  0,   500 },
+    };
+#elif 0
+    const vector_float2 triangleVertices[] = {
+        {  0,   1 },
+        {  1,   0 },
+        {  -1,   0 },
+    };
+#else
+    const vector_float2 triangleVertices[] = {
+        {  1,   0 },
+        {  2,   -1 },
+        {  0,   -1 },
+    };
+#endif
 
     // Set the region of the drawable to draw into.
     [_renderEncoder setViewport:(MTLViewport){0.0, 0.0, _view.drawableSize.width, _view.drawableSize.height, 0.0, 1.0 }];
@@ -109,8 +129,57 @@
     vector_float4 color = {1, 0, 0, 1};
     [_renderEncoder setVertexBytes:&color length:sizeof(color) atIndex:1];
 
+    /* metal (origin)
+     *          y
+     *         /|\
+     *          |
+     *          |
+     * ---------O--------> x
+     *          |
+     *          |
+     *          |
+     *
+     * to (world)
+     *
+     *  O----------> x
+     *  |
+     *  |
+     * \|/
+     *  y
+     *
+     */
     lx_metal_matrix_t matrixProject;
+#if 0
     lx_metal_matrix_init_scale(&matrixProject, 1.0f / _view.drawableSize.width, 1.0f / _view.drawableSize.height);
+#elif 0
+    lx_float_t w = _view.drawableSize.width / 2.0f;
+    lx_float_t h = _view.drawableSize.height / 2.0f;
+    lx_trace_i("%fx%f", w, h);
+   // lx_metal_matrix_init_translate(&matrixProject, w / -2.0f, h / -2.0f);
+    lx_metal_matrix_init_scale(&matrixProject, 1.0f / w, -1.0f / h);
+    lx_metal_matrix_translate(&matrixProject, 50.f, 50.f);
+#elif 1
+    lx_float_t w = _view.drawableSize.width / 2.0f;
+    lx_float_t h = _view.drawableSize.height / 2.0f;
+    (void)w;
+    (void)h;
+    lx_matrix_t mx;
+//    lx_matrix_init_translate(&mx, -250.f, -250.f);
+//    lx_matrix_scale(&mx, 1.0f / w, -1.0f / h);
+
+    lx_matrix_clear(&mx);
+    lx_matrix_init_translate(&mx, -1, 1);
+//    lx_matrix_init_translate(&mx, -1.0f, 1.0f);
+//    lx_matrix_scale(&mx, w, -h);
+    //lx_matrix_init_scale(&mx, w, -h);
+    //lx_matrix_translate(&mx, -w / 2.0f, -h / 2.0f);
+    lx_matrix_invert(&mx);
+    lx_metal_matrix_convert(&matrixProject, &mx);
+#else
+    lx_float_t w = _view.drawableSize.width / 2.0f;
+    lx_float_t h = _view.drawableSize.height / 2.0f;
+    lx_metal_matrix_orthof(&matrixProject, 0.0f, w, h, 0.0f, -1.0f, 1.0f);
+#endif
     [_renderEncoder setVertexBytes:&matrixProject length:sizeof(matrixProject) atIndex:2];
 
     // Draw the triangle.
