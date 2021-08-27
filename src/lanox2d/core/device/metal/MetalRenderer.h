@@ -23,7 +23,7 @@
 
 @interface MetalRenderer : NSObject
 
-- (nonnull instancetype)initWithView:(nonnull MTKView*)mtkView;
+- (nonnull instancetype)initWithView:(nonnull MTKView*)mtkView baseDevice:(nonnull lx_device_t*)baseDevice;
 
 - (lx_void_t)drawLock;
 - (lx_void_t)drawCommit;

@@ -107,7 +107,7 @@ lx_device_ref_t lx_device_init_from_metal(lx_size_t width, lx_size_t height, lx_
         device->base.draw_lock    = lx_device_metal_draw_lock;
         device->base.draw_commit  = lx_device_metal_draw_commit;
         device->base.exit         = lx_device_metal_exit;
-        device->renderer          = [[MetalRenderer alloc] initWithView:(__bridge_transfer MTKView*)devdata];
+        device->renderer          = [[MetalRenderer alloc] initWithView:(__bridge_transfer MTKView*)devdata baseDevice:(lx_device_t*)device];
 
         // ok
         ok = lx_true;

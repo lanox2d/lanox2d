@@ -31,34 +31,30 @@
     id<MTLRenderCommandEncoder> _renderEncoder;
     RenderPipeline*             _renderPipeline;
     MTLClearColor               _clearColor;
+    lx_device_t*                _baseDevice;
 }
 
-- (nonnull instancetype)initWithView:(nonnull MTKView*)mtkView {
+- (nonnull instancetype)initWithView:(nonnull MTKView*)mtkView baseDevice:(nonnull lx_device_t*)baseDevice {
     self = [super init];
     if (self) {
-        [self initDevice:mtkView];
+
+        // init view and device
+        _view = mtkView;
+        _view.device = MTLCreateSystemDefaultDevice();
+        NSAssert(_view.device, @"metal is not supported on this device");
+        _device = _view.device;
+        _baseDevice = baseDevice;
+
+        // init command queue
+        _commandQueue = [_device newCommandQueue];
+
+        // init render pipeline
+        _renderPipeline = [[RenderPipeline alloc] initWithView:mtkView];
+
+        // init clear color
+        _clearColor = MTLClearColorMake(0, 0, 0, 1);
     }
     return self;
-}
-
-- (lx_void_t)initDevice:(nonnull MTKView*)mtkView {
-
-    // init view
-    _view = mtkView;
-
-    // init device
-    _view.device = MTLCreateSystemDefaultDevice();
-    NSAssert(_view.device, @"metal is not supported on this device");
-    _device = _view.device;
-
-    // init command queue
-    _commandQueue = [_device newCommandQueue];
-
-    // init render pipeline
-    _renderPipeline = [[RenderPipeline alloc] initWithView:mtkView];
-
-    // init clear color
-    _clearColor = MTLClearColorMake(0, 0, 0, 1);
 }
 
 - (lx_void_t)drawLock {
