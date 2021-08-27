@@ -15,13 +15,13 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        MetalDevice.h
+ * @file        MetalRenderer.h
  *
  */
 
 #import "prefix.h"
 
-@interface MetalDevice : NSObject
+@interface MetalRenderer : NSObject
 
 - (nonnull instancetype)initWithView:(nonnull MTKView*)mtkView;
 

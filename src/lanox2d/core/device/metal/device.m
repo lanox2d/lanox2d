@@ -31,7 +31,7 @@
 static lx_bool_t lx_device_metal_draw_lock(lx_device_ref_t self) {
     lx_metal_device_t* device = (lx_metal_device_t*)self;
     if (device) {
-        [device->device drawLock];
+        [device->renderer drawLock];
     }
     return lx_true;
 }
@@ -39,42 +39,42 @@ static lx_bool_t lx_device_metal_draw_lock(lx_device_ref_t self) {
 static lx_void_t lx_device_metal_draw_commit(lx_device_ref_t self) {
     lx_metal_device_t* device = (lx_metal_device_t*)self;
     if (device) {
-        [device->device drawCommit];
+        [device->renderer drawCommit];
     }
 }
 
 static lx_void_t lx_device_metal_draw_clear(lx_device_ref_t self, lx_color_t color) {
     lx_metal_device_t* device = (lx_metal_device_t*)self;
     if (device) {
-        [device->device drawClear:color];
+        [device->renderer drawClear:color];
     }
 }
 
 static lx_void_t lx_device_metal_draw_lines(lx_device_ref_t self, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds) {
     lx_metal_device_t* device = (lx_metal_device_t*)self;
     if (device) {
-        [device->device drawLines:points count:count bounds:bounds];
+        [device->renderer drawLines:points count:count bounds:bounds];
     }
 }
 
 static lx_void_t lx_device_metal_draw_points(lx_device_ref_t self, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds) {
     lx_metal_device_t* device = (lx_metal_device_t*)self;
     if (device) {
-        [device->device drawPoints:points count:count bounds:bounds];
+        [device->renderer drawPoints:points count:count bounds:bounds];
     }
 }
 
 static lx_void_t lx_device_metal_draw_polygon(lx_device_ref_t self, lx_polygon_ref_t polygon, lx_shape_ref_t hint, lx_rect_ref_t bounds) {
     lx_metal_device_t* device = (lx_metal_device_t*)self;
     if (device) {
-        [device->device drawPolygon:polygon hint:hint bounds:bounds];
+        [device->renderer drawPolygon:polygon hint:hint bounds:bounds];
     }
 }
 
 static lx_void_t lx_device_metal_draw_path(lx_device_ref_t self, lx_path_ref_t path) {
     lx_metal_device_t* device = (lx_metal_device_t*)self;
     if (device) {
-        [device->device drawPath:path];
+        [device->renderer drawPath:path];
     }
 }
 
@@ -107,7 +107,7 @@ lx_device_ref_t lx_device_init_from_metal(lx_size_t width, lx_size_t height, lx_
         device->base.draw_lock    = lx_device_metal_draw_lock;
         device->base.draw_commit  = lx_device_metal_draw_commit;
         device->base.exit         = lx_device_metal_exit;
-        device->device            = [[MetalDevice alloc] initWithView:(__bridge_transfer MTKView*)devdata];
+        device->renderer          = [[MetalRenderer alloc] initWithView:(__bridge_transfer MTKView*)devdata];
 
         // ok
         ok = lx_true;

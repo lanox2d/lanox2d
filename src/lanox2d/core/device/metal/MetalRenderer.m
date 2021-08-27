@@ -15,15 +15,15 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        MetalDevice.m
+ * @file        MetalRenderer.m
  *
  */
 
 #import "matrix.h"
-#import "MetalDevice.h"
+#import "MetalRenderer.h"
 #import "RenderPipeline.h"
 
-@implementation MetalDevice {
+@implementation MetalRenderer {
     MTKView*                    _view;
     id<MTLDevice>               _device;
     id<MTLCommandQueue>         _commandQueue;
