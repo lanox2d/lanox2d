@@ -36,8 +36,6 @@
 typedef struct lx_metal_device_t_ {
     lx_device_t             base;
     lx_window_ref_t         window;
-    lx_stroker_ref_t        stroker;
-    lx_tessellator_ref_t    tessellator;
     MetalRenderer*          renderer;
 }lx_metal_device_t;
 

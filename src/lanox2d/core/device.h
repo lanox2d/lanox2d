@@ -96,13 +96,6 @@ lx_size_t               lx_device_width(lx_device_ref_t device);
  */
 lx_size_t               lx_device_height(lx_device_ref_t device);
 
-/*! bind path
- *
- * @param device        the device
- * @param path          the path
- */
-lx_void_t               lx_device_bind_path(lx_device_ref_t device, lx_path_ref_t path);
-
 /*! bind paint
  *
  * @param device        the device

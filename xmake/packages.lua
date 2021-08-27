@@ -1,6 +1,6 @@
 -- libsdl package
 if is_config("window", "sdl") then
-    add_requires("libsdl")
+    add_requires("libsdl 2.x")
 end
 
 -- glut package

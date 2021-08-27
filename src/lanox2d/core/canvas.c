@@ -51,7 +51,6 @@ lx_canvas_ref_t lx_canvas_init(lx_device_ref_t device) {
         // init path
         canvas->path_stack = lx_object_stack_init(8, LX_OBJECT_STACK_TYPE_PATH);
         lx_assert_and_check_break(canvas->path_stack);
-        lx_device_bind_path(canvas->device, (lx_path_ref_t)lx_object_stack_object(canvas->path_stack));
 
         // init paint
         canvas->paint_stack = lx_object_stack_init(8, LX_OBJECT_STACK_TYPE_PAINT);

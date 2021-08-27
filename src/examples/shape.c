@@ -211,7 +211,7 @@ static lx_void_t window_exit(lx_window_ref_t window) {
 
 #ifndef LX_NOMAIN_ENTRY
 int main(int argc, char** argv) {
-    lx_window_ref_t window = lx_window_init(640, 640, "lanox2d");
+    lx_window_ref_t window = lx_window_init(640, 640, "lanox2d", lx_null);
     if (window) {
         window_init(window, argc, argv);
         lx_window_runloop(window);
