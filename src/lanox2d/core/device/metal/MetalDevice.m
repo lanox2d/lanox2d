@@ -30,6 +30,7 @@
     id<MTLCommandBuffer>        _commandBuffer;
     id<MTLRenderCommandEncoder> _renderEncoder;
     RenderPipeline*             _renderPipeline;
+    MTLClearColor               _clearColor;
 }
 
 - (nonnull instancetype)initWithView:(nonnull MTKView*)mtkView {
@@ -55,28 +56,30 @@
 
     // init render pipeline
     _renderPipeline = [[RenderPipeline alloc] initWithView:mtkView];
+
+    // init clear color
+    _clearColor = MTLClearColorMake(0, 0, 0, 1);
 }
 
-- (lx_bool_t)drawLock {
+- (lx_void_t)drawLock {
+    _commandBuffer = nil;
+}
 
-    // create a new command buffer for each render pass to the current drawable.
-    _commandBuffer = [_commandQueue commandBuffer];
-    _commandBuffer.label = @"Lanox2dCommand";
+- (lx_void_t)drawPrepare {
+    if (_commandBuffer == nil) {
+        _commandBuffer = [_commandQueue commandBuffer];
+        _commandBuffer.label = @"Lanox2dCommand";
+        MTLRenderPassDescriptor* renderPassDescriptor = _view.currentRenderPassDescriptor;
+        if (renderPassDescriptor != nil) {
 
-    // obtain a renderPassDescriptor generated from the view's drawable textures.
-    MTLRenderPassDescriptor* renderPassDescriptor = _view.currentRenderPassDescriptor;
-    if (renderPassDescriptor != nil) {
+            renderPassDescriptor.colorAttachments[0].loadAction = MTLLoadActionClear;
+            renderPassDescriptor.colorAttachments[0].clearColor = _clearColor;
+            renderPassDescriptor.colorAttachments[0].storeAction = MTLStoreActionStore;
 
-        // create a render command encoder.
-        _renderEncoder = [_commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
-        _renderEncoder.label = @"Lanox2dRenderEncoder";
-
-        [self drawTest];
-
-        // ok
-        return lx_true;
+            _renderEncoder = [_commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+            _renderEncoder.label = @"Lanox2dRenderEncoder";
+        }
     }
-    return lx_false;
 }
 
 - (lx_void_t)drawCommit {
@@ -144,18 +147,24 @@
 }
 
 - (lx_void_t)drawClear:(lx_color_t)color {
+    _clearColor = MTLClearColorMake((lx_float_t)color.r / 0xff, (lx_float_t)color.g / 0xff, (lx_float_t)color.b / 0xff, (lx_float_t)color.a / 0xff);
+    [self drawPrepare];
 }
 
 - (lx_void_t)drawLines:(nonnull lx_point_ref_t)points count:(lx_size_t)count bounds:(nullable lx_rect_ref_t)bounds {
+    [self drawPrepare];
 }
 
 - (lx_void_t)drawPoints:(nonnull lx_point_ref_t)points count:(lx_size_t)count bounds:(nullable lx_rect_ref_t)bounds {
+    [self drawPrepare];
 }
 
 - (lx_void_t)drawPolygon:(nonnull lx_polygon_ref_t)polygon hint:(nullable lx_shape_ref_t)hint bounds:(nullable lx_rect_ref_t)bounds {
+    [self drawPrepare];
 }
 
 - (lx_void_t)drawPath:(nonnull lx_path_ref_t)path {
+    [self drawPrepare];
 }
 
 @end

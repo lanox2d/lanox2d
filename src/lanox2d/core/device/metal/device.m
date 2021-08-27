@@ -31,9 +31,9 @@
 static lx_bool_t lx_device_metal_draw_lock(lx_device_ref_t self) {
     lx_metal_device_t* device = (lx_metal_device_t*)self;
     if (device) {
-        return [device->device drawLock];
+        [device->device drawLock];
     }
-    return lx_false;
+    return lx_true;
 }
 
 static lx_void_t lx_device_metal_draw_commit(lx_device_ref_t self) {

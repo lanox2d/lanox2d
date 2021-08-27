@@ -25,7 +25,7 @@
 
 - (nonnull instancetype)initWithView:(nonnull MTKView*)mtkView;
 
-- (lx_bool_t)drawLock;
+- (lx_void_t)drawLock;
 - (lx_void_t)drawCommit;
 - (lx_void_t)drawClear:(lx_color_t)color;
 - (lx_void_t)drawLines:(nonnull lx_point_ref_t)points count:(lx_size_t)count bounds:(nullable lx_rect_ref_t)bounds;
