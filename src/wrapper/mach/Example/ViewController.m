@@ -32,7 +32,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     // init lanox2d view
     CGRect frameBounds = [self.view frame];
     _lanox2dView = [[Lanox2dView alloc] initWithFrame:frameBounds delegate:self];
@@ -51,7 +51,7 @@
 #endif
 
 #ifdef TEST_SHAPE_WINDOW
-    [self initShapeWindow:@"path"];
+    [self initShapeWindow:@"rect"];
 #endif
 }
 

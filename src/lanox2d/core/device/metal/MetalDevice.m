@@ -153,18 +153,22 @@
 
 - (lx_void_t)drawLines:(nonnull lx_point_ref_t)points count:(lx_size_t)count bounds:(nullable lx_rect_ref_t)bounds {
     [self drawPrepare];
+    lx_trace_i("drawLines");
 }
 
 - (lx_void_t)drawPoints:(nonnull lx_point_ref_t)points count:(lx_size_t)count bounds:(nullable lx_rect_ref_t)bounds {
     [self drawPrepare];
+    lx_trace_i("drawPoints");
 }
 
 - (lx_void_t)drawPolygon:(nonnull lx_polygon_ref_t)polygon hint:(nullable lx_shape_ref_t)hint bounds:(nullable lx_rect_ref_t)bounds {
     [self drawPrepare];
+    lx_trace_i("drawPolygon");
 }
 
 - (lx_void_t)drawPath:(nonnull lx_path_ref_t)path {
     [self drawPrepare];
+    lx_trace_i("drawPath");
 }
 
 @end
