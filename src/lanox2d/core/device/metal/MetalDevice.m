@@ -97,23 +97,11 @@
         { -250,  -250 },
         {    0,   250 },
     };
-#elif 0
+#elif 1
     const vector_float2 triangleVertices[] = {
-        {  250,   0 },
-        {  500, 500 },
-        {  0,   500 },
-    };
-#elif 0
-    const vector_float2 triangleVertices[] = {
-        {  0,   1 },
-        {  1,   0 },
-        {  -1,   0 },
-    };
-#else
-    const vector_float2 triangleVertices[] = {
-        {  1,   0 },
-        {  2,   -1 },
-        {  0,   -1 },
+        {  640,   0 },
+        {  1280, 480 },
+        {  0,   480 },
     };
 #endif
 
@@ -149,35 +137,9 @@
      *
      */
     lx_metal_matrix_t matrixProject;
-#if 0
-    lx_metal_matrix_init_scale(&matrixProject, 1.0f / _view.drawableSize.width, 1.0f / _view.drawableSize.height);
-#elif 0
-    lx_float_t w = _view.drawableSize.width / 2.0f;
-    lx_float_t h = _view.drawableSize.height / 2.0f;
-    lx_trace_i("%fx%f", w, h);
-   // lx_metal_matrix_init_translate(&matrixProject, w / -2.0f, h / -2.0f);
-    lx_metal_matrix_init_scale(&matrixProject, 1.0f / w, -1.0f / h);
-    lx_metal_matrix_translate(&matrixProject, 50.f, 50.f);
-#elif 1
-    lx_float_t w = _view.drawableSize.width / 2.0f;
-    lx_float_t h = _view.drawableSize.height / 2.0f;
-    (void)w;
-    (void)h;
-    lx_matrix_t mx;
-//    lx_matrix_init_translate(&mx, -250.f, -250.f);
-//    lx_matrix_scale(&mx, 1.0f / w, -1.0f / h);
-
-    lx_matrix_clear(&mx);
-    lx_matrix_init_translate(&mx, -1, 1);
-//    lx_matrix_init_translate(&mx, -1.0f, 1.0f);
-//    lx_matrix_scale(&mx, w, -h);
-    //lx_matrix_init_scale(&mx, w, -h);
-    //lx_matrix_translate(&mx, -w / 2.0f, -h / 2.0f);
-    lx_matrix_invert(&mx);
-    lx_metal_matrix_convert(&matrixProject, &mx);
-#else
-    lx_float_t w = _view.drawableSize.width / 2.0f;
-    lx_float_t h = _view.drawableSize.height / 2.0f;
+#if 1
+    lx_float_t w = _view.drawableSize.width;
+    lx_float_t h = _view.drawableSize.height;
     lx_metal_matrix_orthof(&matrixProject, 0.0f, w, h, 0.0f, -1.0f, 1.0f);
 #endif
     [_renderEncoder setVertexBytes:&matrixProject length:sizeof(matrixProject) atIndex:2];

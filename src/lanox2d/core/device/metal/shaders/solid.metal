@@ -14,7 +14,7 @@ vertex VertexOut vertexShader(uint vertexID [[vertex_id]],
     VertexOut out;
     float4 position = float4(0.0, 0.0, 0.0, 1.0);
     position.xy = vertices[vertexID].xy;
-    out.position = position * matrixProject;
+    out.position = matrixProject * position;
     out.color = *color;
     return out;
 }
