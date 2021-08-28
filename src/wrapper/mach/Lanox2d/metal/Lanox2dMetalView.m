@@ -70,6 +70,9 @@
     // init our renderer with the view size
     [_renderer mtkView:self drawableSizeWillChange:self.drawableSize];
     self.delegate = _renderer;
+
+    // trace
+    lx_trace_d("metal init with window %0.2fx%0.2f", self.drawableSize.width, self.drawableSize.height);
 }
 
 - (void)metalExit {
