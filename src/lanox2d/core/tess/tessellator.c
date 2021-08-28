@@ -218,6 +218,11 @@ lx_void_t lx_tessellator_exit(lx_tessellator_ref_t self) {
     }
 }
 
+lx_size_t lx_tessellator_mode(lx_tessellator_ref_t self) {
+    lx_tessellator_t* tessellator = (lx_tessellator_t*)self;
+    return tessellator? tessellator->mode : LX_TESSELLATOR_MODE_CONVEX;
+}
+
 lx_void_t lx_tessellator_mode_set(lx_tessellator_ref_t self, lx_size_t mode) {
     lx_tessellator_t* tessellator = (lx_tessellator_t*)self;
     if (tessellator) {

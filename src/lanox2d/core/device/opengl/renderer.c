@@ -307,6 +307,31 @@ static lx_inline lx_void_t lx_gl_renderer_apply_paint(lx_opengl_device_t* device
     }
 }
 
+static lx_inline lx_void_t lx_gl_renderer_draw_contour(lx_opengl_device_t* device, lx_point_ref_t points, lx_size_t index, lx_uint16_t count) {
+#ifdef LX_GL_TESSELLATOR_TEST_ENABLE
+    // enable blend
+    lx_gl_renderer_enable_blend(device, lx_true);
+
+    // compute value
+    lx_size_t i = 0;
+    lx_uint32_t value = 0;
+    for (i = 0; i < count; i++) {
+        value += (lx_uint32_t)points[i].x;
+        value += (lx_uint32_t)points[i].y;
+        value *= 2166136261ul;
+    }
+
+    // apply color
+    lx_color_t  color;
+    color.r = (lx_byte_t)value;
+    color.g = (lx_byte_t)(value >> 8);
+    color.b = (lx_byte_t)(value >> 16);
+    color.a = 128;
+    lx_gl_renderer_apply_color(device, color);
+#endif
+    lx_glDrawArrays(LX_GL_TRIANGLE_FAN, index, (lx_GLint_t)count);
+}
+
 static lx_inline lx_void_t lx_gl_renderer_fill_polygon(lx_opengl_device_t* device, lx_polygon_ref_t polygon, lx_rect_ref_t bounds, lx_size_t rule) {
     lx_assert(device && device->tessellator);
 
@@ -326,38 +351,26 @@ static lx_inline lx_void_t lx_gl_renderer_fill_polygon(lx_opengl_device_t* devic
         }
 
         // apply vertices
-        lx_assert(result && result->points && result->counts);
+        lx_assert(result && result->points);
         lx_gl_renderer_apply_vertices(device, result->points, result->total);
 
         // draw vertices
-        lx_uint16_t  count;
-        lx_size_t    index = 0;
-        lx_uint16_t* counts = result->counts;
-        while ((count = *counts++)) {
-#ifdef LX_GL_TESSELLATOR_TEST_ENABLE
-            // enable blend
-            lx_gl_renderer_enable_blend(device, lx_true);
-
-            // compute value
-            lx_size_t i = 0;
-            lx_uint32_t value = 0;
-            lx_point_ref_t points = result->points + index;
-            for (i = 0; i < count; i++) {
-                value += (lx_uint32_t)points[i].x;
-                value += (lx_uint32_t)points[i].y;
-                value *= 2166136261ul;
+        lx_size_t mode = lx_tessellator_mode(device->tessellator);
+        if (mode == LX_TESSELLATOR_MODE_TRIANGULATION) {
+            lx_size_t index = 0;
+            lx_size_t total = result->total;
+            while (index + 4 <= total) {
+                lx_gl_renderer_draw_contour(device, result->points + index, index, 4);
+                index += 4;
             }
-
-            // apply color
-            lx_color_t  color;
-            color.r = (lx_byte_t)value;
-            color.g = (lx_byte_t)(value >> 8);
-            color.b = (lx_byte_t)(value >> 16);
-            color.a = 128;
-            lx_gl_renderer_apply_color(device, color);
-#endif
-            lx_glDrawArrays(LX_GL_TRIANGLE_FAN, index, (lx_GLint_t)count);
-            index += count;
+        } else {
+            lx_uint16_t  count;
+            lx_size_t    index = 0;
+            lx_uint16_t* counts = result->counts;
+            while ((count = *counts++)) {
+                lx_gl_renderer_draw_contour(device, result->points + index, index, count);
+                index += count;
+            }
         }
     }
 }

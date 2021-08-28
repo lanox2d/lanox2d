@@ -126,6 +126,14 @@ lx_tessellator_ref_t    lx_tessellator_init(lx_noarg_t);
  */
 lx_void_t               lx_tessellator_exit(lx_tessellator_ref_t tessellator);
 
+/*! get the tessellator mode
+ *
+ * @param tessellator   the tessellator
+ *
+ * @return              the mode
+ */
+lx_size_t               lx_tessellator_mode(lx_tessellator_ref_t tessellator);
+
 /*! set the tessellator mode
  *
  * @param tessellator   the tessellator
