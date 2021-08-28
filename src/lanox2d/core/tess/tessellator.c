@@ -44,7 +44,7 @@
  * private implementation
  */
 static lx_void_t lx_tessellator_make_output(lx_tessellator_t* tessellator) {
-    lx_assert(tessellator && tessellator->mesh && tessellator->callback);
+    lx_assert(tessellator && tessellator->mesh);
 
     if (!tessellator->outputs) {
         tessellator->outputs = lx_array_init(LX_TESSELLATOR_OUTPUTS_GROW, lx_element_mem(sizeof(lx_point_t), lx_null));
@@ -75,21 +75,25 @@ static lx_void_t lx_tessellator_make_output(lx_tessellator_t* tessellator) {
             if (lx_array_size(outputs) > 2) {
                 lx_assert(lx_array_data(outputs));
                 lx_array_insert_tail(outputs, point_first); // close it
-                tessellator->callback((lx_point_ref_t)lx_array_data(outputs), (lx_uint16_t)lx_array_size(outputs), tessellator->udata);
+                if (tessellator->callback) {
+                    tessellator->callback((lx_point_ref_t)lx_array_data(outputs), (lx_uint16_t)lx_array_size(outputs), tessellator->udata);
+                }
             }
         }
     }
 }
 
 static lx_void_t lx_tessellator_make_convex(lx_tessellator_t* tessellator, lx_polygon_ref_t polygon, lx_rect_ref_t bounds) {
-    lx_assert(tessellator && tessellator->callback && polygon && bounds);
+    lx_assert(tessellator && polygon && bounds);
 
     // only one convex contour
     lx_assert(polygon->convex && polygon->counts && !polygon->counts[1]);
 
     // make convex or monotone? done it directly
     if (tessellator->mode == LX_TESSELLATOR_MODE_CONVEX || tessellator->mode == LX_TESSELLATOR_MODE_MONOTONE) {
-        tessellator->callback(polygon->points, polygon->counts[0], tessellator->udata);
+        if (tessellator->callback) {
+            tessellator->callback(polygon->points, polygon->counts[0], tessellator->udata);
+        }
         return ;
     }
 
@@ -195,9 +199,9 @@ lx_void_t lx_tessellator_callback_set(lx_tessellator_ref_t self, lx_tessellator_
     }
 }
 
-lx_void_t lx_tessellator_make(lx_tessellator_ref_t self, lx_polygon_ref_t polygon, lx_rect_ref_t bounds) {
+lx_polygon_ref_t lx_tessellator_make(lx_tessellator_ref_t self, lx_polygon_ref_t polygon, lx_rect_ref_t bounds) {
     lx_tessellator_t* tessellator = (lx_tessellator_t*)self;
-    lx_assert_and_check_return(tessellator && tessellator->callback && polygon && polygon->points && polygon->counts && bounds);
+    lx_assert_and_check_return_val(tessellator && polygon && polygon->points && polygon->counts && bounds, lx_null);
 
     // is convex polygon for each contour?
     if (polygon->convex) {
@@ -221,4 +225,5 @@ lx_void_t lx_tessellator_make(lx_tessellator_ref_t self, lx_polygon_ref_t polygo
         // make the concave polygon
         lx_tessellator_make_concave(tessellator, polygon, bounds);
     }
+    return lx_null;
 }

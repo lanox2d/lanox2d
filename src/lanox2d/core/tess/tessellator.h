@@ -161,8 +161,10 @@ lx_void_t               lx_tessellator_callback_set(lx_tessellator_ref_t tessell
  * @param tessellator   the tessellator
  * @param polygon       the polygon
  * @param bounds        the polygon bounds
+ *
+ * @return              the result polygon
  */
-lx_void_t               lx_tessellator_make(lx_tessellator_ref_t tessellator, lx_polygon_ref_t polygon, lx_rect_ref_t bounds);
+lx_polygon_ref_t        lx_tessellator_make(lx_tessellator_ref_t tessellator, lx_polygon_ref_t polygon, lx_rect_ref_t bounds);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

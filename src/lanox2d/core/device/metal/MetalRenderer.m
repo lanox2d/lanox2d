@@ -293,28 +293,29 @@
     }
 }
 
-static lx_void_t lx_metal_renderer_fill_convex(lx_point_ref_t points, lx_uint16_t count, lx_cpointer_t udata) {
-}
-
 - (lx_void_t)fillPolygon:(nonnull lx_polygon_ref_t)polygon bounds:(nullable lx_rect_ref_t)bounds rule:(lx_size_t)rule {
     lx_assert(_tessellator);
     lx_tessellator_rule_set(_tessellator, rule);
-    lx_tessellator_callback_set(_tessellator, lx_metal_renderer_fill_convex, (__bridge lx_cpointer_t)self);
-    lx_tessellator_make(_tessellator, polygon, bounds);
+    lx_polygon_ref_t result = lx_tessellator_make(_tessellator, polygon, bounds);
+    if (result) {
 
-#if 0
-    const vector_float2 triangleVertices[] = {
-        {  640,   0 },
-        {  1280, 480 },
-        {  0,   480 },
-    };
-    [_renderEncoder setVertexBytes:triangleVertices length:sizeof(triangleVertices) atIndex:kVerticesIndex];
-    [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:3];
-#endif
+        // apply vertices
+        lx_assert(result && result->points && result->counts);
+        [_renderEncoder setVertexBytes:result->points length:(result->total * sizeof(lx_point_t)) atIndex:kVerticesIndex];
+
+        // draw vertices
+        lx_uint16_t  count;
+        lx_size_t    index = 0;
+        lx_uint16_t* counts = result->counts;
+        while ((count = *counts++)) {
+            [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:index vertexCount:count];
+            index += count;
+        }
+    }
 }
 
 - (lx_bool_t)strokeOnly {
-    lx_assert(device && _baseDevice->paint && _baseDevice->matrix);
+    lx_assert(_baseDevice && _baseDevice->paint && _baseDevice->matrix);
 
     // width == 1 and solid? only stroke it
     return (    1.0f == lx_paint_stroke_width(_baseDevice->paint)
@@ -324,7 +325,7 @@ static lx_void_t lx_metal_renderer_fill_convex(lx_point_ref_t points, lx_uint16_
 }
 
 - (lx_void_t)strokePolygon:(nonnull lx_polygon_ref_t)polygon {
-    lx_assert(device && polygon && polygon->points && polygon->counts);
+    lx_assert(polygon && polygon->points && polygon->counts);
 
     // apply vertices
     [_renderEncoder setVertexBytes:polygon->points length:(polygon->total * sizeof(lx_point_t)) atIndex:kVerticesIndex];
@@ -340,10 +341,9 @@ static lx_void_t lx_metal_renderer_fill_convex(lx_point_ref_t points, lx_uint16_
 }
 
 - (lx_void_t)strokeFill:(nonnull lx_path_ref_t)path {
-    lx_assert(_baseDevice->paint && path);
+    lx_assert(_baseDevice && _baseDevice->paint && path);
     lx_check_return(!lx_path_empty(path));
 
-#if 0
     // the mode
     lx_size_t mode = lx_paint_mode(_baseDevice->paint);
 
@@ -357,14 +357,13 @@ static lx_void_t lx_metal_renderer_fill_convex(lx_point_ref_t points, lx_uint16_
     lx_paint_fill_rule_set(_baseDevice->paint, LX_PAINT_FILL_RULE_NONZERO);
 
     // draw path
-    lx_gl_renderer_draw_path(device, path);
+    [self drawPath:path];
 
     // restore the mode
     lx_paint_mode_set(_baseDevice->paint, mode);
 
     // restore the fill mode
     lx_paint_fill_rule_set(_baseDevice->paint, rule);
-#endif
 }
 
 @end

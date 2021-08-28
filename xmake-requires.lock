@@ -2,26 +2,6 @@
     __meta__ = {
         version = "1.0"
     },
-    ["iphoneos|arm64"] = {
-        ["libpng#31fecfc4"] = {
-            buildhash = "07b265612e2c428e9bbf3618201b6ae0",
-            repo = {
-                branch = "master",
-                commit = "eda7adee81bac151f87c507030cc0dd8ab299462",
-                url = "https://gitee.com/tboox/xmake-repo.git"
-            },
-            version = "v1.6.37"
-        },
-        ["zlib#31fecfc4"] = {
-            buildhash = "3e3c573d316845d2bd0b6b7bab138da6",
-            repo = {
-                branch = "master",
-                commit = "eda7adee81bac151f87c507030cc0dd8ab299462",
-                url = "https://gitee.com/tboox/xmake-repo.git"
-            },
-            version = "1.2.11"
-        }
-    },
     ["macosx|x86_64"] = {
         ["cmake#31fecfc4"] = {
             repo = {
