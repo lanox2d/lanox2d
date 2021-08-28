@@ -235,7 +235,7 @@
 
     if ((mode & LX_PAINT_MODE_STROKE) && (lx_paint_stroke_width(_baseDevice->paint) > 0)) {
         if ([self strokeOnly]) {
-            [self strokePolygon:polygon->points counts:polygon->counts];
+            [self strokePolygon:polygon];
         } else {
             [self strokeFill:lx_stroker_make_from_polygon(_stroker, _baseDevice->paint, polygon, hint)];
         }
@@ -323,19 +323,20 @@ static lx_void_t lx_metal_renderer_fill_convex(lx_point_ref_t points, lx_uint16_
             &&  !lx_paint_shader(_baseDevice->paint));
 }
 
-- (lx_void_t)strokePolygon:(nonnull lx_point_ref_t)points counts:(nullable lx_uint16_t const*)counts {
-    lx_assert(device && points && counts);
+- (lx_void_t)strokePolygon:(nonnull lx_polygon_ref_t)polygon {
+    lx_assert(device && polygon && polygon->points && polygon->counts);
 
-    lx_trace_i("strokePolygon");
-#if 0
-    lx_uint16_t count;
-    lx_size_t   index = 0;
+    // apply vertices
+    [_renderEncoder setVertexBytes:polygon->points length:(polygon->total * sizeof(lx_point_t)) atIndex:kVerticesIndex];
+
+    // draw vertices
+    lx_uint16_t  count;
+    lx_size_t    index = 0;
+    lx_uint16_t* counts = polygon->counts;
     while ((count = *counts++)) {
-        lx_gl_renderer_apply_vertices(device, points + index, count);
-        lx_glDrawArrays(LX_GL_LINE_STRIP, 0, (lx_GLint_t)count);
+        [_renderEncoder drawPrimitives:MTLPrimitiveTypeLineStrip vertexStart:index vertexCount:count];
         index += count;
     }
-#endif
 }
 
 - (lx_void_t)strokeFill:(nonnull lx_path_ref_t)path {
