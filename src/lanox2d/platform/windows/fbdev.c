@@ -102,7 +102,7 @@ static lx_uint16_t lx_window_fbdev_event_keyboard_code(lx_window_fbdev_t* window
     case KEY_A: code = 'a'; break;
     case KEY_B: code = 'b'; break;
     case KEY_C: code = 'c'; break;
-    case KEY_D: code = 'j'; break;
+    case KEY_D: code = 'd'; break;
     case KEY_E: code = 'e'; break;
     case KEY_F: code = 'f'; break;
     case KEY_G: code = 'g'; break;

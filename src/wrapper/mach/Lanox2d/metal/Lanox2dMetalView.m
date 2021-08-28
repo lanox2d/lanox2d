@@ -22,6 +22,9 @@
 #import "Lanox2dMetalView.h"
 #import "Lanox2dMetalRenderer.h"
 #import "lanox2d/lanox2d.h"
+#ifdef LX_CONFIG_OS_MACOSX
+#   import "MetalKeys.h"
+#endif
 
 #ifdef LX_CONFIG_OS_MACOSX
 #   define PlatformPanGestureRecognizer NSPanGestureRecognizer
@@ -78,8 +81,8 @@
     }
 }
 
-- (void)onTouchMove:(PlatformPanGestureRecognizer *)recognizer {
-	CGPoint pt = [recognizer locationInView:self];
+- (void)onTouchMove:(PlatformPanGestureRecognizer*)recognizer {
+    CGPoint pt = [recognizer locationInView:self];
     if (_lanox2dWindow) {
         lx_event_t event = {0};
         lx_touch_t touches[1];
@@ -93,5 +96,100 @@
         lx_window_notify(_lanox2dWindow, &event);
     }
 }
+
+#ifdef LX_CONFIG_OS_MACOSX
+- (BOOL)acceptsFirstResponder {
+  return YES;
+}
+
+- (lx_uint16_t)keyCode:(NSEvent*)keyEvent {
+    lx_uint16_t code = LX_KEY_NUL;
+    lx_bool_t has_shift = [keyEvent modifierFlags] & NSEventModifierFlagShift;
+    switch ([keyEvent keyCode]) {
+        case KEY_A: code = 'a'; break;
+        case KEY_B: code = 'b'; break;
+        case KEY_C: code = 'c'; break;
+        case KEY_D: code = 'd'; break;
+        case KEY_E: code = 'e'; break;
+        case KEY_F: code = 'f'; break;
+        case KEY_G: code = 'g'; break;
+        case KEY_H: code = 'h'; break;
+        case KEY_I: code = 'i'; break;
+        case KEY_J: code = 'j'; break;
+        case KEY_K: code = 'k'; break;
+        case KEY_L: code = 'l'; break;
+        case KEY_M: code = 'm'; break;
+        case KEY_N: code = 'n'; break;
+        case KEY_O: code = 'o'; break;
+        case KEY_P: code = 'p'; break;
+        case KEY_Q: code = 'q'; break;
+        case KEY_R: code = 'r'; break;
+        case KEY_S: code = 's'; break;
+        case KEY_T: code = 't'; break;
+        case KEY_U: code = 'u'; break;
+        case KEY_V: code = 'v'; break;
+        case KEY_W: code = 'w'; break;
+        case KEY_X: code = 'x'; break;
+        case KEY_Y: code = 'y'; break;
+        case KEY_Z: code = 'z'; break;
+        case KEY_0: code = has_shift? ')' : '0'; break;
+        case KEY_1: code = has_shift? '!' : '1'; break;
+        case KEY_2: code = has_shift? '@' : '2'; break;
+        case KEY_3: code = has_shift? '#' : '3'; break;
+        case KEY_4: code = has_shift? '$' : '4'; break;
+        case KEY_5: code = has_shift? '%' : '5'; break;
+        case KEY_6: code = has_shift? '^' : '6'; break;
+        case KEY_7: code = has_shift? '&' : '7'; break;
+        case KEY_8: code = has_shift? '*' : '8'; break;
+        case KEY_9: code = has_shift? '(' : '9'; break;
+        case KEY_MINUS: code = has_shift? '_' : '-'; break;
+        case KEY_EQUAL: code = has_shift? '+' : '='; break;
+        case KEY_COMMA: code = has_shift? '<' : ','; break;
+        case KEY_DOT:   code = has_shift? '>' : '.'; break;
+        case KEY_SLASH: code = has_shift? '?' : '/'; break;
+        case KEY_BACKAPOSTROPHE: code = has_shift? '~' : '`'; break;
+        case KEY_BACKSLASH:  code = has_shift? '|' : '\\'; break;
+        case KEY_LEFTBRACKET:  code = has_shift? '{' : '['; break;
+        case KEY_RIGHTBRACKET: code = has_shift? '}' : ']'; break;
+        case KEY_SEMICOLON:  code = has_shift? ':' : ';'; break;
+        case KEY_APOSTROPHE: code = has_shift? '"' : '\''; break;
+        case KEY_TAB:   code = LX_KEY_TAB; break;
+        case KEY_LEFT:  code = LX_KEY_LEFT; break;
+        case KEY_RIGHT: code = LX_KEY_RIGHT; break;
+        case KEY_UP:    code = LX_KEY_UP; break;
+        case KEY_DOWN:  code = LX_KEY_DOWN; break;
+        case KEY_SPACE: code = LX_KEY_SPACE; break;
+        case KEY_ESCAPE:code = LX_KEY_ESCAPE; break;
+        case KEY_RETURN: code = LX_KEY_ENTER; break;
+        default:
+            lx_trace_d("%d", [keyEvent keyCode]);
+            break;
+    }
+    if (code >= 'a' && code <= 'z' && has_shift) {
+        code = lx_toupper(code);
+    }
+    return code;
+}
+
+- (void)keyDown:(NSEvent*)keyEvent {
+    lx_event_t event = {0};
+    event.type               = LX_EVENT_TYPE_KEYBOARD;
+    event.u.keyboard.pressed = lx_true;
+    event.u.keyboard.code    = [self keyCode:keyEvent];
+    if (_lanox2dWindow && event.u.keyboard.code) {
+        lx_window_notify(_lanox2dWindow, &event);
+    }
+}
+
+- (void)keyUp:(NSEvent*)keyEvent {
+    lx_event_t event = {0};
+    event.type               = LX_EVENT_TYPE_KEYBOARD;
+    event.u.keyboard.pressed = lx_false;
+    event.u.keyboard.code    = [self keyCode:keyEvent];
+    if (_lanox2dWindow && event.u.keyboard.code) {
+        lx_window_notify(_lanox2dWindow, &event);
+    }
+}
+#endif
 
 @end
