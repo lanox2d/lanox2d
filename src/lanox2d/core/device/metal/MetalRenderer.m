@@ -202,13 +202,33 @@
 }
 
 - (lx_void_t)drawLines:(nonnull lx_point_ref_t)points count:(lx_size_t)count bounds:(nullable lx_rect_ref_t)bounds {
+    lx_assert(_baseDevice && _baseDevice->paint && points && count);
     [self drawPrepare];
-    lx_trace_i("drawLines");
+
+    lx_check_return(lx_paint_mode(_baseDevice->paint) & LX_PAINT_MODE_STROKE);
+    lx_check_return((lx_paint_stroke_width(_baseDevice->paint) > 0));
+
+    [self applyPaint:bounds];
+    if ([self strokeOnly]) {
+        [self strokeLines:points count:count];
+    } else {
+        [self strokeFill:lx_stroker_make_from_lines(_stroker, _baseDevice->paint, points, count)];
+    }
 }
 
 - (lx_void_t)drawPoints:(nonnull lx_point_ref_t)points count:(lx_size_t)count bounds:(nullable lx_rect_ref_t)bounds {
+    lx_assert(_baseDevice && _baseDevice->paint && points && count);
     [self drawPrepare];
-    lx_trace_i("drawPoints");
+
+    lx_check_return(lx_paint_mode(_baseDevice->paint) & LX_PAINT_MODE_STROKE);
+    lx_check_return((lx_paint_stroke_width(_baseDevice->paint) > 0));
+
+    [self applyPaint:bounds];
+    if ([self strokeOnly]) {
+        [self strokePoints:points count:count];
+    } else {
+        [self strokeFill:lx_stroker_make_from_lines(_stroker, _baseDevice->paint, points, count)];
+    }
 }
 
 - (lx_void_t)drawPolygon:(nonnull lx_polygon_ref_t)polygon hint:(nullable lx_shape_ref_t)hint bounds:(nullable lx_rect_ref_t)bounds {
@@ -345,6 +365,16 @@
             &&  1.0f == lx_abs(_baseDevice->matrix->sx)
             &&  1.0f == lx_abs(_baseDevice->matrix->sy)
             &&  !lx_paint_shader(_baseDevice->paint));
+}
+
+- (lx_void_t)strokePoints:(nonnull lx_point_ref_t)points count:(lx_uint16_t)count {
+    [_renderEncoder setVertexBytes:points length:(count * sizeof(lx_point_t)) atIndex:kVerticesIndex];
+    [_renderEncoder drawPrimitives:MTLPrimitiveTypePoint vertexStart:0 vertexCount:count];
+}
+
+- (lx_void_t)strokeLines:(nonnull lx_point_ref_t)points count:(lx_uint16_t)count {
+    [_renderEncoder setVertexBytes:points length:(count * sizeof(lx_point_t)) atIndex:kVerticesIndex];
+    [_renderEncoder drawPrimitives:MTLPrimitiveTypeLineStrip vertexStart:0 vertexCount:count];
 }
 
 - (lx_void_t)strokePolygon:(nonnull lx_polygon_ref_t)polygon {
