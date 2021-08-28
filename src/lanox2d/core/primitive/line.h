@@ -24,7 +24,7 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "prefix.h"
+#include "point.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
@@ -32,7 +32,7 @@
 lx_extern_c_enter
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * interfaces
+ * inline interfaces
  */
 
 /*! make line
@@ -43,7 +43,12 @@ lx_extern_c_enter
  * @param x1        the x1
  * @param y1        the y1
  */
-lx_void_t           lx_line_make(lx_line_ref_t line, lx_float_t x0, lx_float_t y0, lx_float_t x1, lx_float_t y1);
+static lx_inline lx_void_t lx_line_make(lx_line_ref_t line, lx_float_t x0, lx_float_t y0, lx_float_t x1, lx_float_t y1) {
+    line->p0.x = x0;
+    line->p0.y = y0;
+    line->p1.x = x1;
+    line->p1.y = y1;
+}
 
 /*! make line with the integer value
  *
@@ -53,14 +58,19 @@ lx_void_t           lx_line_make(lx_line_ref_t line, lx_float_t x0, lx_float_t y
  * @param x1        the x1
  * @param y1        the y1
  */
-lx_void_t           lx_line_imake(lx_line_ref_t line, lx_long_t x0, lx_long_t y0, lx_long_t x1, lx_long_t y1);
+static lx_inline lx_void_t lx_line_imake(lx_line_ref_t line, lx_long_t x0, lx_long_t y0, lx_long_t x1, lx_long_t y1) {
+    lx_line_make(line, (lx_float_t)x0, (lx_float_t)y0, (lx_float_t)x1, (lx_float_t)y1);
+}
 
 /*! apply matrix to line
  *
  * @param line      the line
  * @param matrix    the matrix
  */
-lx_void_t           lx_line_apply(lx_line_ref_t line, lx_matrix_ref_t matrix);
+static lx_inline lx_void_t lx_line_apply(lx_line_ref_t line, lx_matrix_ref_t matrix) {
+    lx_point_apply(&line->p0, matrix);
+    lx_point_apply(&line->p1, matrix);
+}
 
 /*! apply matrix to line
  *
@@ -68,7 +78,10 @@ lx_void_t           lx_line_apply(lx_line_ref_t line, lx_matrix_ref_t matrix);
  * @param applied   the applied line
  * @param matrix    the matrix
  */
-lx_void_t           lx_line_apply2(lx_line_ref_t line, lx_line_ref_t applied, lx_matrix_ref_t matrix);
+static lx_inline lx_void_t lx_line_apply2(lx_line_ref_t line, lx_line_ref_t applied, lx_matrix_ref_t matrix) {
+    lx_point_apply2(&line->p0, &applied->p0, matrix);
+    lx_point_apply2(&line->p1, &applied->p1, matrix);
+}
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
