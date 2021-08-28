@@ -33,7 +33,15 @@
 
 - (id)initWithFrame:(CGRect)frame delegate:(id)delegate {
     if (self = [super initWithFrame:frame]) {
+
+        // enable resize
         [self setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+
+        // init move gesture
+        NSPanGestureRecognizer* moveGesture = [[NSPanGestureRecognizer alloc] initWithTarget:self action: @selector(onTouchMove:)];
+        [self addGestureRecognizer:moveGesture];
+
+        // init metal
         [self metalInit:delegate];
     }
     return self;
@@ -43,7 +51,7 @@
 
     // init window
     _lanox2dWindow = lx_window_init(self.drawableSize.width, self.drawableSize.height, lx_null, (__bridge lx_cpointer_t)self);
-    
+
     // init renderer
     _renderer = [[Lanox2dMetalRenderer alloc] initWithMetalKitView:self delegate:delegate];
     NSAssert(_renderer, @"init renderer failed");
@@ -59,6 +67,22 @@
     if (_lanox2dWindow) {
         lx_window_exit(_lanox2dWindow);
         _lanox2dWindow = lx_null;
+    }
+}
+
+- (void)onTouchMove:(NSPanGestureRecognizer *)recognizer {
+	CGPoint pt = [recognizer locationInView:self];
+    if (_lanox2dWindow) {
+        lx_event_t event = {0};
+        lx_touch_t touches[1];
+        event.type            = LX_EVENT_TYPE_TOUCH;
+        event.u.touch.code    = LX_TOUCH_MOVED;
+        event.u.touch.count   = 1;
+        event.u.touch.touches = touches;
+        lx_point_make(&touches[0].start, pt.x, pt.y);
+        lx_point_make(&touches[0].prev,  pt.x, pt.y);
+        lx_point_make(&touches[0].point, pt.x, pt.y);
+        lx_window_notify(_lanox2dWindow, &event);
     }
 }
 
