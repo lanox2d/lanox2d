@@ -106,13 +106,7 @@
      *  y
      *
      */
-    CGSize frameSize = [self frameSize];
-    lx_metal_matrix_orthof(&_matrixProject, 0.0f, frameSize.width, frameSize.height, 0.0f, -1.0f, 1.0f);
-}
-
-- (CGSize)frameSize {
-    CGSize frameSize = _view.drawableSize;
-    return frameSize;
+    lx_metal_matrix_orthof(&_matrixProject, 0.0f, _view.frame.size.width, _view.frame.size.height, 0.0f, -1.0f, 1.0f);
 }
 
 - (lx_void_t)drawLock {
@@ -257,8 +251,7 @@
 - (lx_void_t)applyPaint:(nullable lx_rect_ref_t)bounds {
 
     // set the region of the drawable to draw into.
-    CGSize frameSize = [self frameSize];
-    [_renderEncoder setViewport:(MTLViewport){0.0, 0.0, frameSize.width, frameSize.height, 0.0, 1.0}];
+    [_renderEncoder setViewport:(MTLViewport){0.0, 0.0, _view.drawableSize.width, _view.drawableSize.height, 0.0, 1.0}];
 
     // set projection matrix
     [_renderEncoder setVertexBytes:&_matrixProject length:sizeof(_matrixProject) atIndex:kMatrixProjectionIndex];

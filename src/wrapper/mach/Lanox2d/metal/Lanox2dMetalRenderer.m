@@ -41,7 +41,7 @@
 - (void)mtkView:(nonnull MTKView *)mtkView drawableSizeWillChange:(CGSize)size {
     Lanox2dMetalView* view = (Lanox2dMetalView*)mtkView;
     if (view.lanox2dWindow) {
-        lx_window_resize(view.lanox2dWindow, (lx_size_t)size.width, (lx_size_t)size.height);
+        lx_window_resize(view.lanox2dWindow, (lx_size_t)mtkView.frame.size.width, (lx_size_t)mtkView.frame.size.height);
     }
 }
 

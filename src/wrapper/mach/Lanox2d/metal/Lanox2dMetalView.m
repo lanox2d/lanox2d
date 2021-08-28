@@ -61,7 +61,7 @@
 - (void)metalInit:(id)delegate {
 
     // init window
-    _lanox2dWindow = lx_window_init(self.drawableSize.width, self.drawableSize.height, lx_null, (__bridge lx_cpointer_t)self);
+    _lanox2dWindow = lx_window_init(self.frame.size.width, self.frame.size.height, lx_null, (__bridge lx_cpointer_t)self);
 
     // init renderer
     _renderer = [[Lanox2dMetalRenderer alloc] initWithMetalKitView:self delegate:delegate];
@@ -72,7 +72,7 @@
     self.delegate = _renderer;
 
     // trace
-    lx_trace_d("metal init with window %0.2fx%0.2f", self.drawableSize.width, self.drawableSize.height);
+    lx_trace_d("metal init with window %0.2fx%0.2f", self.frame.size.width, self.frame.size.height);
 }
 
 - (void)metalExit {

@@ -51,7 +51,7 @@
 #endif
 
 #ifdef TEST_SHAPE_WINDOW
-    [self initShapeWindow:@"path"];
+    [self initShapeWindow:@"tiger"];
 #endif
 }
 
