@@ -296,7 +296,7 @@
 - (lx_void_t)fillPolygon:(nonnull lx_polygon_ref_t)polygon bounds:(nullable lx_rect_ref_t)bounds rule:(lx_size_t)rule {
     lx_assert(_tessellator);
     lx_tessellator_rule_set(_tessellator, rule);
-    lx_polygon_ref_t result = lx_tessellator_make(_tessellator, polygon, bounds);
+    lx_polygon_ref_t result = polygon->convex? polygon : lx_tessellator_make(_tessellator, polygon, bounds);
     if (result) {
 
         // apply vertices

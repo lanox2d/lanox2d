@@ -150,9 +150,6 @@ typedef struct lx_tessellator_t_ {
     // the winding rule
     lx_size_t                           rule;
 
-    // the callback
-    lx_tessellator_cb_t                 callback;
-
     // the user private data
     lx_cpointer_t                       udata;
 
@@ -162,8 +159,10 @@ typedef struct lx_tessellator_t_ {
     // the current sweep event for the active_region.leq
     lx_mesh_vertex_ref_t                event;
 
-    // the output points
-    lx_array_ref_t                      outputs;
+    // the output polygon
+    lx_polygon_t                        polygon;
+    lx_array_ref_t                      polygon_points;
+    lx_array_ref_t                      polygon_counts;
 
     // the event queue for vertex
     lx_priority_queue_ref_t             event_queue;

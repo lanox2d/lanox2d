@@ -110,14 +110,6 @@ typedef enum lx_tessellator_rule_e_ {
 /// the polygon tessellator ref type
 typedef lx_typeref(tessellator);
 
-/*! the polygon tessellator callback type
- *
- * @param points        the points of the contour
- * @param count         the points count of the contour
- * @param udata         the user private data
- */
-typedef lx_void_t       (*lx_tessellator_cb_t)(lx_point_ref_t points, lx_uint16_t count, lx_cpointer_t udata);
-
 /* //////////////////////////////////////////////////////////////////////////////////////
  * interfaces
  */
@@ -147,14 +139,6 @@ lx_void_t               lx_tessellator_mode_set(lx_tessellator_ref_t tessellator
  * @param rule          the rule
  */
 lx_void_t               lx_tessellator_rule_set(lx_tessellator_ref_t tessellator, lx_size_t rule);
-
-/*! set the tessellator callback
- *
- * @param tessellator   the tessellator
- * @param callback      the tessellator callback
- * @param udata         the user private data
- */
-lx_void_t               lx_tessellator_callback_set(lx_tessellator_ref_t tessellator, lx_tessellator_cb_t callback, lx_cpointer_t udata);
 
 /*! tessellate polygon
  *

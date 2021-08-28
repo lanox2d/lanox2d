@@ -307,59 +307,59 @@ static lx_inline lx_void_t lx_gl_renderer_apply_paint(lx_opengl_device_t* device
     }
 }
 
-// TODO, we should output triangles array for concave polygon and convex points for convex polygon directly
-static lx_void_t lx_gl_renderer_fill_convex(lx_point_ref_t points, lx_uint16_t count, lx_cpointer_t udata) {
-    lx_opengl_device_t* device = (lx_opengl_device_t*)udata;
-    lx_assert(device && points && count);
-
-    // apply vertices
-    lx_gl_renderer_apply_vertices(device, points, count);
-
-    // apply texture coordinate
-    if (device->shader && lx_shader_type(device->shader) == LX_SHADER_TYPE_BITMAP) {
-        lx_gl_renderer_apply_texture_coords(device, points, count);
-    }
-
-#ifndef LX_GL_TESSELLATOR_TEST_ENABLE
-    // draw it
-    lx_glDrawArrays(LX_GL_TRIANGLE_FAN, 0, (lx_GLint_t)count);
-#else
-    // enable blend
-    lx_gl_renderer_enable_blend(device, lx_true);
-
-    // compute value
-    lx_size_t i = 0;
-    lx_uint32_t value = 0;
-    for (i = 0; i < count; i++) {
-        value += (lx_uint32_t)points[i].x;
-        value += (lx_uint32_t)points[i].y;
-        value *= 2166136261ul;
-    }
-
-    // apply color
-    lx_color_t  color;
-    color.r = (lx_byte_t)value;
-    color.g = (lx_byte_t)(value >> 8);
-    color.b = (lx_byte_t)(value >> 16);
-    color.a = 128;
-    lx_gl_renderer_apply_color(device, color);
-
-    // draw the edges of the filled contour
-    lx_glDrawArrays(LX_GL_TRIANGLE_FAN, 0, (lx_GLint_t)count);
-#endif
-}
-
 static lx_inline lx_void_t lx_gl_renderer_fill_polygon(lx_opengl_device_t* device, lx_polygon_ref_t polygon, lx_rect_ref_t bounds, lx_size_t rule) {
     lx_assert(device && device->tessellator);
 
+    lx_tessellator_rule_set(device->tessellator, rule);
 #ifdef LX_GL_TESSELLATOR_TEST_ENABLE
     lx_tessellator_mode_set(device->tessellator, LX_TESSELLATOR_MODE_TRIANGULATION);
 //    lx_tessellator_mode_set(device->tessellator, LX_TESSELLATOR_MODE_MONOTONE);
+    lx_polygon_ref_t result = lx_tessellator_make(device->tessellator, polygon, bounds);
+#else
+    lx_polygon_ref_t result = polygon->convex? polygon : lx_tessellator_make(device->tessellator, polygon, bounds);
 #endif
+    if (result) {
 
-    lx_tessellator_rule_set(device->tessellator, rule);
-    lx_tessellator_callback_set(device->tessellator, lx_gl_renderer_fill_convex, device);
-    lx_tessellator_make(device->tessellator, polygon, bounds);
+        // apply texture coordinate
+        if (device->shader && lx_shader_type(device->shader) == LX_SHADER_TYPE_BITMAP) {
+            lx_gl_renderer_apply_texture_coords(device, result->points, result->total);
+        }
+
+        // apply vertices
+        lx_assert(result && result->points && result->counts);
+        lx_gl_renderer_apply_vertices(device, result->points, result->total);
+
+        // draw vertices
+        lx_uint16_t  count;
+        lx_size_t    index = 0;
+        lx_uint16_t* counts = result->counts;
+        while ((count = *counts++)) {
+#ifdef LX_GL_TESSELLATOR_TEST_ENABLE
+            // enable blend
+            lx_gl_renderer_enable_blend(device, lx_true);
+
+            // compute value
+            lx_size_t i = 0;
+            lx_uint32_t value = 0;
+            lx_point_ref_t points = result->points + index;
+            for (i = 0; i < count; i++) {
+                value += (lx_uint32_t)points[i].x;
+                value += (lx_uint32_t)points[i].y;
+                value *= 2166136261ul;
+            }
+
+            // apply color
+            lx_color_t  color;
+            color.r = (lx_byte_t)value;
+            color.g = (lx_byte_t)(value >> 8);
+            color.b = (lx_byte_t)(value >> 16);
+            color.a = 128;
+            lx_gl_renderer_apply_color(device, color);
+#endif
+            lx_glDrawArrays(LX_GL_TRIANGLE_FAN, index, (lx_GLint_t)count);
+            index += count;
+        }
+    }
 }
 
 static lx_inline lx_void_t lx_gl_renderer_stroke_lines(lx_opengl_device_t* device, lx_point_ref_t points, lx_size_t count) {
