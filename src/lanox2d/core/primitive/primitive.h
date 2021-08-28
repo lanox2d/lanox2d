@@ -37,6 +37,7 @@
 #include "circle.h"
 #include "ellipse.h"
 #include "arc.h"
+#include "polygon.h"
 #include "bezier2.h"
 #include "bezier3.h"
 

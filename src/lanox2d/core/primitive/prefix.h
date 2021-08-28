@@ -203,6 +203,7 @@ typedef struct lx_arc_t_ {
 typedef struct lx_polygon_t_ {
     lx_point_ref_t      points;
     lx_uint16_t*        counts;
+    lx_size_t           total; // the total count of points
     lx_bool_t           convex;
 }lx_polygon_t, *lx_polygon_ref_t;
 

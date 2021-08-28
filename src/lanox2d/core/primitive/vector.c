@@ -28,22 +28,6 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_void_t lx_vector_make(lx_vector_ref_t vector, lx_float_t x, lx_float_t y) {
-    vector->x = x;
-    vector->y = y;
-}
-
-lx_void_t lx_vector_imake(lx_vector_ref_t vector, lx_long_t x, lx_long_t y) {
-    lx_vector_make(vector, (lx_float_t)x, (lx_float_t)y);
-}
-
-lx_void_t lx_vector_make_from_point(lx_vector_ref_t vector, lx_point_ref_t point) {
-    *vector = *((lx_vector_ref_t)point);
-}
-
-lx_void_t lx_vector_make_from_two_points(lx_vector_ref_t vector, lx_point_ref_t before, lx_point_ref_t after) {
-    lx_vector_make(vector, after->x - before->x, after->y - before->y);
-}
 
 lx_bool_t lx_vector_make_unit(lx_vector_ref_t vector, lx_float_t x, lx_float_t y) {
     lx_vector_t unit;
@@ -53,24 +37,6 @@ lx_bool_t lx_vector_make_unit(lx_vector_ref_t vector, lx_float_t x, lx_float_t y
         return lx_true;
     }
     return lx_false;
-}
-
-lx_bool_t lx_vector_imake_unit(lx_vector_ref_t vector, lx_long_t x, lx_long_t y) {
-    return lx_vector_make_unit(vector, (lx_float_t)x, (lx_float_t)y);
-}
-
-lx_void_t lx_vector_negate(lx_vector_ref_t vector) {
-    vector->x = -vector->x;
-    vector->y = -vector->y;
-}
-
-lx_void_t lx_vector_negate2(lx_vector_ref_t vector, lx_vector_ref_t negated) {
-    negated->x = -vector->x;
-    negated->y = -vector->y;
-}
-
-lx_void_t lx_vector_rotate(lx_vector_ref_t vector, lx_size_t direction) {
-    lx_vector_rotate2(vector, vector, direction);
 }
 
 lx_void_t lx_vector_rotate2(lx_vector_ref_t vector, lx_vector_ref_t rotated, lx_size_t direction) {
@@ -88,13 +54,13 @@ lx_void_t lx_vector_rotate2(lx_vector_ref_t vector, lx_vector_ref_t rotated, lx_
     }
 }
 
-lx_void_t lx_vector_scale(lx_vector_ref_t vector, lx_float_t scale) {
-    lx_vector_scale2(vector, vector, scale);
-}
-
-lx_void_t lx_vector_scale2(lx_vector_ref_t vector, lx_vector_ref_t scaled, lx_float_t scale) {
-    scaled->x = vector->x * scale;
-    scaled->y = vector->y * scale;
+lx_bool_t lx_vector_normalize2(lx_vector_ref_t vector, lx_vector_ref_t normalized) {
+    lx_vector_t unit = *vector;
+    if (normalized && lx_vector_normalize(&unit)) {
+        *normalized = unit;
+        return lx_true;
+    }
+    return lx_false;
 }
 
 lx_float_t lx_vector_length(lx_vector_ref_t vector) {
@@ -153,45 +119,3 @@ lx_bool_t lx_vector_length_set(lx_vector_ref_t vector, lx_float_t length) {
     return lx_true;
 }
 
-lx_bool_t lx_vector_can_normalize(lx_vector_ref_t vector) {
-    lx_float_t dx = vector->x;
-    lx_float_t dy = vector->y;
-    return (dx * dx + dy * dy) > (LX_NEAR0 * LX_NEAR0);
-}
-
-lx_bool_t lx_vector_normalize(lx_vector_ref_t vector) {
-    return lx_vector_length_set(vector, 1.0f);
-}
-
-lx_bool_t lx_vector_normalize2(lx_vector_ref_t vector, lx_vector_ref_t normalized) {
-    lx_vector_t unit = *vector;
-    if (normalized && lx_vector_normalize(&unit)) {
-        *normalized = unit;
-        return lx_true;
-    }
-    return lx_false;
-}
-
-lx_float_t lx_vector_dot(lx_vector_ref_t vector, lx_vector_ref_t other) {
-    lx_float_t ax = vector->x;
-    lx_float_t ay = vector->y;
-    lx_float_t bx = other->x;
-    lx_float_t by = other->y;
-    return (ax * bx) + (ay * by);
-}
-
-lx_float_t lx_vector_cross(lx_vector_ref_t vector, lx_vector_ref_t other) {
-    lx_float_t ax = vector->x;
-    lx_float_t ay = vector->y;
-    lx_float_t bx = other->x;
-    lx_float_t by = other->y;
-    return (ax * by) - (ay * bx);
-}
-
-lx_bool_t lx_vector_is_clockwise(lx_vector_ref_t vector, lx_vector_ref_t other) {
-    return (vector->x * other->y) > (vector->y * other->x);
-}
-
-lx_bool_t lx_vector_near_eq(lx_vector_ref_t vector, lx_vector_ref_t other) {
-    return (lx_near_eq(vector->x, other->x)) && (lx_near_eq(vector->y, other->y));
-}
