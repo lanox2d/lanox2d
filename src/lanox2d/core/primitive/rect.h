@@ -24,7 +24,7 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "prefix.h"
+#include "point.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
@@ -32,7 +32,7 @@
 lx_extern_c_enter
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * interfaces
+ * inline interfaces
  */
 
 /*! make rect
@@ -44,7 +44,12 @@ lx_extern_c_enter
  * @param h         the height
  *
  */
-lx_void_t           lx_rect_make(lx_rect_ref_t rect, lx_float_t x, lx_float_t y, lx_float_t w, lx_float_t h);
+static lx_inline lx_void_t lx_rect_make(lx_rect_ref_t rect, lx_float_t x, lx_float_t y, lx_float_t w, lx_float_t h) {
+    rect->x = x;
+    rect->y = y;
+    rect->w = w;
+    rect->h = h;
+}
 
 /*! make rect with the integer value
  *
@@ -55,14 +60,9 @@ lx_void_t           lx_rect_make(lx_rect_ref_t rect, lx_float_t x, lx_float_t y,
  * @param h         the height
  *
  */
-lx_void_t           lx_rect_imake(lx_rect_ref_t rect, lx_long_t x, lx_long_t y, lx_size_t w, lx_size_t h);
-
-/*! apply matrix to rect
- *
- * @param rect      the rect
- * @param matrix    the matrix
- */
-lx_void_t           lx_rect_apply(lx_rect_ref_t rect, lx_matrix_ref_t matrix);
+static lx_inline lx_void_t lx_rect_imake(lx_rect_ref_t rect, lx_long_t x, lx_long_t y, lx_size_t w, lx_size_t h) {
+    lx_rect_make(rect, (lx_float_t)x, (lx_float_t)y, (lx_float_t)w, (lx_float_t)h);
+}
 
 /*! apply matrix to rect
  *
@@ -70,7 +70,22 @@ lx_void_t           lx_rect_apply(lx_rect_ref_t rect, lx_matrix_ref_t matrix);
  * @param applied   the applied rect
  * @param matrix    the matrix
  */
-lx_void_t           lx_rect_apply2(lx_rect_ref_t rect, lx_rect_ref_t applied, lx_matrix_ref_t matrix);
+static lx_inline lx_void_t lx_rect_apply2(lx_rect_ref_t rect, lx_rect_ref_t applied, lx_matrix_ref_t matrix) {
+    lx_point_t points[2];
+    lx_point_make(&points[0], rect->x, rect->y);
+    lx_point_make(&points[1], rect->x + rect->w, rect->y + rect->h);
+    lx_matrix_apply_points(matrix, points, lx_arrayn(points));
+    lx_bounds_make(applied, points, lx_arrayn(points));
+}
+
+/*! apply matrix to rect
+ *
+ * @param rect      the rect
+ * @param matrix    the matrix
+ */
+static lx_inline lx_void_t lx_rect_apply(lx_rect_ref_t rect, lx_matrix_ref_t matrix) {
+    lx_rect_apply2(rect, rect, matrix);
+}
 
 /*! inflate rect
  *
@@ -78,7 +93,13 @@ lx_void_t           lx_rect_apply2(lx_rect_ref_t rect, lx_rect_ref_t applied, lx
  * @param dx        the x-delta value and must be larger than zero
  * @param dy        the x-delta value and must be larger than zero
  */
-lx_void_t           lx_rect_inflate(lx_rect_ref_t rect, lx_float_t dx, lx_float_t dy);
+static lx_inline lx_void_t lx_rect_inflate(lx_rect_ref_t rect, lx_float_t dx, lx_float_t dy) {
+    lx_assert(rect && dx > 0 && dy > 0);
+    rect->x -= dx;
+    rect->y -= dy;
+    rect->w += dx * 2.0f;
+    rect->h += dy * 2.0f;
+}
 
 /*! deflate rect
  *
@@ -86,7 +107,14 @@ lx_void_t           lx_rect_inflate(lx_rect_ref_t rect, lx_float_t dx, lx_float_
  * @param dx        the x-delta value and must be smaller than zero
  * @param dy        the x-delta value and must be smaller than zero
  */
-lx_void_t           lx_rect_deflate(lx_rect_ref_t rect, lx_float_t dx, lx_float_t dy);
+static lx_inline lx_void_t lx_rect_deflate(lx_rect_ref_t rect, lx_float_t dx, lx_float_t dy) {
+    lx_assert(rect && dx > 0 && dy > 0);
+    lx_assert(rect->w >= dx * 2.0f && rect->h >= dy * 2.0f);
+    rect->x += dx;
+    rect->y += dy;
+    rect->w -= dx * 2.0f;
+    rect->h -= dy * 2.0f;
+}
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
