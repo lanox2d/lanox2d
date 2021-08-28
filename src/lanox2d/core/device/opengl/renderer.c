@@ -376,14 +376,18 @@ static lx_inline lx_void_t lx_gl_renderer_stroke_points(lx_opengl_device_t* devi
     lx_glDrawArrays(LX_GL_POINTS, 0, (lx_GLint_t)count);
 }
 
-static lx_inline lx_void_t lx_gl_renderer_stroke_polygon(lx_opengl_device_t* device, lx_point_ref_t points, lx_uint16_t const* counts) {
-    lx_assert(device && points && counts);
+static lx_inline lx_void_t lx_gl_renderer_stroke_polygon(lx_opengl_device_t* device, lx_polygon_ref_t polygon) {
+    lx_assert(device && polygon && polygon->points && polygon->counts);
 
-    lx_uint16_t count;
-    lx_size_t   index = 0;
+    // apply vertices
+    lx_gl_renderer_apply_vertices(device, polygon->points, polygon->total);
+
+    // draw vertices
+    lx_uint16_t  count;
+    lx_size_t    index = 0;
+    lx_uint16_t* counts = polygon->counts;
     while ((count = *counts++)) {
-        lx_gl_renderer_apply_vertices(device, points + index, count);
-        lx_glDrawArrays(LX_GL_LINE_STRIP, 0, (lx_GLint_t)count);
+        lx_glDrawArrays(LX_GL_LINE_STRIP, index, (lx_GLint_t)count);
         index += count;
     }
 }
@@ -526,7 +530,7 @@ lx_void_t lx_gl_renderer_draw_polygon(lx_opengl_device_t* device, lx_polygon_ref
 
     if ((mode & LX_PAINT_MODE_STROKE) && (lx_paint_stroke_width(device->base.paint) > 0)) {
         if (lx_gl_renderer_stroke_only(device)) {
-            lx_gl_renderer_stroke_polygon(device, polygon->points, polygon->counts);
+            lx_gl_renderer_stroke_polygon(device, polygon);
         } else {
             lx_gl_renderer_stroke_fill(device, lx_stroker_make_from_polygon(device->stroker, device->base.paint, polygon, hint));
         }
