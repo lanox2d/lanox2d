@@ -294,19 +294,15 @@
 }
 
 static lx_void_t lx_metal_renderer_fill_convex(lx_point_ref_t points, lx_uint16_t count, lx_cpointer_t udata) {
-    MetalRenderer* metalRenderer = (__bridge_transfer MetalRenderer*)udata;
-    if (metalRenderer != nil) {
-        [metalRenderer->_renderEncoder setVertexBytes:points length:(count * sizeof(lx_point_t)) atIndex:kVerticesIndex];
-        [metalRenderer->_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:count];
-    }
 }
 
 - (lx_void_t)fillPolygon:(nonnull lx_polygon_ref_t)polygon bounds:(nullable lx_rect_ref_t)bounds rule:(lx_size_t)rule {
     lx_assert(_tessellator);
     lx_tessellator_rule_set(_tessellator, rule);
     lx_tessellator_callback_set(_tessellator, lx_metal_renderer_fill_convex, (__bridge lx_cpointer_t)self);
-//    lx_tessellator_make(_tessellator, polygon, bounds);
+    lx_tessellator_make(_tessellator, polygon, bounds);
 
+#if 0
     const vector_float2 triangleVertices[] = {
         {  640,   0 },
         {  1280, 480 },
@@ -314,6 +310,7 @@ static lx_void_t lx_metal_renderer_fill_convex(lx_point_ref_t points, lx_uint16_
     };
     [_renderEncoder setVertexBytes:triangleVertices length:sizeof(triangleVertices) atIndex:kVerticesIndex];
     [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:3];
+#endif
 }
 
 - (lx_bool_t)strokeOnly {
