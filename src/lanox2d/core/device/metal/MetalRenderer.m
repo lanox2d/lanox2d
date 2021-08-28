@@ -70,7 +70,7 @@
         lx_assert(_tessellator);
 
         // init tessellator mode
-        lx_tessellator_mode_set(_tessellator, LX_TESSELLATOR_MODE_CONVEX);
+        lx_tessellator_mode_set(_tessellator, LX_TESSELLATOR_MODE_TRIANGULATION);
     }
     return self;
 }
@@ -106,9 +106,13 @@
      *  y
      *
      */
-    lx_float_t w = _view.drawableSize.width;
-    lx_float_t h = _view.drawableSize.height;
-    lx_metal_matrix_orthof(&_matrixProject, 0.0f, w, h, 0.0f, -1.0f, 1.0f);
+    CGSize frameSize = [self frameSize];
+    lx_metal_matrix_orthof(&_matrixProject, 0.0f, frameSize.width, frameSize.height, 0.0f, -1.0f, 1.0f);
+}
+
+- (CGSize)frameSize {
+    CGSize frameSize = _view.drawableSize;
+    return frameSize;
 }
 
 - (lx_void_t)drawLock {
@@ -140,60 +144,6 @@
         [_commandBuffer presentDrawable:_view.currentDrawable];
         [_commandBuffer commit];
     }
-}
-
-- (lx_void_t)drawTest {
-
-    const vector_float2 triangleVertices[] = {
-        {  640,   0 },
-        {  1280, 480 },
-        {  0,   480 },
-    };
-
-    // Set the region of the drawable to draw into.
-    [_renderEncoder setViewport:(MTLViewport){0.0, 0.0, _view.drawableSize.width, _view.drawableSize.height, 0.0, 1.0 }];
-
-    id<MTLRenderPipelineState> pipelineState = [_renderPipeline renderPipelineSolid];
-    [_renderEncoder setRenderPipelineState:pipelineState];
-
-    // Pass in the parameter data.
-    [_renderEncoder setVertexBytes:triangleVertices length:sizeof(triangleVertices) atIndex:0];
-
-    vector_float4 color = {1, 0, 0, 1};
-    [_renderEncoder setVertexBytes:&color length:sizeof(color) atIndex:1];
-
-    /* metal (origin)
-     *          y
-     *         /|\
-     *          |
-     *          |
-     * ---------O--------> x
-     *          |
-     *          |
-     *          |
-     *
-     * to (world)
-     *
-     *  O----------> x
-     *  |
-     *  |
-     * \|/
-     *  y
-     *
-     */
-    lx_metal_matrix_t matrixProject;
-    lx_float_t w = _view.drawableSize.width;
-    lx_float_t h = _view.drawableSize.height;
-    lx_metal_matrix_orthof(&matrixProject, 0.0f, w, h, 0.0f, -1.0f, 1.0f);
-    [_renderEncoder setVertexBytes:&matrixProject length:sizeof(matrixProject) atIndex:2];
-
-    lx_metal_matrix_t matrixModel;
-    lx_metal_matrix_init_scale(&matrixModel, 0.5f, 0.5f);
-    lx_metal_matrix_translate(&matrixModel, 100, 100);
-    [_renderEncoder setVertexBytes:&matrixModel length:sizeof(matrixModel) atIndex:3];
-
-    // Draw the triangle.
-    [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:3];
 }
 
 - (lx_void_t)drawClear:(lx_color_t)color {
@@ -307,7 +257,8 @@
 - (lx_void_t)applyPaint:(nullable lx_rect_ref_t)bounds {
 
     // set the region of the drawable to draw into.
-    [_renderEncoder setViewport:(MTLViewport){0.0, 0.0, _view.drawableSize.width, _view.drawableSize.height, 0.0, 1.0}];
+    CGSize frameSize = [self frameSize];
+    [_renderEncoder setViewport:(MTLViewport){0.0, 0.0, frameSize.width, frameSize.height, 0.0, 1.0}];
 
     // set projection matrix
     [_renderEncoder setVertexBytes:&_matrixProject length:sizeof(_matrixProject) atIndex:kMatrixProjectionIndex];
