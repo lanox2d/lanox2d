@@ -402,6 +402,7 @@ static lx_bool_t lx_path_make_polygon(lx_path_t* path) {
     lx_assert_and_check_return_val(path->polygon_counts, lx_false);
 
     // have curve?
+    lx_size_t total_count = 0;
     if (path->flags & LX_PATH_FLAG_CURVE) {
 
         // init polygon points
@@ -421,7 +422,10 @@ static lx_bool_t lx_path_make_polygon(lx_path_t* path) {
         lx_for_all (lx_path_item_ref_t, item, path) {
             switch (item->code) {
             case LX_PATH_CODE_MOVE: {
-                if (values[1].u16) lx_array_insert_tail(path->polygon_counts, &values[1].u16);
+                if (values[1].u16) {
+                    lx_array_insert_tail(path->polygon_counts, &values[1].u16);
+                    total_count += values[1].u16;
+                }
                 lx_array_insert_tail(path->polygon_points, &item->points[0]);
                 values[1].u16 = 1;
                 break;
@@ -448,6 +452,7 @@ static lx_bool_t lx_path_make_polygon(lx_path_t* path) {
         // append the last count
         if (values[1].u16) {
             lx_array_insert_tail(path->polygon_counts, &values[1].u16);
+            total_count += values[1].u16;
             values[1].u16 = 0;
         }
 
@@ -468,7 +473,10 @@ static lx_bool_t lx_path_make_polygon(lx_path_t* path) {
             lx_uint8_t code = *pcode;
             lx_assert(code >= 0 && code < LX_PATH_CODE_MAXN);
             if (code == LX_PATH_CODE_MOVE) {
-                if (count) lx_array_insert_tail(path->polygon_counts, &count);
+                if (count) {
+                    lx_array_insert_tail(path->polygon_counts, &count);
+                    total_count += count;
+                }
                 count = 0;
             }
             count += (lx_uint16_t)lx_path_point_step(code);
@@ -477,6 +485,7 @@ static lx_bool_t lx_path_make_polygon(lx_path_t* path) {
         // append the last count
         if (count) {
             lx_array_insert_tail(path->polygon_counts, &count);
+            total_count += count;
             count = 0;
         }
 
@@ -491,6 +500,9 @@ static lx_bool_t lx_path_make_polygon(lx_path_t* path) {
 
     // check
     lx_assert_and_check_return_val(path->polygon.points && path->polygon.counts, lx_false);
+
+    // save total count
+    path->polygon.total = total_count;
 
     // is convex polygon?
     path->polygon.convex = lx_path_convex((lx_path_ref_t)path);
