@@ -201,11 +201,12 @@ lx_void_t lx_tessellator_make(lx_tessellator_ref_t self, lx_polygon_ref_t polygo
 
     // is convex polygon for each contour?
     if (polygon->convex) {
+        lx_polygon_t    contour;
         lx_size_t       index               = 0;
         lx_point_ref_t  points              = polygon->points;
         lx_uint16_t*    counts              = polygon->counts;
         lx_uint16_t     contour_counts[2]   = {0, 0};
-        lx_polygon_t    contour             = {lx_null, contour_counts, lx_true};
+        lx_polygon_make(&contour, lx_null, contour_counts, 0, lx_true);
         while ((contour_counts[0] = *counts++)) {
             // init the polygon for this contour
             contour.points = points + index;

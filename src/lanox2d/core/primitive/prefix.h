@@ -197,7 +197,7 @@ typedef struct lx_arc_t_ {
     lx_point_t      points[] = {    {x0, y0}, {x1, y1}, {x2, y2}
                                 ,   {x3, y3}, {x4, y4}, {x5, y5}, {x3, y3}};
     lx_size_t       counts[] = {3, 4, 0};
-    lx_polygon_t    polygon = {points, counts};
+    lx_polygon_t    polygon = {points, counts, 7};
  * @endcode
  */
 typedef struct lx_polygon_t_ {

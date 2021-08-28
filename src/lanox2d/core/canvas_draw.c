@@ -118,9 +118,10 @@ lx_void_t lx_canvas_draw_triangle(lx_canvas_ref_t self, lx_triangle_ref_t triang
     lx_assert_and_check_return(canvas && canvas->device && triangle);
 
     // init polygon
+    lx_polygon_t    polygon;
     lx_point_t      points[] = {triangle->p0, triangle->p1, triangle->p2, triangle->p0};
     lx_uint16_t     counts[] = {4, 0};
-    lx_polygon_t    polygon = {points, counts, lx_true};
+    lx_polygon_make(&polygon, points, counts, 4, lx_true);
 
     // init hint
     lx_shape_t      hint;
@@ -152,9 +153,10 @@ lx_void_t lx_canvas_draw_rect(lx_canvas_ref_t self, lx_rect_ref_t rect) {
     lx_assert_and_check_return(canvas && canvas->device && rect);
 
     // init polygon
+    lx_polygon_t    polygon;
     lx_point_t      points[5];
     lx_uint16_t     counts[] = {5, 0};
-    lx_polygon_t    polygon = {points, counts, lx_true};
+    lx_polygon_make(&polygon, points, counts, 5, lx_true);
 
     // init points
     points[0].x = rect->x;

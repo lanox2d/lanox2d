@@ -217,8 +217,9 @@ lx_void_t lx_bitmap_renderer_draw_polygon(lx_bitmap_device_t* device, lx_polygon
     // fill it
     lx_size_t mode = lx_paint_mode(device->base.paint);
     if (mode & LX_PAINT_MODE_FILL) {
-        lx_polygon_t filled_polygon = {lx_null, polygon->counts, polygon->convex};
-        lx_size_t    filled_count   = lx_bitmap_renderer_apply_matrix_for_polygon(device, polygon, &filled_polygon.points);
+        lx_polygon_t filled_polygon;
+        lx_polygon_make(&filled_polygon, lx_null, polygon->counts, polygon->total, polygon->convex);
+        lx_size_t filled_count = lx_bitmap_renderer_apply_matrix_for_polygon(device, polygon, &filled_polygon.points);
         lx_assert(filled_polygon.points && filled_count);
 
         // make the filled bounds
@@ -241,8 +242,9 @@ lx_void_t lx_bitmap_renderer_draw_polygon(lx_bitmap_device_t* device, lx_polygon
     // stroke it
     if ((mode & LX_PAINT_MODE_STROKE) && (lx_paint_stroke_width(device->base.paint) > 0)) {
         if (lx_bitmap_renderer_stroke_only(device)) {
-            lx_polygon_t stroked_polygon = {lx_null, polygon->counts, polygon->convex};
-            lx_size_t    stroked_count   = lx_bitmap_renderer_apply_matrix_for_polygon(device, polygon, &stroked_polygon.points);
+            lx_polygon_t stroked_polygon;
+            lx_polygon_make(&stroked_polygon, lx_null, polygon->counts, polygon->total, polygon->convex);
+            lx_size_t stroked_count = lx_bitmap_renderer_apply_matrix_for_polygon(device, polygon, &stroked_polygon.points);
             lx_assert(stroked_polygon.points && stroked_count);
 
             // TODO: clip it
