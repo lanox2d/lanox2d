@@ -24,7 +24,7 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "prefix.h"
+#include "point.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
@@ -32,7 +32,7 @@
 lx_extern_c_enter
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * interfaces
+ * inline interfaces
  */
 
 /*! make ellipse
@@ -43,7 +43,12 @@ lx_extern_c_enter
  * @param rx        the x-radius
  * @param ry        the y-radius
  */
-lx_void_t           lx_ellipse_make(lx_ellipse_ref_t ellipse, lx_float_t x0, lx_float_t y0, lx_float_t rx, lx_float_t ry);
+static lx_inline lx_void_t lx_ellipse_make(lx_ellipse_ref_t ellipse, lx_float_t x0, lx_float_t y0, lx_float_t rx, lx_float_t ry) {
+    ellipse->c.x = x0;
+    ellipse->c.y = y0;
+    ellipse->rx  = rx;
+    ellipse->ry  = ry;
+}
 
 /*! make ellipse with the integer value
  *
@@ -53,14 +58,20 @@ lx_void_t           lx_ellipse_make(lx_ellipse_ref_t ellipse, lx_float_t x0, lx_
  * @param rx        the x-radius
  * @param ry        the y-radius
  */
-lx_void_t           lx_ellipse_imake(lx_ellipse_ref_t ellipse, lx_long_t x0, lx_long_t y0, lx_size_t rx, lx_size_t ry);
+static lx_inline lx_void_t lx_ellipse_imake(lx_ellipse_ref_t ellipse, lx_long_t x0, lx_long_t y0, lx_size_t rx, lx_size_t ry) {
+    lx_ellipse_make(ellipse, (lx_float_t)x0, (lx_float_t)y0, (lx_float_t)rx, (lx_float_t)ry);
+}
 
 /*! make ellipse from rect
  *
  * @param ellipse   the ellipse
  * @param rect      the rect
  */
-lx_void_t           lx_ellipse_make_from_rect(lx_ellipse_ref_t ellipse, lx_rect_ref_t rect);
+static lx_inline lx_void_t lx_ellipse_make_from_rect(lx_ellipse_ref_t ellipse, lx_rect_ref_t rect) {
+    lx_float_t rx = rect->w / 2.0f;
+    lx_float_t ry = rect->h / 2.0f;
+    lx_ellipse_make(ellipse, rect->x + rx, rect->y + ry, rx, ry);
+}
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

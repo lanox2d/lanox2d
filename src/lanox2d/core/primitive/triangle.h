@@ -24,7 +24,7 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "prefix.h"
+#include "point.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
@@ -32,7 +32,7 @@
 lx_extern_c_enter
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * interfaces
+ * inline interfaces
  */
 
 /*! make triangle
@@ -45,7 +45,14 @@ lx_extern_c_enter
  * @param x2        the x2
  * @param y2        the y2
  */
-lx_void_t           lx_triangle_make(lx_triangle_ref_t triangle, lx_float_t x0, lx_float_t y0, lx_float_t x1, lx_float_t y1, lx_float_t x2, lx_float_t y2);
+static lx_inline lx_void_t lx_triangle_make(lx_triangle_ref_t triangle, lx_float_t x0, lx_float_t y0, lx_float_t x1, lx_float_t y1, lx_float_t x2, lx_float_t y2) {
+    triangle->p0.x = x0;
+    triangle->p0.y = y0;
+    triangle->p1.x = x1;
+    triangle->p1.y = y1;
+    triangle->p2.x = x2;
+    triangle->p2.y = y2;
+}
 
 /*! make triangle with the integer value
  *
@@ -57,14 +64,20 @@ lx_void_t           lx_triangle_make(lx_triangle_ref_t triangle, lx_float_t x0, 
  * @param x2        the x2
  * @param y2        the y2
  */
-lx_void_t           lx_triangle_imake(lx_triangle_ref_t triangle, lx_long_t x0, lx_long_t y0, lx_long_t x1, lx_long_t y1, lx_long_t x2, lx_long_t y2);
+static lx_inline lx_void_t lx_triangle_imake(lx_triangle_ref_t triangle, lx_long_t x0, lx_long_t y0, lx_long_t x1, lx_long_t y1, lx_long_t x2, lx_long_t y2) {
+    lx_triangle_make(triangle, (lx_float_t)x0, (lx_float_t)y0, (lx_float_t)x1, (lx_float_t)y1, (lx_float_t)x2, (lx_float_t)y2);
+}
 
 /*! apply matrix to triangle
  *
  * @param triangle  the triangle
  * @param matrix    the matrix
  */
-lx_void_t           lx_triangle_apply(lx_triangle_ref_t triangle, lx_matrix_ref_t matrix);
+static lx_inline lx_void_t lx_triangle_apply(lx_triangle_ref_t triangle, lx_matrix_ref_t matrix) {
+    lx_point_apply(&triangle->p0, matrix);
+    lx_point_apply(&triangle->p1, matrix);
+    lx_point_apply(&triangle->p2, matrix);
+}
 
 /*! apply matrix to triangle
  *
@@ -72,7 +85,11 @@ lx_void_t           lx_triangle_apply(lx_triangle_ref_t triangle, lx_matrix_ref_
  * @param applied   the applied triangle
  * @param matrix    the matrix
  */
-lx_void_t           lx_triangle_apply2(lx_triangle_ref_t triangle, lx_triangle_ref_t applied, lx_matrix_ref_t matrix);
+static lx_inline lx_void_t lx_triangle_apply2(lx_triangle_ref_t triangle, lx_triangle_ref_t applied, lx_matrix_ref_t matrix) {
+    lx_point_apply2(&triangle->p0, &applied->p0, matrix);
+    lx_point_apply2(&triangle->p1, &applied->p1, matrix);
+    lx_point_apply2(&triangle->p2, &applied->p2, matrix);
+}
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

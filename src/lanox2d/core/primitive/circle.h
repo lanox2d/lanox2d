@@ -24,7 +24,7 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "prefix.h"
+#include "point.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
@@ -32,7 +32,7 @@
 lx_extern_c_enter
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * interfaces
+ * inline interfaces
  */
 
 /*! make circle
@@ -42,7 +42,11 @@ lx_extern_c_enter
  * @param y0        the y0
  * @param r         the radius
  */
-lx_void_t           lx_circle_make(lx_circle_ref_t circle, lx_float_t x0, lx_float_t y0, lx_float_t r);
+static lx_inline lx_void_t lx_circle_make(lx_circle_ref_t circle, lx_float_t x0, lx_float_t y0, lx_float_t r) {
+    circle->c.x = x0;
+    circle->c.y = y0;
+    circle->r   = r;
+}
 
 /*! make circle with the integer value
  *
@@ -51,7 +55,9 @@ lx_void_t           lx_circle_make(lx_circle_ref_t circle, lx_float_t x0, lx_flo
  * @param y0        the y0
  * @param r         the radius
  */
-lx_void_t           lx_circle_imake(lx_circle_ref_t circle, lx_long_t x0, lx_long_t y0, lx_size_t r);
+static lx_inline lx_void_t lx_circle_imake(lx_circle_ref_t circle, lx_long_t x0, lx_long_t y0, lx_size_t r) {
+    lx_circle_make(circle, (lx_float_t)(x0), (lx_float_t)y0, (lx_float_t)r);
+}
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
