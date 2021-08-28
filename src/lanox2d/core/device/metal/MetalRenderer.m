@@ -288,22 +288,11 @@
         [_renderEncoder setVertexBytes:result->points length:(result->total * sizeof(lx_point_t)) atIndex:kVerticesIndex];
 
         // draw vertices
-        lx_size_t mode = lx_tessellator_mode(_tessellator);
-        if (mode == LX_TESSELLATOR_MODE_TRIANGULATION) {
-            lx_size_t index = 0;
-            lx_size_t total = result->total;
-            while (index + 4 <= total) {
-                [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:index vertexCount:4];
-                index += 4;
-            }
-        } else {
-            lx_uint16_t  count;
-            lx_size_t    index = 0;
-            lx_uint16_t* counts = result->counts;
-            while ((count = *counts++)) {
-                [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:index vertexCount:count];
-                index += count;
-            }
+        lx_size_t index = 0;
+        lx_size_t total = result->total;
+        while (index + 4 <= total) {
+            [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:index vertexCount:4];
+            index += 4;
         }
     }
 }

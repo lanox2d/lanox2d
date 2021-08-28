@@ -23,6 +23,12 @@
 #import "Lanox2dMetalRenderer.h"
 #import "lanox2d/lanox2d.h"
 
+#ifdef LX_CONFIG_OS_MACOSX
+#   define PlatformPanGestureRecognizer NSPanGestureRecognizer
+#else
+#   define PlatformPanGestureRecognizer UIPanGestureRecognizer
+#endif
+
 @implementation Lanox2dMetalView {
     Lanox2dMetalRenderer* _renderer;
 }
@@ -35,10 +41,12 @@
     if (self = [super initWithFrame:frame]) {
 
         // enable resize
+#ifdef LX_CONFIG_OS_MACOSX
         [self setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+#endif
 
         // init move gesture
-        NSPanGestureRecognizer* moveGesture = [[NSPanGestureRecognizer alloc] initWithTarget:self action: @selector(onTouchMove:)];
+        PlatformPanGestureRecognizer* moveGesture = [[PlatformPanGestureRecognizer alloc] initWithTarget:self action: @selector(onTouchMove:)];
         [self addGestureRecognizer:moveGesture];
 
         // init metal
@@ -70,7 +78,7 @@
     }
 }
 
-- (void)onTouchMove:(NSPanGestureRecognizer *)recognizer {
+- (void)onTouchMove:(PlatformPanGestureRecognizer *)recognizer {
 	CGPoint pt = [recognizer locationInView:self];
     if (_lanox2dWindow) {
         lx_event_t event = {0};
