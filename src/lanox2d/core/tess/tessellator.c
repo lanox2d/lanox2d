@@ -35,36 +35,64 @@
 
 // the output points grow
 #ifdef LX_CONFIG_SMALL
-#   define LX_TESSELLATOR_polygon_points_GROW                          (32)
+#   define LX_TESSELLATOR_POLYGON_POINTS_GROW                          (32)
 #else
-#   define LX_TESSELLATOR_polygon_points_GROW                          (64)
+#   define LX_TESSELLATOR_POLYGON_POINTS_GROW                          (64)
+#endif
+
+// the output counts grow
+#ifdef LX_CONFIG_SMALL
+#   define LX_TESSELLATOR_POLYGON_COUNTS_GROW                          (8)
+#else
+#   define LX_TESSELLATOR_POLYGON_COUNTS_GROW                          (16)
 #endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
-static lx_void_t lx_tessellator_make_output(lx_tessellator_t* tessellator) {
+static lx_void_t lx_tessellator_result_clear(lx_tessellator_t* tessellator) {
+
+    // clear polygon
+    tessellator->polygon.total = 0;
+    tessellator->polygon.points = lx_null;
+    tessellator->polygon.counts = lx_null;
+
+    // clear polygon points
+    if (!tessellator->polygon_points) {
+        tessellator->polygon_points = lx_array_init(LX_TESSELLATOR_POLYGON_POINTS_GROW, lx_element_mem(sizeof(lx_point_t), lx_null));
+    }
+    lx_array_clear(tessellator->polygon_points);
+
+    // clear polygon counts
+    if (tessellator->mode != LX_TESSELLATOR_MODE_TRIANGULATION) { // we need not counts to optimize memory if be only triangulation
+        if (!tessellator->polygon_counts) {
+            tessellator->polygon_counts = lx_array_init(LX_TESSELLATOR_POLYGON_COUNTS_GROW, lx_element_mem(sizeof(lx_uint16_t), lx_null));
+        }
+        lx_array_clear(tessellator->polygon_counts);
+    }
+}
+
+static lx_void_t lx_tessellator_result_append(lx_tessellator_t* tessellator) {
     lx_assert(tessellator && tessellator->mesh);
 
-    if (!tessellator->polygon_points) {
-        tessellator->polygon_points = lx_array_init(LX_TESSELLATOR_polygon_points_GROW, lx_element_mem(sizeof(lx_point_t), lx_null));
-    }
     lx_array_ref_t polygon_points = tessellator->polygon_points;
+    lx_array_ref_t polygon_counts = tessellator->polygon_counts;
     lx_assert(polygon_points);
 
     lx_for_all (lx_mesh_face_ref_t, face, lx_mesh_face_list(tessellator->mesh)) {
         if (lx_tessellator_face_inside(face)) {
-            lx_array_clear(polygon_points);
 
             // make contour
             lx_mesh_edge_ref_t  head        = lx_mesh_face_edge(face);
             lx_mesh_edge_ref_t  edge        = head;
             lx_point_ref_t      point       = lx_null;
             lx_point_ref_t      point_first = lx_null;
+            lx_uint16_t         count       = 0;
             do {
                 point = lx_tessellator_vertex_point(lx_mesh_edge_org(edge));
                 lx_assert(point);
 
+                count++;
                 lx_array_insert_tail(polygon_points, point);
                 if (!point_first) {
                     point_first = point;
@@ -73,9 +101,28 @@ static lx_void_t lx_tessellator_make_output(lx_tessellator_t* tessellator) {
             } while (edge != head);
 
             if (lx_array_size(polygon_points) > 2) {
+
+                // close it
                 lx_assert(lx_array_data(polygon_points));
-                lx_array_insert_tail(polygon_points, point_first); // close it
+                lx_array_insert_tail(polygon_points, point_first);
+                count++;
+
+                // update count
+                if (polygon_counts) {
+                    lx_array_insert_tail(polygon_counts, &count);
+                }
+                tessellator->polygon.total += count;
             }
+        }
+    }
+
+    // bind polygon points data
+    if (tessellator->polygon.total) {
+        tessellator->polygon.points = lx_array_data(polygon_points);
+        if (polygon_counts) {
+            lx_uint16_t zero = 0;
+            lx_array_insert_tail(polygon_counts, &zero);
+            tessellator->polygon.counts = lx_array_data(polygon_counts);
         }
     }
 }
@@ -86,13 +133,8 @@ static lx_void_t lx_tessellator_make_from_convex(lx_tessellator_t* tessellator, 
     // only one convex contour
     lx_assert(polygon->convex && polygon->counts && !polygon->counts[1]);
 
-    // make convex or monotone? done it directly
-    if (tessellator->mode == LX_TESSELLATOR_MODE_CONVEX || tessellator->mode == LX_TESSELLATOR_MODE_MONOTONE) {
-        return ;
-    }
-
     // must be triangulation mode now
-    lx_assert(tessellator->mode == LX_TESSELLATOR_MODE_TRIANGULATION);
+    lx_assert_and_check_return(tessellator->mode == LX_TESSELLATOR_MODE_TRIANGULATION);
 
     // make mesh
     if (!lx_tessellator_mesh_make(tessellator, polygon)) {
@@ -109,8 +151,8 @@ static lx_void_t lx_tessellator_make_from_convex(lx_tessellator_t* tessellator, 
     // make triangulation region
     lx_tessellator_triangulation_make(tessellator);
 
-    // make output
-    lx_tessellator_make_output(tessellator);
+    // append result
+    lx_tessellator_result_append(tessellator);
 }
 
 static lx_void_t lx_tessellator_make_from_concave(lx_tessellator_t* tessellator, lx_polygon_ref_t polygon, lx_rect_ref_t bounds) {
@@ -137,8 +179,8 @@ static lx_void_t lx_tessellator_make_from_concave(lx_tessellator_t* tessellator,
         }
     }
 
-    // make output
-    lx_tessellator_make_output(tessellator);
+    // append result
+    lx_tessellator_result_append(tessellator);
 }
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -155,6 +197,7 @@ lx_void_t lx_tessellator_exit(lx_tessellator_ref_t self) {
             lx_mesh_exit(tessellator->mesh);
             tessellator->mesh = lx_null;
         }
+        tessellator->polygon.total = 0;
         if (tessellator->polygon_points) {
             lx_array_exit(tessellator->polygon_points);
             tessellator->polygon_points = lx_null;
@@ -199,7 +242,10 @@ lx_polygon_ref_t lx_tessellator_make(lx_tessellator_ref_t self, lx_polygon_ref_t
         return polygon;
     }
 
-    // is convex polygon for each contour?
+    // clear result
+    lx_tessellator_result_clear(tessellator);
+
+    // do triangulation for each contex contour? it will be faster
     if (polygon->convex) {
         lx_polygon_t    contour;
         lx_size_t       index               = 0;
@@ -208,18 +254,12 @@ lx_polygon_ref_t lx_tessellator_make(lx_tessellator_ref_t self, lx_polygon_ref_t
         lx_uint16_t     contour_counts[2]   = {0, 0};
         lx_polygon_make(&contour, lx_null, contour_counts, 0, lx_true);
         while ((contour_counts[0] = *counts++)) {
-            // init the polygon for this contour
             contour.points = points + index;
-
-            // make convex contour, will be faster
             lx_tessellator_make_from_convex(tessellator, &contour, bounds);
-
-            // update the contour index
             index += contour_counts[0];
         }
     } else {
-        // make the concave polygon
         lx_tessellator_make_from_concave(tessellator, polygon, bounds);
     }
-    return lx_null;
+    return tessellator->polygon.total? &tessellator->polygon : lx_null;
 }
