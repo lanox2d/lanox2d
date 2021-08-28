@@ -243,8 +243,21 @@
 }
 
 - (lx_void_t)drawPath:(nonnull lx_path_ref_t)path {
+    lx_assert(_baseDevice && _baseDevice->paint && path);
     [self drawPrepare];
-    lx_trace_i("drawPath");
+
+    lx_size_t mode = lx_paint_mode(_baseDevice->paint);
+    if (mode & LX_PAINT_MODE_FILL) {
+        [self drawPolygon:lx_path_polygon(path) hint:lx_path_hint(path) bounds:lx_path_bounds(path)];
+    }
+
+    if ((mode & LX_PAINT_MODE_STROKE) && (lx_paint_stroke_width(_baseDevice->paint) > 0)) {
+        if ([self strokeOnly]) {
+            [self drawPolygon:lx_path_polygon(path) hint:lx_path_hint(path) bounds:lx_path_bounds(path)];
+        } else {
+            [self strokeFill:lx_stroker_make_from_path(_stroker, _baseDevice->paint, path)];
+        }
+    }
 }
 
 - (lx_void_t)applyPaintShader:(nonnull lx_shader_ref_t)shader bounds:(nullable lx_rect_ref_t)bounds {
@@ -300,16 +313,26 @@
     if (result) {
 
         // apply vertices
-        lx_assert(result && result->points && result->counts);
+        lx_assert(result && result->points);
         [_renderEncoder setVertexBytes:result->points length:(result->total * sizeof(lx_point_t)) atIndex:kVerticesIndex];
 
         // draw vertices
-        lx_uint16_t  count;
-        lx_size_t    index = 0;
-        lx_uint16_t* counts = result->counts;
-        while ((count = *counts++)) {
-            [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:index vertexCount:count];
-            index += count;
+        lx_size_t mode = lx_tessellator_mode(_tessellator);
+        if (mode == LX_TESSELLATOR_MODE_TRIANGULATION) {
+            lx_size_t index = 0;
+            lx_size_t total = result->total;
+            while (index + 4 <= total) {
+                [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:index vertexCount:4];
+                index += 4;
+            }
+        } else {
+            lx_uint16_t  count;
+            lx_size_t    index = 0;
+            lx_uint16_t* counts = result->counts;
+            while ((count = *counts++)) {
+                [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:index vertexCount:count];
+                index += count;
+            }
         }
     }
 }

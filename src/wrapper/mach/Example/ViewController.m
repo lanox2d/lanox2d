@@ -51,7 +51,7 @@
 #endif
 
 #ifdef TEST_SHAPE_WINDOW
-    [self initShapeWindow:@"rect"];
+    [self initShapeWindow:@"path"];
 #endif
 }
 
