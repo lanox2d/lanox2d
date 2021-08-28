@@ -421,7 +421,7 @@ static lx_inline lx_bool_t lx_gl_renderer_stroke_only(lx_opengl_device_t* device
     return (    1.0f == lx_paint_stroke_width(device->base.paint)
             &&  1.0f == lx_abs(device->base.matrix->sx)
             &&  1.0f == lx_abs(device->base.matrix->sy)
-            &&  !device->shader)? lx_true : lx_false;
+            &&  !device->shader);
 }
 
 /* //////////////////////////////////////////////////////////////////////////////////////

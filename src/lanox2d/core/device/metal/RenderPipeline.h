@@ -21,6 +21,11 @@
 
 #import "prefix.h"
 
+#define kVerticesIndex          0
+#define kMatrixProjectionIndex  1
+#define kMatrixModelIndex       2
+#define kVertexColorIndex       3
+
 @interface RenderPipeline : NSObject
 
 - (id)initWithView:(MTKView*)view;
