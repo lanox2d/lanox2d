@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BF92B9B526DE344F0092272D /* test.png in Resources */ = {isa = PBXBuildFile; fileRef = BF92B9B426DE344F0092272D /* test.png */; };
+		BF92B9B626DE344F0092272D /* test.png in Resources */ = {isa = PBXBuildFile; fileRef = BF92B9B426DE344F0092272D /* test.png */; };
 		BFAB861526C2CAA100CCDD70 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAB861426C2CAA100CCDD70 /* AppDelegate.m */; };
 		BFAB861826C2CAA200CCDD70 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAB861726C2CAA200CCDD70 /* SceneDelegate.m */; };
 		BFAB861B26C2CAA200CCDD70 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAB861A26C2CAA200CCDD70 /* ViewController.m */; };
@@ -41,6 +43,7 @@
 		BF86509326D6491B005917D1 /* device.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = device.m; sourceTree = "<group>"; };
 		BF86509426D6491B005917D1 /* MetalDevice.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MetalDevice.m; sourceTree = "<group>"; };
 		BF86509526D6491B005917D1 /* prefix.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = prefix.h; sourceTree = "<group>"; };
+		BF92B9B426DE344F0092272D /* test.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test.png; sourceTree = "<group>"; };
 		BFAB861026C2CAA100CCDD70 /* Example-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFAB861326C2CAA100CCDD70 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		BFAB861426C2CAA100CCDD70 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -118,6 +121,15 @@
 			path = shaders;
 			sourceTree = "<group>";
 		};
+		BF92B9B326DE344F0092272D /* res */ = {
+			isa = PBXGroup;
+			children = (
+				BF92B9B426DE344F0092272D /* test.png */,
+			);
+			name = res;
+			path = ../../../../res;
+			sourceTree = "<group>";
+		};
 		BFAB860726C2CAA100CCDD70 = {
 			isa = PBXGroup;
 			children = (
@@ -139,6 +151,7 @@
 		BFAB861226C2CAA100CCDD70 /* Example */ = {
 			isa = PBXGroup;
 			children = (
+				BF92B9B326DE344F0092272D /* res */,
 				BFAB861926C2CAA200CCDD70 /* ViewController.h */,
 				BFAB861A26C2CAA200CCDD70 /* ViewController.m */,
 				BFAB861F26C2CAA400CCDD70 /* Assets.xcassets */,
@@ -290,6 +303,7 @@
 			files = (
 				BFD9A32A26D0CBA600FE500D /* Main.storyboard in Resources */,
 				BFD9A32926D0CBA600FE500D /* LaunchScreen.storyboard in Resources */,
+				BF92B9B526DE344F0092272D /* test.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -299,6 +313,7 @@
 			files = (
 				BFD9A33626D0D4A100FE500D /* Info.plist in Resources */,
 				BFD9A34126D0D5AA00FE500D /* Main.storyboard in Resources */,
+				BF92B9B626DE344F0092272D /* test.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
