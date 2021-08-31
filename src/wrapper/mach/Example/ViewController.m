@@ -51,7 +51,8 @@
 #endif
 
 #ifdef TEST_SHAPE_WINDOW
-    [self initShapeWindow:@"path"];
+//    [self initShapeWindow:@"path" image:nil];
+    [self initShapeWindow:@"path" image:@"test.png"];
 #endif
 }
 
@@ -85,12 +86,17 @@
 #endif
 
 #ifdef TEST_SHAPE_WINDOW
-- (void)initShapeWindow:(NSString*)name {
+- (void)initShapeWindow:(NSString*)name image:(NSString*)imageName {
     lx_window_ref_t window = _lanox2dView.lanox2dWindow;
     if (window) {
-        static char* argv[] = {"", lx_null, lx_null};
+        int argc = 2;
+        static char* argv[] = {"", lx_null, lx_null, lx_null};
         argv[1] = (char*)[name UTF8String];
-        window_init((lx_window_ref_t)window, 2, argv);
+        if (imageName != nil) {
+            argv[2] = lx_null;
+            argc++;
+        }
+        window_init((lx_window_ref_t)window, argc, argv);
         (lx_void_t)window_exit;
     }
 }
