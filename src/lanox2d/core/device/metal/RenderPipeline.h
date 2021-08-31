@@ -21,10 +21,18 @@
 
 #import "prefix.h"
 
+// for all pipelines
 #define kVerticesIndex          0
 #define kMatrixProjectionIndex  1
 #define kMatrixModelIndex       2
+
+// only for solid pipeline
 #define kVertexColorIndex       3
+
+// only for texture pipeline
+#define kTexcoordsIndex         3
+#define kMatrixTexcoordIndex    4
+#define kColorTextureIndex      0
 
 @interface RenderPipeline : NSObject
 
