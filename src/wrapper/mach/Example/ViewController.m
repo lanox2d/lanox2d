@@ -52,7 +52,7 @@
 
 #ifdef TEST_SHAPE_WINDOW
 //    [self initShapeWindow:@"path" image:nil];
-    [self initShapeWindow:@"path" image:@"test.png"];
+    [self initShapeWindow:@"path" image:@"test"];
 #endif
 }
 
@@ -93,7 +93,7 @@
         static char* argv[] = {"", lx_null, lx_null, lx_null};
         argv[1] = (char*)[name UTF8String];
         if (imageName != nil) {
-            argv[2] = lx_null;
+            argv[2] = (char*)[[[[NSBundle mainBundle] URLForResource:imageName withExtension:@"png"] relativePath] UTF8String];
             argc++;
         }
         window_init((lx_window_ref_t)window, argc, argv);
