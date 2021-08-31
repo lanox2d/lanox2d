@@ -23,16 +23,18 @@ vertex VertexOut vertexShader(uint vertexID [[vertex_id]],
                               constant float4x4& matrixTexcoord [[buffer(kMatrixTexcoordIndex)]]) {
     VertexOut out;
     float4 position = float4(0.0, 0.0, 0.0, 1.0);
+    float4 position_tex = float4(0.0, 0.0, 0.0, 1.0);
     position.xy = vertices[vertexID].xy;
+    position_tex.xy = (*texcoords).xy;
     out.position = matrixProject * matrixModel * position;
-    out.texcoords = matrixTexcoord * texcoords;
+    out.texcoords = (matrixTexcoord * position_tex).xy;
     return out;
 }
 
 fragment float4 fragmentShader(VertexOut vertexIn [[stage_in]],
                                texture2d<half> colorTexture [[texture(kColorTextureIndex)]]) {
     constexpr sampler textureSampler (mag_filter::linear, min_filter::linear);
-    const half4 colorSample = colorTexture.sample(textureSampler, in.texcoords);
+    const half4 colorSample = colorTexture.sample(textureSampler, vertexIn.texcoords);
     return float4(colorSample);
 }
 
