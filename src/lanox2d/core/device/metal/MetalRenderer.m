@@ -22,7 +22,8 @@
 #import "matrix.h"
 #import "MetalRenderer.h"
 #import "RenderPipeline.h"
-#include "../../tess/tess.h"
+#import "../../shader.h"
+#import "../../tess/tess.h"
 
 @implementation MetalRenderer {
     MTKView*                    _view;
@@ -224,7 +225,33 @@
     }
 }
 
+- (lx_void_t)applyPaintBitmapShader:(nonnull lx_shader_ref_t)shader bounds:(nullable lx_rect_ref_t)bounds {
+
+#if 0
+    // get bitmap texture
+    lx_bitmap_shader_devdata_t* devdata = lx_bitmap_shader_devdata((lx_bitmap_shader_t*)shader);
+    lx_assert(devdata && devdata->texture);
+
+    // get bitmap
+    lx_bitmap_ref_t bitmap = ((lx_bitmap_shader_t*)shader)->bitmap;
+    lx_assert(bitmap);
+#endif
+
+    // enable texture pipeline
+    id<MTLRenderPipelineState> pipelineState = [_renderPipeline renderPipelineTexture];
+    [_renderEncoder setRenderPipelineState:pipelineState];
+}
+
 - (lx_void_t)applyPaintShader:(nonnull lx_shader_ref_t)shader bounds:(nullable lx_rect_ref_t)bounds {
+    lx_size_t shader_type = lx_shader_type(shader);
+    switch (shader_type) {
+    case LX_SHADER_TYPE_BITMAP:
+        [self applyPaintBitmapShader:shader bounds:bounds];
+        break;
+    default:
+        lx_trace_e("not supported shader type!");
+        break;
+    }
 }
 
 - (lx_void_t)applyPaintSolid {
@@ -240,10 +267,11 @@
         color.a = alpha;
     }
 
-    // apply color
+    // enable color pipeline
     id<MTLRenderPipelineState> pipelineState = [_renderPipeline renderPipelineSolid];
     [_renderEncoder setRenderPipelineState:pipelineState];
 
+    // apply color
     vector_float4 vertexColor = {(lx_float_t)color.r / 0xff, (lx_float_t)color.g / 0xff, (lx_float_t)color.b / 0xff, (lx_float_t)color.a / 0xff};
     [_renderEncoder setVertexBytes:&vertexColor length:sizeof(vertexColor) atIndex:kVertexColorIndex];
 }

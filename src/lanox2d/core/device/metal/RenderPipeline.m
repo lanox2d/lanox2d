@@ -73,7 +73,10 @@
 }
 
 - (id<MTLRenderPipelineState>)renderPipelineTexture {
-    return nil;
+    static lx_char_t const texture_metal[] = {
+#   include "texture.metal.h"
+    };
+    return [self renderPipelineWithName:@"Texture Pipeline" shaderSource:[NSString stringWithUTF8String:texture_metal]];
 }
 
 @end
