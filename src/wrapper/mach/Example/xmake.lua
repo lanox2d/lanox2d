@@ -8,6 +8,7 @@ target("Example")
     add_rules("xcode.application")
     add_files("*.m", "*.xcassets")
     add_defines("LX_NOMAIN_ENTRY")
+    add_installfiles("$(projectdir)/res/*.png")
     if is_plat("macosx") then
         add_files("macOS/**.storyboard", "macOS/Info.plist")
     elseif is_plat("iphoneos") then
