@@ -75,7 +75,8 @@ target("lanox2d")
     end
     if is_config("device", "metal") then
         add_rules("utils.bin2c", {extensions = {".metal"}})
-        add_files("core/device/metal/**.m")
+        add_files("core/device/metal/**.m|BitmapShader.m")
+        add_files("core/device/metal/BitmapShader.m", {mflags = "-fno-objc-arc"})
         add_files("core/device/metal/shaders/*.metal")
         add_files("core/tess/**.c")
     end
