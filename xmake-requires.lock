@@ -5,17 +5,15 @@
     ["macosx|x86_64"] = {
         ["libpng#31fecfc4"] = {
             repo = {
-                branch = "master",
                 commit = "94d2eee1f466092e04c5cf1e4ecc8c8883c1d0eb",
-                url = "https://gitee.com/tboox/xmake-repo.git"
+                url = "/Users/ruki/projects/personal/xmake-repo/"
             },
             version = "v1.6.37"
         },
         ["zlib#31fecfc4"] = {
             repo = {
-                branch = "master",
                 commit = "eda7adee81bac151f87c507030cc0dd8ab299462",
-                url = "https://gitee.com/tboox/xmake-repo.git"
+                url = "/Users/ruki/projects/personal/xmake-repo/"
             },
             version = "1.2.11"
         }

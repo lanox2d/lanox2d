@@ -22,6 +22,7 @@
 #import "matrix.h"
 #import "MetalRenderer.h"
 #import "RenderPipeline.h"
+#import "BitmapShader.h"
 #import "../../shader.h"
 #import "../../tess/tess.h"
 
@@ -227,19 +228,136 @@
 
 - (lx_void_t)applyPaintBitmapShader:(nonnull lx_shader_ref_t)shader bounds:(nullable lx_rect_ref_t)bounds {
 
-#if 0
-    // get bitmap texture
-    lx_bitmap_shader_devdata_t* devdata = lx_bitmap_shader_devdata((lx_bitmap_shader_t*)shader);
-    lx_assert(devdata && devdata->texture);
+    // get bitmap shader
+    BitmapShader* bitmapShader = [BitmapShader bitmapShader:(lx_bitmap_shader_t*)shader withDevice:_device];
+    lx_assert(bitmapShader && bitmapShader.texture);
 
     // get bitmap
     lx_bitmap_ref_t bitmap = ((lx_bitmap_shader_t*)shader)->bitmap;
     lx_assert(bitmap);
-#endif
 
     // enable texture pipeline
     id<MTLRenderPipelineState> pipelineState = [_renderPipeline renderPipelineTexture];
     [_renderEncoder setRenderPipelineState:pipelineState];
+
+    // apply texture
+    if (bitmapShader.texture) {
+        [_renderEncoder setFragmentTexture:bitmapShader.texture atIndex:kColorTextureIndex];
+    }
+
+    // get coordinate and size
+    lx_size_t width  = lx_bitmap_width(bitmap);
+    lx_size_t height = lx_bitmap_height(bitmap);
+    lx_float_t bx = bounds->x;
+    lx_float_t by = bounds->y;
+    lx_float_t bw = bounds->w;
+    lx_float_t bh = bounds->h;
+    lx_float_t sw = (lx_float_t)width;
+    lx_float_t sh = (lx_float_t)height;
+
+    /* get matrix in camera coordinate
+     *
+     *       bx        bounds of vertices
+     *      -------V7---------------------V6------
+     *  by |     /                          \     |
+     *     |   /              |               \   |
+     *     | /    camera  sw  |                 \ |
+     *    V8         O--------------------------- V5-----> (matrix in camera coordinate)
+     *     |      sh |||||||| | ||||||||          |
+     *     |         |||||||| | ||||||||          | bh
+     *     |    -----|--------.--------|------    |
+     *     |         |||||||| | ||||||||          |
+     *     |         |||||||| | ||||||||          |
+     *    V1         |-----------------           V4
+     *     | \      \|/       |                 / |
+     *     |   \              |               /   |
+     *     |     \                          /     |
+     *      -------V2--------------------V3-------
+     *                       bw
+     */
+    lx_matrix_t matrix = bitmapShader.matrix;
+
+    /* move bitmap to bounds of vertices in camera coordinate
+     *
+     * after scaling:
+     *
+     *       bx        bounds of vertices
+     *      -------V7---------------------V6------
+     *  by |     /                          \     |
+     *     |   /              |               \   |
+     *     | /    camera      |                 \ |
+     *    V8         O--------------------------- V5-----> (matrix in camera coordinate)
+     *     |         |||||||| | |||||||||||||||||||||||||||||
+     *     |         |||||||| | |||||||||||||||||||||||||||||
+     *     |    -----|--------.--------||||||||||||||||||||||
+     *     |         |||||||| | |||||||||||||||||||||||||||||
+     *     |         |||||||| | |||||||||||||||||||||||||||||
+     *    V1         ||||||||||||||||||||||||||||||||||||||||
+     *     | \       ||||||||||||||||||||||||||||||||||||||||
+     *     |   \     ||||||||||||||||||||||||||||||||||||||||
+     *     |     \   ||||||||||||||||||||||||||||||||||||||||
+     *      -------V2||||||||||||||||||||||||||||||||||||||||
+     *               ||||||||||||||||||||||||||||||||||||||||
+     *               ||||||||||||||||||||||||||||||||||||||||
+     *               ||||||||||||||||||||||||||||||||||||||||
+     *              \|/
+     *
+     * after translating:
+     *
+     *                    texture
+     *  --------------------------------------------->
+     * |
+     * |     bx        bounds of vertices
+     *      -------V7---------------------V6------
+     *  by ||||| / |||||||||||||||||||||||| \ |||||
+     *     ||| / |||||||||||| | ||||||||||||| \ |||
+     *     | /    camera      |                 \ |
+     *    V8         O--------------------------- V5-----> (matrix in camera coordinate)
+     *     ||||||||| |||||||| | |||||||||||||||||||
+     *     ||||||||| |||||||| | |||||||||||||||||||
+     *     |    -----|--------.--------||||||||||||
+     *     ||||||||| |||||||| | ||||||||||||||||||| bh
+     *     ||||||||| |||||||| | |||||||||||||||||||
+     *    V1 ||||||| |||||||||||||||||||||||||||| V4
+     *     | \ ||||| |||||||||||||||||||||||||| / |
+     *     ||| \ ||| |||||||||||||||||||||||| / |||
+     *     ||||| \|| |||||||||||||||||||||||/ |||||
+     *      -------V2--------------------V3-------
+     *               |       bw
+     *              \|/
+     */
+    lx_matrix_scale(&matrix, bw / sw, bh / sh);
+    lx_matrix_translate(&matrix, bx / bw, by / bh);
+
+    /* convert to texture coordinate (0,1), because our texture vertices is in world coordinate
+     *
+     * before:
+     *
+     *    bx
+     * by  ---------------------
+     *    |                     |
+     *    |                     |
+     *    |                     | bh
+     *    |                     |
+     *     ---------------------
+     *              bw
+     *
+     * after:
+     *
+     * 0,0 -------------------- 1,0
+     *    |                     |
+     *    |                     |
+     *    |                     |
+     *    |                     |
+     * 0,1 -------------------- 1,1
+     */
+    lx_matrix_scale(&matrix, 1.0f / bw, 1.0f / bh);
+    lx_matrix_translate(&matrix, -bx, -by);
+
+    // apply texture matrix
+    lx_metal_matrix_t matrixTexture;
+    lx_metal_matrix_convert(&matrixTexture, &matrix);
+    [_renderEncoder setFragmentBytes:&matrixTexture length:sizeof(matrixTexture) atIndex:kMatrixTexcoordIndex];
 }
 
 - (lx_void_t)applyPaintShader:(nonnull lx_shader_ref_t)shader bounds:(nullable lx_rect_ref_t)bounds {

@@ -24,7 +24,10 @@
 
 @interface BitmapShader : NSObject
 
-+(BitmapShader*)bitmapShader:(lx_bitmap_shader_t*)shader;
+@property (nonatomic, strong) id<MTLTexture> texture;
+@property (nonatomic) lx_matrix_t matrix;
+
++ (BitmapShader*)bitmapShader:(lx_bitmap_shader_t*)shader withDevice:(id<MTLDevice>)device;
 
 @end
 
