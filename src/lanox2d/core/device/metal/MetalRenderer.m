@@ -357,7 +357,7 @@
     // apply texture matrix
     lx_metal_matrix_t matrixTexture;
     lx_metal_matrix_convert(&matrixTexture, &matrix);
-    [_renderEncoder setFragmentBytes:&matrixTexture length:sizeof(matrixTexture) atIndex:kMatrixTexcoordIndex];
+    [_renderEncoder setVertexBytes:&matrixTexture length:sizeof(matrixTexture) atIndex:kMatrixTexcoordIndex];
 }
 
 - (lx_void_t)applyPaintShader:(nonnull lx_shader_ref_t)shader bounds:(nullable lx_rect_ref_t)bounds {
