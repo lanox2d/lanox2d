@@ -419,26 +419,24 @@
 - (lx_void_t)fillPolygon:(nonnull lx_polygon_ref_t)polygon bounds:(nullable lx_rect_ref_t)bounds rule:(lx_size_t)rule {
     lx_assert(_tessellator);
     lx_tessellator_rule_set(_tessellator, rule);
-    lx_polygon_ref_t result = polygon->convex? polygon : lx_tessellator_make(_tessellator, polygon, bounds);
+    lx_polygon_ref_t result = lx_tessellator_make(_tessellator, polygon, bounds);
     if (result) {
 
         // apply vertices
         lx_assert(result && result->points);
         [_renderEncoder setVertexBytes:result->points length:(result->total * sizeof(lx_point_t)) atIndex:kVerticesIndex];
 
+#if 0
         // apply texture coordinate
         lx_shader_ref_t shader = lx_paint_shader(_baseDevice->paint);
         if (shader && lx_shader_type(shader) == LX_SHADER_TYPE_BITMAP) {
-            [_renderEncoder setVertexBytes:result->points length:(result->total * sizeof(lx_point_t)) atIndex:kTexcoordsIndex];
-        }
+            //[_renderEncoder setVertexBytes:result->points length:(result->total * sizeof(lx_point_t)) atIndex:kTexcoordsIndex];
 
-        // draw vertices
-        lx_size_t index = 0;
-        lx_size_t total = result->total;
-        while (index + 4 <= total) {
-            [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:index vertexCount:4];
-            index += 4;
+            lx_point_t texcoords[] = {{1.f, 1.f}, {0.f, 1.f}, {0.f, 0.f}, {1.f, 0.f}, {1.f, 1.f}, {0.f, 1.f}, {0.f, 0.f}, {1.f, 0.f}};
+            [_renderEncoder setVertexBytes:texcoords length:(8 * sizeof(lx_point_t)) atIndex:kTexcoordsIndex];
         }
+#endif
+        [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:result->total];
     }
 }
 

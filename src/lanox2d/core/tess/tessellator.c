@@ -104,8 +104,10 @@ static lx_void_t lx_tessellator_result_append(lx_tessellator_t* tessellator) {
 
                 // close it
                 lx_assert(lx_array_data(polygon_points));
-                lx_array_insert_tail(polygon_points, point_first);
-                count++;
+                if (tessellator->flags & LX_TESSELLATOR_FLAG_AUTOCLOSED) {
+                    lx_array_insert_tail(polygon_points, point_first);
+                    count++;
+                }
 
                 // update count
                 if (polygon_counts) {
@@ -234,6 +236,13 @@ lx_void_t lx_tessellator_rule_set(lx_tessellator_ref_t self, lx_size_t rule) {
     lx_tessellator_t* tessellator = (lx_tessellator_t*)self;
     if (tessellator) {
         tessellator->rule = rule;
+    }
+}
+
+lx_void_t lx_tessellator_flags_set(lx_tessellator_ref_t self, lx_size_t flags) {
+    lx_tessellator_t* tessellator = (lx_tessellator_t*)self;
+    if (tessellator) {
+        tessellator->flags = flags;
     }
 }
 

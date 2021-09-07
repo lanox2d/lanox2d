@@ -150,6 +150,9 @@ typedef struct lx_tessellator_t_ {
     // the winding rule
     lx_size_t                           rule;
 
+    // the flags
+    lx_size_t                           flags;
+
     // the user private data
     lx_cpointer_t                       udata;
 

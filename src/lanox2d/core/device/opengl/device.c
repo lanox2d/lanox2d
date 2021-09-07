@@ -142,8 +142,9 @@ lx_device_ref_t lx_device_init_from_opengl(lx_size_t width, lx_size_t height, lx
         device->tessellator = lx_tessellator_init();
         lx_assert_and_check_break(device->tessellator);
 
-        // init tessellator mode
+        // init tessellator mode and flags
         lx_tessellator_mode_set(device->tessellator, LX_TESSELLATOR_MODE_CONVEX);
+        lx_tessellator_flags_set(device->tessellator, LX_TESSELLATOR_FLAG_AUTOCLOSED);
 
 #if LX_GL_API_VERSION >= 20
         // init solid program

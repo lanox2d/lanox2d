@@ -101,6 +101,12 @@ typedef enum lx_tessellator_mode_e_ {
 ,   LX_TESSELLATOR_MODE_TRIANGULATION = 2     //!< make triangle
 }lx_tessellator_mode_e;
 
+/// the polygon tessellator flag enum
+typedef enum lx_tessellator_flag_e_ {
+    LX_TESSELLATOR_FLAG_NONE          = 0
+,   LX_TESSELLATOR_FLAG_AUTOCLOSED    = 1     //!< add closed point automatically for each contour
+}lx_tessellator_flag_e;
+
 /// the polygon tessellator rule enum
 typedef enum lx_tessellator_rule_e_ {
     LX_TESSELLATOR_RULE_ODD     = LX_PAINT_FILL_RULE_ODD     //!< the odd rule
@@ -147,6 +153,13 @@ lx_void_t               lx_tessellator_mode_set(lx_tessellator_ref_t tessellator
  * @param rule          the rule
  */
 lx_void_t               lx_tessellator_rule_set(lx_tessellator_ref_t tessellator, lx_size_t rule);
+
+/*! set the tessellator flags
+ *
+ * @param tessellator   the tessellator
+ * @param flags         the flags
+ */
+lx_void_t               lx_tessellator_flags_set(lx_tessellator_ref_t tessellator, lx_size_t flags);
 
 /*! tessellate polygon
  *
