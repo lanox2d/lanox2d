@@ -329,7 +329,7 @@ static lx_inline lx_void_t lx_gl_renderer_draw_contour(lx_opengl_device_t* devic
     color.a = 128;
     lx_gl_renderer_apply_color(device, color);
 #endif
-    lx_glDrawArrays(LX_GL_TRIANGLE_FAN, index, (lx_GLint_t)count);
+    lx_glDrawArrays(LX_GL_TRIANGLE_FAN, (lx_GLint_t)index, (lx_GLint_t)count);
 }
 
 static lx_inline lx_void_t lx_gl_renderer_fill_polygon(lx_opengl_device_t* device, lx_polygon_ref_t polygon, lx_rect_ref_t bounds, lx_size_t rule) {
@@ -400,7 +400,7 @@ static lx_inline lx_void_t lx_gl_renderer_stroke_polygon(lx_opengl_device_t* dev
     lx_size_t    index = 0;
     lx_uint16_t* counts = polygon->counts;
     while ((count = *counts++)) {
-        lx_glDrawArrays(LX_GL_LINE_STRIP, index, (lx_GLint_t)count);
+        lx_glDrawArrays(LX_GL_LINE_STRIP, (lx_GLint_t)index, (lx_GLint_t)count);
         index += count;
     }
 }
