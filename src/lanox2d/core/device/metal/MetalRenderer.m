@@ -426,6 +426,12 @@
         lx_assert(result && result->points);
         [_renderEncoder setVertexBytes:result->points length:(result->total * sizeof(lx_point_t)) atIndex:kVerticesIndex];
 
+        // apply texture coordinate
+        lx_shader_ref_t shader = lx_paint_shader(_baseDevice->paint);
+        if (shader && lx_shader_type(shader) == LX_SHADER_TYPE_BITMAP) {
+            [_renderEncoder setVertexBytes:result->points length:(result->total * sizeof(lx_point_t)) atIndex:kTexcoordsIndex];
+        }
+
         // draw vertices
         lx_size_t index = 0;
         lx_size_t total = result->total;
