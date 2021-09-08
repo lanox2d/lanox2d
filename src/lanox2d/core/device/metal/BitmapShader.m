@@ -85,11 +85,8 @@ static lx_void_t lx_bitmap_shader_devdata_free(lx_shader_ref_t shader) {
         [textureDescriptor release];
 
         // init texture data
-        MTLRegion region = {
-            { 0, 0, 0 },
-            {width, height, 1}
-        };
-        lx_pointer_t data   = lx_bitmap_data(bitmap);
+        MTLRegion    region = MTLRegionMake2D(0, 0, width, height);
+        lx_pointer_t data = lx_bitmap_data(bitmap);
         lx_size_t    rowbytes = lx_bitmap_row_bytes(bitmap);
         [_texture replaceRegion:region mipmapLevel:0 withBytes:data bytesPerRow:(NSUInteger)rowbytes];
 

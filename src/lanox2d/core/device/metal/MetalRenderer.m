@@ -357,7 +357,7 @@
     // apply texture matrix
     lx_metal_matrix_t matrixTexture;
     lx_metal_matrix_convert(&matrixTexture, &matrix);
-    [_renderEncoder setVertexBytes:&matrixTexture length:sizeof(matrixTexture) atIndex:kMatrixTexcoordIndex];
+//    [_renderEncoder setVertexBytes:&matrixTexture length:sizeof(matrixTexture) atIndex:kMatrixTexcoordIndex];
 }
 
 - (lx_void_t)applyPaintShader:(nonnull lx_shader_ref_t)shader bounds:(nullable lx_rect_ref_t)bounds {
@@ -422,20 +422,39 @@
     lx_polygon_ref_t result = lx_tessellator_make(_tessellator, polygon, bounds);
     if (result) {
 
+        lx_trace_i("total: %lu", result->total);
+        lx_assert(result->total == 6);
+
+#if 1
+        lx_point_make(&result->points[0], 250, -250);
+        lx_point_make(&result->points[1], -250, -250);
+        lx_point_make(&result->points[2], -250, 250);
+
+        lx_point_make(&result->points[3], 250, -250);
+        lx_point_make(&result->points[4], -250, 250);
+        lx_point_make(&result->points[5], 250, 250);
+
+        lx_trace_i("");
+        lx_trace_i("%{point}", &result->points[0]);
+        lx_trace_i("%{point}", &result->points[1]);
+        lx_trace_i("%{point}", &result->points[2]);
+
+        lx_trace_i("%{point}", &result->points[3]);
+        lx_trace_i("%{point}", &result->points[4]);
+        lx_trace_i("%{point}", &result->points[5]);
+#endif
         // apply vertices
         lx_assert(result && result->points);
         [_renderEncoder setVertexBytes:result->points length:(result->total * sizeof(lx_point_t)) atIndex:kVerticesIndex];
 
-#if 0
         // apply texture coordinate
         lx_shader_ref_t shader = lx_paint_shader(_baseDevice->paint);
         if (shader && lx_shader_type(shader) == LX_SHADER_TYPE_BITMAP) {
             //[_renderEncoder setVertexBytes:result->points length:(result->total * sizeof(lx_point_t)) atIndex:kTexcoordsIndex];
 
-            lx_point_t texcoords[] = {{1.f, 1.f}, {0.f, 1.f}, {0.f, 0.f}, {1.f, 0.f}, {1.f, 1.f}, {0.f, 1.f}, {0.f, 0.f}, {1.f, 0.f}};
-            [_renderEncoder setVertexBytes:texcoords length:(8 * sizeof(lx_point_t)) atIndex:kTexcoordsIndex];
+            static lx_point_t texcoords[] = {{1.f, 1.f}, {0.f, 1.f}, {0.f, 0.f}, {1.f, 1.f}, {0.f, 0.f}, {1.f, 0.f}};
+            [_renderEncoder setVertexBytes:texcoords length:(result->total * sizeof(lx_point_t)) atIndex:kTexcoordsIndex];
         }
-#endif
         [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:result->total];
     }
 }

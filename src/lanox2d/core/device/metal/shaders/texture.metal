@@ -25,9 +25,9 @@ vertex VertexOut vertexShader(uint vertexID [[vertex_id]],
     float4 position = float4(0.0, 0.0, 0.0, 1.0);
     float4 position_tex = float4(0.0, 0.0, 0.0, 1.0);
     position.xy = vertices[vertexID].xy;
-    position_tex.xy = (*texcoords).xy;
+    position_tex.xy = texcoords[vertexID].xy;
     out.position = matrixProject * matrixModel * position;
-    out.texcoords = *texcoords;//(matrixTexcoord * position_tex).xy;
+    out.texcoords = texcoords[vertexID].xy;//(matrixTexcoord * position_tex).xy;
     return out;
 }
 

@@ -3,25 +3,19 @@
         version = "1.0"
     },
     ["macosx|x86_64"] = {
-        ["cmake#31fecfc4"] = {
+        ["libpng#31fecfc4"] = {
             repo = {
-                commit = "4498f11267de5112199152ab030ed139c985ad5a",
+                commit = "94d2eee1f466092e04c5cf1e4ecc8c8883c1d0eb",
                 url = "/Users/ruki/projects/personal/xmake-repo/"
             },
-            version = "3.21.0"
+            version = "v1.6.37"
         },
-        ["glfw#31fecfc4"] = {
+        ["zlib#31fecfc4"] = {
             repo = {
                 commit = "eda7adee81bac151f87c507030cc0dd8ab299462",
                 url = "/Users/ruki/projects/personal/xmake-repo/"
             },
-            version = "3.3.4"
-        },
-        ["opengl#31fecfc4"] = {
-            repo = {
-                commit = "eda7adee81bac151f87c507030cc0dd8ab299462",
-                url = "/Users/ruki/projects/personal/xmake-repo/"
-            }
+            version = "1.2.11"
         }
     }
 }
