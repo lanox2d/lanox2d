@@ -52,7 +52,7 @@
 
 #ifdef TEST_SHAPE_WINDOW
 //    [self initShapeWindow:@"path" image:nil];
-    [self initShapeWindow:@"rect" image:@"test"];
+    [self initShapeWindow:@"path" image:@"test"];
 #endif
 }
 
