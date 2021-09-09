@@ -19,15 +19,15 @@ vertex VertexOut vertexShader(uint vertexID [[vertex_id]],
                               constant float2* vertices [[buffer(kVerticesIndex)]],
                               constant float4x4& matrixProject [[buffer(kMatrixProjectionIndex)]],
                               constant float4x4& matrixModel [[buffer(kMatrixModelIndex)]],
-                              constant float2* texcoords [[buffer(kTexcoordsIndex)]],
+                              constant float2* textureCoords [[buffer(kTexcoordsIndex)]],
                               constant float4x4& matrixTexcoord [[buffer(kMatrixTexcoordIndex)]]) {
     VertexOut out;
     float4 position = float4(0.0, 0.0, 0.0, 1.0);
-    float4 position_tex = float4(0.0, 0.0, 0.0, 1.0);
+    float4 texcoords = float4(0.0, 0.0, 0.0, 1.0);
     position.xy = vertices[vertexID].xy;
-    position_tex.xy = texcoords[vertexID].xy;
+    texcoords.xy = textureCoords[vertexID].xy;
     out.position = matrixProject * matrixModel * position;
-    out.texcoords = (matrixTexcoord * position_tex).xy;
+    out.texcoords = (matrixTexcoord * texcoords).xy;
     return out;
 }
 
