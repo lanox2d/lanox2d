@@ -32,7 +32,9 @@
 // only for texture pipeline
 #define kTexcoordsIndex         3
 #define kMatrixTexcoordIndex    4
+
 #define kColorTextureIndex      0
+#define kTextureSamplerIndex    1
 
 @interface RenderPipeline : NSObject
 

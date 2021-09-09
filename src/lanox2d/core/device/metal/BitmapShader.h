@@ -25,6 +25,7 @@
 @interface BitmapShader : NSObject
 
 @property (nonatomic, strong) id<MTLTexture> texture;
+@property (nonatomic, strong) id<MTLSamplerState> sampler;
 @property (nonatomic) lx_matrix_t matrix;
 
 + (BitmapShader*)bitmapShader:(lx_bitmap_shader_t*)shader withDevice:(id<MTLDevice>)device;

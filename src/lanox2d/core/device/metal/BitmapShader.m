@@ -40,6 +40,9 @@ static lx_void_t lx_bitmap_shader_devdata_free(lx_shader_ref_t shader) {
     if (_texture) {
         [_texture release];
     }
+    if (_sampler) {
+        [_sampler release];
+    }
     [super dealloc];
 }
 
@@ -60,6 +63,17 @@ static lx_void_t lx_bitmap_shader_devdata_free(lx_shader_ref_t shader) {
         // get bitmap
         lx_bitmap_ref_t bitmap = shader->bitmap;
         lx_assert(bitmap);
+
+        // create texture sampler
+        MTLSamplerDescriptor* samplerDescriptor = [MTLSamplerDescriptor new];
+        samplerDescriptor.rAddressMode = MTLSamplerAddressModeRepeat;
+        samplerDescriptor.sAddressMode = MTLSamplerAddressModeRepeat;
+        samplerDescriptor.tAddressMode = MTLSamplerAddressModeRepeat;
+        samplerDescriptor.minFilter = MTLSamplerMinMagFilterLinear;
+        samplerDescriptor.magFilter = MTLSamplerMinMagFilterLinear;
+        samplerDescriptor.mipFilter = MTLSamplerMipFilterNotMipmapped;
+        _sampler = [device newSamplerStateWithDescriptor:samplerDescriptor];
+        [samplerDescriptor release];
 
         // create texture
         lx_size_t pixfmt = lx_bitmap_pixfmt(bitmap);

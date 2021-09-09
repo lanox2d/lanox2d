@@ -7,6 +7,7 @@
 #define kMatrixTexcoordIndex    4
 
 #define kColorTextureIndex      0
+#define kTextureSamplerIndex    1
 
 using namespace metal;
 
@@ -32,8 +33,9 @@ vertex VertexOut vertexShader(uint vertexID [[vertex_id]],
 }
 
 fragment float4 fragmentShader(VertexOut vertexIn [[stage_in]],
-                               texture2d<half> colorTexture [[texture(kColorTextureIndex)]]) {
-    constexpr sampler textureSampler (mag_filter::linear, min_filter::linear);
+                               texture2d<half> colorTexture [[texture(kColorTextureIndex)]],
+                               sampler textureSampler [[sampler(kTextureSamplerIndex)]]) {
+    //constexpr sampler textureSampler (mag_filter::linear, min_filter::linear);
     const half4 colorSample = colorTexture.sample(textureSampler, vertexIn.texcoords);
     return float4(colorSample);
 }

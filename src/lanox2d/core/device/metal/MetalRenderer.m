@@ -245,6 +245,11 @@
         [_renderEncoder setFragmentTexture:bitmapShader.texture atIndex:kColorTextureIndex];
     }
 
+    // apply texture sampler
+    if (bitmapShader.sampler) {
+        [_renderEncoder setFragmentSamplerState:bitmapShader.sampler atIndex:kTextureSamplerIndex];
+    }
+
     // get coordinate and size
     lx_size_t width  = lx_bitmap_width(bitmap);
     lx_size_t height = lx_bitmap_height(bitmap);
