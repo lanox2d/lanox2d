@@ -20,6 +20,8 @@
  */
 
 #import "BitmapShader.h"
+#import "../../shader.h"
+#import "../../quality.h"
 
 #if __has_feature(objc_arc)
 #   error this file need disable arc
@@ -64,14 +66,30 @@ static lx_void_t lx_bitmap_shader_devdata_free(lx_shader_ref_t shader) {
         lx_bitmap_ref_t bitmap = shader->bitmap;
         lx_assert(bitmap);
 
+        static NSUInteger addressModes[] = {
+            MTLSamplerAddressModeClampToZero,
+            MTLSamplerAddressModeClampToBorderColor,
+            MTLSamplerAddressModeClampToEdge,
+            MTLSamplerAddressModeRepeat,
+            MTLSamplerAddressModeMirrorRepeat
+        };
+        lx_size_t tile_mode = lx_shader_tile_mode((lx_shader_ref_t)shader);
+        lx_assert(tile_mode < lx_arrayn(addressModes));
+
         // create texture sampler
         MTLSamplerDescriptor* samplerDescriptor = [MTLSamplerDescriptor new];
-        samplerDescriptor.rAddressMode = MTLSamplerAddressModeRepeat;
-        samplerDescriptor.sAddressMode = MTLSamplerAddressModeRepeat;
-        samplerDescriptor.tAddressMode = MTLSamplerAddressModeRepeat;
-        samplerDescriptor.minFilter = MTLSamplerMinMagFilterLinear;
-        samplerDescriptor.magFilter = MTLSamplerMinMagFilterLinear;
-        samplerDescriptor.mipFilter = MTLSamplerMipFilterNotMipmapped;
+        samplerDescriptor.rAddressMode = addressModes[tile_mode];
+        samplerDescriptor.sAddressMode = addressModes[tile_mode];
+        samplerDescriptor.tAddressMode = addressModes[tile_mode];
+        if (lx_quality() > LX_QUALITY_LOW) {
+            samplerDescriptor.minFilter = MTLSamplerMinMagFilterLinear;
+            samplerDescriptor.magFilter = MTLSamplerMinMagFilterLinear;
+            samplerDescriptor.mipFilter = MTLSamplerMipFilterNotMipmapped;
+        } else {
+            samplerDescriptor.minFilter = MTLSamplerMinMagFilterNearest;
+            samplerDescriptor.magFilter = MTLSamplerMinMagFilterNearest;
+            samplerDescriptor.mipFilter = MTLSamplerMipFilterNotMipmapped;
+        }
         _sampler = [device newSamplerStateWithDescriptor:samplerDescriptor];
         [samplerDescriptor release];
 

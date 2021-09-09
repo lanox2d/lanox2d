@@ -29,13 +29,12 @@
  */
 
 static lx_inline lx_void_t lx_shader_texture_apply_wrap(lx_size_t tile_mode_s, lx_size_t tile_mode_t) {
-    static lx_GLuint_t wrap[] =
-    {
-        LX_GL_CLAMP_TO_BORDER
-    ,   LX_GL_CLAMP_TO_BORDER
-    ,   LX_GL_CLAMP_TO_EDGE
-    ,   LX_GL_REPEAT
-    ,   LX_GL_MIRRORED_REPEAT
+    static lx_GLuint_t wrap[] = {
+        LX_GL_CLAMP_TO_BORDER,
+        LX_GL_CLAMP_TO_BORDER,
+        LX_GL_CLAMP_TO_EDGE,
+        LX_GL_REPEAT,
+        LX_GL_MIRRORED_REPEAT
     };
     lx_assert(tile_mode_s < lx_arrayn(wrap) && tile_mode_t < lx_arrayn(wrap));
     lx_glTexParameteri(LX_GL_TEXTURE_2D, LX_GL_TEXTURE_WRAP_S, wrap[tile_mode_s]);
@@ -79,10 +78,10 @@ static lx_bitmap_shader_devdata_t* lx_bitmap_shader_init_devdata(lx_bitmap_shade
     lx_shader_texture_apply_wrap(tile_mode, tile_mode);
 
     // apply texture data
-    lx_pointer_t     data   = lx_bitmap_data(bitmap);
-    lx_size_t        pixfmt = lx_bitmap_pixfmt(bitmap);
-    lx_size_t        width  = lx_bitmap_width(bitmap);
-    lx_size_t        height = lx_bitmap_height(bitmap);
+    lx_pointer_t data   = lx_bitmap_data(bitmap);
+    lx_size_t    pixfmt = lx_bitmap_pixfmt(bitmap);
+    lx_size_t    width  = lx_bitmap_width(bitmap);
+    lx_size_t    height = lx_bitmap_height(bitmap);
     switch (LX_PIXFMT(pixfmt)) {
     case LX_PIXFMT_ARGB8888:
     case LX_PIXFMT_XRGB8888:
