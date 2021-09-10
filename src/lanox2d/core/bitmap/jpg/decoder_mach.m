@@ -56,7 +56,6 @@ lx_bitmap_ref_t lx_bitmap_jpg_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
     lx_bool_t        ok = lx_false;
     lx_bitmap_ref_t  bitmap = lx_null;
     CFDataRef        pixelData = lx_null;
-    CGImageSourceRef imageSource = lx_null;
     CGImageRef       image = lx_null;
     do {
 
@@ -75,8 +74,9 @@ lx_bitmap_ref_t lx_bitmap_jpg_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
         // decode image
         NSData* imageData = [NSData dataWithBytes:data length:size];
         CFDataRef imageDataRef = (__bridge CFDataRef)imageData;
-        imageSource = CGImageSourceCreateWithData(imageDataRef, nil);
+        CGImageSourceRef imageSource = CGImageSourceCreateWithData(imageDataRef, nil);
         image = CGImageSourceCreateImageAtIndex(imageSource, 0, nil);
+        CFRelease(imageSource);
         lx_assert_and_check_break(image);
 
         // get image information
@@ -101,6 +101,15 @@ lx_bitmap_ref_t lx_bitmap_jpg_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
         lx_size_t  bitmap_size = lx_bitmap_size(bitmap);
         lx_assert_and_check_break(bitmap_data && bitmap_size == pixelDataSize);
 
+        // get pixmap
+        CGColorSpaceRef space = CGImageGetColorSpace(image);
+        CGColorSpaceModel model = CGColorSpaceGetModel(space);
+        lx_assert_and_check_break(model == kCGColorSpaceModelRGB);
+
+        lx_size_t nComponent = (lx_size_t)CGColorSpaceGetNumberOfComponents(space);
+        lx_size_t bitsPerComponent = (lx_size_t)CGImageGetBitsPerComponent(image);
+        lx_trace_i("%lux%lu", bitsPerComponent, nComponent);
+
         // copy image data
         lx_memcpy(bitmap_data, pixelDataPtr, pixelDataSize);
 
@@ -113,12 +122,6 @@ lx_bitmap_ref_t lx_bitmap_jpg_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
     if (image) {
         CFRelease(image);
         image = lx_null;
-    }
-
-    // free image source
-    if (imageSource) {
-        CFRelease(imageSource);
-        imageSource = lx_null;
     }
 
     // free pixel data
