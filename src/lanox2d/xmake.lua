@@ -28,7 +28,7 @@ target("lanox2d")
     add_files("*.c")
     add_files("base/**.c|libc/arch/**.c|platform/**.c")
     add_files("base/platform/*.c")
-    add_files("core/**.c|pixmap/*.c|device/**.c|tess/**.c")
+    add_files("core/**.c|pixmap/*.c|device/**.c|tess/**.c|bitmap/*/*.c")
     add_files("platform/**.c|windows/*.c")
 
     -- add options
@@ -87,12 +87,14 @@ target("lanox2d")
 
     -- add bitmaps
     local bitmap = get_config("bitmap")
-    if not bitmap or not bitmap:find("bmp") then
-        del_files("core/bitmap/bmp/*.c")
-    end
-    if not bitmap or not bitmap:find("png") then
-        del_files("core/bitmap/png/*.c")
-    end
-    if not bitmap or not bitmap:find("jpg") then
-        del_files("core/bitmap/jpg/*.c")
+    if bitmap then
+        if bitmap:find("bmp") then
+            add_files("core/bitmap/bmp/*.c")
+        end
+        if bitmap:find("png") then
+            add_files("core/bitmap/png/*.c")
+        end
+        if bitmap:find("jpg") then
+            add_files("core/bitmap/jpg/*.c")
+        end
     end
