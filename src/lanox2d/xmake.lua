@@ -92,7 +92,11 @@ target("lanox2d")
             add_files("core/bitmap/bmp/*.c")
         end
         if bitmap:find("png") then
-            add_files("core/bitmap/png/*.c")
+            if is_plat("macosx", "iphoneos") then
+                add_files("core/bitmap/png/decoder_mach.m")
+            else
+                add_files("core/bitmap/png/decoder_libpng.c")
+            end
         end
         if bitmap:find("jpg") then
             add_files("core/bitmap/jpg/*.c")
