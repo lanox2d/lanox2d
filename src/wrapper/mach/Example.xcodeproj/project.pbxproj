@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BF01616326EB58F9003E4F22 /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BF01616226EB58F8003E4F22 /* test.jpg */; };
+		BF01616426EB58F9003E4F22 /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BF01616226EB58F8003E4F22 /* test.jpg */; };
 		BF92B9B526DE344F0092272D /* test.png in Resources */ = {isa = PBXBuildFile; fileRef = BF92B9B426DE344F0092272D /* test.png */; };
 		BF92B9B626DE344F0092272D /* test.png in Resources */ = {isa = PBXBuildFile; fileRef = BF92B9B426DE344F0092272D /* test.png */; };
 		BFAB861526C2CAA100CCDD70 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAB861426C2CAA100CCDD70 /* AppDelegate.m */; };
@@ -35,6 +37,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		BF01616226EB58F8003E4F22 /* test.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = test.jpg; sourceTree = "<group>"; };
 		BF86508D26D6491B005917D1 /* RenderPipeline.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RenderPipeline.h; sourceTree = "<group>"; };
 		BF86508E26D6491B005917D1 /* MetalDevice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MetalDevice.h; sourceTree = "<group>"; };
 		BF86508F26D6491B005917D1 /* device.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = device.h; sourceTree = "<group>"; };
@@ -124,6 +127,7 @@
 		BF92B9B326DE344F0092272D /* res */ = {
 			isa = PBXGroup;
 			children = (
+				BF01616226EB58F8003E4F22 /* test.jpg */,
 				BF92B9B426DE344F0092272D /* test.png */,
 			);
 			name = res;
@@ -304,6 +308,7 @@
 				BFD9A32A26D0CBA600FE500D /* Main.storyboard in Resources */,
 				BFD9A32926D0CBA600FE500D /* LaunchScreen.storyboard in Resources */,
 				BF92B9B526DE344F0092272D /* test.png in Resources */,
+				BF01616326EB58F9003E4F22 /* test.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -314,6 +319,7 @@
 				BFD9A33626D0D4A100FE500D /* Info.plist in Resources */,
 				BFD9A34126D0D5AA00FE500D /* Main.storyboard in Resources */,
 				BF92B9B626DE344F0092272D /* test.png in Resources */,
+				BF01616426EB58F9003E4F22 /* test.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
