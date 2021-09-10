@@ -20,7 +20,7 @@ end
 
 -- libpng package
 local bitmap = get_config("bitmap")
-if bitmap and bitmap:find("png") then
+if bitmap and bitmap:find("png") and not is_plat("macosx", "iphoneos") then
     add_requires("libpng")
 end
 
