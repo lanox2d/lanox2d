@@ -26,6 +26,6 @@ end
 
 -- libjpeg-turbo package
 local bitmap = get_config("bitmap")
-if bitmap and bitmap:find("jpg") then
+if bitmap and bitmap:find("jpg") and not is_plat("macosx", "iphoneos") then
     add_requires("libjpeg-turbo")
 end

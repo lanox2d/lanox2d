@@ -15,7 +15,7 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        decoder.c
+ * @file        decoder_libjpeg.c
  *
  */
 
