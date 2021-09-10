@@ -92,6 +92,11 @@ lx_bitmap_ref_t lx_bitmap_jpg_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
         lx_size_t pixelDataSize = CFDataGetLength(pixelData);
         lx_assert_and_check_break(pixelDataPtr && pixelDataSize);
 
+        // get pixmap
+        lx_pixmap_ref_t dp = lx_pixmap(pixfmt, 0xff);
+        lx_pixmap_ref_t sp = lx_pixmap(LX_PIXFMT_ARGB8888, 0xff);
+        lx_assert_and_check_break(dp && sp);
+
         // init bitmap, default: no alpha
         bitmap = lx_bitmap_init(lx_null, pixfmt, width, height, rowbytes, lx_false);
         lx_assert_and_check_break(bitmap);
@@ -106,12 +111,38 @@ lx_bitmap_ref_t lx_bitmap_jpg_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
         CGColorSpaceModel model = CGColorSpaceGetModel(space);
         lx_assert_and_check_break(model == kCGColorSpaceModelRGB);
 
+#if 0
         lx_size_t nComponent = (lx_size_t)CGColorSpaceGetNumberOfComponents(space);
         lx_size_t bitsPerComponent = (lx_size_t)CGImageGetBitsPerComponent(image);
         lx_trace_i("%lux%lu", bitsPerComponent, nComponent);
+#endif
+        // decode image data
+        if (dp == sp) {
+            lx_memcpy(bitmap_data, pixelDataPtr, pixelDataSize);
+        } else {
+            lx_size_t  j;
+            lx_size_t  b = dp->btp;
+            lx_size_t  n = rowbytes;
+            lx_byte_t* p = bitmap_data;
+            lx_bool_t  has_alpha = lx_false;
+            lx_byte_t const* ldata = pixelDataPtr;
+            for (j = 0; j < height; j++) {
+                lx_size_t   i = 0;
+                lx_byte_t*  d = p;
+                lx_byte_t*  e = p + n;
+                for (i = 0; i < width && d < e; i += 4, d += b) {
+                    dp->color_set(d, sp->color_get(&ldata[i]));
+                    if (!has_alpha) {
+                        has_alpha = ldata[i + 3] <= LX_QUALITY_ALPHA_MAX;
+                    }
+                }
+                p += n;
+                ldata += n;
+            }
 
-        // copy image data
-        lx_memcpy(bitmap_data, pixelDataPtr, pixelDataSize);
+            // set alpha
+            lx_bitmap_set_alpha(bitmap, (has_alpha && LX_PIXFMT_HAS_ALPHA(pixfmt))? lx_true : lx_false);
+        }
 
         // ok
         ok = lx_true;
