@@ -1,0 +1,601 @@
+[
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-o", "build/.objs/test_bitmap/macosx/x86_64/debug/src/tests/bitmap.c.o", "src/tests/bitmap.c"],
+  "file": "src/tests/bitmap.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-o", "build/.objs/test_mesh/macosx/x86_64/debug/src/tests/mesh.c.o", "src/tests/mesh.c"],
+  "file": "src/tests/mesh.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-o", "build/.objs/test_vector/macosx/x86_64/debug/src/tests/vector.c.o", "src/tests/vector.c"],
+  "file": "src/tests/vector.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-o", "build/.objs/test_vsnprintf/macosx/x86_64/debug/src/tests/vsnprintf.c.o", "src/tests/vsnprintf.c"],
+  "file": "src/tests/vsnprintf.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-o", "build/.objs/test_list_entry/macosx/x86_64/debug/src/tests/list_entry.c.o", "src/tests/list_entry.c"],
+  "file": "src/tests/list_entry.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-o", "build/.objs/test_list/macosx/x86_64/debug/src/tests/list.c.o", "src/tests/list.c"],
+  "file": "src/tests/list.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-o", "build/.objs/test_static_fixed_pool/macosx/x86_64/debug/src/tests/static_fixed_pool.c.o", "src/tests/static_fixed_pool.c"],
+  "file": "src/tests/static_fixed_pool.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-o", "build/.objs/test_heap/macosx/x86_64/debug/src/tests/heap.c.o", "src/tests/heap.c"],
+  "file": "src/tests/heap.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-o", "build/.objs/test_geometry/macosx/x86_64/debug/src/tests/geometry.c.o", "src/tests/geometry.c"],
+  "file": "src/tests/geometry.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-o", "build/.objs/test_array/macosx/x86_64/debug/src/tests/array.c.o", "src/tests/array.c"],
+  "file": "src/tests/array.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-o", "build/.objs/test_path/macosx/x86_64/debug/src/tests/path.c.o", "src/tests/path.c"],
+  "file": "src/tests/path.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-o", "build/.objs/window/macosx/x86_64/debug/src/examples/window.c.o", "src/examples/window.c"],
+  "file": "src/examples/window.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-pipe", "-DIBOutlet=__attribute__((iboutlet))", "-DIBOutletCollection(ClassName)=__attribute__((iboutletcollection(ClassName)))", "-DIBAction=void)__attribute__((ibaction)", "-Qunused-arguments", "-mmacosx-version-min=10.15", "-arch", "x86_64", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-fobjc-arc", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-DLX_NOMAIN_ENTRY", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/Example/macosx/x86_64/debug/src/wrapper/mach/Example/ViewController.m.o", "src/wrapper/mach/Example/ViewController.m"],
+  "file": "src/wrapper/mach/Example/ViewController.m"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-pipe", "-DIBOutlet=__attribute__((iboutlet))", "-DIBOutletCollection(ClassName)=__attribute__((iboutletcollection(ClassName)))", "-DIBAction=void)__attribute__((ibaction)", "-Qunused-arguments", "-mmacosx-version-min=10.15", "-arch", "x86_64", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-fobjc-arc", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-DLX_NOMAIN_ENTRY", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/Example/macosx/x86_64/debug/src/wrapper/mach/Example/main.m.o", "src/wrapper/mach/Example/main.m"],
+  "file": "src/wrapper/mach/Example/main.m"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-o", "build/.objs/hello/macosx/x86_64/debug/src/examples/hello.c.o", "src/examples/hello.c"],
+  "file": "src/examples/hello.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-o", "build/.objs/test_stack/macosx/x86_64/debug/src/tests/stack.c.o", "src/tests/stack.c"],
+  "file": "src/tests/stack.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-o", "build/.objs/test_fixed_pool/macosx/x86_64/debug/src/tests/fixed_pool.c.o", "src/tests/fixed_pool.c"],
+  "file": "src/tests/fixed_pool.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-pipe", "-DIBOutlet=__attribute__((iboutlet))", "-DIBOutletCollection(ClassName)=__attribute__((iboutletcollection(ClassName)))", "-DIBAction=void)__attribute__((ibaction)", "-Qunused-arguments", "-mmacosx-version-min=10.15", "-arch", "x86_64", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-fobjc-arc", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-Wno-error=deprecated-declarations", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/device/metal/MetalRenderer.m.o", "src/lanox2d/core/device/metal/MetalRenderer.m"],
+  "file": "src/lanox2d/core/device/metal/MetalRenderer.m"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-pipe", "-DIBOutlet=__attribute__((iboutlet))", "-DIBOutletCollection(ClassName)=__attribute__((iboutletcollection(ClassName)))", "-DIBAction=void)__attribute__((ibaction)", "-Qunused-arguments", "-mmacosx-version-min=10.15", "-arch", "x86_64", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-fobjc-arc", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-Wno-error=deprecated-declarations", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/device/metal/RenderPipeline.m.o", "src/lanox2d/core/device/metal/RenderPipeline.m"],
+  "file": "src/lanox2d/core/device/metal/RenderPipeline.m"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-pipe", "-DIBOutlet=__attribute__((iboutlet))", "-DIBOutletCollection(ClassName)=__attribute__((iboutletcollection(ClassName)))", "-DIBAction=void)__attribute__((ibaction)", "-Qunused-arguments", "-mmacosx-version-min=10.15", "-arch", "x86_64", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-fobjc-arc", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-Wno-error=deprecated-declarations", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/device/metal/device.m.o", "src/lanox2d/core/device/metal/device.m"],
+  "file": "src/lanox2d/core/device/metal/device.m"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-pipe", "-DIBOutlet=__attribute__((iboutlet))", "-DIBOutletCollection(ClassName)=__attribute__((iboutletcollection(ClassName)))", "-DIBAction=void)__attribute__((ibaction)", "-Qunused-arguments", "-mmacosx-version-min=10.15", "-arch", "x86_64", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-fobjc-arc", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-Wno-error=deprecated-declarations", "-fno-objc-arc", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/device/metal/BitmapShader.m.o", "src/lanox2d/core/device/metal/BitmapShader.m"],
+  "file": "src/lanox2d/core/device/metal/BitmapShader.m"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-pipe", "-DIBOutlet=__attribute__((iboutlet))", "-DIBOutletCollection(ClassName)=__attribute__((iboutletcollection(ClassName)))", "-DIBAction=void)__attribute__((ibaction)", "-Qunused-arguments", "-mmacosx-version-min=10.15", "-arch", "x86_64", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-fobjc-arc", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-Wno-error=deprecated-declarations", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/bitmap/png/decoder_mach.m.o", "src/lanox2d/core/bitmap/png/decoder_mach.m"],
+  "file": "src/lanox2d/core/bitmap/png/decoder_mach.m"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-pipe", "-DIBOutlet=__attribute__((iboutlet))", "-DIBOutletCollection(ClassName)=__attribute__((iboutletcollection(ClassName)))", "-DIBAction=void)__attribute__((ibaction)", "-Qunused-arguments", "-mmacosx-version-min=10.15", "-arch", "x86_64", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-fobjc-arc", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-Wno-error=deprecated-declarations", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/wrapper/mach/Lanox2d/metal/Lanox2dMetalRenderer.m.o", "src/wrapper/mach/Lanox2d/metal/Lanox2dMetalRenderer.m"],
+  "file": "src/wrapper/mach/Lanox2d/metal/Lanox2dMetalRenderer.m"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-pipe", "-DIBOutlet=__attribute__((iboutlet))", "-DIBOutletCollection(ClassName)=__attribute__((iboutletcollection(ClassName)))", "-DIBAction=void)__attribute__((ibaction)", "-Qunused-arguments", "-mmacosx-version-min=10.15", "-arch", "x86_64", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-fobjc-arc", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-Wno-error=deprecated-declarations", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/wrapper/mach/Lanox2d/metal/Lanox2dMetalView.m.o", "src/wrapper/mach/Lanox2d/metal/Lanox2dMetalView.m"],
+  "file": "src/wrapper/mach/Lanox2d/metal/Lanox2dMetalView.m"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/tess/mesh/edge_list.c.o", "src/lanox2d/core/tess/mesh/edge_list.c"],
+  "file": "src/lanox2d/core/tess/mesh/edge_list.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/tess/mesh/vertex_list.c.o", "src/lanox2d/core/tess/mesh/vertex_list.c"],
+  "file": "src/lanox2d/core/tess/mesh/vertex_list.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/tess/mesh/face_list.c.o", "src/lanox2d/core/tess/mesh/face_list.c"],
+  "file": "src/lanox2d/core/tess/mesh/face_list.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/tess/geometry.c.o", "src/lanox2d/core/tess/geometry.c"],
+  "file": "src/lanox2d/core/tess/geometry.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/tess/tessellator.c.o", "src/lanox2d/core/tess/tessellator.c"],
+  "file": "src/lanox2d/core/tess/tessellator.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/tess/tessellator/active_region.c.o", "src/lanox2d/core/tess/tessellator/active_region.c"],
+  "file": "src/lanox2d/core/tess/tessellator/active_region.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/tess/tessellator/profiler.c.o", "src/lanox2d/core/tess/tessellator/profiler.c"],
+  "file": "src/lanox2d/core/tess/tessellator/profiler.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/tess/tessellator/event_queue.c.o", "src/lanox2d/core/tess/tessellator/event_queue.c"],
+  "file": "src/lanox2d/core/tess/tessellator/event_queue.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/tess/tessellator/triangulation.c.o", "src/lanox2d/core/tess/tessellator/triangulation.c"],
+  "file": "src/lanox2d/core/tess/tessellator/triangulation.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/tess/tessellator/convex.c.o", "src/lanox2d/core/tess/tessellator/convex.c"],
+  "file": "src/lanox2d/core/tess/tessellator/convex.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/tess/tessellator/mesh.c.o", "src/lanox2d/core/tess/tessellator/mesh.c"],
+  "file": "src/lanox2d/core/tess/tessellator/mesh.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/tess/tessellator/monotone.c.o", "src/lanox2d/core/tess/tessellator/monotone.c"],
+  "file": "src/lanox2d/core/tess/tessellator/monotone.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/tess/mesh.c.o", "src/lanox2d/core/tess/mesh.c"],
+  "file": "src/lanox2d/core/tess/mesh.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/lanox2d.c.o", "src/lanox2d/lanox2d.c"],
+  "file": "src/lanox2d/lanox2d.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libc/memcpy.c.o", "src/lanox2d/base/libc/memcpy.c"],
+  "file": "src/lanox2d/base/libc/memcpy.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libc/strchr.c.o", "src/lanox2d/base/libc/strchr.c"],
+  "file": "src/lanox2d/base/libc/strchr.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libc/printf.c.o", "src/lanox2d/base/libc/printf.c"],
+  "file": "src/lanox2d/base/libc/printf.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libc/rand.c.o", "src/lanox2d/base/libc/rand.c"],
+  "file": "src/lanox2d/base/libc/rand.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libc/strlcpy.c.o", "src/lanox2d/base/libc/strlcpy.c"],
+  "file": "src/lanox2d/base/libc/strlcpy.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libc/memset32.c.o", "src/lanox2d/base/libc/memset32.c"],
+  "file": "src/lanox2d/base/libc/memset32.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libc/strstr.c.o", "src/lanox2d/base/libc/strstr.c"],
+  "file": "src/lanox2d/base/libc/strstr.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libc/strtol.c.o", "src/lanox2d/base/libc/strtol.c"],
+  "file": "src/lanox2d/base/libc/strtol.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libc/strnlen.c.o", "src/lanox2d/base/libc/strnlen.c"],
+  "file": "src/lanox2d/base/libc/strnlen.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libc/strlen.c.o", "src/lanox2d/base/libc/strlen.c"],
+  "file": "src/lanox2d/base/libc/strlen.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libc/strncmp.c.o", "src/lanox2d/base/libc/strncmp.c"],
+  "file": "src/lanox2d/base/libc/strncmp.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libc/memset24.c.o", "src/lanox2d/base/libc/memset24.c"],
+  "file": "src/lanox2d/base/libc/memset24.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libc/strnicmp.c.o", "src/lanox2d/base/libc/strnicmp.c"],
+  "file": "src/lanox2d/base/libc/strnicmp.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libc/strcmp.c.o", "src/lanox2d/base/libc/strcmp.c"],
+  "file": "src/lanox2d/base/libc/strcmp.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libc/memset.c.o", "src/lanox2d/base/libc/memset.c"],
+  "file": "src/lanox2d/base/libc/memset.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libc/memmov.c.o", "src/lanox2d/base/libc/memmov.c"],
+  "file": "src/lanox2d/base/libc/memmov.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libc/memset16.c.o", "src/lanox2d/base/libc/memset16.c"],
+  "file": "src/lanox2d/base/libc/memset16.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libc/vsnprintf.c.o", "src/lanox2d/base/libc/vsnprintf.c"],
+  "file": "src/lanox2d/base/libc/vsnprintf.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libm/atan.c.o", "src/lanox2d/base/libm/atan.c"],
+  "file": "src/lanox2d/base/libm/atan.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libm/isinf.c.o", "src/lanox2d/base/libm/isinf.c"],
+  "file": "src/lanox2d/base/libm/isinf.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libm/sin.c.o", "src/lanox2d/base/libm/sin.c"],
+  "file": "src/lanox2d/base/libm/sin.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libm/cos.c.o", "src/lanox2d/base/libm/cos.c"],
+  "file": "src/lanox2d/base/libm/cos.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libm/sqrt.c.o", "src/lanox2d/base/libm/sqrt.c"],
+  "file": "src/lanox2d/base/libm/sqrt.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libm/sincos.c.o", "src/lanox2d/base/libm/sincos.c"],
+  "file": "src/lanox2d/base/libm/sincos.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libm/isfin.c.o", "src/lanox2d/base/libm/isfin.c"],
+  "file": "src/lanox2d/base/libm/isfin.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/libm/isnan.c.o", "src/lanox2d/base/libm/isnan.c"],
+  "file": "src/lanox2d/base/libm/isnan.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/memory/allocator.c.o", "src/lanox2d/base/memory/allocator.c"],
+  "file": "src/lanox2d/base/memory/allocator.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/memory/static_fixed_pool.c.o", "src/lanox2d/base/memory/static_fixed_pool.c"],
+  "file": "src/lanox2d/base/memory/static_fixed_pool.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/memory/fixed_pool.c.o", "src/lanox2d/base/memory/fixed_pool.c"],
+  "file": "src/lanox2d/base/memory/fixed_pool.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/stream/file.c.o", "src/lanox2d/base/stream/file.c"],
+  "file": "src/lanox2d/base/stream/file.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/stream/stream.c.o", "src/lanox2d/base/stream/stream.c"],
+  "file": "src/lanox2d/base/stream/stream.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/utils/trace.c.o", "src/lanox2d/base/utils/trace.c"],
+  "file": "src/lanox2d/base/utils/trace.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/utils/bits.c.o", "src/lanox2d/base/utils/bits.c"],
+  "file": "src/lanox2d/base/utils/bits.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/algorithm/binary_find.c.o", "src/lanox2d/base/algorithm/binary_find.c"],
+  "file": "src/lanox2d/base/algorithm/binary_find.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/algorithm/rfind_if.c.o", "src/lanox2d/base/algorithm/rfind_if.c"],
+  "file": "src/lanox2d/base/algorithm/rfind_if.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/algorithm/foreach.c.o", "src/lanox2d/base/algorithm/foreach.c"],
+  "file": "src/lanox2d/base/algorithm/foreach.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/algorithm/binary_find_if.c.o", "src/lanox2d/base/algorithm/binary_find_if.c"],
+  "file": "src/lanox2d/base/algorithm/binary_find_if.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/algorithm/predicate.c.o", "src/lanox2d/base/algorithm/predicate.c"],
+  "file": "src/lanox2d/base/algorithm/predicate.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/algorithm/distance.c.o", "src/lanox2d/base/algorithm/distance.c"],
+  "file": "src/lanox2d/base/algorithm/distance.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/algorithm/find_if.c.o", "src/lanox2d/base/algorithm/find_if.c"],
+  "file": "src/lanox2d/base/algorithm/find_if.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/algorithm/rforeach.c.o", "src/lanox2d/base/algorithm/rforeach.c"],
+  "file": "src/lanox2d/base/algorithm/rforeach.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/math/ilog2i.c.o", "src/lanox2d/base/math/ilog2i.c"],
+  "file": "src/lanox2d/base/math/ilog2i.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/math/float.c.o", "src/lanox2d/base/math/float.c"],
+  "file": "src/lanox2d/base/math/float.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/math/matrix.c.o", "src/lanox2d/base/math/matrix.c"],
+  "file": "src/lanox2d/base/math/matrix.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/container/list.c.o", "src/lanox2d/base/container/list.c"],
+  "file": "src/lanox2d/base/container/list.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/container/heap.c.o", "src/lanox2d/base/container/heap.c"],
+  "file": "src/lanox2d/base/container/heap.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/container/array.c.o", "src/lanox2d/base/container/array.c"],
+  "file": "src/lanox2d/base/container/array.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/container/stack.c.o", "src/lanox2d/base/container/stack.c"],
+  "file": "src/lanox2d/base/container/stack.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/container/list_entry.c.o", "src/lanox2d/base/container/list_entry.c"],
+  "file": "src/lanox2d/base/container/list_entry.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/container/iterator.c.o", "src/lanox2d/base/container/iterator.c"],
+  "file": "src/lanox2d/base/container/iterator.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/container/fixed_array.c.o", "src/lanox2d/base/container/fixed_array.c"],
+  "file": "src/lanox2d/base/container/fixed_array.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/container/priority_queue.c.o", "src/lanox2d/base/container/priority_queue.c"],
+  "file": "src/lanox2d/base/container/priority_queue.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/platform/page.c.o", "src/lanox2d/base/platform/page.c"],
+  "file": "src/lanox2d/base/platform/page.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/platform/time.c.o", "src/lanox2d/base/platform/time.c"],
+  "file": "src/lanox2d/base/platform/time.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/base/platform/dlopen.c.o", "src/lanox2d/base/platform/dlopen.c"],
+  "file": "src/lanox2d/base/platform/dlopen.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/pixmap.c.o", "src/lanox2d/core/pixmap.c"],
+  "file": "src/lanox2d/core/pixmap.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/canvas_matrix.c.o", "src/lanox2d/core/canvas_matrix.c"],
+  "file": "src/lanox2d/core/canvas_matrix.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/clipper.c.o", "src/lanox2d/core/clipper.c"],
+  "file": "src/lanox2d/core/clipper.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/canvas_clip.c.o", "src/lanox2d/core/canvas_clip.c"],
+  "file": "src/lanox2d/core/canvas_clip.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/canvas_draw.c.o", "src/lanox2d/core/canvas_draw.c"],
+  "file": "src/lanox2d/core/canvas_draw.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/bitmap/decoder.c.o", "src/lanox2d/core/bitmap/decoder.c"],
+  "file": "src/lanox2d/core/bitmap/decoder.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/bitmap.c.o", "src/lanox2d/core/bitmap.c"],
+  "file": "src/lanox2d/core/bitmap.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/canvas.c.o", "src/lanox2d/core/canvas.c"],
+  "file": "src/lanox2d/core/canvas.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/primitive/bezier3.c.o", "src/lanox2d/core/primitive/bezier3.c"],
+  "file": "src/lanox2d/core/primitive/bezier3.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/primitive/vector.c.o", "src/lanox2d/core/primitive/vector.c"],
+  "file": "src/lanox2d/core/primitive/vector.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/primitive/round_rect.c.o", "src/lanox2d/core/primitive/round_rect.c"],
+  "file": "src/lanox2d/core/primitive/round_rect.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/primitive/utils.c.o", "src/lanox2d/core/primitive/utils.c"],
+  "file": "src/lanox2d/core/primitive/utils.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/primitive/arc.c.o", "src/lanox2d/core/primitive/arc.c"],
+  "file": "src/lanox2d/core/primitive/arc.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/primitive/bezier2.c.o", "src/lanox2d/core/primitive/bezier2.c"],
+  "file": "src/lanox2d/core/primitive/bezier2.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/primitive/color.c.o", "src/lanox2d/core/primitive/color.c"],
+  "file": "src/lanox2d/core/primitive/color.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/paint.c.o", "src/lanox2d/core/paint.c"],
+  "file": "src/lanox2d/core/paint.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/canvas_paint.c.o", "src/lanox2d/core/canvas_paint.c"],
+  "file": "src/lanox2d/core/canvas_paint.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/canvas_path.c.o", "src/lanox2d/core/canvas_path.c"],
+  "file": "src/lanox2d/core/canvas_path.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/private/stroker.c.o", "src/lanox2d/core/private/stroker.c"],
+  "file": "src/lanox2d/core/private/stroker.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/private/object_stack.c.o", "src/lanox2d/core/private/object_stack.c"],
+  "file": "src/lanox2d/core/private/object_stack.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/event.c.o", "src/lanox2d/core/event.c"],
+  "file": "src/lanox2d/core/event.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/path.c.o", "src/lanox2d/core/path.c"],
+  "file": "src/lanox2d/core/path.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/device.c.o", "src/lanox2d/core/device.c"],
+  "file": "src/lanox2d/core/device.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/shader.c.o", "src/lanox2d/core/shader.c"],
+  "file": "src/lanox2d/core/shader.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/core/quality.c.o", "src/lanox2d/core/quality.c"],
+  "file": "src/lanox2d/core/quality.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-framework", "AppKit", "-framework", "MetalKit", "-framework", "Metal", "-framework", "Foundation", "-framework", "CoreFoundation", "-o", "build/.objs/lanox2d/macosx/x86_64/debug/src/lanox2d/platform/window.c.o", "src/lanox2d/platform/window.c"],
+  "file": "src/lanox2d/platform/window.c"
+},
+{
+  "directory": "/Users/ruki/projects/personal/lanox2d",
+  "arguments": ["/usr/local/bin/ccache", "/usr/bin/xcrun", "-sdk", "macosx", "clang", "-c", "-Qunused-arguments", "-arch", "x86_64", "-mmacosx-version-min=10.15", "-isysroot", "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk", "-Wall", "-Werror", "-std=c99", "-Isrc", "-Ibuild/macosx/x86_64/debug", "-Isrc/wrapper/mach/Lanox2d", "-DLX_DEBUG", "-D_GNU_SOURCE=1", "-o", "build/.objs/shape/macosx/x86_64/debug/src/examples/shape.c.o", "src/examples/shape.c"],
+  "file": "src/examples/shape.c"
+}]

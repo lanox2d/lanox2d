@@ -120,24 +120,25 @@ lx_bitmap_ref_t lx_bitmap_jpg_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
         if (dp == sp) {
             lx_memcpy(bitmap_data, pixelDataPtr, pixelDataSize);
         } else {
-            lx_size_t  j;
-            lx_size_t  b = dp->btp;
-            lx_size_t  n = rowbytes;
-            lx_byte_t* p = bitmap_data;
+            lx_size_t  i, j;
+            lx_size_t  dtp = dp->btp;
+            lx_size_t  stp = sp->btp;
+            lx_byte_t* d = bitmap_data;
             lx_bool_t  has_alpha = lx_false;
-            lx_byte_t const* ldata = pixelDataPtr;
+            lx_byte_t const* s = pixelDataPtr;
+            lx_color_t c;
             for (j = 0; j < height; j++) {
-                lx_size_t   i = 0;
-                lx_byte_t*  d = p;
-                lx_byte_t*  e = p + n;
-                for (i = 0; i < width && d < e; i += 4, d += b) {
-                    dp->color_set(d, sp->color_get(&ldata[i]));
+                lx_byte_t* pd = d;
+                lx_byte_t const* ps = s;
+                for (i = 0; i < width; i++, pd += dtp, ps += stp) {
+                    c = sp->color_get(ps);
+                    dp->color_set(pd, c);
                     if (!has_alpha) {
-                        has_alpha = ldata[i + 3] <= LX_QUALITY_ALPHA_MAX;
+                        has_alpha = c.a <= LX_QUALITY_ALPHA_MAX;
                     }
                 }
-                p += n;
-                ldata += n;
+                d += rowbytes;
+                s += rowbytes;
             }
 
             // set alpha
