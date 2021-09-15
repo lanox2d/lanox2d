@@ -94,7 +94,7 @@ lx_bitmap_ref_t lx_bitmap_jpg_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
 
         // get pixmap
         lx_pixmap_ref_t dp = lx_pixmap(pixfmt, 0xff);
-        lx_pixmap_ref_t sp = lx_pixmap(LX_PIXFMT_ARGB8888, 0xff);
+        lx_pixmap_ref_t sp = lx_pixmap(LX_PIXFMT_RGBA8888 | LX_PIXFMT_BENDIAN, 0xff);
         lx_assert_and_check_break(dp && sp);
 
         // init bitmap, default: no alpha
