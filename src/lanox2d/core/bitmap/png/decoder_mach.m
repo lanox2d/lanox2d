@@ -60,7 +60,6 @@ lx_bitmap_ref_t lx_bitmap_png_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
     lx_bool_t        ok = lx_false;
     lx_bitmap_ref_t  bitmap = lx_null;
     CFDataRef        pixelData = lx_null;
-    CGImageSourceRef imageSource = lx_null;
     CGImageRef       image = lx_null;
     do {
 
@@ -79,8 +78,9 @@ lx_bitmap_ref_t lx_bitmap_png_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
         // decode image
         NSData* imageData = [NSData dataWithBytes:data length:size];
         CFDataRef imageDataRef = (__bridge CFDataRef)imageData;
-        imageSource = CGImageSourceCreateWithData(imageDataRef, nil);
+        CGImageSourceRef imageSource = CGImageSourceCreateWithData(imageDataRef, nil);
         image = CGImageSourceCreateImageAtIndex(imageSource, 0, nil);
+        CFRelease(imageSource);
         lx_assert_and_check_break(image);
 
         // get image information
@@ -96,6 +96,11 @@ lx_bitmap_ref_t lx_bitmap_png_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
         lx_size_t pixelDataSize = CFDataGetLength(pixelData);
         lx_assert_and_check_break(pixelDataPtr && pixelDataSize);
 
+        // get pixmap
+        lx_pixmap_ref_t dp = lx_pixmap(pixfmt, 0xff);
+        lx_pixmap_ref_t sp = lx_pixmap(LX_PIXFMT_RGBA8888 | LX_PIXFMT_BENDIAN, 0xff);
+        lx_assert_and_check_break(dp && sp);
+
         // init bitmap, default: no alpha
         bitmap = lx_bitmap_init(lx_null, pixfmt, width, height, rowbytes, lx_false);
         lx_assert_and_check_break(bitmap);
@@ -105,8 +110,39 @@ lx_bitmap_ref_t lx_bitmap_png_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
         lx_size_t  bitmap_size = lx_bitmap_size(bitmap);
         lx_assert_and_check_break(bitmap_data && bitmap_size == pixelDataSize);
 
-        // copy image data
-        lx_memcpy(bitmap_data, pixelDataPtr, pixelDataSize);
+        // get pixmap
+        CGColorSpaceRef space = CGImageGetColorSpace(image);
+        CGColorSpaceModel model = CGColorSpaceGetModel(space);
+        lx_assert_and_check_break(model == kCGColorSpaceModelRGB);
+
+        // decode image data
+        if (dp == sp) {
+            lx_memcpy(bitmap_data, pixelDataPtr, pixelDataSize);
+        } else {
+            lx_size_t  i, j;
+            lx_size_t  dtp = dp->btp;
+            lx_size_t  stp = sp->btp;
+            lx_byte_t* d = bitmap_data;
+            lx_bool_t  has_alpha = lx_false;
+            lx_byte_t const* s = pixelDataPtr;
+            lx_color_t c;
+            for (j = 0; j < height; j++) {
+                lx_byte_t* pd = d;
+                lx_byte_t const* ps = s;
+                for (i = 0; i < width; i++, pd += dtp, ps += stp) {
+                    c = sp->color_get(ps);
+                    dp->color_set(pd, c);
+                    if (!has_alpha) {
+                        has_alpha = c.a <= LX_QUALITY_ALPHA_MAX;
+                    }
+                }
+                d += rowbytes;
+                s += rowbytes;
+            }
+
+            // set alpha
+            lx_bitmap_set_alpha(bitmap, (has_alpha && LX_PIXFMT_HAS_ALPHA(pixfmt))? lx_true : lx_false);
+        }
 
         // ok
         ok = lx_true;
@@ -117,12 +153,6 @@ lx_bitmap_ref_t lx_bitmap_png_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
     if (image) {
         CFRelease(image);
         image = lx_null;
-    }
-
-    // free image source
-    if (imageSource) {
-        CFRelease(imageSource);
-        imageSource = lx_null;
     }
 
     // free pixel data

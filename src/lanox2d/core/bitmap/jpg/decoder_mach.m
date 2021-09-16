@@ -111,11 +111,6 @@ lx_bitmap_ref_t lx_bitmap_jpg_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
         CGColorSpaceModel model = CGColorSpaceGetModel(space);
         lx_assert_and_check_break(model == kCGColorSpaceModelRGB);
 
-#if 0
-        lx_size_t nComponent = (lx_size_t)CGColorSpaceGetNumberOfComponents(space);
-        lx_size_t bitsPerComponent = (lx_size_t)CGImageGetBitsPerComponent(image);
-        lx_trace_i("%lux%lu", bitsPerComponent, nComponent);
-#endif
         // decode image data
         if (dp == sp) {
             lx_memcpy(bitmap_data, pixelDataPtr, pixelDataSize);
