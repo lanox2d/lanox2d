@@ -35,6 +35,9 @@ elseif is_plat("android") then
     add_syslinks("m", "c")
 elseif is_plat("mingw", "msys", "cygwin") then
     add_syslinks("pthread", "m")
+elseif is_plat("iphoneos") then
+    add_cxflags("-fembed-bitcode-marker")
+    add_mxflags("-fembed-bitcode-marker")
 else
     add_syslinks("pthread", "dl", "m", "c")
 end

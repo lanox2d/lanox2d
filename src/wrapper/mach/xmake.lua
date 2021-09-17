@@ -66,7 +66,7 @@ task("pod_build")
             end
             local packagedir = path.join(outputdir, arch, "packages")
             os.execv(os.programfile(), argv)
-            os.execv(os.programfile())
+            os.execv(os.programfile(), {"build", "lanox2d"})
             os.execv(os.programfile(), {"install", "-o", path.join(outputdir, arch), "lanox2d"})
             os.execv(os.programfile(), {"require", "--export", "--packagedir=" .. packagedir})
             for _, libfile in ipairs(os.files(path.join(packagedir, "**.a"))) do
