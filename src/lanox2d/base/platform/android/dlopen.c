@@ -322,8 +322,12 @@ static lx_int_t lx_fake_find_biasaddr_from_linker_cb(struct dl_phdr_info* info, 
             lx_strlcpy(realpath, filepath, realmaxn);
         else if (info->dlpi_name[0] == '/')
             lx_strlcpy(realpath, info->dlpi_name, realmaxn);
-        // TODO
-        else realpath[0] = '\0';
+        else
+        {
+            // we only find real path
+            if (!lx_fake_find_biasaddr_from_maps(filepath, realpath, realmaxn))
+                realpath[0] = '\0';
+        }
 
         // trace
         lx_trace_d("realpath: %s, biasaddr: %p found!", realpath, (lx_pointer_t)info->dlpi_addr);
