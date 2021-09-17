@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+
 import io.lanox2d.lib.Lanox2d;
 import io.lanox2d.lib.Lanox2dView;
 import io.lanox2d.lib.NativeWindow;
@@ -35,7 +39,8 @@ public class MainActivity extends AppCompatActivity implements Runnable {
             public void onInitWindow(int width, int height) {
                 // load tests
                 //NativeTest.getInstance().loadEmptyWindow();
-                NativeTest.getInstance().loadShapeWindow("path");
+                //NativeTest.getInstance().loadShapeWindow("path");
+                NativeTest.getInstance().loadShapeWindow("path", getAssetsFile("test.png").getAbsolutePath());
             }
 
             @Override
@@ -65,5 +70,26 @@ public class MainActivity extends AppCompatActivity implements Runnable {
             infoView.setText(String.format("%f fps", fps));
         }
         handler.postDelayed(this, 1000);
+    }
+
+    public File getAssetsFile(String name) {
+        try {
+            File outputDir = this.getApplicationContext().getCacheDir();
+            File outputFile = File.createTempFile("assets", ".tmp", outputDir);
+            InputStream is = this.getApplicationContext().getAssets().open(name);
+            FileOutputStream fos = new FileOutputStream(outputFile);
+            byte[] buffer = new byte[8192];
+            int byteCount = 0;
+            while ((byteCount = is.read(buffer)) != -1) {
+                fos.write(buffer, 0, byteCount);
+            }
+            fos.flush();
+            is.close();
+            fos.close();
+            return outputFile;
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

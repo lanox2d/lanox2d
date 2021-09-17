@@ -29,15 +29,24 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * interfaces
  */
-JNIEXPORT lx_void_t Java_io_lanox2d_example_NativeTest_load_1shapeWindow(JNIEnv* env, jclass jthis, jlong window, jstring testName) {
+JNIEXPORT lx_void_t Java_io_lanox2d_example_NativeTest_load_1shapeWindow(JNIEnv* env, jclass jthis, jlong window, jstring testName, jstring imagePath) {
     lx_char_t const* testName_cstr = (*env)->GetStringUTFChars(env, testName, lx_null);
-    lx_trace_i("load_shapeWindow: %s", testName_cstr);
+    lx_char_t const* imagePath_cstr = imagePath? (*env)->GetStringUTFChars(env, imagePath, lx_null) : lx_null;
+    lx_trace_i("load_shapeWindow: %s %s", testName_cstr, imagePath_cstr);
     if (window) {
-        static lx_char_t* argv[] = {"", lx_null, lx_null};
+        int argc = 2;
+        static lx_char_t* argv[] = {"", lx_null, lx_null, lx_null};
         argv[1] = (lx_char_t*)testName_cstr;
-        window_init((lx_window_ref_t)window, 2, argv);
+        if (imagePath_cstr) {
+            argv[2] = (lx_char_t*)imagePath_cstr;
+            argc++;
+        }
+        window_init((lx_window_ref_t)window, argc, argv);
         (lx_void_t)window_exit;
     }
     (*env)->ReleaseStringUTFChars(env, testName, testName_cstr);
+    if (imagePath) {
+        (*env)->ReleaseStringUTFChars(env, imagePath, imagePath_cstr);
+    }
 }
 
