@@ -2,6 +2,42 @@
     __meta__ = {
         version = "1.0"
     },
+    ["android|arm64-v8a"] = {
+        ["libpng#31fecfc4"] = {
+            repo = {
+                branch = "master",
+                commit = "89ac4c1e2d360bc3a8c3f4cdedf4ee683701de74",
+                url = "https://gitee.com/tboox/xmake-repo.git"
+            },
+            version = "v1.6.37"
+        },
+        ["zlib#31fecfc4"] = {
+            repo = {
+                branch = "master",
+                commit = "89ac4c1e2d360bc3a8c3f4cdedf4ee683701de74",
+                url = "https://gitee.com/tboox/xmake-repo.git"
+            },
+            version = "1.2.11"
+        }
+    },
+    ["android|armeabi-v7a"] = {
+        ["libpng#31fecfc4"] = {
+            repo = {
+                branch = "master",
+                commit = "89ac4c1e2d360bc3a8c3f4cdedf4ee683701de74",
+                url = "https://gitee.com/tboox/xmake-repo.git"
+            },
+            version = "v1.6.37"
+        },
+        ["zlib#31fecfc4"] = {
+            repo = {
+                branch = "master",
+                commit = "89ac4c1e2d360bc3a8c3f4cdedf4ee683701de74",
+                url = "https://gitee.com/tboox/xmake-repo.git"
+            },
+            version = "1.2.11"
+        }
+    },
     ["macosx|x86_64"] = {
         ["cmake#31fecfc4"] = {
             repo = {
