@@ -26,8 +26,12 @@
 #include "decoder.h"
 #include "../../quality.h"
 #include "../../pixmap.h"
-#define PNG_SKIP_SETJMP_CHECK
-#include <png.h>
+#ifdef LX_CONFIG_OS_ANDROID
+#   include "libpng_dynamic.h"
+#else
+#   define PNG_SKIP_SETJMP_CHECK
+#   include <png.h>
+#endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
