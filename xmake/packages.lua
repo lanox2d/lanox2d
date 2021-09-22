@@ -27,5 +27,9 @@ end
 -- libjpeg-turbo package
 local bitmap = get_config("bitmap")
 if bitmap and bitmap:find("jpg") and not is_plat("macosx", "iphoneos") then
-    add_requires("libjpeg-turbo")
+    if is_plat("android") then
+        add_requires("libjpeg", {configs = {headeronly = true}})
+    else
+        add_requires("libjpeg-turbo", {alias = "libjpeg"})
+    end
 end

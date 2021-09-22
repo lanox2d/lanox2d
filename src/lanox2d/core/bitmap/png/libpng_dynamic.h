@@ -114,7 +114,7 @@ typedef void        (*png_destroy_read_struct_t)(png_structpp png_ptr_ptr, png_i
  */
 static png_set_longjmp_fn_t             png_set_longjmp_fn = lx_null;
 static png_get_io_ptr_t                 png_get_io_ptr = lx_null;
-static png_create_read_struct_t         png_create_read_struct_ = lx_null;
+static png_create_read_struct_t         png_create_read_struct = lx_null;
 static png_create_info_struct_t         png_create_info_struct = lx_null;
 static png_set_read_fn_t                png_set_read_fn = lx_null;
 static png_read_info_t                  png_read_info = lx_null;
@@ -137,17 +137,17 @@ static png_destroy_read_struct_t        png_destroy_read_struct = lx_null;
 /* //////////////////////////////////////////////////////////////////////////////////////
  * interfaces
  */
-static png_structp png_create_read_struct(png_const_charp user_png_ver, png_voidp error_ptr, png_error_ptr error_fn, png_error_ptr warn_fn) {
+static lx_bool_t lx_libpng_init() {
 
     // load symbols from libpng.so
     static lx_dlimage_ref_t s_library = lx_null;
     if (!s_library) {
         s_library = lx_dlopen("libpng.so", LX_RTLD_LAZY);
-        lx_assert_and_check_return_val(s_library, lx_null);
+        lx_assert_and_check_return_val(s_library, lx_false);
 
         png_set_longjmp_fn             = lx_dlsym(s_library, "png_set_longjmp_fn");
         png_get_io_ptr                 = lx_dlsym(s_library, "png_get_io_ptr");
-        png_create_read_struct_        = lx_dlsym(s_library, "png_create_read_struct");
+        png_create_read_struct         = lx_dlsym(s_library, "png_create_read_struct");
         png_create_info_struct         = lx_dlsym(s_library, "png_create_info_struct");
         png_set_read_fn                = lx_dlsym(s_library, "png_set_read_fn");
         png_read_info                  = lx_dlsym(s_library, "png_read_info");
@@ -167,8 +167,8 @@ static png_structp png_create_read_struct(png_const_charp user_png_ver, png_void
         png_get_rowbytes               = lx_dlsym(s_library, "png_get_rowbytes");
         png_destroy_read_struct        = lx_dlsym(s_library, "png_destroy_read_struct");
     }
-    lx_assert_and_check_return_val(png_create_read_struct_, lx_null);
-    return png_create_read_struct_(user_png_ver, error_ptr, error_fn, warn_fn);
+    lx_assert_and_check_return_val(png_create_read_struct, lx_false);
+    return lx_true;
 }
 
 /* //////////////////////////////////////////////////////////////////////////////////////

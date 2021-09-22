@@ -27,7 +27,11 @@
 #include "../../quality.h"
 #include "../../pixmap.h"
 #include <stdio.h>
-#include <jpeglib.h>
+#ifdef LX_CONFIG_OS_ANDROID
+#   include "libjpeg_dynamic.h"
+#else
+#   include <jpeglib.h>
+#endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * types
@@ -129,6 +133,13 @@ lx_bitmap_ref_t lx_bitmap_jpg_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
             break;
         }
 
+#ifdef LX_CONFIG_OS_ANDROID
+        if (!lx_libjpeg_init()) {
+            lx_trace_e("load libjpeg failed!");
+            break;
+        }
+#endif
+
         // init jpeg manager
         jdec.err = jpeg_std_error((struct jpeg_error_mgr *)&jerr);
         jerr.jerr.error_exit = lx_bitmap_jpg_jerr_exit;
@@ -142,7 +153,10 @@ lx_bitmap_ref_t lx_bitmap_jpg_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
 
         // read jpeg header
         jpeg_read_header(&jdec, lx_true);
+#ifndef LX_CONFIG_OS_ANDROID
+        // TODO why?
         lx_assert_and_check_break(!jerr.berr);
+#endif
         lx_assert_and_check_break(jdec.image_width && jdec.image_height);
 
         // init width & height

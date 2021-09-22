@@ -38,7 +38,7 @@ target("lanox2d")
     check_interfaces()
 
     -- add packages
-    add_packages("libsdl", "glut", "glfw", "skia", "libpng", "libjpeg-turbo")
+    add_packages("libsdl", "glut", "glfw", "skia", "libpng", "libjpeg")
 
     -- add devices
     if is_config("device", "bitmap") then

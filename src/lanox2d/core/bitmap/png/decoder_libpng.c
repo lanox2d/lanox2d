@@ -87,6 +87,12 @@ lx_bitmap_ref_t lx_bitmap_png_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
             break;
         }
 
+#ifdef LX_CONFIG_OS_ANDROID
+        if (!lx_libpng_init()) {
+            lx_trace_e("load libpng failed!");
+            break;
+        }
+#endif
         // init png
         png = png_create_read_struct(PNG_LIBPNG_VER_STRING, lx_null, lx_bitmap_png_error, lx_null);
         lx_assert_and_check_break(png);
