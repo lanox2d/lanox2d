@@ -85,6 +85,7 @@ lx_bitmap_ref_t lx_bitmap_jpg_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
         lx_size_t bpp      = (lx_size_t)CGImageGetBitsPerPixel(image);
         lx_size_t rowbytes = (lx_size_t)CGImageGetBytesPerRow(image);
         lx_trace_d("size: %ux%u, bpp: %u", width, height, bpp);
+        lx_assert_and_check_break(bpp == 32);
 
         // get image data
         pixelData = CGDataProviderCopyData(CGImageGetDataProvider(image));
