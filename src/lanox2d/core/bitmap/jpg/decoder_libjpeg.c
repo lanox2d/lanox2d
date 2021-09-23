@@ -152,11 +152,9 @@ lx_bitmap_ref_t lx_bitmap_jpg_decode(lx_size_t pixfmt, lx_stream_ref_t stream) {
         lx_bitmap_jpg_jsrc_init(&jdec, stream);
 
         // read jpeg header
+        jerr.berr = lx_false;
         jpeg_read_header(&jdec, lx_true);
-#ifndef LX_CONFIG_OS_ANDROID
-        // TODO why?
         lx_assert_and_check_break(!jerr.berr);
-#endif
         lx_assert_and_check_break(jdec.image_width && jdec.image_height);
 
         // init width & height
