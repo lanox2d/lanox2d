@@ -255,6 +255,9 @@
 #define LX_GL_STATIC_DRAW               (0x88E4)
 #define LX_GL_DYNAMIC_DRAW              (0x88E8)
 
+// gl error codes
+#define LX_GL_NO_ERROR                  (0)
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */

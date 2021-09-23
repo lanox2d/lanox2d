@@ -96,7 +96,7 @@ lx_window_ref_t lx_window_init_android(lx_size_t width, lx_size_t height, lx_cha
         window->base.draw        = lx_window_android_draw;
         window->base.resize      = lx_window_android_resize;
         window->base.exit        = lx_window_android_exit;
-        window->base.pixfmt      = LX_PIXFMT_XRGB8888;
+        window->base.pixfmt      = LX_PIXFMT_RGBX8888 | LX_PIXFMT_BENDIAN;
 
         // init device
 #if defined(LX_CONFIG_DEVICE_HAVE_OPENGL)

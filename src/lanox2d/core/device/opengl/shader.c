@@ -82,10 +82,14 @@ static lx_bitmap_shader_devdata_t* lx_bitmap_shader_init_devdata(lx_bitmap_shade
     lx_size_t    pixfmt = lx_bitmap_pixfmt(bitmap);
     lx_size_t    width  = lx_bitmap_width(bitmap);
     lx_size_t    height = lx_bitmap_height(bitmap);
-    switch (LX_PIXFMT(pixfmt)) {
+    switch (pixfmt) {
     case LX_PIXFMT_ARGB8888:
     case LX_PIXFMT_XRGB8888:
         lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGBA, (lx_GLsizei_t)width, (lx_GLsizei_t)height, 0, LX_GL_BGRA, LX_GL_UNSIGNED_BYTE, data);
+        break;
+    case LX_PIXFMT_RGBA8888 | LX_PIXFMT_BENDIAN:
+    case LX_PIXFMT_RGBX8888 | LX_PIXFMT_BENDIAN:
+        lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGBA, (lx_GLsizei_t)width, (lx_GLsizei_t)height, 0, LX_GL_RGBA, LX_GL_UNSIGNED_BYTE, data);
         break;
     case LX_PIXFMT_RGB565:
         lx_glTexImage2D(LX_GL_TEXTURE_2D, 0, LX_GL_RGB, (lx_GLsizei_t)width, (lx_GLsizei_t)height, 0, LX_GL_RGB, LX_GL_UNSIGNED_SHORT_5_6_5, data);
