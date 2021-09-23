@@ -64,7 +64,7 @@ option("window")
 option("device")
     set_showmenu(true)
     set_description("Set renderer device")
-    set_values("bitmap", "opengl", "metal", "skia")
+    set_values("bitmap", "vulkan", "opengl", "metal", "skia")
     add_deps("window")
     on_check(function (option)
         if not option:value() then

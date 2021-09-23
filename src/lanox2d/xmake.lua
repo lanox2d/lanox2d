@@ -80,6 +80,9 @@ target("lanox2d")
         add_files("core/device/metal/shaders/*.metal")
         add_files("core/tess/**.c")
     end
+    if is_config("device", "vulkan") then
+        add_files("core/device/vulkan/**.c")
+    end
     if is_config("device", "skia") then
         set_languages("c++14")
         add_files("core/device/skia/**.cc")
