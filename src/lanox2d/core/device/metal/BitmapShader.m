@@ -99,11 +99,12 @@ static lx_void_t lx_bitmap_shader_devdata_free(lx_shader_ref_t shader) {
         lx_size_t height = lx_bitmap_height(bitmap);
         MTLTextureDescriptor* textureDescriptor = [[MTLTextureDescriptor alloc] init];
         switch (pixfmt) {
+        case LX_PIXFMT_RGBX8888 | LX_PIXFMT_BENDIAN:
+        case LX_PIXFMT_RGBA8888 | LX_PIXFMT_BENDIAN:
+            textureDescriptor.pixelFormat = MTLPixelFormatRGBA8Unorm;
+            break;
         case LX_PIXFMT_XRGB8888:
         case LX_PIXFMT_ARGB8888:
-        case LX_PIXFMT_RGBX8888:
-        case LX_PIXFMT_RGBA8888:
-            // TODO
             textureDescriptor.pixelFormat = MTLPixelFormatBGRA8Unorm;
             break;
         default:

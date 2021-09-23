@@ -101,7 +101,7 @@ lx_window_ref_t lx_window_init_mach(lx_size_t width, lx_size_t height, lx_char_t
         window->base.draw        = lx_window_mach_draw;
         window->base.resize      = lx_window_mach_resize;
         window->base.exit        = lx_window_mach_exit;
-        window->base.pixfmt      = LX_PIXFMT_XRGB8888;
+        window->base.pixfmt      = LX_PIXFMT_RGBX8888 | LX_PIXFMT_BENDIAN;
 
         // init device
 #if defined(LX_CONFIG_DEVICE_HAVE_OPENGL)
