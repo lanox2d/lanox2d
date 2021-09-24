@@ -60,8 +60,8 @@ static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx_cpointer_t devdata) {
-    lx_assert_and_check_return_val(width && height && devdata, lx_null);
+lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height) {
+    lx_assert_and_check_return_val(width && height, lx_null);
 
     lx_bool_t           ok = lx_false;
     lx_vulkan_device_t* device = lx_null;
@@ -79,6 +79,10 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
         device->base.draw_lock    = lx_device_vulkan_draw_lock;
         device->base.draw_commit  = lx_device_vulkan_draw_commit;
         device->base.exit         = lx_device_vulkan_exit;
+
+        lx_uint32_t extensionCount = 0;
+        vkEnumerateInstanceExtensionProperties(lx_null, &extensionCount, lx_null);
+        lx_trace_i("extensionCount: %d", extensionCount);
 
         // ok
         ok = lx_true;

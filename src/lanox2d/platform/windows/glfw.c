@@ -23,7 +23,6 @@
  * includes
  */
 #include "prefix.h"
-#include "../../core/device/opengl/gl.h"
 #include <GLFW/glfw3.h>
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -293,6 +292,8 @@ static lx_bool_t lx_window_glfw_start(lx_window_glfw_t* window) {
         // init device
 #if defined(LX_CONFIG_DEVICE_HAVE_OPENGL)
         window->base.device = lx_device_init_from_opengl(window->base.width, window->base.height, framewidth, frameheight);
+#elif defined(LX_CONFIG_DEVICE_HAVE_VULKAN)
+        window->base.device = lx_device_init_from_vulkan(window->base.width, window->base.height);
 #elif defined(LX_CONFIG_DEVICE_HAVE_SKIA)
         window->base.device = lx_device_init_from_skia(window->base.width, window->base.height, lx_null);
 #endif

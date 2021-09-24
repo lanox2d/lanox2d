@@ -43,6 +43,15 @@ lx_extern_c_enter
  */
 lx_device_ref_t         lx_device_init_from_bitmap(lx_bitmap_ref_t bitmap);
 
+/*! init device from vulkan
+ *
+ * @param width         the window width
+ * @param height        the window height
+ *
+ * @return              the device
+ */
+lx_device_ref_t         lx_device_init_from_vulkan(lx_size_t width, lx_size_t height);
+
 /*! init device from opengl
  *
  * @param width         the window width

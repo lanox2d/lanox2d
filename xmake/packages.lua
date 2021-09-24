@@ -13,6 +13,11 @@ if is_config("window", "glfw") then
     add_requires("glfw")
 end
 
+-- vulkan package
+if is_config("device", "vulkan") then
+    add_requires(is_plat("macosx") and "moltenvk" or "vulkan-loader", {alias = "vulkan"})
+end
+
 -- skia package
 if is_config("device", "skia") then
     add_requires("skia")

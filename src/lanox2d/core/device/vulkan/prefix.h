@@ -29,6 +29,7 @@
 #include "../../paint.h"
 #include "../../private/stroker.h"
 #include "../../../platform/window.h"
+#include <vulkan/vulkan.h>
 
 
 #endif
