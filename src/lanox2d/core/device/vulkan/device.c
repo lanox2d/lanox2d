@@ -23,6 +23,9 @@
  * includes
  */
 #include "device.h"
+#ifdef LX_CONFIG_WINDOW_HAVE_GLFW
+#   include <GLFW/glfw3.h>
+#endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
@@ -53,6 +56,10 @@ static lx_void_t lx_device_vulkan_draw_path(lx_device_ref_t self, lx_path_ref_t 
 static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
     lx_vulkan_device_t* device = (lx_vulkan_device_t*)self;
     if (device) {
+        if (device->instance) {
+            vkDestroyInstance(device->instance, lx_null);
+            device->instance = lx_null;
+        }
         lx_free(device);
     }
 }
@@ -80,9 +87,26 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height) {
         device->base.draw_commit  = lx_device_vulkan_draw_commit;
         device->base.exit         = lx_device_vulkan_exit;
 
-        lx_uint32_t extensionCount = 0;
-        vkEnumerateInstanceExtensionProperties(lx_null, &extensionCount, lx_null);
-        lx_trace_i("extensionCount: %d", extensionCount);
+        // init instance
+        VkApplicationInfo appinfo  = {};
+        appinfo.sType              = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+        appinfo.pApplicationName   = "Lanox2d";
+        appinfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+        appinfo.pEngineName        = "Lanox2d";
+        appinfo.engineVersion      = VK_MAKE_VERSION(1, 0, 0);
+        appinfo.apiVersion         = VK_API_VERSION_1_0;
+
+        VkInstanceCreateInfo createinfo = {};
+        createinfo.sType                = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+        createinfo.pApplicationInfo     = &appinfo;
+        createinfo.enabledLayerCount    = 0;
+#ifdef LX_CONFIG_WINDOW_HAVE_GLFW
+        createinfo.ppEnabledExtensionNames = glfwGetRequiredInstanceExtensions(&createinfo.enabledExtensionCount);
+#endif
+        if (vkCreateInstance(&createinfo, lx_null, &device->instance) != VK_SUCCESS) {
+            lx_trace_e("failed to create vulkan instance!");
+            break;
+        }
 
         // ok
         ok = lx_true;
