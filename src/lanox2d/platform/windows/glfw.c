@@ -23,6 +23,9 @@
  * includes
  */
 #include "prefix.h"
+#if defined(LX_CONFIG_DEVICE_HAVE_OPENGL)
+#   include "../../core/device/opengl/gl.h"
+#endif
 #include <GLFW/glfw3.h>
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -236,20 +239,24 @@ static lx_bool_t lx_window_glfw_start(lx_window_glfw_t* window) {
 
         // init glfw
         glfwInit();
-#if LX_GL_API_VERSION >= 30
+#if defined(LX_CONFIG_DEVICE_HAVE_OPENGL)
+#   if LX_GL_API_VERSION >= 30
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#else
-#   ifdef LX_GL_API_ES
+#   else
+#       ifdef LX_GL_API_ES
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
         glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
-#   else
+#       else
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE);
+#       endif
 #   endif
+#elif defined(LX_CONFIG_DEVICE_HAVE_VULKAN)
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 #endif
         glfwWindowHint(GLFW_RESIZABLE, (window->base.flags & LX_WINDOW_FLAG_NOT_REISZE)? lx_false : lx_true);
         if (window->base.flags & LX_WINDOW_FLAG_HIDE_TITLEBAR) {
