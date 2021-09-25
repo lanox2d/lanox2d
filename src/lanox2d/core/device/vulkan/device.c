@@ -102,6 +102,8 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height) {
         createinfo.enabledLayerCount    = 0;
 #ifdef LX_CONFIG_WINDOW_HAVE_GLFW
         createinfo.ppEnabledExtensionNames = glfwGetRequiredInstanceExtensions(&createinfo.enabledExtensionCount);
+#else
+        createinfo.enabledExtensionCount = 0;
 #endif
         if (vkCreateInstance(&createinfo, lx_null, &device->instance) != VK_SUCCESS) {
             lx_trace_e("failed to create vulkan instance!");
