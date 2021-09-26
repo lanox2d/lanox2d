@@ -23,7 +23,10 @@
  * includes
  */
 #include "prefix.h"
-#include "../../core/device/opengl/gl.h"
+#ifdef LX_CONFIG_DEVICE_HAVE_VULKAN
+#   include <android/native_window.h>
+#   include <android/native_window_jni.h>
+#endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * types
@@ -32,6 +35,9 @@
 // the android window type
 typedef struct lx_window_android_t_ {
     lx_window_t     base;
+#ifdef LX_CONFIG_DEVICE_HAVE_VULKAN
+    ANativeWindow*  window;
+#endif
 } lx_window_android_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -63,6 +69,12 @@ static lx_void_t lx_window_android_resize(lx_window_ref_t self, lx_size_t width,
 static lx_void_t lx_window_android_exit(lx_window_ref_t self) {
     lx_window_android_t* window = (lx_window_android_t*)self;
     if (window) {
+#ifdef LX_CONFIG_DEVICE_HAVE_VULKAN
+        if (window->window) {
+            ANativeWindow_release(window->window);
+            window->window = lx_null;
+        }
+#endif
         if (window->base.canvas) {
             lx_canvas_exit(window->base.canvas);
             window->base.canvas = lx_null;
@@ -101,6 +113,10 @@ lx_window_ref_t lx_window_init_android(lx_size_t width, lx_size_t height, lx_cha
         // init device
 #if defined(LX_CONFIG_DEVICE_HAVE_OPENGL)
         window->base.device = lx_device_init_from_opengl(width, height, width, height);
+#elif defined(LX_CONFIG_DEVICE_HAVE_VULKAN)
+        // init vkinstance and use vkCreateAndroidSurfaceKHR create vksurface with native windows
+        window->window = (ANativeWindow*)devdata;
+        window->base.device = lx_device_init_from_vulkan(width, height);
 #endif
         lx_assert_and_check_break(window->base.device);
 

@@ -25,19 +25,22 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import io.lanox2d.lib.Lanox2d;
+import io.lanox2d.lib.NativeWindow;
 
 public class Lanox2dVkView extends SurfaceView implements SurfaceHolder.Callback {
     private static final String TAG = "Lanox2dVkView";
+    private boolean started = false;
+    private NativeWindow nativeWindow;
 
     public Lanox2dVkView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
-        // init lanox2d
         Lanox2d.init(context);
+        this.nativeWindow = NativeWindow.getInstance();
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+
     }
 
     @Override
@@ -47,6 +50,8 @@ public class Lanox2dVkView extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
+        if (!started && nativeWindow.initWindow(width, height, holder.getSurface())) {
+            started = true;
+        }
     }
 }

@@ -39,7 +39,7 @@ public class Lanox2dGLViewRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig eglConfig) {
-        if (nativeWindow.initWindow(view.getWidth(), view.getHeight())) {
+        if (nativeWindow.initWindow(view.getWidth(), view.getHeight(), null)) {
             started = true;
         }
     }

@@ -71,10 +71,14 @@ option("device")
             local window = option:dep("window"):value()
             if window == "sdl" or window == "fbdev" then
                 option:set_value("bitmap")
-            elseif window == "glut" or window == "glfw" or window == "android" then
+            elseif window == "glut" then
                 option:set_value("opengl")
+            elseif window == "glfw" then
+                option:set_value("opengl") -- vulkan, opengl
+            elseif window == "android" then
+                option:set_value("vulkan") -- vulkan, opengl/es
             elseif window == "mach" then
-                option:set_value("metal")
+                option:set_value("metal")  -- metal, opengl, vulkan
             end
         end
     end)

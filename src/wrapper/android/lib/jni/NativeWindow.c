@@ -24,6 +24,10 @@
  */
 #include "lanox2d/lanox2d.h"
 #include <jni.h>
+#ifdef LX_CONFIG_DEVICE_HAVE_VULKAN
+#   include <android/native_window.h>
+#   include <android/native_window_jni.h>
+#endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * declaration
@@ -38,8 +42,16 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* jvm, lx_pointer_t reserved) {
     return JNI_VERSION_1_4;
 }
 
-JNIEXPORT jlong Java_io_lanox2d_lib_NativeWindow_window_1init(JNIEnv* env, jclass jthis, jint width, jint height) {
-    return (jlong)lx_window_init(width, height, lx_null, lx_null);
+JNIEXPORT jlong Java_io_lanox2d_lib_NativeWindow_window_1init(JNIEnv* env, jclass jthis, jint width, jint height, jobject surface) {
+#ifdef LX_CONFIG_DEVICE_HAVE_VULKAN
+    ANativeWindow* window = lx_null;
+    if (surface) {
+        window = ANativeWindow_fromSurface(env, surface);
+    }
+#else
+    lx_pointer_t window = lx_null;
+#endif
+    return (jlong)lx_window_init(width, height, lx_null, window);
 }
 
 JNIEXPORT lx_void_t Java_io_lanox2d_lib_NativeWindow_window_1exit(JNIEnv* env, jclass jthis, jlong window) {

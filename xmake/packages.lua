@@ -14,7 +14,7 @@ if is_config("window", "glfw") then
 end
 
 -- vulkan package
-if is_config("device", "vulkan") then
+if is_config("device", "vulkan") and is_plat("windows", "linux", "macosx") then
     add_requires(is_plat("macosx") and "moltenvk" or "vulkan-loader", {alias = "vulkan"})
 end
 

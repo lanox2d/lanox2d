@@ -21,6 +21,8 @@ package io.lanox2d.lib;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.view.Surface;
+import android.view.SurfaceControl;
 
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -73,13 +75,13 @@ public class NativeWindow {
         return loaded;
     }
 
-    public boolean initWindow(int width, int height) {
+    public boolean initWindow(int width, int height, Surface surface) {
         if (!loaded) {
             return false;
         }
         try {
             if (nativeWindowPtr == 0) {
-                nativeWindowPtr = window_init(width, height);
+                nativeWindowPtr = window_init(width, height, surface);
             }
             if (nativeWindowListener != null) {
                 nativeWindowListener.onInitWindow(width, height);
@@ -151,7 +153,7 @@ public class NativeWindow {
         public void onResizeWindow(int width, int height);
     }
 
-    private static native long window_init(int width, int height);
+    private static native long window_init(int width, int height, Surface surface);
     private static native void window_exit(long nativeWindowPtr);
     private static native void window_draw(long nativeWindowPtr);
     private static native void window_resize(long nativeWindowPtr, int width, int height);
