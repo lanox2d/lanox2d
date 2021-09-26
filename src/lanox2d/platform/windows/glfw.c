@@ -26,7 +26,7 @@
 #if defined(LX_CONFIG_DEVICE_HAVE_OPENGL)
 #   include "../../core/device/opengl/gl.h"
 #elif defined(LX_CONFIG_DEVICE_HAVE_VULKAN)
-#   include <vulkan/vulkan.h>
+#   include "../../core/device/vulkan/vk.h"
 #endif
 #include <GLFW/glfw3.h>
 
@@ -305,6 +305,13 @@ static lx_bool_t lx_window_glfw_start(lx_window_glfw_t* window) {
 #if defined(LX_CONFIG_DEVICE_HAVE_OPENGL)
         window->base.device = lx_device_init_from_opengl(window->base.width, window->base.height, framewidth, frameheight);
 #elif defined(LX_CONFIG_DEVICE_HAVE_VULKAN)
+        // init vulkan context
+        if (!lx_vk_context_init()) {
+            lx_trace_e("failed to init vulkan context!");
+            break;
+        }
+
+        // init vulkan instance
         VkApplicationInfo appinfo  = {};
         appinfo.sType              = VK_STRUCTURE_TYPE_APPLICATION_INFO;
         appinfo.pApplicationName   = "Lanox2d";

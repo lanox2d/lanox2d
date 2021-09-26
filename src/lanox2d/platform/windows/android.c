@@ -24,8 +24,7 @@
  */
 #include "prefix.h"
 #ifdef LX_CONFIG_DEVICE_HAVE_VULKAN
-#   include <vulkan/vulkan.h>
-#   include <vulkan/vulkan_android.h>
+#   include "../../core/device/vulkan/vk.h"
 #   include <android/native_window.h>
 #   include <android/native_window_jni.h>
 #endif
@@ -127,6 +126,12 @@ lx_window_ref_t lx_window_init_android(lx_size_t width, lx_size_t height, lx_cha
         window->base.device = lx_device_init_from_opengl(width, height, width, height);
 #elif defined(LX_CONFIG_DEVICE_HAVE_VULKAN)
         window->window = (ANativeWindow*)devdata;
+
+        // init vulkan context
+        if (!lx_vk_context_init()) {
+            lx_trace_e("failed to init vulkan context!");
+            break;
+        }
 
         // init vulkan instance
         VkApplicationInfo appinfo  = {};
