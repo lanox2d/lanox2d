@@ -21,11 +21,12 @@ package io.lanox2d.lib.vulkan;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import io.lanox2d.lib.Lanox2d;
 
-public class Lanox2dVkView extends SurfaceView {
+public class Lanox2dVkView extends SurfaceView implements SurfaceHolder.Callback {
     private static final String TAG = "Lanox2dVkView";
 
     public Lanox2dVkView(Context context, AttributeSet attrs) {
@@ -33,5 +34,19 @@ public class Lanox2dVkView extends SurfaceView {
 
         // init lanox2d
         Lanox2d.init(context);
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
     }
 }

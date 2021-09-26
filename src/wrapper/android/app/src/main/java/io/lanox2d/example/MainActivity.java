@@ -10,13 +10,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
-import io.lanox2d.lib.gles.Lanox2dGLView;
 import io.lanox2d.lib.NativeWindow;
 
 public class MainActivity extends AppCompatActivity implements Runnable {
 
     private TextView        infoView;
-    private Lanox2dGLView   lanox2dView;
     private Handler         handler = new Handler();
     private float           fps = 0;
 
@@ -26,7 +24,6 @@ public class MainActivity extends AppCompatActivity implements Runnable {
         setContentView(R.layout.activity_main);
 
         infoView = (TextView)this.findViewById(R.id.InfoView);
-        lanox2dView = (Lanox2dGLView)this.findViewById(R.id.Lanox2dView);
 
         NativeWindow.getInstance().setNativeWindowListener(new NativeWindow.NativeWindowListener() {
 

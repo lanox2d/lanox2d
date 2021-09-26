@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <io.lanox2d.lib.gles.Lanox2dGLView
+    <io.lanox2d.lib.vulkan.Lanox2dVkView
         android:id="@+id/Lanox2dView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
