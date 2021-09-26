@@ -28,7 +28,6 @@
 #elif defined(LX_CONFIG_DEVICE_HAVE_VULKAN)
 #   include <vulkan/vulkan.h>
 #endif
-#endif
 #include <GLFW/glfw3.h>
 
 /* //////////////////////////////////////////////////////////////////////////////////////
