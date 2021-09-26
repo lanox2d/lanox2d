@@ -15,9 +15,9 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        Lanox2dView.java
+ * @file        Lanox2dGLView.java
  */
-package io.lanox2d.lib;
+package io.lanox2d.lib.gles;
 
 import android.app.ActivityManager;
 import android.content.Context;
@@ -27,12 +27,14 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import io.lanox2d.lib.Lanox2d;
+import io.lanox2d.lib.NativeWindow;
 import io.lanox2d.lib.common.Logger;
 
-public class Lanox2dView extends GLSurfaceView {
-    private static final String TAG = "Lanox2dView";
+public class Lanox2dGLView extends GLSurfaceView {
+    private static final String TAG = "Lanox2dGLView";
 
-    public Lanox2dView(Context context, AttributeSet attrs) {
+    public Lanox2dGLView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         // init lanox2d
@@ -52,7 +54,7 @@ public class Lanox2dView extends GLSurfaceView {
         setEGLConfigChooser(8, 8, 8, 8, 16, 4);
 
         // init render
-        setRenderer(new Lanox2dViewRenderer(this));
+        setRenderer(new Lanox2dGLViewRenderer(this));
 
         // init focus
         requestFocus();

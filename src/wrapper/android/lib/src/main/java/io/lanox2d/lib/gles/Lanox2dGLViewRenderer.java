@@ -15,26 +15,24 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        Lanox2dViewRenderer.java
+ * @file        Lanox2dGLViewRenderer.java
  */
-package io.lanox2d.lib;
+package io.lanox2d.lib.gles;
 
-import android.content.Context;
 import android.opengl.GLSurfaceView;
 
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.egl.EGLConfig;
 
-import io.lanox2d.lib.common.Logger;
-import io.lanox2d.lib.internal.Lanox2dInternal;
+import io.lanox2d.lib.NativeWindow;
 
-public class Lanox2dViewRenderer implements GLSurfaceView.Renderer {
-    private static final String TAG = "Lanox2dViewRenderer";
+public class Lanox2dGLViewRenderer implements GLSurfaceView.Renderer {
+    private static final String TAG = "Lanox2dGLViewRenderer";
     private boolean started = false;
-    private Lanox2dView view;
+    private Lanox2dGLView view;
     private NativeWindow nativeWindow;
 
-    public Lanox2dViewRenderer(Lanox2dView view)  {
+    public Lanox2dGLViewRenderer(Lanox2dGLView view)  {
         this.view = view;
         this.nativeWindow = NativeWindow.getInstance();
     }

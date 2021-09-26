@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <io.lanox2d.lib.Lanox2dView android:id="@+id/Lanox2dView"
+    <io.lanox2d.lib.gles.Lanox2dGLView
+        android:id="@+id/Lanox2dView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         app:layout_constraintBottom_toBottomOf="parent"

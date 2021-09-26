@@ -10,17 +10,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
-import io.lanox2d.lib.Lanox2d;
-import io.lanox2d.lib.Lanox2dView;
+import io.lanox2d.lib.gles.Lanox2dGLView;
 import io.lanox2d.lib.NativeWindow;
-import io.lanox2d.lib.common.Logger;
 
 public class MainActivity extends AppCompatActivity implements Runnable {
 
-    private TextView    infoView;
-    private Lanox2dView lanox2dView;
-    private Handler     handler = new Handler();
-    private float       fps = 0;
+    private TextView        infoView;
+    private Lanox2dGLView   lanox2dView;
+    private Handler         handler = new Handler();
+    private float           fps = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements Runnable {
         setContentView(R.layout.activity_main);
 
         infoView = (TextView)this.findViewById(R.id.InfoView);
-        lanox2dView = (Lanox2dView)this.findViewById(R.id.Lanox2dView);
+        lanox2dView = (Lanox2dGLView)this.findViewById(R.id.Lanox2dView);
 
         NativeWindow.getInstance().setNativeWindowListener(new NativeWindow.NativeWindowListener() {
 
