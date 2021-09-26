@@ -39,9 +39,9 @@
  * macros
  */
 #ifdef VK_NO_PROTOTYPES
-#   define LX_VK_API_DEFINE(name) extern PFN_##name name;
+#   define LX_VK_API_EXTERN(name) extern PFN_##name name;
 #else
-#   define LX_VK_API_DEFINE(name);
+#   define LX_VK_API_EXTERN(name);
 #endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -62,203 +62,203 @@ lx_bool_t               lx_vk_context_init(lx_noarg_t);
 /* //////////////////////////////////////////////////////////////////////////////////////
  * vulkan interfaces
  */
-LX_VK_API_DEFINE(vkCreateInstance);
-LX_VK_API_DEFINE(vkDestroyInstance);
-LX_VK_API_DEFINE(vkEnumeratePhysicalDevices);
-LX_VK_API_DEFINE(vkGetPhysicalDeviceFeatures);
-LX_VK_API_DEFINE(vkGetPhysicalDeviceFormatProperties);
-LX_VK_API_DEFINE(vkGetPhysicalDeviceImageFormatProperties);
-LX_VK_API_DEFINE(vkGetPhysicalDeviceProperties);
-LX_VK_API_DEFINE(vkGetPhysicalDeviceQueueFamilyProperties);
-LX_VK_API_DEFINE(vkGetPhysicalDeviceMemoryProperties);
-LX_VK_API_DEFINE(vkGetInstanceProcAddr);
-LX_VK_API_DEFINE(vkGetDeviceProcAddr);
-LX_VK_API_DEFINE(vkCreateDevice);
-LX_VK_API_DEFINE(vkDestroyDevice);
-LX_VK_API_DEFINE(vkEnumerateInstanceExtensionProperties);
-LX_VK_API_DEFINE(vkEnumerateDeviceExtensionProperties);
-LX_VK_API_DEFINE(vkEnumerateInstanceLayerProperties);
-LX_VK_API_DEFINE(vkEnumerateDeviceLayerProperties);
-LX_VK_API_DEFINE(vkGetDeviceQueue);
-LX_VK_API_DEFINE(vkQueueSubmit);
-LX_VK_API_DEFINE(vkQueueWaitIdle);
-LX_VK_API_DEFINE(vkDeviceWaitIdle);
-LX_VK_API_DEFINE(vkAllocateMemory);
-LX_VK_API_DEFINE(vkFreeMemory);
-LX_VK_API_DEFINE(vkMapMemory);
-LX_VK_API_DEFINE(vkUnmapMemory);
-LX_VK_API_DEFINE(vkFlushMappedMemoryRanges);
-LX_VK_API_DEFINE(vkInvalidateMappedMemoryRanges);
-LX_VK_API_DEFINE(vkGetDeviceMemoryCommitment);
-LX_VK_API_DEFINE(vkBindBufferMemory);
-LX_VK_API_DEFINE(vkBindImageMemory);
-LX_VK_API_DEFINE(vkGetBufferMemoryRequirements);
-LX_VK_API_DEFINE(vkGetImageMemoryRequirements);
-LX_VK_API_DEFINE(vkGetImageSparseMemoryRequirements);
-LX_VK_API_DEFINE(vkGetPhysicalDeviceSparseImageFormatProperties);
-LX_VK_API_DEFINE(vkQueueBindSparse);
-LX_VK_API_DEFINE(vkCreateFence);
-LX_VK_API_DEFINE(vkDestroyFence);
-LX_VK_API_DEFINE(vkResetFences);
-LX_VK_API_DEFINE(vkGetFenceStatus);
-LX_VK_API_DEFINE(vkWaitForFences);
-LX_VK_API_DEFINE(vkCreateSemaphore);
-LX_VK_API_DEFINE(vkDestroySemaphore);
-LX_VK_API_DEFINE(vkCreateEvent);
-LX_VK_API_DEFINE(vkDestroyEvent);
-LX_VK_API_DEFINE(vkGetEventStatus);
-LX_VK_API_DEFINE(vkSetEvent);
-LX_VK_API_DEFINE(vkResetEvent);
-LX_VK_API_DEFINE(vkCreateQueryPool);
-LX_VK_API_DEFINE(vkDestroyQueryPool);
-LX_VK_API_DEFINE(vkGetQueryPoolResults);
-LX_VK_API_DEFINE(vkCreateBuffer);
-LX_VK_API_DEFINE(vkDestroyBuffer);
-LX_VK_API_DEFINE(vkCreateBufferView);
-LX_VK_API_DEFINE(vkDestroyBufferView);
-LX_VK_API_DEFINE(vkCreateImage);
-LX_VK_API_DEFINE(vkDestroyImage);
-LX_VK_API_DEFINE(vkGetImageSubresourceLayout);
-LX_VK_API_DEFINE(vkCreateImageView);
-LX_VK_API_DEFINE(vkDestroyImageView);
-LX_VK_API_DEFINE(vkCreateShaderModule);
-LX_VK_API_DEFINE(vkDestroyShaderModule);
-LX_VK_API_DEFINE(vkCreatePipelineCache);
-LX_VK_API_DEFINE(vkDestroyPipelineCache);
-LX_VK_API_DEFINE(vkGetPipelineCacheData);
-LX_VK_API_DEFINE(vkMergePipelineCaches);
-LX_VK_API_DEFINE(vkCreateGraphicsPipelines);
-LX_VK_API_DEFINE(vkCreateComputePipelines);
-LX_VK_API_DEFINE(vkDestroyPipeline);
-LX_VK_API_DEFINE(vkCreatePipelineLayout);
-LX_VK_API_DEFINE(vkDestroyPipelineLayout);
-LX_VK_API_DEFINE(vkCreateSampler);
-LX_VK_API_DEFINE(vkDestroySampler);
-LX_VK_API_DEFINE(vkCreateDescriptorSetLayout);
-LX_VK_API_DEFINE(vkDestroyDescriptorSetLayout);
-LX_VK_API_DEFINE(vkCreateDescriptorPool);
-LX_VK_API_DEFINE(vkDestroyDescriptorPool);
-LX_VK_API_DEFINE(vkResetDescriptorPool);
-LX_VK_API_DEFINE(vkAllocateDescriptorSets);
-LX_VK_API_DEFINE(vkFreeDescriptorSets);
-LX_VK_API_DEFINE(vkUpdateDescriptorSets);
-LX_VK_API_DEFINE(vkCreateFramebuffer);
-LX_VK_API_DEFINE(vkDestroyFramebuffer);
-LX_VK_API_DEFINE(vkCreateRenderPass);
-LX_VK_API_DEFINE(vkDestroyRenderPass);
-LX_VK_API_DEFINE(vkGetRenderAreaGranularity);
-LX_VK_API_DEFINE(vkCreateCommandPool);
-LX_VK_API_DEFINE(vkDestroyCommandPool);
-LX_VK_API_DEFINE(vkResetCommandPool);
-LX_VK_API_DEFINE(vkAllocateCommandBuffers);
-LX_VK_API_DEFINE(vkFreeCommandBuffers);
-LX_VK_API_DEFINE(vkBeginCommandBuffer);
-LX_VK_API_DEFINE(vkEndCommandBuffer);
-LX_VK_API_DEFINE(vkResetCommandBuffer);
-LX_VK_API_DEFINE(vkCmdBindPipeline);
-LX_VK_API_DEFINE(vkCmdSetViewport);
-LX_VK_API_DEFINE(vkCmdSetScissor);
-LX_VK_API_DEFINE(vkCmdSetLineWidth);
-LX_VK_API_DEFINE(vkCmdSetDepthBias);
-LX_VK_API_DEFINE(vkCmdSetBlendConstants);
-LX_VK_API_DEFINE(vkCmdSetDepthBounds);
-LX_VK_API_DEFINE(vkCmdSetStencilCompareMask);
-LX_VK_API_DEFINE(vkCmdSetStencilWriteMask);
-LX_VK_API_DEFINE(vkCmdSetStencilReference);
-LX_VK_API_DEFINE(vkCmdBindDescriptorSets);
-LX_VK_API_DEFINE(vkCmdBindIndexBuffer);
-LX_VK_API_DEFINE(vkCmdBindVertexBuffers);
-LX_VK_API_DEFINE(vkCmdDraw);
-LX_VK_API_DEFINE(vkCmdDrawIndexed);
-LX_VK_API_DEFINE(vkCmdDrawIndirect);
-LX_VK_API_DEFINE(vkCmdDrawIndexedIndirect);
-LX_VK_API_DEFINE(vkCmdDispatch);
-LX_VK_API_DEFINE(vkCmdDispatchIndirect);
-LX_VK_API_DEFINE(vkCmdCopyBuffer);
-LX_VK_API_DEFINE(vkCmdCopyImage);
-LX_VK_API_DEFINE(vkCmdBlitImage);
-LX_VK_API_DEFINE(vkCmdCopyBufferToImage);
-LX_VK_API_DEFINE(vkCmdCopyImageToBuffer);
-LX_VK_API_DEFINE(vkCmdUpdateBuffer);
-LX_VK_API_DEFINE(vkCmdFillBuffer);
-LX_VK_API_DEFINE(vkCmdClearColorImage);
-LX_VK_API_DEFINE(vkCmdClearDepthStencilImage);
-LX_VK_API_DEFINE(vkCmdClearAttachments);
-LX_VK_API_DEFINE(vkCmdResolveImage);
-LX_VK_API_DEFINE(vkCmdSetEvent);
-LX_VK_API_DEFINE(vkCmdResetEvent);
-LX_VK_API_DEFINE(vkCmdWaitEvents);
-LX_VK_API_DEFINE(vkCmdPipelineBarrier);
-LX_VK_API_DEFINE(vkCmdBeginQuery);
-LX_VK_API_DEFINE(vkCmdEndQuery);
-LX_VK_API_DEFINE(vkCmdResetQueryPool);
-LX_VK_API_DEFINE(vkCmdWriteTimestamp);
-LX_VK_API_DEFINE(vkCmdCopyQueryPoolResults);
-LX_VK_API_DEFINE(vkCmdPushConstants);
-LX_VK_API_DEFINE(vkCmdBeginRenderPass);
-LX_VK_API_DEFINE(vkCmdNextSubpass);
-LX_VK_API_DEFINE(vkCmdEndRenderPass);
-LX_VK_API_DEFINE(vkCmdExecuteCommands);
+LX_VK_API_EXTERN(vkCreateInstance);
+LX_VK_API_EXTERN(vkDestroyInstance);
+LX_VK_API_EXTERN(vkEnumeratePhysicalDevices);
+LX_VK_API_EXTERN(vkGetPhysicalDeviceFeatures);
+LX_VK_API_EXTERN(vkGetPhysicalDeviceFormatProperties);
+LX_VK_API_EXTERN(vkGetPhysicalDeviceImageFormatProperties);
+LX_VK_API_EXTERN(vkGetPhysicalDeviceProperties);
+LX_VK_API_EXTERN(vkGetPhysicalDeviceQueueFamilyProperties);
+LX_VK_API_EXTERN(vkGetPhysicalDeviceMemoryProperties);
+LX_VK_API_EXTERN(vkGetInstanceProcAddr);
+LX_VK_API_EXTERN(vkGetDeviceProcAddr);
+LX_VK_API_EXTERN(vkCreateDevice);
+LX_VK_API_EXTERN(vkDestroyDevice);
+LX_VK_API_EXTERN(vkEnumerateInstanceExtensionProperties);
+LX_VK_API_EXTERN(vkEnumerateDeviceExtensionProperties);
+LX_VK_API_EXTERN(vkEnumerateInstanceLayerProperties);
+LX_VK_API_EXTERN(vkEnumerateDeviceLayerProperties);
+LX_VK_API_EXTERN(vkGetDeviceQueue);
+LX_VK_API_EXTERN(vkQueueSubmit);
+LX_VK_API_EXTERN(vkQueueWaitIdle);
+LX_VK_API_EXTERN(vkDeviceWaitIdle);
+LX_VK_API_EXTERN(vkAllocateMemory);
+LX_VK_API_EXTERN(vkFreeMemory);
+LX_VK_API_EXTERN(vkMapMemory);
+LX_VK_API_EXTERN(vkUnmapMemory);
+LX_VK_API_EXTERN(vkFlushMappedMemoryRanges);
+LX_VK_API_EXTERN(vkInvalidateMappedMemoryRanges);
+LX_VK_API_EXTERN(vkGetDeviceMemoryCommitment);
+LX_VK_API_EXTERN(vkBindBufferMemory);
+LX_VK_API_EXTERN(vkBindImageMemory);
+LX_VK_API_EXTERN(vkGetBufferMemoryRequirements);
+LX_VK_API_EXTERN(vkGetImageMemoryRequirements);
+LX_VK_API_EXTERN(vkGetImageSparseMemoryRequirements);
+LX_VK_API_EXTERN(vkGetPhysicalDeviceSparseImageFormatProperties);
+LX_VK_API_EXTERN(vkQueueBindSparse);
+LX_VK_API_EXTERN(vkCreateFence);
+LX_VK_API_EXTERN(vkDestroyFence);
+LX_VK_API_EXTERN(vkResetFences);
+LX_VK_API_EXTERN(vkGetFenceStatus);
+LX_VK_API_EXTERN(vkWaitForFences);
+LX_VK_API_EXTERN(vkCreateSemaphore);
+LX_VK_API_EXTERN(vkDestroySemaphore);
+LX_VK_API_EXTERN(vkCreateEvent);
+LX_VK_API_EXTERN(vkDestroyEvent);
+LX_VK_API_EXTERN(vkGetEventStatus);
+LX_VK_API_EXTERN(vkSetEvent);
+LX_VK_API_EXTERN(vkResetEvent);
+LX_VK_API_EXTERN(vkCreateQueryPool);
+LX_VK_API_EXTERN(vkDestroyQueryPool);
+LX_VK_API_EXTERN(vkGetQueryPoolResults);
+LX_VK_API_EXTERN(vkCreateBuffer);
+LX_VK_API_EXTERN(vkDestroyBuffer);
+LX_VK_API_EXTERN(vkCreateBufferView);
+LX_VK_API_EXTERN(vkDestroyBufferView);
+LX_VK_API_EXTERN(vkCreateImage);
+LX_VK_API_EXTERN(vkDestroyImage);
+LX_VK_API_EXTERN(vkGetImageSubresourceLayout);
+LX_VK_API_EXTERN(vkCreateImageView);
+LX_VK_API_EXTERN(vkDestroyImageView);
+LX_VK_API_EXTERN(vkCreateShaderModule);
+LX_VK_API_EXTERN(vkDestroyShaderModule);
+LX_VK_API_EXTERN(vkCreatePipelineCache);
+LX_VK_API_EXTERN(vkDestroyPipelineCache);
+LX_VK_API_EXTERN(vkGetPipelineCacheData);
+LX_VK_API_EXTERN(vkMergePipelineCaches);
+LX_VK_API_EXTERN(vkCreateGraphicsPipelines);
+LX_VK_API_EXTERN(vkCreateComputePipelines);
+LX_VK_API_EXTERN(vkDestroyPipeline);
+LX_VK_API_EXTERN(vkCreatePipelineLayout);
+LX_VK_API_EXTERN(vkDestroyPipelineLayout);
+LX_VK_API_EXTERN(vkCreateSampler);
+LX_VK_API_EXTERN(vkDestroySampler);
+LX_VK_API_EXTERN(vkCreateDescriptorSetLayout);
+LX_VK_API_EXTERN(vkDestroyDescriptorSetLayout);
+LX_VK_API_EXTERN(vkCreateDescriptorPool);
+LX_VK_API_EXTERN(vkDestroyDescriptorPool);
+LX_VK_API_EXTERN(vkResetDescriptorPool);
+LX_VK_API_EXTERN(vkAllocateDescriptorSets);
+LX_VK_API_EXTERN(vkFreeDescriptorSets);
+LX_VK_API_EXTERN(vkUpdateDescriptorSets);
+LX_VK_API_EXTERN(vkCreateFramebuffer);
+LX_VK_API_EXTERN(vkDestroyFramebuffer);
+LX_VK_API_EXTERN(vkCreateRenderPass);
+LX_VK_API_EXTERN(vkDestroyRenderPass);
+LX_VK_API_EXTERN(vkGetRenderAreaGranularity);
+LX_VK_API_EXTERN(vkCreateCommandPool);
+LX_VK_API_EXTERN(vkDestroyCommandPool);
+LX_VK_API_EXTERN(vkResetCommandPool);
+LX_VK_API_EXTERN(vkAllocateCommandBuffers);
+LX_VK_API_EXTERN(vkFreeCommandBuffers);
+LX_VK_API_EXTERN(vkBeginCommandBuffer);
+LX_VK_API_EXTERN(vkEndCommandBuffer);
+LX_VK_API_EXTERN(vkResetCommandBuffer);
+LX_VK_API_EXTERN(vkCmdBindPipeline);
+LX_VK_API_EXTERN(vkCmdSetViewport);
+LX_VK_API_EXTERN(vkCmdSetScissor);
+LX_VK_API_EXTERN(vkCmdSetLineWidth);
+LX_VK_API_EXTERN(vkCmdSetDepthBias);
+LX_VK_API_EXTERN(vkCmdSetBlendConstants);
+LX_VK_API_EXTERN(vkCmdSetDepthBounds);
+LX_VK_API_EXTERN(vkCmdSetStencilCompareMask);
+LX_VK_API_EXTERN(vkCmdSetStencilWriteMask);
+LX_VK_API_EXTERN(vkCmdSetStencilReference);
+LX_VK_API_EXTERN(vkCmdBindDescriptorSets);
+LX_VK_API_EXTERN(vkCmdBindIndexBuffer);
+LX_VK_API_EXTERN(vkCmdBindVertexBuffers);
+LX_VK_API_EXTERN(vkCmdDraw);
+LX_VK_API_EXTERN(vkCmdDrawIndexed);
+LX_VK_API_EXTERN(vkCmdDrawIndirect);
+LX_VK_API_EXTERN(vkCmdDrawIndexedIndirect);
+LX_VK_API_EXTERN(vkCmdDispatch);
+LX_VK_API_EXTERN(vkCmdDispatchIndirect);
+LX_VK_API_EXTERN(vkCmdCopyBuffer);
+LX_VK_API_EXTERN(vkCmdCopyImage);
+LX_VK_API_EXTERN(vkCmdBlitImage);
+LX_VK_API_EXTERN(vkCmdCopyBufferToImage);
+LX_VK_API_EXTERN(vkCmdCopyImageToBuffer);
+LX_VK_API_EXTERN(vkCmdUpdateBuffer);
+LX_VK_API_EXTERN(vkCmdFillBuffer);
+LX_VK_API_EXTERN(vkCmdClearColorImage);
+LX_VK_API_EXTERN(vkCmdClearDepthStencilImage);
+LX_VK_API_EXTERN(vkCmdClearAttachments);
+LX_VK_API_EXTERN(vkCmdResolveImage);
+LX_VK_API_EXTERN(vkCmdSetEvent);
+LX_VK_API_EXTERN(vkCmdResetEvent);
+LX_VK_API_EXTERN(vkCmdWaitEvents);
+LX_VK_API_EXTERN(vkCmdPipelineBarrier);
+LX_VK_API_EXTERN(vkCmdBeginQuery);
+LX_VK_API_EXTERN(vkCmdEndQuery);
+LX_VK_API_EXTERN(vkCmdResetQueryPool);
+LX_VK_API_EXTERN(vkCmdWriteTimestamp);
+LX_VK_API_EXTERN(vkCmdCopyQueryPoolResults);
+LX_VK_API_EXTERN(vkCmdPushConstants);
+LX_VK_API_EXTERN(vkCmdBeginRenderPass);
+LX_VK_API_EXTERN(vkCmdNextSubpass);
+LX_VK_API_EXTERN(vkCmdEndRenderPass);
+LX_VK_API_EXTERN(vkCmdExecuteCommands);
 
 // VK_KHR_surface
-LX_VK_API_DEFINE(vkDestroySurfaceKHR);
-LX_VK_API_DEFINE(vkGetPhysicalDeviceSurfaceSupportKHR);
-LX_VK_API_DEFINE(vkGetPhysicalDeviceSurfaceCapabilitiesKHR);
-LX_VK_API_DEFINE(vkGetPhysicalDeviceSurfaceFormatsKHR);
-LX_VK_API_DEFINE(vkGetPhysicalDeviceSurfacePresentModesKHR);
+LX_VK_API_EXTERN(vkDestroySurfaceKHR);
+LX_VK_API_EXTERN(vkGetPhysicalDeviceSurfaceSupportKHR);
+LX_VK_API_EXTERN(vkGetPhysicalDeviceSurfaceCapabilitiesKHR);
+LX_VK_API_EXTERN(vkGetPhysicalDeviceSurfaceFormatsKHR);
+LX_VK_API_EXTERN(vkGetPhysicalDeviceSurfacePresentModesKHR);
 
 // VK_KHR_swapchain
-LX_VK_API_DEFINE(vkCreateSwapchainKHR);
-LX_VK_API_DEFINE(vkDestroySwapchainKHR);
-LX_VK_API_DEFINE(vkGetSwapchainImagesKHR);
-LX_VK_API_DEFINE(vkAcquireNextImageKHR);
-LX_VK_API_DEFINE(vkQueuePresentKHR);
+LX_VK_API_EXTERN(vkCreateSwapchainKHR);
+LX_VK_API_EXTERN(vkDestroySwapchainKHR);
+LX_VK_API_EXTERN(vkGetSwapchainImagesKHR);
+LX_VK_API_EXTERN(vkAcquireNextImageKHR);
+LX_VK_API_EXTERN(vkQueuePresentKHR);
 
 // VK_KHR_display
-LX_VK_API_DEFINE(vkGetPhysicalDeviceDisplayPropertiesKHR);
-LX_VK_API_DEFINE(vkGetPhysicalDeviceDisplayPlanePropertiesKHR);
-LX_VK_API_DEFINE(vkGetDisplayPlaneSupportedDisplaysKHR);
-LX_VK_API_DEFINE(vkGetDisplayModePropertiesKHR);
-LX_VK_API_DEFINE(vkCreateDisplayModeKHR);
-LX_VK_API_DEFINE(vkGetDisplayPlaneCapabilitiesKHR);
-LX_VK_API_DEFINE(vkCreateDisplayPlaneSurfaceKHR);
+LX_VK_API_EXTERN(vkGetPhysicalDeviceDisplayPropertiesKHR);
+LX_VK_API_EXTERN(vkGetPhysicalDeviceDisplayPlanePropertiesKHR);
+LX_VK_API_EXTERN(vkGetDisplayPlaneSupportedDisplaysKHR);
+LX_VK_API_EXTERN(vkGetDisplayModePropertiesKHR);
+LX_VK_API_EXTERN(vkCreateDisplayModeKHR);
+LX_VK_API_EXTERN(vkGetDisplayPlaneCapabilitiesKHR);
+LX_VK_API_EXTERN(vkCreateDisplayPlaneSurfaceKHR);
 
 // VK_KHR_display_swapchain
-LX_VK_API_DEFINE(vkCreateSharedSwapchainsKHR);
+LX_VK_API_EXTERN(vkCreateSharedSwapchainsKHR);
 
 #ifdef VK_USE_PLATFORM_XLIB_KHR
 // VK_KHR_xlib_surface
-LX_VK_API_DEFINE(vkCreateXlibSurfaceKHR);
-LX_VK_API_DEFINE(vkGetPhysicalDeviceXlibPresentationSupportKHR);
+LX_VK_API_EXTERN(vkCreateXlibSurfaceKHR);
+LX_VK_API_EXTERN(vkGetPhysicalDeviceXlibPresentationSupportKHR);
 #endif
 
 #ifdef VK_USE_PLATFORM_XCB_KHR
 // VK_KHR_xcb_surface
-LX_VK_API_DEFINE(vkCreateXcbSurfaceKHR);
-LX_VK_API_DEFINE(vkGetPhysicalDeviceXcbPresentationSupportKHR);
+LX_VK_API_EXTERN(vkCreateXcbSurfaceKHR);
+LX_VK_API_EXTERN(vkGetPhysicalDeviceXcbPresentationSupportKHR);
 #endif
 
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
 // VK_KHR_wayland_surface
-LX_VK_API_DEFINE(vkCreateWaylandSurfaceKHR);
-LX_VK_API_DEFINE(vkGetPhysicalDeviceWaylandPresentationSupportKHR);
+LX_VK_API_EXTERN(vkCreateWaylandSurfaceKHR);
+LX_VK_API_EXTERN(vkGetPhysicalDeviceWaylandPresentationSupportKHR);
 #endif
 
 #ifdef VK_USE_PLATFORM_MIR_KHR
 // VK_KHR_mir_surface
-LX_VK_API_DEFINE(vkCreateMirSurfaceKHR);
-LX_VK_API_DEFINE(vkGetPhysicalDeviceMirPresentationSupportKHR);
+LX_VK_API_EXTERN(vkCreateMirSurfaceKHR);
+LX_VK_API_EXTERN(vkGetPhysicalDeviceMirPresentationSupportKHR);
 #endif
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
 // VK_KHR_android_surface
-LX_VK_API_DEFINE(vkCreateAndroidSurfaceKHR);
+LX_VK_API_EXTERN(vkCreateAndroidSurfaceKHR);
 #endif
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
 // VK_KHR_win32_surface
-LX_VK_API_DEFINE(vkCreateWin32SurfaceKHR);
-LX_VK_API_DEFINE(vkGetPhysicalDeviceWin32PresentationSupportKHR);
+LX_VK_API_EXTERN(vkCreateWin32SurfaceKHR);
+LX_VK_API_EXTERN(vkGetPhysicalDeviceWin32PresentationSupportKHR);
 #endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
