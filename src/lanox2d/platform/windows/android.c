@@ -116,7 +116,7 @@ lx_window_ref_t lx_window_init_android(lx_size_t width, lx_size_t height, lx_cha
 #elif defined(LX_CONFIG_DEVICE_HAVE_VULKAN)
         // init vkinstance and use vkCreateAndroidSurfaceKHR create vksurface with native windows
         window->window = (ANativeWindow*)devdata;
-        window->base.device = lx_device_init_from_vulkan(width, height);
+        window->base.device = lx_device_init_from_vulkan(width, height, lx_null);
 #endif
         lx_assert_and_check_break(window->base.device);
 

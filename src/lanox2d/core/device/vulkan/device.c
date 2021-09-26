@@ -56,10 +56,6 @@ static lx_void_t lx_device_vulkan_draw_path(lx_device_ref_t self, lx_path_ref_t 
 static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
     lx_vulkan_device_t* device = (lx_vulkan_device_t*)self;
     if (device) {
-        if (device->instance) {
-            vkDestroyInstance(device->instance, lx_null);
-            device->instance = lx_null;
-        }
         lx_free(device);
     }
 }
@@ -67,8 +63,8 @@ static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height) {
-    lx_assert_and_check_return_val(width && height, lx_null);
+lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx_cpointer_t devdata) {
+    lx_assert_and_check_return_val(width && height && devdata, lx_null);
 
     lx_bool_t           ok = lx_false;
     lx_vulkan_device_t* device = lx_null;
@@ -86,29 +82,7 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height) {
         device->base.draw_lock    = lx_device_vulkan_draw_lock;
         device->base.draw_commit  = lx_device_vulkan_draw_commit;
         device->base.exit         = lx_device_vulkan_exit;
-
-        // init instance
-        VkApplicationInfo appinfo  = {};
-        appinfo.sType              = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-        appinfo.pApplicationName   = "Lanox2d";
-        appinfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-        appinfo.pEngineName        = "Lanox2d";
-        appinfo.engineVersion      = VK_MAKE_VERSION(1, 0, 0);
-        appinfo.apiVersion         = VK_API_VERSION_1_0;
-
-        VkInstanceCreateInfo createinfo = {};
-        createinfo.sType                = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-        createinfo.pApplicationInfo     = &appinfo;
-        createinfo.enabledLayerCount    = 0;
-#ifdef LX_CONFIG_WINDOW_HAVE_GLFW
-        createinfo.ppEnabledExtensionNames = glfwGetRequiredInstanceExtensions(&createinfo.enabledExtensionCount);
-#else
-        createinfo.enabledExtensionCount = 0;
-#endif
-        if (vkCreateInstance(&createinfo, lx_null, &device->instance) != VK_SUCCESS) {
-            lx_trace_e("failed to create vulkan instance!");
-            break;
-        }
+        device->instance          = (VkInstance)devdata;
 
         // ok
         ok = lx_true;

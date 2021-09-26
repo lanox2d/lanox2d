@@ -25,6 +25,9 @@
 #include "prefix.h"
 #if defined(LX_CONFIG_DEVICE_HAVE_OPENGL)
 #   include "../../core/device/opengl/gl.h"
+#elif defined(LX_CONFIG_DEVICE_HAVE_VULKAN)
+#   include <vulkan/vulkan.h>
+#endif
 #endif
 #include <GLFW/glfw3.h>
 
@@ -40,6 +43,9 @@ typedef struct lx_window_glfw_t_ {
     lx_hong_t       fps_time;
     lx_hong_t       fps_count;
     lx_int_t        fps_delay;
+#ifdef LX_CONFIG_DEVICE_HAVE_VULKAN
+    VkInstance      instance;
+#endif
 } lx_window_glfw_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -300,7 +306,24 @@ static lx_bool_t lx_window_glfw_start(lx_window_glfw_t* window) {
 #if defined(LX_CONFIG_DEVICE_HAVE_OPENGL)
         window->base.device = lx_device_init_from_opengl(window->base.width, window->base.height, framewidth, frameheight);
 #elif defined(LX_CONFIG_DEVICE_HAVE_VULKAN)
-        window->base.device = lx_device_init_from_vulkan(window->base.width, window->base.height);
+        VkApplicationInfo appinfo  = {};
+        appinfo.sType              = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+        appinfo.pApplicationName   = "Lanox2d";
+        appinfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+        appinfo.pEngineName        = "Lanox2d";
+        appinfo.engineVersion      = VK_MAKE_VERSION(1, 0, 0);
+        appinfo.apiVersion         = VK_API_VERSION_1_0;
+
+        VkInstanceCreateInfo createinfo = {};
+        createinfo.sType                = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+        createinfo.pApplicationInfo     = &appinfo;
+        createinfo.enabledLayerCount    = 0;
+        createinfo.ppEnabledExtensionNames = glfwGetRequiredInstanceExtensions(&createinfo.enabledExtensionCount);
+        if (vkCreateInstance(&createinfo, lx_null, &window->instance) != VK_SUCCESS) {
+            lx_trace_e("failed to create vulkan instance!");
+            break;
+        }
+        window->base.device = lx_device_init_from_vulkan(window->base.width, window->base.height, window->instance);
 #elif defined(LX_CONFIG_DEVICE_HAVE_SKIA)
         window->base.device = lx_device_init_from_skia(window->base.width, window->base.height, lx_null);
 #endif
@@ -397,6 +420,12 @@ static lx_void_t lx_window_glfw_quit(lx_window_ref_t self) {
 static lx_void_t lx_window_glfw_exit(lx_window_ref_t self) {
     lx_window_glfw_t* window = (lx_window_glfw_t*)self;
     if (window) {
+#ifdef LX_CONFIG_DEVICE_HAVE_VULKAN
+        if (window->instance) {
+            vkDestroyInstance(window->instance, lx_null);
+            window->instance = lx_null;
+        }
+#endif
         if (window->base.canvas) {
             lx_canvas_exit(window->base.canvas);
             window->base.canvas = lx_null;

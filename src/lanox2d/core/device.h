@@ -47,10 +47,11 @@ lx_device_ref_t         lx_device_init_from_bitmap(lx_bitmap_ref_t bitmap);
  *
  * @param width         the window width
  * @param height        the window height
+ * @param devdata       the device data (vkinstance)
  *
  * @return              the device
  */
-lx_device_ref_t         lx_device_init_from_vulkan(lx_size_t width, lx_size_t height);
+lx_device_ref_t         lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx_cpointer_t devdata);
 
 /*! init device from opengl
  *
@@ -67,7 +68,7 @@ lx_device_ref_t         lx_device_init_from_opengl(lx_size_t width, lx_size_t he
  *
  * @param width         the window width
  * @param height        the window height
- * @param devdata       the device data
+ * @param devdata       the device data (mkview)
  *
  * @return              the device
  */
