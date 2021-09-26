@@ -40,10 +40,10 @@
  * implementation
  */
 lx_bool_t lx_vk_context_init() {
-    // load symbols from vulkan.so
+    // load symbols from libvulkan.so
     static lx_dlimage_ref_t s_library = lx_null;
     if (!s_library) {
-        s_library = lx_dlopen("vulkan.so", LX_RTLD_LAZY);
+        s_library = lx_dlopen("libvulkan.so", LX_RTLD_LAZY);
         lx_assert_and_check_return_val(s_library, lx_false);
 
         LX_VK_API_LOAD(vkCreateInstance);
