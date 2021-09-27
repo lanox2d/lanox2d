@@ -67,6 +67,21 @@ lx_bool_t                   lx_vk_context_init(lx_noarg_t);
  */
 VkPhysicalDevice            lx_vk_device_select(VkInstance instance);
 
+/* get the enabled extensions
+ *
+ * @param pcount            the extensions count pointer
+ *
+ * @return                  the enabled extensions
+ */
+lx_char_t const**           lx_vk_extensions(lx_uint32_t* pcount);
+
+/* add the enabled extensions
+ *
+ * @param extensions        the enabled extensions
+ * @param count             the extensions count
+ */
+lx_void_t                   lx_vk_extensions_add(lx_char_t const** extensions, lx_uint32_t count);
+
 /* setup debug messenger
  *
  * @param instance          the vulkan instance

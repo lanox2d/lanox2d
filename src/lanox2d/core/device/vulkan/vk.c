@@ -39,7 +39,14 @@
 #endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * vulkan globals
+ * globals
+ */
+static lx_char_t**          g_extensions = lx_null;
+static lx_uint32_t          g_extensions_count = 0;
+static lx_uint32_t          g_extensions_maxn = 0;
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * apis
  */
 LX_VK_API_DEFINE(vkCreateInstance);
 LX_VK_API_DEFINE(vkDestroyInstance);
@@ -526,6 +533,28 @@ VkPhysicalDevice lx_vk_device_select(VkInstance instance) {
         lx_free(devices);
     }
     return selected_device;
+}
+
+lx_char_t const** lx_vk_extensions(lx_uint32_t* pcount) {
+    if (pcount) *pcount = g_extensions_count;
+    return (lx_char_t const**)g_extensions;
+}
+
+lx_void_t lx_vk_extensions_add(lx_char_t const** extensions, lx_uint32_t count) {
+    if (extensions && count) {
+        lx_uint32_t extensions_count = g_extensions_count + count;
+        if (!g_extensions) {
+            g_extensions_maxn = extensions_count + 16;
+            g_extensions = lx_nalloc0_type(g_extensions_maxn, lx_char_t*);
+        } else if (extensions_count > g_extensions_maxn) {
+            g_extensions_maxn = extensions_count + 16;
+            g_extensions = (lx_char_t**)lx_ralloc(g_extensions, g_extensions_maxn * sizeof(lx_char_t*));
+        }
+        if (g_extensions) {
+            lx_memcpy(g_extensions + g_extensions_count, extensions, count * sizeof(lx_char_t*));
+            g_extensions_count = extensions_count;
+        }
+    }
 }
 
 #ifdef LX_DEBUG

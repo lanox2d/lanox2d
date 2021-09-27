@@ -126,8 +126,11 @@ static lx_bool_t lx_window_android_init_vulkan(lx_window_android_t* window, ANat
         createinfo.sType                   = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
         createinfo.pApplicationInfo        = &appinfo;
         createinfo.enabledLayerCount       = 0;
-        createinfo.enabledExtensionCount   = 0;
-        createinfo.ppEnabledExtensionNames = lx_null; // TODO
+#ifdef LX_DEBUG
+        static lx_char_t const* debug_extensions[] = {VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
+        lx_vk_extensions_add(debug_extensions, 1);
+#endif
+        createinfo.ppEnabledExtensionNames = lx_vk_extensions(&createinfo.enabledExtensionCount);
         if (vkCreateInstance(&createinfo, lx_null, &window->instance) != VK_SUCCESS) {
             lx_trace_e("failed to create vulkan instance!");
             break;
