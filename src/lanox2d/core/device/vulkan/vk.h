@@ -59,6 +59,14 @@ lx_extern_c_enter
  */
 lx_bool_t               lx_vk_context_init(lx_noarg_t);
 
+/* select suitable vulkan device
+ *
+ * @param instance      the vulkan instance
+ *
+ * @return              the vulkan device
+ */
+VkPhysicalDevice        lx_vk_device_select(VkInstance instance);
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * vulkan interfaces
  */

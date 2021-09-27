@@ -241,6 +241,34 @@ LX_VK_API_DEFINE(vkGetPhysicalDeviceWin32PresentationSupportKHR);
 #endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
+ * private implementation
+ */
+static lx_bool_t lx_vk_device_is_suitable(VkPhysicalDevice device) {
+
+    // get queue family count
+    lx_uint32_t queuefamily_count = 0;
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queuefamily_count, lx_null);
+    lx_assert_and_check_return_val(queuefamily_count, lx_false);
+
+    // has suitable queue family?
+    lx_bool_t found = lx_false;
+    VkQueueFamilyProperties* queuefamilies = lx_nalloc0_type(queuefamily_count, VkQueueFamilyProperties);
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queuefamily_count, queuefamilies);
+    if (queuefamilies) {
+        lx_uint32_t i;
+        for (i = 0; i < queuefamily_count; i++) {
+            VkQueueFamilyProperties* queuefamily = &queuefamilies[i];
+            if (queuefamily->queueCount > 0 && queuefamily->queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+                found = lx_true;
+                break;
+            }
+        }
+        lx_free(queuefamilies);
+    }
+    return found;
+}
+
+/* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
 lx_bool_t lx_vk_context_init() {
@@ -454,3 +482,27 @@ lx_bool_t lx_vk_context_init() {
     return lx_true;
 }
 
+VkPhysicalDevice lx_vk_device_select(VkInstance instance) {
+
+    // get device count
+    lx_uint32_t device_count = 0;
+    vkEnumeratePhysicalDevices(instance, &device_count, lx_null);
+    lx_assert_and_check_return_val(device_count, lx_null);
+
+    // select a suitable device
+    VkPhysicalDevice selected_device = lx_null;
+    VkPhysicalDevice* devices = lx_nalloc0_type(device_count, VkPhysicalDevice);
+    if (devices) {
+        vkEnumeratePhysicalDevices(instance, &device_count, devices);
+        lx_uint32_t i;
+        for (i = 0; i < device_count; i++) {
+            VkPhysicalDevice device = devices[i];
+            if (device && lx_vk_device_is_suitable(device)) {
+                selected_device = device;
+                break;
+            }
+        }
+        lx_free(devices);
+    }
+    return selected_device;
+}
