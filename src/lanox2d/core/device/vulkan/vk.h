@@ -55,17 +55,24 @@ lx_extern_c_enter
 
 /* init vulkan context
  *
- * @return              lx_true or lx_false
+ * @return                  lx_true or lx_false
  */
-lx_bool_t               lx_vk_context_init(lx_noarg_t);
+lx_bool_t                   lx_vk_context_init(lx_noarg_t);
 
 /* select suitable vulkan device
  *
- * @param instance      the vulkan instance
+ * @param instance          the vulkan instance
  *
- * @return              the vulkan device
+ * @return                  the vulkan device
  */
-VkPhysicalDevice        lx_vk_device_select(VkInstance instance);
+VkPhysicalDevice            lx_vk_device_select(VkInstance instance);
+
+/* setup debug messenger
+ *
+ * @param instance          the vulkan instance
+ * @param debug_messenger   the debug messenger
+ */
+lx_void_t                   lx_vk_debug_messenger_setup(VkInstance instance, VkDebugUtilsMessengerEXT debug_messenger);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * vulkan interfaces
@@ -233,6 +240,12 @@ LX_VK_API_EXTERN(vkCreateDisplayPlaneSurfaceKHR);
 
 // VK_KHR_display_swapchain
 LX_VK_API_EXTERN(vkCreateSharedSwapchainsKHR);
+
+#ifdef LX_DEBUG
+// VK_EXT_debug
+LX_VK_API_EXTERN(vkCreateDebugUtilsMessengerEXT);
+LX_VK_API_EXTERN(vkDestroyDebugUtilsMessengerEXT);
+#endif
 
 #ifdef VK_USE_PLATFORM_XLIB_KHR
 // VK_KHR_xlib_surface
