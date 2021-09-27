@@ -85,6 +85,7 @@ static lx_void_t lx_window_android_exit(lx_window_ref_t self) {
             ANativeWindow_release(window->window);
             window->window = lx_null;
         }
+        lx_vk_context_exit();
 #endif
         if (window->base.canvas) {
             lx_canvas_exit(window->base.canvas);
@@ -125,11 +126,14 @@ static lx_bool_t lx_window_android_init_vulkan(lx_window_android_t* window, ANat
         VkInstanceCreateInfo createinfo    = {};
         createinfo.sType                   = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
         createinfo.pApplicationInfo        = &appinfo;
-        createinfo.enabledLayerCount       = 0;
 #ifdef LX_DEBUG
+        static lx_char_t const* validation_layers[] = {"VK_LAYER_KHRONOS_validation"};
+        lx_vk_validation_layers_add(validation_layers, 1);
+
         static lx_char_t const* debug_extensions[] = {VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
         lx_vk_extensions_add(debug_extensions, 1);
 #endif
+        createinfo.ppEnabledLayerNames = lx_vk_validation_layers(&createinfo.enabledLayerCount);
         createinfo.ppEnabledExtensionNames = lx_vk_extensions(&createinfo.enabledExtensionCount);
         if (vkCreateInstance(&createinfo, lx_null, &window->instance) != VK_SUCCESS) {
             lx_trace_e("failed to create vulkan instance!");

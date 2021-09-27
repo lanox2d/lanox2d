@@ -59,6 +59,10 @@ lx_extern_c_enter
  */
 lx_bool_t                   lx_vk_context_init(lx_noarg_t);
 
+/* exit vulkan context
+ */
+lx_void_t                   lx_vk_context_exit(lx_noarg_t);
+
 /* select suitable vulkan device
  *
  * @param instance          the vulkan instance
@@ -81,6 +85,21 @@ lx_char_t const**           lx_vk_extensions(lx_uint32_t* pcount);
  * @param count             the extensions count
  */
 lx_void_t                   lx_vk_extensions_add(lx_char_t const** extensions, lx_uint32_t count);
+
+/* get the enabled validation layers
+ *
+ * @param pcount            the validation layers count pointer
+ *
+ * @return                  the enabled validation layers
+ */
+lx_char_t const**           lx_vk_validation_layers(lx_uint32_t* pcount);
+
+/* add the enabled validation layers
+ *
+ * @param validation_layers the enabled validation layers
+ * @param count             the validation layers count
+ */
+lx_void_t                   lx_vk_validation_layers_add(lx_char_t const** validation_layers, lx_uint32_t count);
 
 /* setup debug messenger
  *

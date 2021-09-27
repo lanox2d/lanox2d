@@ -41,9 +41,16 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * globals
  */
+
+// extensions
 static lx_char_t**          g_extensions = lx_null;
 static lx_uint32_t          g_extensions_count = 0;
 static lx_uint32_t          g_extensions_maxn = 0;
+
+// validation layers
+static lx_char_t**          g_validation_layers = lx_null;
+static lx_uint32_t          g_validation_layers_count = 0;
+static lx_uint32_t          g_validation_layers_maxn = 0;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * apis
@@ -510,6 +517,22 @@ lx_bool_t lx_vk_context_init() {
     return lx_true;
 }
 
+lx_void_t lx_vk_context_exit() {
+    if (g_extensions) {
+        lx_free(g_extensions);
+        g_extensions = lx_null;
+        g_extensions_count = 0;
+        g_extensions_maxn = 0;
+    }
+    if (g_validation_layers) {
+        lx_free(g_validation_layers);
+        g_validation_layers = lx_null;
+        g_validation_layers_count = 0;
+        g_validation_layers_maxn = 0;
+    }
+
+}
+
 VkPhysicalDevice lx_vk_device_select(VkInstance instance) {
 
     // get device count
@@ -556,6 +579,29 @@ lx_void_t lx_vk_extensions_add(lx_char_t const** extensions, lx_uint32_t count) 
         }
     }
 }
+
+lx_char_t const** lx_vk_validation_layers(lx_uint32_t* pcount) {
+    if (pcount) *pcount = g_validation_layers_count;
+    return (lx_char_t const**)g_validation_layers;
+}
+
+lx_void_t lx_vk_validation_layers_add(lx_char_t const** validation_layers, lx_uint32_t count) {
+    if (validation_layers && count) {
+        lx_uint32_t validation_layers_count = g_validation_layers_count + count;
+        if (!g_validation_layers) {
+            g_validation_layers_maxn = validation_layers_count + 16;
+            g_validation_layers = lx_nalloc0_type(g_validation_layers_maxn, lx_char_t*);
+        } else if (validation_layers_count > g_validation_layers_maxn) {
+            g_validation_layers_maxn = validation_layers_count + 16;
+            g_validation_layers = (lx_char_t**)lx_ralloc(g_validation_layers, g_validation_layers_maxn * sizeof(lx_char_t*));
+        }
+        if (g_validation_layers) {
+            lx_memcpy(g_validation_layers + g_validation_layers_count, validation_layers, count * sizeof(lx_char_t*));
+            g_validation_layers_count = validation_layers_count;
+        }
+    }
+}
+
 
 #ifdef LX_DEBUG
 lx_void_t lx_vk_debug_messenger_setup(VkInstance instance, VkDebugUtilsMessengerEXT* pdebug_messenger) {

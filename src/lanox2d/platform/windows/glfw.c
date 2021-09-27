@@ -239,6 +239,12 @@ static lx_void_t lx_window_glfw_key_callback(GLFWwindow* self, lx_int_t key, lx_
 }
 
 #ifdef LX_CONFIG_DEVICE_HAVE_VULKAN
+static VKAPI_ATTR VkBool32 VKAPI_CALL lx_vk_debug_callback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
+    if (pCallbackData && pCallbackData->pMessage) {
+        lx_trace_e("validation layer: %s", pCallbackData->pMessage);
+    }
+    return VK_FALSE;
+}
 static lx_bool_t lx_window_glfw_init_vulkan(lx_window_glfw_t* window) {
     // init vulkan context
     if (!lx_vk_context_init()) {
@@ -258,7 +264,19 @@ static lx_bool_t lx_window_glfw_init_vulkan(lx_window_glfw_t* window) {
     VkInstanceCreateInfo createinfo = {};
     createinfo.sType                = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     createinfo.pApplicationInfo     = &appinfo;
-    createinfo.enabledLayerCount    = 0;
+#ifdef LX_DEBUG
+    // TODO
+//    static lx_char_t const* validation_layers[] = {"VK_LAYER_KHRONOS_validation"};
+//    lx_vk_validation_layers_add(validation_layers, 1);
+
+    VkDebugUtilsMessengerCreateInfoEXT debug_createinfo;
+    debug_createinfo.sType           = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+    debug_createinfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+    debug_createinfo.messageType     = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+    debug_createinfo.pfnUserCallback = lx_vk_debug_callback;
+    createinfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debug_createinfo;
+#endif
+    createinfo.ppEnabledLayerNames = lx_vk_validation_layers(&createinfo.enabledLayerCount);
 
     lx_uint32_t glfw_extensions_count = 0;
     lx_char_t const** glfw_extensions = glfwGetRequiredInstanceExtensions(&glfw_extensions_count);
@@ -450,6 +468,7 @@ static lx_void_t lx_window_glfw_exit(lx_window_ref_t self) {
             vkDestroyInstance(window->instance, lx_null);
             window->instance = lx_null;
         }
+        lx_vk_context_exit();
 #endif
         if (window->base.canvas) {
             lx_canvas_exit(window->base.canvas);
