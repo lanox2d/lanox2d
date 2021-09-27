@@ -244,6 +244,7 @@ LX_VK_API_DEFINE(vkGetPhysicalDeviceWin32PresentationSupportKHR);
  * implementation
  */
 lx_bool_t lx_vk_context_init() {
+#ifdef VK_NO_PROTOTYPES
     // load symbols from libvulkan.so
     static lx_dlimage_ref_t s_library = lx_null;
     if (!s_library) {
@@ -449,6 +450,7 @@ lx_bool_t lx_vk_context_init() {
         LX_VK_API_LOAD(vkGetPhysicalDeviceWin32PresentationSupportKHR);
 #endif
     }
+#endif
     return lx_true;
 }
 

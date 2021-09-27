@@ -98,6 +98,58 @@ static lx_void_t lx_window_android_exit(lx_window_ref_t self) {
     }
 }
 
+#ifdef LX_CONFIG_DEVICE_HAVE_VULKAN
+static lx_bool_t lx_window_android_init_vulkan(lx_window_android_t* window, ANativeWindow* native_window) {
+    lx_bool_t ok = lx_false;
+    do {
+
+        // init vulkan context
+        if (!lx_vk_context_init()) {
+            lx_trace_e("failed to init vulkan context!");
+            break;
+        }
+
+        // save native window
+        window->window = native_window;
+        lx_assert_and_check_break(native_window);
+
+        // init vulkan instance
+        VkApplicationInfo appinfo  = {};
+        appinfo.sType              = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+        appinfo.pApplicationName   = "Lanox2d";
+        appinfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+        appinfo.pEngineName        = "Lanox2d";
+        appinfo.engineVersion      = VK_MAKE_VERSION(1, 0, 0);
+        appinfo.apiVersion         = VK_API_VERSION_1_0;
+
+        VkInstanceCreateInfo createinfo    = {};
+        createinfo.sType                   = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+        createinfo.pApplicationInfo        = &appinfo;
+        createinfo.enabledLayerCount       = 0;
+        createinfo.enabledExtensionCount   = 0;
+        createinfo.ppEnabledExtensionNames = lx_null; // TODO
+        if (vkCreateInstance(&createinfo, lx_null, &window->instance) != VK_SUCCESS) {
+            lx_trace_e("failed to create vulkan instance!");
+            break;
+        }
+
+        // create surface with vkinstance
+        VkAndroidSurfaceCreateInfoKHR surface_createinfo;
+        surface_createinfo.sType = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR;
+        surface_createinfo.pNext = lx_null;
+        surface_createinfo.flags = 0;
+        surface_createinfo.window = native_window;
+        if (vkCreateAndroidSurfaceKHR(window->instance, &surface_createinfo, lx_null, &window->surface) != VK_SUCCESS) {
+            lx_trace_e("failed to create vulkan surface!");
+            break;
+        }
+
+        ok = lx_true;
+    } while (0);
+    return ok;
+}
+#endif
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
@@ -125,42 +177,7 @@ lx_window_ref_t lx_window_init_android(lx_size_t width, lx_size_t height, lx_cha
 #if defined(LX_CONFIG_DEVICE_HAVE_OPENGL)
         window->base.device = lx_device_init_from_opengl(width, height, width, height);
 #elif defined(LX_CONFIG_DEVICE_HAVE_VULKAN)
-        window->window = (ANativeWindow*)devdata;
-
-        // init vulkan context
-        if (!lx_vk_context_init()) {
-            lx_trace_e("failed to init vulkan context!");
-            break;
-        }
-
-        // init vulkan instance
-        VkApplicationInfo appinfo  = {};
-        appinfo.sType              = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-        appinfo.pApplicationName   = "Lanox2d";
-        appinfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-        appinfo.pEngineName        = "Lanox2d";
-        appinfo.engineVersion      = VK_MAKE_VERSION(1, 0, 0);
-        appinfo.apiVersion         = VK_API_VERSION_1_0;
-
-        VkInstanceCreateInfo createinfo    = {};
-        createinfo.sType                   = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-        createinfo.pApplicationInfo        = &appinfo;
-        createinfo.enabledLayerCount       = 0;
-        createinfo.enabledExtensionCount   = 0;
-        createinfo.ppEnabledExtensionNames = lx_null; // TODO
-        if (vkCreateInstance(&createinfo, lx_null, &window->instance) != VK_SUCCESS) {
-            lx_trace_e("failed to create vulkan instance!");
-            break;
-        }
-
-        // create surface with vkinstance
-        VkAndroidSurfaceCreateInfoKHR surface_createinfo;
-        surface_createinfo.sType = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR;
-        surface_createinfo.pNext = lx_null;
-        surface_createinfo.flags = 0;
-        surface_createinfo.window = window->window;
-        if (vkCreateAndroidSurfaceKHR(window->instance, &surface_createinfo, lx_null, &window->surface) != VK_SUCCESS) {
-            lx_trace_e("failed to create vulkan surface!");
+        if (!lx_window_android_init_vulkan(window, (ANativeWindow*)devdata)) {
             break;
         }
         window->base.device = lx_device_init_from_vulkan(width, height, window->instance);

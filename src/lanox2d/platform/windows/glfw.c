@@ -238,6 +238,36 @@ static lx_void_t lx_window_glfw_key_callback(GLFWwindow* self, lx_int_t key, lx_
     }
 }
 
+#ifdef LX_CONFIG_DEVICE_HAVE_VULKAN
+static lx_bool_t lx_window_glfw_init_vulkan(lx_window_glfw_t* window) {
+    // init vulkan context
+    if (!lx_vk_context_init()) {
+        lx_trace_e("failed to init vulkan context!");
+        return lx_false;
+    }
+
+    // init vulkan instance
+    VkApplicationInfo appinfo  = {};
+    appinfo.sType              = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+    appinfo.pApplicationName   = "Lanox2d";
+    appinfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+    appinfo.pEngineName        = "Lanox2d";
+    appinfo.engineVersion      = VK_MAKE_VERSION(1, 0, 0);
+    appinfo.apiVersion         = VK_API_VERSION_1_0;
+
+    VkInstanceCreateInfo createinfo = {};
+    createinfo.sType                = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+    createinfo.pApplicationInfo     = &appinfo;
+    createinfo.enabledLayerCount    = 0;
+    createinfo.ppEnabledExtensionNames = glfwGetRequiredInstanceExtensions(&createinfo.enabledExtensionCount);
+    if (vkCreateInstance(&createinfo, lx_null, &window->instance) != VK_SUCCESS) {
+        lx_trace_e("failed to create vulkan instance!");
+        return lx_false;
+    }
+    return lx_true;
+}
+#endif
+
 static lx_bool_t lx_window_glfw_start(lx_window_glfw_t* window) {
     lx_bool_t ok = lx_false;
     do {
@@ -305,28 +335,7 @@ static lx_bool_t lx_window_glfw_start(lx_window_glfw_t* window) {
 #if defined(LX_CONFIG_DEVICE_HAVE_OPENGL)
         window->base.device = lx_device_init_from_opengl(window->base.width, window->base.height, framewidth, frameheight);
 #elif defined(LX_CONFIG_DEVICE_HAVE_VULKAN)
-        // init vulkan context
-        if (!lx_vk_context_init()) {
-            lx_trace_e("failed to init vulkan context!");
-            break;
-        }
-
-        // init vulkan instance
-        VkApplicationInfo appinfo  = {};
-        appinfo.sType              = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-        appinfo.pApplicationName   = "Lanox2d";
-        appinfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-        appinfo.pEngineName        = "Lanox2d";
-        appinfo.engineVersion      = VK_MAKE_VERSION(1, 0, 0);
-        appinfo.apiVersion         = VK_API_VERSION_1_0;
-
-        VkInstanceCreateInfo createinfo = {};
-        createinfo.sType                = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-        createinfo.pApplicationInfo     = &appinfo;
-        createinfo.enabledLayerCount    = 0;
-        createinfo.ppEnabledExtensionNames = glfwGetRequiredInstanceExtensions(&createinfo.enabledExtensionCount);
-        if (vkCreateInstance(&createinfo, lx_null, &window->instance) != VK_SUCCESS) {
-            lx_trace_e("failed to create vulkan instance!");
+        if (!lx_window_glfw_init_vulkan(window)) {
             break;
         }
         window->base.device = lx_device_init_from_vulkan(window->base.width, window->base.height, window->instance);
