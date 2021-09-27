@@ -558,13 +558,13 @@ lx_void_t lx_vk_extensions_add(lx_char_t const** extensions, lx_uint32_t count) 
 }
 
 #ifdef LX_DEBUG
-lx_void_t lx_vk_debug_messenger_setup(VkInstance instance, VkDebugUtilsMessengerEXT debug_messenger) {
+lx_void_t lx_vk_debug_messenger_setup(VkInstance instance, VkDebugUtilsMessengerEXT* pdebug_messenger) {
     VkDebugUtilsMessengerCreateInfoEXT createinfo = {};
     createinfo.sType           = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
     createinfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
     createinfo.messageType     = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
     createinfo.pfnUserCallback = lx_vk_debug_callback;
-    if (vkCreateDebugUtilsMessengerEXT(instance, &createinfo, lx_null, &debug_messenger) != VK_SUCCESS) {
+    if (vkCreateDebugUtilsMessengerEXT(instance, &createinfo, lx_null, pdebug_messenger) != VK_SUCCESS) {
         lx_trace_e("failed to setup debug messenger!");
     }
 }

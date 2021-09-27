@@ -85,9 +85,9 @@ lx_void_t                   lx_vk_extensions_add(lx_char_t const** extensions, l
 /* setup debug messenger
  *
  * @param instance          the vulkan instance
- * @param debug_messenger   the debug messenger
+ * @param pdebug_messenger  the debug messenger pointer
  */
-lx_void_t                   lx_vk_debug_messenger_setup(VkInstance instance, VkDebugUtilsMessengerEXT debug_messenger);
+lx_void_t                   lx_vk_debug_messenger_setup(VkInstance instance, VkDebugUtilsMessengerEXT* pdebug_messenger);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * vulkan interfaces

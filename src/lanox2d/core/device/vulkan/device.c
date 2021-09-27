@@ -56,6 +56,12 @@ static lx_void_t lx_device_vulkan_draw_path(lx_device_ref_t self, lx_path_ref_t 
 static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
     lx_vulkan_device_t* device = (lx_vulkan_device_t*)self;
     if (device) {
+#ifdef LX_DEBUG
+        if (device->debug_messenger) {
+            vkDestroyDebugUtilsMessengerEXT(device->instance, device->debug_messenger, lx_null);
+            device->debug_messenger = 0;
+        }
+#endif
         lx_free(device);
     }
 }
@@ -83,6 +89,11 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
         device->base.draw_commit  = lx_device_vulkan_draw_commit;
         device->base.exit         = lx_device_vulkan_exit;
         device->instance          = (VkInstance)devdata;
+
+#ifdef LX_DEBUG
+        // setup debug messenger
+        lx_vk_debug_messenger_setup(device->instance, &device->debug_messenger);
+#endif
 
         // select vulkan device
         device->device = lx_vk_device_select(device->instance);
