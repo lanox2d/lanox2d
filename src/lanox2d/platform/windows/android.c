@@ -136,7 +136,10 @@ static lx_bool_t lx_window_android_init_vulkan(lx_window_android_t* window, ANat
         createinfo.sType                   = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
         createinfo.pApplicationInfo        = &appinfo;
 #ifdef LX_DEBUG
-        // enable validation layers
+        /* enable validation layers
+         *
+         * @see https://developer.android.com/ndk/guides/graphics/validation-layer
+         */
         static lx_char_t const* validation_layers[] = {"VK_LAYER_KHRONOS_validation"};
         if (lx_vk_validation_layers_check(validation_layers, lx_arrayn(validation_layers))) {
             lx_vk_validation_layers_add(validation_layers, lx_arrayn(validation_layers));
