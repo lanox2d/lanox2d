@@ -221,12 +221,6 @@ LX_VK_API_DEFINE(vkCreateDisplayPlaneSurfaceKHR);
 // VK_KHR_display_swapchain
 LX_VK_API_DEFINE(vkCreateSharedSwapchainsKHR);
 
-#ifdef LX_DEBUG
-// VK_EXT_debug
-LX_VK_API_DEFINE(vkCreateDebugUtilsMessengerEXT);
-LX_VK_API_DEFINE(vkDestroyDebugUtilsMessengerEXT);
-#endif
-
 #ifdef VK_USE_PLATFORM_XLIB_KHR
 // VK_KHR_xlib_surface
 LX_VK_API_DEFINE(vkCreateXlibSurfaceKHR);
@@ -474,12 +468,6 @@ lx_bool_t lx_vk_context_init() {
         // VK_KHR_display_swapchain
         LX_VK_API_LOAD(vkCreateSharedSwapchainsKHR);
 
-#ifdef LX_DEBUG
-        // VK_EXT_debug
-        LX_VK_API_LOAD(vkCreateDebugUtilsMessengerEXT);
-        LX_VK_API_LOAD(vkDestroyDebugUtilsMessengerEXT);
-#endif
-
 #ifdef VK_USE_PLATFORM_XLIB_KHR
         // VK_KHR_xlib_surface
         LX_VK_API_LOAD(vkCreateXlibSurfaceKHR);
@@ -674,13 +662,23 @@ lx_bool_t lx_vk_validation_layers_check(lx_char_t const** layers, lx_uint32_t co
 
 #ifdef LX_DEBUG
 lx_void_t lx_vk_debug_messenger_setup(VkInstance instance, VkDebugUtilsMessengerEXT* pdebug_messenger) {
-    VkDebugUtilsMessengerCreateInfoEXT createinfo = {};
-    createinfo.sType           = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-    createinfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-    createinfo.messageType     = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-    createinfo.pfnUserCallback = lx_vk_debug_callback;
-    if (vkCreateDebugUtilsMessengerEXT(instance, &createinfo, lx_null, pdebug_messenger) != VK_SUCCESS) {
-        lx_trace_e("failed to setup debug messenger!");
+    PFN_vkCreateDebugUtilsMessengerEXT pvkCreateDebugUtilsMessengerEXT = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
+    if (pvkCreateDebugUtilsMessengerEXT) {
+        VkDebugUtilsMessengerCreateInfoEXT createinfo = {};
+        createinfo.sType           = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+        createinfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+        createinfo.messageType     = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+        createinfo.pfnUserCallback = lx_vk_debug_callback;
+        if (pvkCreateDebugUtilsMessengerEXT(instance, &createinfo, lx_null, pdebug_messenger) != VK_SUCCESS) {
+            lx_trace_e("failed to setup debug messenger!");
+        }
+    }
+}
+
+lx_void_t lx_vk_debug_messenger_cancel(VkInstance instance, VkDebugUtilsMessengerEXT debug_messenger) {
+    PFN_vkDestroyDebugUtilsMessengerEXT pvkDestroyDebugUtilsMessengerEXT = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+    if (pvkDestroyDebugUtilsMessengerEXT) {
+        pvkDestroyDebugUtilsMessengerEXT(instance, debug_messenger, lx_null);
     }
 }
 #endif

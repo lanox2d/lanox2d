@@ -126,6 +126,13 @@ lx_bool_t                   lx_vk_validation_layers_check(lx_char_t const** laye
  */
 lx_void_t                   lx_vk_debug_messenger_setup(VkInstance instance, VkDebugUtilsMessengerEXT* pdebug_messenger);
 
+/* cancel debug messenger
+ *
+ * @param instance          the vulkan instance
+ * @param debug_messenger   the debug messenger
+ */
+lx_void_t                   lx_vk_debug_messenger_cancel(VkInstance instance, VkDebugUtilsMessengerEXT debug_messenger);
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * vulkan interfaces
  */
@@ -292,12 +299,6 @@ LX_VK_API_EXTERN(vkCreateDisplayPlaneSurfaceKHR);
 
 // VK_KHR_display_swapchain
 LX_VK_API_EXTERN(vkCreateSharedSwapchainsKHR);
-
-#ifdef LX_DEBUG
-// VK_EXT_debug
-LX_VK_API_EXTERN(vkCreateDebugUtilsMessengerEXT);
-LX_VK_API_EXTERN(vkDestroyDebugUtilsMessengerEXT);
-#endif
 
 #ifdef VK_USE_PLATFORM_XLIB_KHR
 // VK_KHR_xlib_surface

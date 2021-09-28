@@ -78,7 +78,7 @@ static lx_void_t lx_window_android_exit(lx_window_ref_t self) {
 #ifdef LX_CONFIG_DEVICE_HAVE_VULKAN
 #   ifdef LX_DEBUG
         if (window->debug_messenger) {
-            vkDestroyDebugUtilsMessengerEXT(window->instance, window->debug_messenger, lx_null);
+            lx_vk_debug_messenger_cancel(window->instance, window->debug_messenger);
             window->debug_messenger = 0;
         }
 #   endif
