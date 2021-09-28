@@ -31,7 +31,9 @@
 #   define LX_VK_API_DEFINE(name) PFN_##name name;
 #   define LX_VK_API_LOAD(name) do {\
     name = (PFN_##name)lx_dlsym(s_library, #name);\
-    lx_assert_and_check_return_val(name, lx_false);\
+    if (!name) {\
+        lx_trace_w("%s not found!", #name); \
+    }\
 } while (0)
 #else
 #   define LX_VK_API_DEFINE(name)
@@ -580,6 +582,40 @@ lx_void_t lx_vk_extensions_add(lx_char_t const** extensions, lx_uint32_t count) 
     }
 }
 
+lx_bool_t lx_vk_extensions_check(lx_char_t const** extensions, lx_uint32_t count) {
+    lx_assert_and_check_return_val(extensions && count, lx_false);
+
+    // get extension count
+    lx_uint32_t extension_count;
+    vkEnumerateInstanceExtensionProperties(lx_null, &extension_count, lx_null);
+    lx_check_return_val(extension_count, lx_false);
+
+    // check extension
+    VkExtensionProperties* available_extensions = lx_nalloc0_type(extension_count, VkExtensionProperties);
+    if (available_extensions) {
+        vkEnumerateInstanceExtensionProperties(lx_null, &extension_count, available_extensions);
+        lx_uint32_t i, j;
+        lx_bool_t found = lx_false;
+        for (i = 0; i < count; i++) {
+            lx_char_t const* extensionname = extensions[i];
+            if (extensionname) {
+                for (j = 0; j < extension_count; j++) {
+                    VkExtensionProperties* extension_properties = &available_extensions[j];
+                    if (lx_strcmp(extensionname, extension_properties->extensionName) == 0) {
+                        found = lx_true;
+                        break;
+                    }
+                }
+            }
+            if (!found) {
+                return lx_false;
+            }
+        }
+        lx_free(available_extensions);
+    }
+    return lx_true;
+}
+
 lx_char_t const** lx_vk_validation_layers(lx_uint32_t* pcount) {
     if (pcount) *pcount = g_validation_layers_count;
     return (lx_char_t const**)g_validation_layers;
@@ -602,6 +638,39 @@ lx_void_t lx_vk_validation_layers_add(lx_char_t const** validation_layers, lx_ui
     }
 }
 
+lx_bool_t lx_vk_validation_layers_check(lx_char_t const** layers, lx_uint32_t count) {
+    lx_assert_and_check_return_val(layers && count, lx_false);
+
+    // get layer count
+    lx_uint32_t layer_count;
+    vkEnumerateInstanceLayerProperties(&layer_count, lx_null);
+    lx_check_return_val(layer_count, lx_false);
+
+    // check layer
+    VkLayerProperties* available_layers = lx_nalloc0_type(layer_count, VkLayerProperties);
+    if (available_layers) {
+        vkEnumerateInstanceLayerProperties(&layer_count, available_layers);
+        lx_uint32_t i, j;
+        lx_bool_t found = lx_false;
+        for (i = 0; i < count; i++) {
+            lx_char_t const* layername = layers[i];
+            if (layername) {
+                for (j = 0; j < layer_count; j++) {
+                    VkLayerProperties* layer_properties = &available_layers[j];
+                    if (lx_strcmp(layername, layer_properties->layerName) == 0) {
+                        found = lx_true;
+                        break;
+                    }
+                }
+            }
+            if (!found) {
+                return lx_false;
+            }
+        }
+        lx_free(available_layers);
+    }
+    return lx_true;
+}
 
 #ifdef LX_DEBUG
 lx_void_t lx_vk_debug_messenger_setup(VkInstance instance, VkDebugUtilsMessengerEXT* pdebug_messenger) {

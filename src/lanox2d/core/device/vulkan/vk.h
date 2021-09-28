@@ -86,6 +86,15 @@ lx_char_t const**           lx_vk_extensions(lx_uint32_t* pcount);
  */
 lx_void_t                   lx_vk_extensions_add(lx_char_t const** extensions, lx_uint32_t count);
 
+/* check the support extensions
+ *
+ * @param extensions        the checked extensions
+ * @param count             the extensions count
+ *
+ * @return                  lx_true or lx_false
+ */
+lx_bool_t                   lx_vk_extensions_check(lx_char_t const** extensions, lx_uint32_t count);
+
 /* get the enabled validation layers
  *
  * @param pcount            the validation layers count pointer
@@ -100,6 +109,15 @@ lx_char_t const**           lx_vk_validation_layers(lx_uint32_t* pcount);
  * @param count             the validation layers count
  */
 lx_void_t                   lx_vk_validation_layers_add(lx_char_t const** validation_layers, lx_uint32_t count);
+
+/* check the support validation layers
+ *
+ * @param layers            the checked layers
+ * @param count             the layers count
+ *
+ * @return                  lx_true or lx_false
+ */
+lx_bool_t                   lx_vk_validation_layers_check(lx_char_t const** layers, lx_uint32_t count);
 
 /* setup debug messenger
  *

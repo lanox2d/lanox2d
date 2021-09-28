@@ -35,11 +35,14 @@
 
 // the android window type
 typedef struct lx_window_android_t_ {
-    lx_window_t     base;
+    lx_window_t                 base;
 #ifdef LX_CONFIG_DEVICE_HAVE_VULKAN
-    ANativeWindow*  window;
-    VkInstance      instance;
-    VkSurfaceKHR    surface;
+    ANativeWindow*              window;
+    VkInstance                  instance;
+    VkSurfaceKHR                surface;
+#   ifdef LX_DEBUG
+    VkDebugUtilsMessengerEXT    debug_messenger;
+#   endif
 #endif
 } lx_window_android_t;
 
@@ -73,6 +76,12 @@ static lx_void_t lx_window_android_exit(lx_window_ref_t self) {
     lx_window_android_t* window = (lx_window_android_t*)self;
     if (window) {
 #ifdef LX_CONFIG_DEVICE_HAVE_VULKAN
+#   ifdef LX_DEBUG
+        if (window->debug_messenger) {
+            vkDestroyDebugUtilsMessengerEXT(window->instance, window->debug_messenger, lx_null);
+            window->debug_messenger = 0;
+        }
+#   endif
         if (window->surface) {
             vkDestroySurfaceKHR(window->instance, window->surface, lx_null);
             window->surface = 0;
@@ -127,13 +136,21 @@ static lx_bool_t lx_window_android_init_vulkan(lx_window_android_t* window, ANat
         createinfo.sType                   = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
         createinfo.pApplicationInfo        = &appinfo;
 #ifdef LX_DEBUG
+        // enable validation layers
         static lx_char_t const* validation_layers[] = {"VK_LAYER_KHRONOS_validation"};
-        lx_vk_validation_layers_add(validation_layers, 1);
+        if (lx_vk_validation_layers_check(validation_layers, lx_arrayn(validation_layers))) {
+            lx_vk_validation_layers_add(validation_layers, lx_arrayn(validation_layers));
+        }
 
+        // enable debug extensions
+        lx_bool_t has_debug_extension = lx_false;
         static lx_char_t const* debug_extensions[] = {VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
-        lx_vk_extensions_add(debug_extensions, 1);
+        if (lx_vk_extensions_check(debug_extensions, lx_arrayn(debug_extensions))) {
+            lx_vk_extensions_add(debug_extensions, lx_arrayn(debug_extensions));
+            has_debug_extension = lx_true;
+        }
 #endif
-        createinfo.ppEnabledLayerNames = lx_vk_validation_layers(&createinfo.enabledLayerCount);
+        createinfo.ppEnabledLayerNames     = lx_vk_validation_layers(&createinfo.enabledLayerCount);
         createinfo.ppEnabledExtensionNames = lx_vk_extensions(&createinfo.enabledExtensionCount);
         if (vkCreateInstance(&createinfo, lx_null, &window->instance) != VK_SUCCESS) {
             lx_trace_e("failed to create vulkan instance!");
@@ -150,6 +167,13 @@ static lx_bool_t lx_window_android_init_vulkan(lx_window_android_t* window, ANat
             lx_trace_e("failed to create vulkan surface!");
             break;
         }
+
+#ifdef LX_DEBUG
+        // setup debug messenger
+        if (has_debug_extension) {
+            lx_vk_debug_messenger_setup(window->instance, &window->debug_messenger);
+        }
+#endif
 
         ok = lx_true;
     } while (0);

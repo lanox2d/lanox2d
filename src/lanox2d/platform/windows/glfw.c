@@ -36,14 +36,17 @@
 
 // the glfw window type
 typedef struct lx_window_glfw_t_ {
-    lx_window_t     base;
-    GLFWwindow*     window;
-    lx_bool_t       is_quit;
-    lx_hong_t       fps_time;
-    lx_hong_t       fps_count;
-    lx_int_t        fps_delay;
+    lx_window_t                 base;
+    GLFWwindow*                 window;
+    lx_bool_t                   is_quit;
+    lx_hong_t                   fps_time;
+    lx_hong_t                   fps_count;
+    lx_int_t                    fps_delay;
 #ifdef LX_CONFIG_DEVICE_HAVE_VULKAN
-    VkInstance      instance;
+    VkInstance                  instance;
+#   ifdef LX_DEBUG
+    VkDebugUtilsMessengerEXT    debug_messenger;
+#   endif
 #endif
 } lx_window_glfw_t;
 
@@ -239,12 +242,6 @@ static lx_void_t lx_window_glfw_key_callback(GLFWwindow* self, lx_int_t key, lx_
 }
 
 #ifdef LX_CONFIG_DEVICE_HAVE_VULKAN
-static VKAPI_ATTR VkBool32 VKAPI_CALL lx_vk_debug_callback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
-    if (pCallbackData && pCallbackData->pMessage) {
-        lx_trace_e("validation layer: %s", pCallbackData->pMessage);
-    }
-    return VK_FALSE;
-}
 static lx_bool_t lx_window_glfw_init_vulkan(lx_window_glfw_t* window) {
     // init vulkan context
     if (!lx_vk_context_init()) {
@@ -265,33 +262,40 @@ static lx_bool_t lx_window_glfw_init_vulkan(lx_window_glfw_t* window) {
     createinfo.sType                = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     createinfo.pApplicationInfo     = &appinfo;
 #ifdef LX_DEBUG
-    // TODO
-//    static lx_char_t const* validation_layers[] = {"VK_LAYER_KHRONOS_validation"};
-//    lx_vk_validation_layers_add(validation_layers, 1);
+    // enable validation layers
+    static lx_char_t const* validation_layers[] = {"VK_LAYER_KHRONOS_validation"};
+    if (lx_vk_validation_layers_check(validation_layers, lx_arrayn(validation_layers))) {
+        lx_vk_validation_layers_add(validation_layers, lx_arrayn(validation_layers));
+    }
 
-    VkDebugUtilsMessengerCreateInfoEXT debug_createinfo;
-    debug_createinfo.sType           = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-    debug_createinfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-    debug_createinfo.messageType     = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-    debug_createinfo.pfnUserCallback = lx_vk_debug_callback;
-    createinfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debug_createinfo;
+    // enable debug extensions
+    lx_bool_t has_debug_extension = lx_false;
+    static lx_char_t const* debug_extensions[] = {VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
+    if (lx_vk_extensions_check(debug_extensions, lx_arrayn(debug_extensions))) {
+        lx_vk_extensions_add(debug_extensions, lx_arrayn(debug_extensions));
+        has_debug_extension = lx_true;
+    }
 #endif
-    createinfo.ppEnabledLayerNames = lx_vk_validation_layers(&createinfo.enabledLayerCount);
 
+    // enable glfw extensions
     lx_uint32_t glfw_extensions_count = 0;
     lx_char_t const** glfw_extensions = glfwGetRequiredInstanceExtensions(&glfw_extensions_count);
     if (glfw_extensions && glfw_extensions_count) {
         lx_vk_extensions_add(glfw_extensions, glfw_extensions_count);
     }
-#ifdef LX_DEBUG
-    static lx_char_t const* debug_extensions[] = {VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
-    lx_vk_extensions_add(debug_extensions, 1);
-#endif
+    createinfo.ppEnabledLayerNames = lx_vk_validation_layers(&createinfo.enabledLayerCount);
     createinfo.ppEnabledExtensionNames = lx_vk_extensions(&createinfo.enabledExtensionCount);
     if (vkCreateInstance(&createinfo, lx_null, &window->instance) != VK_SUCCESS) {
         lx_trace_e("failed to create vulkan instance!");
         return lx_false;
     }
+
+#ifdef LX_DEBUG
+    // setup debug messenger
+    if (has_debug_extension) {
+        lx_vk_debug_messenger_setup(window->instance, &window->debug_messenger);
+    }
+#endif
     return lx_true;
 }
 #endif
@@ -464,6 +468,12 @@ static lx_void_t lx_window_glfw_exit(lx_window_ref_t self) {
     lx_window_glfw_t* window = (lx_window_glfw_t*)self;
     if (window) {
 #ifdef LX_CONFIG_DEVICE_HAVE_VULKAN
+#   ifdef LX_DEBUG
+        if (window->debug_messenger) {
+            vkDestroyDebugUtilsMessengerEXT(window->instance, window->debug_messenger, lx_null);
+            window->debug_messenger = 0;
+        }
+#   endif
         if (window->instance) {
             vkDestroyInstance(window->instance, lx_null);
             window->instance = lx_null;

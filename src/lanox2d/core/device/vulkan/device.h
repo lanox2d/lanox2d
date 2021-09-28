@@ -38,9 +38,6 @@ typedef struct lx_vulkan_device_t_ {
     lx_window_ref_t             window;
     VkInstance                  instance;
     VkPhysicalDevice            device;
-#ifdef LX_DEBUG
-    VkDebugUtilsMessengerEXT    debug_messenger;
-#endif
 }lx_vulkan_device_t;
 
 #endif
