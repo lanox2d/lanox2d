@@ -265,8 +265,15 @@ LX_VK_API_DEFINE(vkGetPhysicalDeviceWin32PresentationSupportKHR);
  * private implementation
  */
 
+/* we need check the below supports
+ *
+ * - graphics family queue
+ * - VK_KHR_swapchain (device extensions)
+ */
 static lx_inline lx_bool_t lx_vk_device_is_suitable(VkPhysicalDevice device) {
-    return lx_vk_physical_device_find_family_queue(device, VK_QUEUE_GRAPHICS_BIT) >= 0;
+    static lx_char_t const* device_extensions[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+    return lx_vk_physical_device_find_family_queue(device, VK_QUEUE_GRAPHICS_BIT) >= 0 &&
+            lx_vk_device_extensions_check(device, device_extensions, lx_arrayn(device_extensions));
 }
 
 #ifdef LX_DEBUG
