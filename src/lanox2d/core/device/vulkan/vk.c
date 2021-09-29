@@ -44,10 +44,10 @@
  * globals
  */
 
-// extensions
-static lx_char_t**          g_extensions = lx_null;
-static lx_uint32_t          g_extensions_count = 0;
-static lx_uint32_t          g_extensions_maxn = 0;
+// instance extensions
+static lx_char_t**          g_instance_extensions = lx_null;
+static lx_uint32_t          g_instance_extensions_count = 0;
+static lx_uint32_t          g_instance_extensions_maxn = 0;
 
 // validation layers
 static lx_char_t**          g_validation_layers = lx_null;
@@ -497,11 +497,11 @@ lx_bool_t lx_vk_context_init() {
 }
 
 lx_void_t lx_vk_context_exit() {
-    if (g_extensions) {
-        lx_free(g_extensions);
-        g_extensions = lx_null;
-        g_extensions_count = 0;
-        g_extensions_maxn = 0;
+    if (g_instance_extensions) {
+        lx_free(g_instance_extensions);
+        g_instance_extensions = lx_null;
+        g_instance_extensions_count = 0;
+        g_instance_extensions_maxn = 0;
     }
     if (g_validation_layers) {
         lx_free(g_validation_layers);
@@ -591,23 +591,23 @@ VkDevice lx_vk_device_create_withqueue(VkPhysicalDevice physical_device, lx_uint
 }
 
 lx_char_t const** lx_vk_instance_extensions(lx_uint32_t* pcount) {
-    if (pcount) *pcount = g_extensions_count;
-    return (lx_char_t const**)g_extensions;
+    if (pcount) *pcount = g_instance_extensions_count;
+    return (lx_char_t const**)g_instance_extensions;
 }
 
 lx_void_t lx_vk_instance_extensions_add(lx_char_t const** extensions, lx_uint32_t count) {
     if (extensions && count) {
-        lx_uint32_t extensions_count = g_extensions_count + count;
-        if (!g_extensions) {
-            g_extensions_maxn = extensions_count + 16;
-            g_extensions = lx_nalloc0_type(g_extensions_maxn, lx_char_t*);
-        } else if (extensions_count > g_extensions_maxn) {
-            g_extensions_maxn = extensions_count + 16;
-            g_extensions = (lx_char_t**)lx_ralloc(g_extensions, g_extensions_maxn * sizeof(lx_char_t*));
+        lx_uint32_t extensions_count = g_instance_extensions_count + count;
+        if (!g_instance_extensions) {
+            g_instance_extensions_maxn = extensions_count + 16;
+            g_instance_extensions = lx_nalloc0_type(g_instance_extensions_maxn, lx_char_t*);
+        } else if (extensions_count > g_instance_extensions_maxn) {
+            g_instance_extensions_maxn = extensions_count + 16;
+            g_instance_extensions = (lx_char_t**)lx_ralloc(g_instance_extensions, g_instance_extensions_maxn * sizeof(lx_char_t*));
         }
-        if (g_extensions) {
-            lx_memcpy(g_extensions + g_extensions_count, extensions, count * sizeof(lx_char_t*));
-            g_extensions_count = extensions_count;
+        if (g_instance_extensions) {
+            lx_memcpy(g_instance_extensions + g_instance_extensions_count, extensions, count * sizeof(lx_char_t*));
+            g_instance_extensions_count = extensions_count;
         }
     }
 }
