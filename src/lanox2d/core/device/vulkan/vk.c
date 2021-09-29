@@ -532,7 +532,7 @@ lx_void_t lx_vk_context_exit() {
 
 }
 
-VkPhysicalDevice lx_vk_device_select(VkInstance instance) {
+VkPhysicalDevice lx_vk_physical_device_select(VkInstance instance) {
 
     // get device count
     lx_uint32_t device_count = 0;

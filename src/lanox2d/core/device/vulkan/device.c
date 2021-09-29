@@ -84,9 +84,9 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
         device->base.exit         = lx_device_vulkan_exit;
         device->instance          = (VkInstance)devdata;
 
-        // select vulkan device
-        device->device = lx_vk_device_select(device->instance);
-        if (!device->device) {
+        // select vulkan physical device
+        device->physical_device = lx_vk_physical_device_select(device->instance);
+        if (!device->physical_device) {
             lx_trace_e("failed to find a suitable GPU!");
             break;
         }
