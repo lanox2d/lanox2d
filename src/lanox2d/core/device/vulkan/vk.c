@@ -288,15 +288,15 @@ static lx_bool_t lx_vk_device_is_suitable(VkPhysicalDevice device) {
 static VKAPI_ATTR VkBool32 VKAPI_CALL lx_vk_debug_utils_callback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
     VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
     if (pCallbackData && pCallbackData->pMessage) {
-        lx_trace_e("validation layer: %s", pCallbackData->pMessage);
+        lx_trace_i("[vk]: %s", pCallbackData->pMessage);
     }
     return VK_FALSE;
 }
 
-static VKAPI_ATTR VkBool32 VKAPI_CALL lx_vk_debug_report_callback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType, lx_uint64_t object,
-    size_t location, lx_int32_t messageCode, lx_char_t const* pLayerPrefix, lx_char_t const* pMessage, lx_pointer_t pUserData) {
+static VKAPI_ATTR VkBool32 VKAPI_CALL lx_vk_debug_report_callback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType, uint64_t object,
+    size_t location, int32_t messageCode, lx_char_t const* pLayerPrefix, lx_char_t const* pMessage, lx_pointer_t pUserData) {
     if (pMessage) {
-        lx_trace_e("validation layer: %s", pMessage);
+        lx_trace_i("[vk]: %s", pMessage);
     }
     return VK_TRUE;
 }
@@ -673,6 +673,7 @@ lx_bool_t lx_vk_validation_layers_check(lx_char_t const** layers, lx_uint32_t co
 lx_void_t lx_vk_debug_messenger_setup(VkInstance instance, VkDebugUtilsMessengerEXT* pdebug_messenger) {
     PFN_vkCreateDebugUtilsMessengerEXT pvkCreateDebugUtilsMessengerEXT = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
     if (pvkCreateDebugUtilsMessengerEXT) {
+        lx_trace_d("[vk]: setup debug messenger");
         VkDebugUtilsMessengerCreateInfoEXT createinfo = {};
         createinfo.sType           = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
         createinfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
@@ -694,6 +695,7 @@ lx_void_t lx_vk_debug_messenger_cancel(VkInstance instance, VkDebugUtilsMessenge
 lx_void_t lx_vk_debug_report_setup(VkInstance instance, VkDebugReportCallbackEXT* pdebug_report_cb) {
     PFN_vkCreateDebugReportCallbackEXT pvkCreateDebugReportCallbackEXT = (PFN_vkCreateDebugReportCallbackEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugReportCallbackEXT");
     if (pvkCreateDebugReportCallbackEXT) {
+        lx_trace_d("[vk]: setup debug report");
         VkDebugReportCallbackCreateInfoEXT createinfo = {};
         createinfo.sType       = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
         createinfo.flags       = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;

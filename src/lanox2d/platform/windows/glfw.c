@@ -45,6 +45,7 @@ typedef struct lx_window_glfw_t_ {
 #ifdef LX_CONFIG_DEVICE_HAVE_VULKAN
     VkInstance                  instance;
 #   ifdef LX_DEBUG
+    VkDebugReportCallbackEXT    debug_report_cb;
     VkDebugUtilsMessengerEXT    debug_messenger;
 #   endif
 #endif
@@ -268,12 +269,20 @@ static lx_bool_t lx_window_glfw_init_vulkan(lx_window_glfw_t* window) {
         lx_vk_validation_layers_add(validation_layers, lx_arrayn(validation_layers));
     }
 
-    // enable debug extensions
-    lx_bool_t has_debug_extension = lx_false;
-    static lx_char_t const* debug_extensions[] = {VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
-    if (lx_vk_extensions_check(debug_extensions, lx_arrayn(debug_extensions))) {
-        lx_vk_extensions_add(debug_extensions, lx_arrayn(debug_extensions));
-        has_debug_extension = lx_true;
+    // enable debug utils extension
+    lx_bool_t has_debug_utils_extension = lx_false;
+    static lx_char_t const* debug_utils_extensions[] = {VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
+    if (lx_vk_extensions_check(debug_utils_extensions, lx_arrayn(debug_utils_extensions))) {
+        lx_vk_extensions_add(debug_utils_extensions, lx_arrayn(debug_utils_extensions));
+        has_debug_utils_extension = lx_true;
+    }
+
+    // enable debug report extension
+    lx_bool_t has_debug_report_extension = lx_false;
+    static lx_char_t const* debug_report_extensions[] = {VK_EXT_DEBUG_REPORT_EXTENSION_NAME};
+    if (lx_vk_extensions_check(debug_report_extensions, lx_arrayn(debug_report_extensions))) {
+        lx_vk_extensions_add(debug_report_extensions, lx_arrayn(debug_report_extensions));
+        has_debug_report_extension = lx_true;
     }
 #endif
 
@@ -291,9 +300,11 @@ static lx_bool_t lx_window_glfw_init_vulkan(lx_window_glfw_t* window) {
     }
 
 #ifdef LX_DEBUG
-    // setup debug messenger
-    if (has_debug_extension) {
+    // setup debug callback
+    if (has_debug_utils_extension) {
         lx_vk_debug_messenger_setup(window->instance, &window->debug_messenger);
+    } else if (has_debug_report_extension) {
+        lx_vk_debug_report_setup(window->instance, &window->debug_report_cb);
     }
 #endif
     return lx_true;
