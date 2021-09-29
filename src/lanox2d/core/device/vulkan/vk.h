@@ -105,7 +105,7 @@ lx_char_t const**               lx_vk_instance_extensions(lx_uint32_t* pcount);
  */
 lx_void_t                       lx_vk_instance_extensions_add(lx_char_t const** extensions, lx_uint32_t count);
 
-/* check the support extensions
+/* check the support instance extensions
  *
  * @param extensions            the checked extensions
  * @param count                 the extensions count
@@ -113,6 +113,32 @@ lx_void_t                       lx_vk_instance_extensions_add(lx_char_t const** 
  * @return                      lx_true or lx_false
  */
 lx_bool_t                       lx_vk_instance_extensions_check(lx_char_t const** extensions, lx_uint32_t count);
+
+/* get the enabled device extensions
+ *
+ * @param pcount                the extensions count pointer
+ *
+ * @return                      the enabled extensions
+ */
+lx_char_t const**               lx_vk_device_extensions(lx_uint32_t* pcount);
+
+/* add the enabled device extensions
+ *
+ * @param extensions            the enabled extensions
+ * @param count                 the extensions count
+ */
+lx_void_t                       lx_vk_device_extensions_add(lx_char_t const** extensions, lx_uint32_t count);
+
+/* check the support device extensions
+ *
+ * @param device                the physical device
+ * @param extensions            the checked extensions
+ * @param count                 the extensions count
+ *
+ * @return                      lx_true or lx_false
+ */
+lx_bool_t                       lx_vk_device_extensions_check(VkPhysicalDevice device, lx_char_t const** extensions, lx_uint32_t count);
+
 
 /* get the enabled validation layers
  *

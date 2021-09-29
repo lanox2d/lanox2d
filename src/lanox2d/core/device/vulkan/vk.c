@@ -49,6 +49,11 @@ static lx_char_t**          g_instance_extensions = lx_null;
 static lx_uint32_t          g_instance_extensions_count = 0;
 static lx_uint32_t          g_instance_extensions_maxn = 0;
 
+// device extensions
+static lx_char_t**          g_device_extensions = lx_null;
+static lx_uint32_t          g_device_extensions_count = 0;
+static lx_uint32_t          g_device_extensions_maxn = 0;
+
 // validation layers
 static lx_char_t**          g_validation_layers = lx_null;
 static lx_uint32_t          g_validation_layers_count = 0;
@@ -624,6 +629,62 @@ lx_bool_t lx_vk_instance_extensions_check(lx_char_t const** extensions, lx_uint3
     VkExtensionProperties* available_extensions = lx_nalloc0_type(extension_count, VkExtensionProperties);
     if (available_extensions) {
         vkEnumerateInstanceExtensionProperties(lx_null, &extension_count, available_extensions);
+        lx_uint32_t i, j;
+        lx_bool_t found = lx_false;
+        for (i = 0; i < count; i++) {
+            lx_char_t const* extensionname = extensions[i];
+            if (extensionname) {
+                for (j = 0; j < extension_count; j++) {
+                    VkExtensionProperties* extension_properties = &available_extensions[j];
+                    if (lx_strcmp(extensionname, extension_properties->extensionName) == 0) {
+                        found = lx_true;
+                        break;
+                    }
+                }
+            }
+            if (!found) {
+                return lx_false;
+            }
+        }
+        lx_free(available_extensions);
+    }
+    return lx_true;
+}
+
+lx_char_t const** lx_vk_device_extensions(lx_uint32_t* pcount) {
+    if (pcount) *pcount = g_device_extensions_count;
+    return (lx_char_t const**)g_device_extensions;
+}
+
+lx_void_t lx_vk_device_extensions_add(lx_char_t const** extensions, lx_uint32_t count) {
+    if (extensions && count) {
+        lx_uint32_t extensions_count = g_device_extensions_count + count;
+        if (!g_device_extensions) {
+            g_device_extensions_maxn = extensions_count + 16;
+            g_device_extensions = lx_nalloc0_type(g_device_extensions_maxn, lx_char_t*);
+        } else if (extensions_count > g_device_extensions_maxn) {
+            g_device_extensions_maxn = extensions_count + 16;
+            g_device_extensions = (lx_char_t**)lx_ralloc(g_device_extensions, g_device_extensions_maxn * sizeof(lx_char_t*));
+        }
+        if (g_device_extensions) {
+            lx_memcpy(g_device_extensions + g_device_extensions_count, extensions, count * sizeof(lx_char_t*));
+            g_device_extensions_count = extensions_count;
+        }
+    }
+}
+
+lx_bool_t lx_vk_device_extensions_check(VkPhysicalDevice device, lx_char_t const** extensions, lx_uint32_t count) {
+    lx_assert_and_check_return_val(device && extensions && count, lx_false);
+
+    // get extension count
+    lx_uint32_t extension_count;
+    vkEnumerateDeviceExtensionProperties(device, lx_null, &extension_count, lx_null);
+    lx_check_return_val(extension_count, lx_false);
+
+    // check extension
+    VkExtensionProperties* available_extensions = lx_nalloc0_type(extension_count, VkExtensionProperties);
+    if (available_extensions) {
+        vkEnumerateDeviceExtensionProperties(device, lx_null, &extension_count, available_extensions);
         lx_uint32_t i, j;
         lx_bool_t found = lx_false;
         for (i = 0; i < count; i++) {
