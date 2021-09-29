@@ -37,6 +37,7 @@ typedef struct lx_vulkan_device_t_ {
     lx_device_t                 base;
     lx_window_ref_t             window;
     VkInstance                  instance;
+    VkQueue                     queue;
     VkDevice                    device;
     VkPhysicalDevice            physical_device;
 }lx_vulkan_device_t;

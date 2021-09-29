@@ -259,36 +259,16 @@ LX_VK_API_DEFINE(vkGetPhysicalDeviceWin32PresentationSupportKHR);
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
-static lx_bool_t lx_vk_device_is_suitable(VkPhysicalDevice device) {
 
-    // get queue family count
-    lx_uint32_t queuefamily_count = 0;
-    vkGetPhysicalDeviceQueueFamilyProperties(device, &queuefamily_count, lx_null);
-    lx_assert_and_check_return_val(queuefamily_count, lx_false);
-
-    // has suitable queue family?
-    lx_bool_t found = lx_false;
-    VkQueueFamilyProperties* queuefamilies = lx_nalloc0_type(queuefamily_count, VkQueueFamilyProperties);
-    vkGetPhysicalDeviceQueueFamilyProperties(device, &queuefamily_count, queuefamilies);
-    if (queuefamilies) {
-        lx_uint32_t i;
-        for (i = 0; i < queuefamily_count; i++) {
-            VkQueueFamilyProperties* queuefamily = &queuefamilies[i];
-            if (queuefamily->queueCount > 0 && queuefamily->queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-                found = lx_true;
-                break;
-            }
-        }
-        lx_free(queuefamilies);
-    }
-    return found;
+static lx_inline lx_bool_t lx_vk_device_is_suitable(VkPhysicalDevice device) {
+    return lx_vk_physical_device_find_family_queue(device, VK_QUEUE_GRAPHICS_BIT) >= 0;
 }
 
 #ifdef LX_DEBUG
 static VKAPI_ATTR VkBool32 VKAPI_CALL lx_vk_debug_utils_callback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
     VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
     if (pCallbackData && pCallbackData->pMessage) {
-        lx_trace_i("[vk]: %s", pCallbackData->pMessage);
+        lx_trace_i("[debug]: %s", pCallbackData->pMessage);
     }
     return VK_FALSE;
 }
@@ -296,7 +276,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL lx_vk_debug_utils_callback(VkDebugUtilsMes
 static VKAPI_ATTR VkBool32 VKAPI_CALL lx_vk_debug_report_callback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType, uint64_t object,
     size_t location, int32_t messageCode, lx_char_t const* pLayerPrefix, lx_char_t const* pMessage, lx_pointer_t pUserData) {
     if (pMessage) {
-        lx_trace_i("[vk]: %s", pMessage);
+        lx_trace_i("[debug]: %s", pMessage);
     }
     return VK_TRUE;
 }
@@ -557,6 +537,59 @@ VkPhysicalDevice lx_vk_physical_device_select(VkInstance instance) {
     return selected_device;
 }
 
+lx_int32_t lx_vk_physical_device_find_family_queue(VkPhysicalDevice device, VkQueueFlags queue_flags) {
+
+    // get queue family count
+    lx_uint32_t queuefamily_count = 0;
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queuefamily_count, lx_null);
+    lx_assert_and_check_return_val(queuefamily_count, lx_false);
+
+    // has suitable queue family?
+    lx_int32_t found = -1;
+    VkQueueFamilyProperties* queuefamilies = lx_nalloc0_type(queuefamily_count, VkQueueFamilyProperties);
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queuefamily_count, queuefamilies);
+    if (queuefamilies) {
+        lx_int32_t i;
+        for (i = 0; i < queuefamily_count; i++) {
+            VkQueueFamilyProperties* queuefamily = &queuefamilies[i];
+            if (queuefamily->queueCount > 0 && queuefamily->queueFlags & queue_flags) {
+                found = i;
+                break;
+            }
+        }
+        lx_free(queuefamilies);
+    }
+    return found;
+}
+
+VkDevice lx_vk_device_create_withqueue(VkPhysicalDevice physical_device, lx_uint32_t family_index, VkQueue* pqueue) {
+    lx_assert_and_check_return_val(physical_device, lx_null);
+
+    float queue_priority = 1.0f;
+    VkDeviceQueueCreateInfo queue_createinfo = {};
+    queue_createinfo.sType            = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    queue_createinfo.queueFamilyIndex = family_index;
+    queue_createinfo.queueCount       = 1;
+    queue_createinfo.pQueuePriorities = &queue_priority;
+
+    VkDeviceCreateInfo createinfo = {};
+    VkPhysicalDeviceFeatures device_features = {};
+    createinfo.sType                 = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+    createinfo.pQueueCreateInfos     = &queue_createinfo;
+    createinfo.queueCreateInfoCount  = 1;
+    createinfo.pEnabledFeatures      = &device_features;
+    createinfo.enabledExtensionCount = 0;
+    createinfo.ppEnabledLayerNames   = lx_vk_validation_layers(&createinfo.enabledLayerCount);
+
+    VkDevice device = lx_null;
+    if (vkCreateDevice(physical_device, &createinfo, lx_null, &device) == VK_SUCCESS) {
+        if (pqueue) {
+            vkGetDeviceQueue(device, family_index, 0, pqueue);
+        }
+    }
+    return device;
+}
+
 lx_char_t const** lx_vk_extensions(lx_uint32_t* pcount) {
     if (pcount) *pcount = g_extensions_count;
     return (lx_char_t const**)g_extensions;
@@ -673,7 +706,7 @@ lx_bool_t lx_vk_validation_layers_check(lx_char_t const** layers, lx_uint32_t co
 lx_void_t lx_vk_debug_messenger_setup(VkInstance instance, VkDebugUtilsMessengerEXT* pdebug_messenger) {
     PFN_vkCreateDebugUtilsMessengerEXT pvkCreateDebugUtilsMessengerEXT = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
     if (pvkCreateDebugUtilsMessengerEXT) {
-        lx_trace_d("[vk]: setup debug messenger");
+        lx_trace_d("setup debug messenger");
         VkDebugUtilsMessengerCreateInfoEXT createinfo = {};
         createinfo.sType           = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
         createinfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
@@ -695,7 +728,7 @@ lx_void_t lx_vk_debug_messenger_cancel(VkInstance instance, VkDebugUtilsMessenge
 lx_void_t lx_vk_debug_report_setup(VkInstance instance, VkDebugReportCallbackEXT* pdebug_report_cb) {
     PFN_vkCreateDebugReportCallbackEXT pvkCreateDebugReportCallbackEXT = (PFN_vkCreateDebugReportCallbackEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugReportCallbackEXT");
     if (pvkCreateDebugReportCallbackEXT) {
-        lx_trace_d("[vk]: setup debug report");
+        lx_trace_d("setup debug report");
         VkDebugReportCallbackCreateInfoEXT createinfo = {};
         createinfo.sType       = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
         createinfo.flags       = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;

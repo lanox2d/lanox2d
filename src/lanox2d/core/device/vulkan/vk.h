@@ -71,6 +71,25 @@ lx_void_t                       lx_vk_context_exit(lx_noarg_t);
  */
 VkPhysicalDevice                lx_vk_physical_device_select(VkInstance instance);
 
+/* find family queue from the physical device
+ *
+ * @param device                the physical device
+ * @param queue_flags           the queue flags
+ *
+ * @return                      the family queue index, -1: not found
+ */
+lx_int32_t                      lx_vk_physical_device_find_family_queue(VkPhysicalDevice device, VkQueueFlags queue_flags);
+
+/* create logical device with queue
+ *
+ * @param physical_device       the vulkan physical device
+ * @param family_index          the queue family index
+ * @param pqueue                the queue pointer
+ *
+ * @return                      the logical device
+ */
+VkDevice                        lx_vk_device_create_withqueue(VkPhysicalDevice physical_device, lx_uint32_t family_index, VkQueue* pqueue);
+
 /* get the enabled extensions
  *
  * @param pcount                the extensions count pointer
