@@ -285,11 +285,20 @@ static lx_bool_t lx_vk_device_is_suitable(VkPhysicalDevice device) {
 }
 
 #ifdef LX_DEBUG
-static VKAPI_ATTR VkBool32 VKAPI_CALL lx_vk_debug_callback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
+static VKAPI_ATTR VkBool32 VKAPI_CALL lx_vk_debug_utils_callback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+    VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
     if (pCallbackData && pCallbackData->pMessage) {
         lx_trace_e("validation layer: %s", pCallbackData->pMessage);
     }
     return VK_FALSE;
+}
+
+static VKAPI_ATTR VkBool32 VKAPI_CALL lx_vk_debug_report_callback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType, lx_uint64_t object,
+    size_t location, lx_int32_t messageCode, lx_char_t const* pLayerPrefix, lx_char_t const* pMessage, lx_pointer_t pUserData) {
+    if (pMessage) {
+        lx_trace_e("validation layer: %s", pMessage);
+    }
+    return VK_TRUE;
 }
 #endif
 
@@ -668,7 +677,7 @@ lx_void_t lx_vk_debug_messenger_setup(VkInstance instance, VkDebugUtilsMessenger
         createinfo.sType           = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
         createinfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
         createinfo.messageType     = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-        createinfo.pfnUserCallback = lx_vk_debug_callback;
+        createinfo.pfnUserCallback = lx_vk_debug_utils_callback;
         if (pvkCreateDebugUtilsMessengerEXT(instance, &createinfo, lx_null, pdebug_messenger) != VK_SUCCESS) {
             lx_trace_e("failed to setup debug messenger!");
         }
@@ -679,6 +688,27 @@ lx_void_t lx_vk_debug_messenger_cancel(VkInstance instance, VkDebugUtilsMessenge
     PFN_vkDestroyDebugUtilsMessengerEXT pvkDestroyDebugUtilsMessengerEXT = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
     if (pvkDestroyDebugUtilsMessengerEXT) {
         pvkDestroyDebugUtilsMessengerEXT(instance, debug_messenger, lx_null);
+    }
+}
+
+lx_void_t lx_vk_debug_report_setup(VkInstance instance, VkDebugReportCallbackEXT* pdebug_report_cb) {
+    PFN_vkCreateDebugReportCallbackEXT pvkCreateDebugReportCallbackEXT = (PFN_vkCreateDebugReportCallbackEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugReportCallbackEXT");
+    if (pvkCreateDebugReportCallbackEXT) {
+        VkDebugReportCallbackCreateInfoEXT createinfo = {};
+        createinfo.sType       = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
+        createinfo.flags       = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
+        createinfo.pfnCallback = lx_vk_debug_report_callback;
+        createinfo.pUserData   = lx_null;
+        if (pvkCreateDebugReportCallbackEXT(instance, &createinfo, lx_null, pdebug_report_cb) != VK_SUCCESS) {
+            lx_trace_e("failed to setup debug report callback!");
+        }
+    }
+}
+
+lx_void_t lx_vk_debug_report_cancel(VkInstance instance, VkDebugReportCallbackEXT debug_report_cb) {
+    PFN_vkDestroyDebugReportCallbackEXT pvkDestroyDebugReportCallbackEXT = (PFN_vkDestroyDebugReportCallbackEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugReportCallbackEXT");
+    if (pvkDestroyDebugReportCallbackEXT) {
+        pvkDestroyDebugReportCallbackEXT(instance, debug_report_cb, lx_null);
     }
 }
 #endif

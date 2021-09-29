@@ -41,6 +41,7 @@ typedef struct lx_window_android_t_ {
     VkInstance                  instance;
     VkSurfaceKHR                surface;
 #   ifdef LX_DEBUG
+    VkDebugReportCallbackEXT    debug_report_cb;
     VkDebugUtilsMessengerEXT    debug_messenger;
 #   endif
 #endif
@@ -80,6 +81,9 @@ static lx_void_t lx_window_android_exit(lx_window_ref_t self) {
         if (window->debug_messenger) {
             lx_vk_debug_messenger_cancel(window->instance, window->debug_messenger);
             window->debug_messenger = 0;
+        } else if (window->debug_report_cb) {
+            lx_vk_debug_report_cancel(window->instance, window->debug_report_cb);
+            window->debug_report_cb = 0;
         }
 #   endif
         if (window->surface) {
@@ -180,9 +184,11 @@ static lx_bool_t lx_window_android_init_vulkan(lx_window_android_t* window, ANat
         }
 
 #ifdef LX_DEBUG
-        // setup debug messenger
+        // setup debug callback
         if (has_debug_utils_extension) {
             lx_vk_debug_messenger_setup(window->instance, &window->debug_messenger);
+        } else if (has_debug_report_extension) {
+            lx_vk_debug_report_setup(window->instance, &window->debug_report_cb);
         }
 #endif
 
