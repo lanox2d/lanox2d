@@ -152,21 +152,21 @@ static lx_bool_t lx_window_android_init_vulkan(lx_window_android_t* window, ANat
         // enable debug utils extension
         lx_bool_t has_debug_utils_extension = lx_false;
         static lx_char_t const* debug_utils_extensions[] = {VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
-        if (lx_vk_extensions_check(debug_utils_extensions, lx_arrayn(debug_utils_extensions))) {
-            lx_vk_extensions_add(debug_utils_extensions, lx_arrayn(debug_utils_extensions));
+        if (lx_vk_instance_extensions_check(debug_utils_extensions, lx_arrayn(debug_utils_extensions))) {
+            lx_vk_instance_extensions_add(debug_utils_extensions, lx_arrayn(debug_utils_extensions));
             has_debug_utils_extension = lx_true;
         }
 
         // enable debug report extension
         lx_bool_t has_debug_report_extension = lx_false;
         static lx_char_t const* debug_report_extensions[] = {VK_EXT_DEBUG_REPORT_EXTENSION_NAME};
-        if (lx_vk_extensions_check(debug_report_extensions, lx_arrayn(debug_report_extensions))) {
-            lx_vk_extensions_add(debug_report_extensions, lx_arrayn(debug_report_extensions));
+        if (lx_vk_instance_extensions_check(debug_report_extensions, lx_arrayn(debug_report_extensions))) {
+            lx_vk_instance_extensions_add(debug_report_extensions, lx_arrayn(debug_report_extensions));
             has_debug_report_extension = lx_true;
         }
 #endif
         createinfo.ppEnabledLayerNames     = lx_vk_validation_layers(&createinfo.enabledLayerCount);
-        createinfo.ppEnabledExtensionNames = lx_vk_extensions(&createinfo.enabledExtensionCount);
+        createinfo.ppEnabledExtensionNames = lx_vk_instance_extensions(&createinfo.enabledExtensionCount);
         if (vkCreateInstance(&createinfo, lx_null, &window->instance) != VK_SUCCESS) {
             lx_trace_e("failed to create vulkan instance!");
             break;

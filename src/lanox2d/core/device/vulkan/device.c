@@ -57,7 +57,7 @@ static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
     lx_vulkan_device_t* device = (lx_vulkan_device_t*)self;
     if (device) {
         if (device->device) {
-            vkDestroyDevice(device->device);
+            vkDestroyDevice(device->device, lx_null);
             device->device = lx_null;
         }
         lx_free(device);

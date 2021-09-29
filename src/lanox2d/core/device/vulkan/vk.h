@@ -90,20 +90,20 @@ lx_int32_t                      lx_vk_physical_device_find_family_queue(VkPhysic
  */
 VkDevice                        lx_vk_device_create_withqueue(VkPhysicalDevice physical_device, lx_uint32_t family_index, VkQueue* pqueue);
 
-/* get the enabled extensions
+/* get the enabled instance extensions
  *
  * @param pcount                the extensions count pointer
  *
  * @return                      the enabled extensions
  */
-lx_char_t const**               lx_vk_extensions(lx_uint32_t* pcount);
+lx_char_t const**               lx_vk_instance_extensions(lx_uint32_t* pcount);
 
-/* add the enabled extensions
+/* add the enabled instance extensions
  *
  * @param extensions            the enabled extensions
  * @param count                 the extensions count
  */
-lx_void_t                       lx_vk_extensions_add(lx_char_t const** extensions, lx_uint32_t count);
+lx_void_t                       lx_vk_instance_extensions_add(lx_char_t const** extensions, lx_uint32_t count);
 
 /* check the support extensions
  *
@@ -112,7 +112,7 @@ lx_void_t                       lx_vk_extensions_add(lx_char_t const** extension
  *
  * @return                      lx_true or lx_false
  */
-lx_bool_t                       lx_vk_extensions_check(lx_char_t const** extensions, lx_uint32_t count);
+lx_bool_t                       lx_vk_instance_extensions_check(lx_char_t const** extensions, lx_uint32_t count);
 
 /* get the enabled validation layers
  *

@@ -590,12 +590,12 @@ VkDevice lx_vk_device_create_withqueue(VkPhysicalDevice physical_device, lx_uint
     return device;
 }
 
-lx_char_t const** lx_vk_extensions(lx_uint32_t* pcount) {
+lx_char_t const** lx_vk_instance_extensions(lx_uint32_t* pcount) {
     if (pcount) *pcount = g_extensions_count;
     return (lx_char_t const**)g_extensions;
 }
 
-lx_void_t lx_vk_extensions_add(lx_char_t const** extensions, lx_uint32_t count) {
+lx_void_t lx_vk_instance_extensions_add(lx_char_t const** extensions, lx_uint32_t count) {
     if (extensions && count) {
         lx_uint32_t extensions_count = g_extensions_count + count;
         if (!g_extensions) {
@@ -612,7 +612,7 @@ lx_void_t lx_vk_extensions_add(lx_char_t const** extensions, lx_uint32_t count) 
     }
 }
 
-lx_bool_t lx_vk_extensions_check(lx_char_t const** extensions, lx_uint32_t count) {
+lx_bool_t lx_vk_instance_extensions_check(lx_char_t const** extensions, lx_uint32_t count) {
     lx_assert_and_check_return_val(extensions && count, lx_false);
 
     // get extension count
