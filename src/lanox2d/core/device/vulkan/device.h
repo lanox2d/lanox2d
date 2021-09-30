@@ -40,6 +40,7 @@ typedef struct lx_vulkan_device_t_ {
     VkQueue                     queue;
     VkDevice                    device;
     VkPhysicalDevice            physical_device;
+    lx_vk_swapchain_t           swapchain;
 }lx_vulkan_device_t;
 
 #endif

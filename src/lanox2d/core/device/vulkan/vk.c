@@ -574,7 +574,7 @@ lx_int32_t lx_vk_physical_device_find_family_queue(VkPhysicalDevice device, VkQu
     return found;
 }
 
-VkDevice lx_vk_device_create_graphics(VkPhysicalDevice physical_device, VkQueue* pqueue) {
+VkDevice lx_vk_device_init_gpu_device(VkPhysicalDevice physical_device, VkQueue* pqueue) {
     lx_assert_and_check_return_val(physical_device, lx_null);
 
     // get graphics family queue index
@@ -777,6 +777,13 @@ lx_bool_t lx_vk_validation_layers_check(lx_char_t const** layers, lx_uint32_t co
         lx_free(available_layers);
     }
     return lx_true;
+}
+
+lx_bool_t lx_vk_swapchain_init(lx_vk_swapchain_t* swapchain) {
+    return lx_true;
+}
+
+lx_void_t lx_vk_swapchain_exit(lx_vk_swapchain_t* swapchain) {
 }
 
 #ifdef LX_DEBUG

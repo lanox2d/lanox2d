@@ -57,6 +57,10 @@ static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
     lx_vulkan_device_t* device = (lx_vulkan_device_t*)self;
     if (device) {
         if (device->device) {
+            // destroy swapchain
+            lx_vk_swapchain_exit(&device->swapchain);
+
+            // destroy device
             vkDestroyDevice(device->device, lx_null);
             device->device = lx_null;
         }
@@ -95,9 +99,18 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
             break;
         }
 
-        // create graphics device and queue
-        device->device = lx_vk_device_create_graphics(device->physical_device, &device->queue);
-        lx_assert_and_check_break(device->device && device->queue);
+        // init gpu device and queue
+        device->device = lx_vk_device_init_gpu_device(device->physical_device, &device->queue);
+        if (!device->device || !device->queue) {
+            lx_trace_e("failed to init gpu device!");
+            break;
+        }
+
+        // init swapchain
+        if (lx_vk_swapchain_init(&device->swapchain)) {
+            lx_trace_e("failed to init swapchain!");
+            break;
+        }
 
         // ok
         ok = lx_true;
