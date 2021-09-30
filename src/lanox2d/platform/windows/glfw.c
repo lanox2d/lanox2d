@@ -44,6 +44,7 @@ typedef struct lx_window_glfw_t_ {
     lx_int_t                    fps_delay;
 #ifdef LX_CONFIG_DEVICE_HAVE_VULKAN
     VkInstance                  instance;
+    VkSurfaceKHR                surface;
 #   ifdef LX_DEBUG
     VkDebugReportCallbackEXT    debug_report_cb;
     VkDebugUtilsMessengerEXT    debug_messenger;
@@ -307,6 +308,12 @@ static lx_bool_t lx_window_glfw_init_vulkan(lx_window_glfw_t* window) {
         lx_vk_debug_report_setup(window->instance, &window->debug_report_cb);
     }
 #endif
+
+    // create surface
+    if (glfwCreateWindowSurface(window->instance, window->window, lx_null, &window->surface) != VK_SUCCESS) {
+        lx_trace_e("failed to create vulkan surface!");
+        return lx_false;
+    }
     return lx_true;
 }
 #endif
@@ -381,7 +388,7 @@ static lx_bool_t lx_window_glfw_start(lx_window_glfw_t* window) {
         if (!lx_window_glfw_init_vulkan(window)) {
             break;
         }
-        window->base.device = lx_device_init_from_vulkan(window->base.width, window->base.height, window->instance);
+        window->base.device = lx_device_init_from_vulkan(window->base.width, window->base.height, window->instance, window->surface);
 #elif defined(LX_CONFIG_DEVICE_HAVE_SKIA)
         window->base.device = lx_device_init_from_skia(window->base.width, window->base.height, lx_null);
 #endif
@@ -485,6 +492,10 @@ static lx_void_t lx_window_glfw_exit(lx_window_ref_t self) {
             window->debug_messenger = 0;
         }
 #   endif
+        if (window->surface) {
+            vkDestroySurfaceKHR(window->instance, window->surface, lx_null);
+            window->surface = lx_null;
+        }
         if (window->instance) {
             vkDestroyInstance(window->instance, lx_null);
             window->instance = lx_null;

@@ -47,11 +47,12 @@ lx_device_ref_t         lx_device_init_from_bitmap(lx_bitmap_ref_t bitmap);
  *
  * @param width         the window width
  * @param height        the window height
- * @param devdata       the device data (vkinstance)
+ * @param vkinstance    the vulkan instance
+ * @param vksurface     the vulkan surface
  *
  * @return              the device
  */
-lx_device_ref_t         lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx_cpointer_t devdata);
+lx_device_ref_t         lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx_cpointer_t vkinstance, lx_cpointer_t vksurface);
 
 /*! init device from opengl
  *

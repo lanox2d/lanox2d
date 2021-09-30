@@ -318,18 +318,18 @@
             },
             version = "3.3.4"
         },
-        ["moltenvk#31fecfc4"] = {
-            repo = {
-                commit = "3eb99e43f695bc86756a537e7b90c445b58042f2",
-                url = "/Users/ruki/projects/personal/xmake-repo/"
-            },
-            version = "1.1.5"
-        },
         ["opengl#31fecfc4"] = {
             repo = {
-                commit = "eda7adee81bac151f87c507030cc0dd8ab299462",
+                commit = "381880a00d99f41f90cd041a09684b4a845713b4",
                 url = "/Users/ruki/projects/personal/xmake-repo/"
             }
+        },
+        ["vulkan-loader#31fecfc4"] = {
+            repo = {
+                commit = "381880a00d99f41f90cd041a09684b4a845713b4",
+                url = "/Users/ruki/projects/personal/xmake-repo/"
+            },
+            version = "1.2.189+1"
         }
     }
 }

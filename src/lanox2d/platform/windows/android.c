@@ -232,7 +232,7 @@ lx_window_ref_t lx_window_init_android(lx_size_t width, lx_size_t height, lx_cha
         if (!lx_window_android_init_vulkan(window, (ANativeWindow*)devdata)) {
             break;
         }
-        window->base.device = lx_device_init_from_vulkan(width, height, window->instance);
+        window->base.device = lx_device_init_from_vulkan(width, height, window->instance, window->surface);
 #endif
         lx_assert_and_check_break(window->base.device);
 

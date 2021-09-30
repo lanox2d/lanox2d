@@ -56,11 +56,11 @@ static lx_void_t lx_device_vulkan_draw_path(lx_device_ref_t self, lx_path_ref_t 
 static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
     lx_vulkan_device_t* device = (lx_vulkan_device_t*)self;
     if (device) {
-        if (device->device) {
-            // destroy swapchain
-            lx_vk_swapchain_exit(&device->swapchain);
+        // destroy swapchain
+        lx_vk_swapchain_exit(&device->swapchain);
 
-            // destroy device
+        // destroy device
+        if (device->device) {
             vkDestroyDevice(device->device, lx_null);
             device->device = lx_null;
         }
@@ -71,8 +71,8 @@ static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx_cpointer_t devdata) {
-    lx_assert_and_check_return_val(width && height && devdata, lx_null);
+lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx_cpointer_t vkinstance, lx_cpointer_t vksurface) {
+    lx_assert_and_check_return_val(width && height && vkinstance && vksurface, lx_null);
 
     lx_bool_t           ok = lx_false;
     lx_vulkan_device_t* device = lx_null;
@@ -90,7 +90,7 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
         device->base.draw_lock    = lx_device_vulkan_draw_lock;
         device->base.draw_commit  = lx_device_vulkan_draw_commit;
         device->base.exit         = lx_device_vulkan_exit;
-        device->instance          = (VkInstance)devdata;
+        device->instance          = (VkInstance)vkinstance;
 
         // select vulkan physical device
         device->physical_device = lx_vk_physical_device_select(device->instance);
@@ -107,7 +107,7 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
         }
 
         // init swapchain
-        if (lx_vk_swapchain_init(&device->swapchain)) {
+        if (!lx_vk_swapchain_init(&device->swapchain)) {
             lx_trace_e("failed to init swapchain!");
             break;
         }

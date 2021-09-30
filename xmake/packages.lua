@@ -14,8 +14,9 @@ if is_config("window", "glfw") then
 end
 
 -- vulkan package
+-- we should use libvulkan instead of MoltenVK on macOS for glfw, @see https://github.com/achirkin/vulkan/issues/24
 if is_config("device", "vulkan") and is_plat("windows", "linux", "macosx") then
-    add_requires(is_plat("macosx") and "moltenvk" or "vulkan-loader", {alias = "vulkan"})
+    add_requires("vulkan-loader", {alias = "vulkan"})
 end
 
 -- skia package
