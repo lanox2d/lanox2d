@@ -574,9 +574,17 @@ lx_int32_t lx_vk_physical_device_find_family_queue(VkPhysicalDevice device, VkQu
     return found;
 }
 
-VkDevice lx_vk_device_create_withqueue(VkPhysicalDevice physical_device, lx_uint32_t family_index, VkQueue* pqueue) {
+VkDevice lx_vk_device_create_graphics(VkPhysicalDevice physical_device, VkQueue* pqueue) {
     lx_assert_and_check_return_val(physical_device, lx_null);
 
+    // get graphics family queue index
+    lx_int32_t family_index = lx_vk_physical_device_find_family_queue(physical_device, VK_QUEUE_GRAPHICS_BIT);
+    lx_assert_and_check_return_val(family_index >= 0, lx_null);
+
+    // init device extensions: VK_KHR_swapchain
+    static lx_char_t const* device_extensions[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+
+    // create device and get graphics queue
     float queue_priority = 1.0f;
     VkDeviceQueueCreateInfo queue_createinfo = {};
     queue_createinfo.sType            = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
@@ -586,12 +594,13 @@ VkDevice lx_vk_device_create_withqueue(VkPhysicalDevice physical_device, lx_uint
 
     VkDeviceCreateInfo createinfo = {};
     VkPhysicalDeviceFeatures device_features = {};
-    createinfo.sType                 = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    createinfo.pQueueCreateInfos     = &queue_createinfo;
-    createinfo.queueCreateInfoCount  = 1;
-    createinfo.pEnabledFeatures      = &device_features;
-    createinfo.enabledExtensionCount = 0;
-    createinfo.ppEnabledLayerNames   = lx_vk_validation_layers(&createinfo.enabledLayerCount);
+    createinfo.sType                   = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+    createinfo.pQueueCreateInfos       = &queue_createinfo;
+    createinfo.queueCreateInfoCount    = 1;
+    createinfo.pEnabledFeatures        = &device_features;
+    createinfo.ppEnabledExtensionNames = device_extensions;
+    createinfo.enabledExtensionCount   = lx_arrayn(device_extensions);
+    createinfo.ppEnabledLayerNames     = lx_vk_validation_layers(&createinfo.enabledLayerCount);
 
     VkDevice device = lx_null;
     if (vkCreateDevice(physical_device, &createinfo, lx_null, &device) == VK_SUCCESS) {

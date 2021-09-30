@@ -149,6 +149,10 @@ static lx_bool_t lx_window_android_init_vulkan(lx_window_android_t* window, ANat
             lx_vk_validation_layers_add(validation_layers, lx_arrayn(validation_layers));
         }
 
+        // enable instance extensions: VK_KHR_surface, VK_KHR_android_surface
+        static lx_char_t const* instance_extensions[] = {VK_KHR_SURFACE_EXTENSION_NAME, VK_KHR_ANDROID_SURFACE_EXTENSION_NAME};
+        lx_vk_instance_extensions_add(instance_extensions, lx_arrayn(instance_extensions));
+
         // enable debug utils extension
         lx_bool_t has_debug_utils_extension = lx_false;
         static lx_char_t const* debug_utils_extensions[] = {VK_EXT_DEBUG_UTILS_EXTENSION_NAME};

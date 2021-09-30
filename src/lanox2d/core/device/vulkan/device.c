@@ -95,12 +95,8 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
             break;
         }
 
-        // get graphics family queue index
-        lx_int32_t family_index = lx_vk_physical_device_find_family_queue(device->physical_device, VK_QUEUE_GRAPHICS_BIT);
-        lx_assert_and_check_break(family_index >= 0);
-
         // create graphics device and queue
-        device->device = lx_vk_device_create_withqueue(device->physical_device, family_index, &device->queue);
+        device->device = lx_vk_device_create_graphics(device->physical_device, &device->queue);
         lx_assert_and_check_break(device->device && device->queue);
 
         // ok

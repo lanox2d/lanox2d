@@ -80,15 +80,14 @@ VkPhysicalDevice                lx_vk_physical_device_select(VkInstance instance
  */
 lx_int32_t                      lx_vk_physical_device_find_family_queue(VkPhysicalDevice device, VkQueueFlags queue_flags);
 
-/* create logical device with queue
+/* create graphics device and queue (logical device)
  *
  * @param physical_device       the vulkan physical device
- * @param family_index          the queue family index
  * @param pqueue                the queue pointer
  *
  * @return                      the logical device
  */
-VkDevice                        lx_vk_device_create_withqueue(VkPhysicalDevice physical_device, lx_uint32_t family_index, VkQueue* pqueue);
+VkDevice                        lx_vk_device_create_graphics(VkPhysicalDevice physical_device, VkQueue* pqueue);
 
 /* get the enabled instance extensions
  *
