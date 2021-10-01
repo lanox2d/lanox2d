@@ -32,12 +32,12 @@
  * types
  */
 
-// the swapchain type
+// the vulkan swapchain type
 typedef struct lx_vulkan_swapchain_t_ {
-    VkSwapchainKHR  swapchain;
-    lx_uint32_t     swapchain_length;
-    VkExtent2D      framesize;
-    VkFormat        format;
+    VkSwapchainKHR              swapchain;
+    lx_uint32_t                 swapchain_length;
+    VkExtent2D                  framesize;
+    VkFormat                    format;
 } lx_vulkan_swapchain_t;
 
 // the vulkan device type
@@ -50,7 +50,8 @@ typedef struct lx_vulkan_device_t_ {
     VkSurfaceKHR                surface;
     VkPhysicalDevice            gpu_device;
     lx_uint32_t                 gpu_familyidx;
-    lx_vulkan_swapchain_t           swapchain;
+    lx_vulkan_swapchain_t       swapchain;
+    VkRenderPass                render_pass;
 }lx_vulkan_device_t;
 
 #endif

@@ -139,12 +139,65 @@ static lx_bool_t lx_device_vulkan_swapchain_init(lx_vulkan_device_t* device) {
 static lx_void_t lx_device_vulkan_swapchain_exit(lx_vulkan_device_t* device) {
     if (device && device->device && device->swapchain.swapchain) {
         vkDestroySwapchainKHR(device->device, device->swapchain.swapchain, lx_null);
+        device->swapchain.swapchain = lx_null;
+    }
+}
+
+static lx_bool_t lx_device_vulkan_render_pass_init(lx_vulkan_device_t* device) {
+    lx_assert_and_check_return_val(device, lx_false);
+
+    VkAttachmentDescription attachment_descriptions = {};
+    attachment_descriptions.format         = device->swapchain.format;
+    attachment_descriptions.samples        = VK_SAMPLE_COUNT_1_BIT;
+    attachment_descriptions.loadOp         = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    attachment_descriptions.storeOp        = VK_ATTACHMENT_STORE_OP_STORE;
+    attachment_descriptions.stencilLoadOp  = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    attachment_descriptions.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    attachment_descriptions.initialLayout  = VK_IMAGE_LAYOUT_UNDEFINED;
+    attachment_descriptions.finalLayout    = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+    VkAttachmentReference colour_reference = {};
+    colour_reference.attachment = 0;
+    colour_reference.layout     = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+    VkSubpassDescription subpass_description = {};
+    subpass_description.flags                   = 0;
+    subpass_description.pipelineBindPoint       = VK_PIPELINE_BIND_POINT_GRAPHICS;
+    subpass_description.inputAttachmentCount    = 0;
+    subpass_description.pInputAttachments       = lx_null;
+    subpass_description.colorAttachmentCount    = 1;
+    subpass_description.pColorAttachments       = &colour_reference;
+    subpass_description.pResolveAttachments     = lx_null;
+    subpass_description.pDepthStencilAttachment = lx_null;
+    subpass_description.preserveAttachmentCount = 0;
+    subpass_description.pPreserveAttachments    = lx_null;
+
+    VkRenderPassCreateInfo render_pass_createinfo = {};
+    render_pass_createinfo.sType           = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+    render_pass_createinfo.pNext           = lx_null;
+    render_pass_createinfo.attachmentCount = 1;
+    render_pass_createinfo.pAttachments    = &attachment_descriptions;
+    render_pass_createinfo.subpassCount    = 1;
+    render_pass_createinfo.pSubpasses      = &subpass_description;
+    render_pass_createinfo.dependencyCount = 0;
+    render_pass_createinfo.pDependencies   = lx_null;
+
+    return vkCreateRenderPass(device->device, &render_pass_createinfo, lx_null, &device->render_pass) == VK_SUCCESS;
+}
+
+static lx_void_t lx_device_vulkan_render_pass_exit(lx_vulkan_device_t* device) {
+    if (device && device->render_pass) {
+        vkDestroyRenderPass(device->device, device->render_pass, lx_null);
+        device->render_pass = lx_null;
     }
 }
 
 static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
     lx_vulkan_device_t* device = (lx_vulkan_device_t*)self;
     if (device) {
+        // destroy render pass
+        lx_device_vulkan_render_pass_exit(device);
+
         // destroy swapchain
         lx_device_vulkan_swapchain_exit(device);
 
@@ -203,6 +256,12 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
         // init swapchain
         if (!lx_device_vulkan_swapchain_init(device)) {
             lx_trace_e("failed to init swapchain!");
+            break;
+        }
+
+        // init render pass
+        if (!lx_device_vulkan_render_pass_init(device)) {
+            lx_trace_e("failed to init render pass!");
             break;
         }
 
