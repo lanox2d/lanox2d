@@ -51,6 +51,7 @@
 // the swapchain type
 typedef struct lx_vk_swapchain_t_ {
     VkSwapchainKHR  swapchain;
+    VkFormat        format;
 } lx_vk_swapchain_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -202,11 +203,17 @@ lx_void_t                       lx_vk_debug_report_cancel(VkInstance instance, V
 
 /* init swapchain
  *
+ * @param swapchain             the swapchain
+ * @param gpu_device            the gpu device
+ * @param surface               the vulkan surface
+ *
  * @return                      lx_true or lx_false
  */
-lx_bool_t                       lx_vk_swapchain_init(lx_vk_swapchain_t* swapchain);
+lx_bool_t                       lx_vk_swapchain_init(lx_vk_swapchain_t* swapchain, VkPhysicalDevice gpu_device, VkSurfaceKHR surface);
 
 /* exit swapchain
+ *
+ * @param swapchain             the swapchain
  */
 lx_void_t                       lx_vk_swapchain_exit(lx_vk_swapchain_t* swapchain);
 

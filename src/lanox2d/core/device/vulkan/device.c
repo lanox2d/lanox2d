@@ -91,23 +91,24 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
         device->base.draw_commit  = lx_device_vulkan_draw_commit;
         device->base.exit         = lx_device_vulkan_exit;
         device->instance          = (VkInstance)vkinstance;
+        device->surface           = (VkSurfaceKHR)vksurface;
 
-        // select vulkan physical device
-        device->physical_device = lx_vk_physical_device_select(device->instance);
-        if (!device->physical_device) {
+        // select gpu device
+        device->gpu_device = lx_vk_physical_device_select(device->instance);
+        if (!device->gpu_device) {
             lx_trace_e("failed to find a suitable GPU!");
             break;
         }
 
-        // init gpu device and queue
-        device->device = lx_vk_device_init_gpu_device(device->physical_device, &device->queue);
+        // init logical device and queue
+        device->device = lx_vk_device_init_gpu_device(device->gpu_device, &device->queue);
         if (!device->device || !device->queue) {
             lx_trace_e("failed to init gpu device!");
             break;
         }
 
         // init swapchain
-        if (!lx_vk_swapchain_init(&device->swapchain)) {
+        if (!lx_vk_swapchain_init(&device->swapchain, device->gpu_device, device->surface)) {
             lx_trace_e("failed to init swapchain!");
             break;
         }

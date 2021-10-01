@@ -39,7 +39,8 @@ typedef struct lx_vulkan_device_t_ {
     VkInstance                  instance;
     VkQueue                     queue;
     VkDevice                    device;
-    VkPhysicalDevice            physical_device;
+    VkSurfaceKHR                surface;
+    VkPhysicalDevice            gpu_device;
     lx_vk_swapchain_t           swapchain;
 }lx_vulkan_device_t;
 

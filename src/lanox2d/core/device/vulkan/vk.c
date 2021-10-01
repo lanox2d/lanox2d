@@ -779,8 +779,46 @@ lx_bool_t lx_vk_validation_layers_check(lx_char_t const** layers, lx_uint32_t co
     return lx_true;
 }
 
-lx_bool_t lx_vk_swapchain_init(lx_vk_swapchain_t* swapchain) {
-    return lx_true;
+lx_bool_t lx_vk_swapchain_init(lx_vk_swapchain_t* swapchain, VkPhysicalDevice gpu_device, VkSurfaceKHR surface) {
+    lx_bool_t ok = lx_false;
+    VkSurfaceFormatKHR* formats = lx_null;
+    do {
+
+        // get the surface capabilities
+        VkSurfaceCapabilitiesKHR surface_capabilities;
+        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(gpu_device, surface, &surface_capabilities);
+
+        // query the list of supported surface format and choose one we like
+        lx_uint32_t format_count = 0;
+        vkGetPhysicalDeviceSurfaceFormatsKHR(gpu_device, surface, &format_count, lx_null);
+        lx_assert_and_check_break(format_count);
+
+        formats = lx_nalloc0_type(format_count, VkSurfaceFormatKHR);
+        lx_assert_and_check_break(formats);
+        vkGetPhysicalDeviceSurfaceFormatsKHR(gpu_device, surface, &format_count, formats);
+
+        // select surface format
+        lx_uint32_t chosen_format;
+        for (chosen_format = 0; chosen_format < format_count; chosen_format++) {
+            VkFormat format = formats[chosen_format].format;
+            if (format == VK_FORMAT_R8G8B8A8_UNORM || format == VK_FORMAT_B8G8R8A8_UNORM) {
+                break;
+            }
+        }
+        lx_assert_and_check_break(chosen_format < format_count);
+        swapchain->format = formats[chosen_format].format;
+
+        // TODO
+
+        // ok
+        ok = lx_true;
+    } while (0);
+
+    if (formats) {
+        lx_free(formats);
+        formats = lx_null;
+    }
+    return ok;
 }
 
 lx_void_t lx_vk_swapchain_exit(lx_vk_swapchain_t* swapchain) {
