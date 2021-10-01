@@ -100,7 +100,11 @@ static lx_bool_t lx_device_vulkan_swapchain_init(lx_vulkan_device_t* device) {
         swapchain_createinfo.queueFamilyIndexCount = 1;
         swapchain_createinfo.pQueueFamilyIndices   = &device->gpu_familyidx;
         swapchain_createinfo.preTransform          = surface_capabilities.currentTransform;
+#ifdef LX_CONFIG_OS_ANDROID
+        swapchain_createinfo.compositeAlpha        = VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR;
+#else
         swapchain_createinfo.compositeAlpha        = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+#endif
         swapchain_createinfo.presentMode           = VK_PRESENT_MODE_FIFO_KHR;
         swapchain_createinfo.clipped               = VK_TRUE;
         swapchain_createinfo.oldSwapchain          = VK_NULL_HANDLE;
