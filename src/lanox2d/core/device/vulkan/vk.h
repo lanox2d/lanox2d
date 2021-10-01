@@ -45,16 +45,6 @@
 #endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * types
- */
-
-// the swapchain type
-typedef struct lx_vk_swapchain_t_ {
-    VkSwapchainKHR  swapchain;
-    VkFormat        format;
-} lx_vk_swapchain_t;
-
-/* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */
 lx_extern_c_enter
@@ -94,10 +84,11 @@ lx_int32_t                      lx_vk_physical_device_find_family_queue(VkPhysic
  *
  * @param physical_device       the vulkan physical device
  * @param pqueue                the queue pointer
+ * @param pfamily_index         the family index pointer
  *
  * @return                      the logical device
  */
-VkDevice                        lx_vk_device_init_gpu_device(VkPhysicalDevice physical_device, VkQueue* pqueue);
+VkDevice                        lx_vk_device_init_gpu_device(VkPhysicalDevice physical_device, VkQueue* pqueue, lx_uint32_t* pfamily_index);
 
 /* get the enabled instance extensions
  *
@@ -200,22 +191,6 @@ lx_void_t                       lx_vk_debug_report_setup(VkInstance instance, Vk
  * @param debug_report_cb       the debug report callback
  */
 lx_void_t                       lx_vk_debug_report_cancel(VkInstance instance, VkDebugReportCallbackEXT debug_report_cb);
-
-/* init swapchain
- *
- * @param swapchain             the swapchain
- * @param gpu_device            the gpu device
- * @param surface               the vulkan surface
- *
- * @return                      lx_true or lx_false
- */
-lx_bool_t                       lx_vk_swapchain_init(lx_vk_swapchain_t* swapchain, VkPhysicalDevice gpu_device, VkSurfaceKHR surface);
-
-/* exit swapchain
- *
- * @param swapchain             the swapchain
- */
-lx_void_t                       lx_vk_swapchain_exit(lx_vk_swapchain_t* swapchain);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * vulkan interfaces
