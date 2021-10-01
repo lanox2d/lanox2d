@@ -60,6 +60,13 @@ static lx_bool_t lx_device_vulkan_swapchain_init(lx_vulkan_device_t* device) {
     VkSurfaceFormatKHR* formats = lx_null;
     do {
 
+        // check surface is supported
+        VkBool32 supported = VK_FALSE;
+        if (vkGetPhysicalDeviceSurfaceSupportKHR(device->gpu_device, device->gpu_familyidx, device->surface, &supported) == VK_SUCCESS && !supported) {
+            lx_trace_e("current surface is not supported!");
+            break;
+        }
+
         // get the surface capabilities
         VkSurfaceCapabilitiesKHR surface_capabilities;
         vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device->gpu_device, device->surface, &surface_capabilities);
@@ -181,6 +188,10 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
             lx_trace_e("failed to find a suitable GPU!");
             break;
         }
+
+        // init device extensions: VK_KHR_swapchain
+        lx_char_t const* swapchain_extensions[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+        lx_vk_device_extensions_add(swapchain_extensions, lx_arrayn(swapchain_extensions));
 
         // init device and queue
         device->device = lx_vk_device_init_gpu_device(device->gpu_device, &device->queue, &device->gpu_familyidx);

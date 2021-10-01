@@ -584,9 +584,6 @@ VkDevice lx_vk_device_init_gpu_device(VkPhysicalDevice physical_device, VkQueue*
         *pfamily_index = family_index;
     }
 
-    // init device extensions: VK_KHR_swapchain
-    static lx_char_t const* device_extensions[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
-
     // create device and get graphics queue
     float queue_priority = 1.0f;
     VkDeviceQueueCreateInfo queue_createinfo = {};
@@ -601,8 +598,7 @@ VkDevice lx_vk_device_init_gpu_device(VkPhysicalDevice physical_device, VkQueue*
     createinfo.pQueueCreateInfos       = &queue_createinfo;
     createinfo.queueCreateInfoCount    = 1;
     createinfo.pEnabledFeatures        = &device_features;
-    createinfo.ppEnabledExtensionNames = device_extensions;
-    createinfo.enabledExtensionCount   = lx_arrayn(device_extensions);
+    createinfo.ppEnabledExtensionNames = lx_vk_device_extensions(&createinfo.enabledExtensionCount);
     createinfo.ppEnabledLayerNames     = lx_vk_validation_layers(&createinfo.enabledLayerCount);
 
     VkDevice device = lx_null;

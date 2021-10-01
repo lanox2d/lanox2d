@@ -265,14 +265,14 @@ static lx_bool_t lx_window_glfw_init_vulkan(lx_window_glfw_t* window) {
     createinfo.pApplicationInfo     = &appinfo;
 #ifdef LX_DEBUG
     // enable validation layers
-    static lx_char_t const* validation_layers[] = {"VK_LAYER_KHRONOS_validation"};
+    lx_char_t const* validation_layers[] = {"VK_LAYER_KHRONOS_validation"};
     if (lx_vk_validation_layers_check(validation_layers, lx_arrayn(validation_layers))) {
         lx_vk_validation_layers_add(validation_layers, lx_arrayn(validation_layers));
     }
 
     // enable debug utils extension
     lx_bool_t has_debug_utils_extension = lx_false;
-    static lx_char_t const* debug_utils_extensions[] = {VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
+    lx_char_t const* debug_utils_extensions[] = {VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
     if (lx_vk_instance_extensions_check(debug_utils_extensions, lx_arrayn(debug_utils_extensions))) {
         lx_vk_instance_extensions_add(debug_utils_extensions, lx_arrayn(debug_utils_extensions));
         has_debug_utils_extension = lx_true;
@@ -280,7 +280,7 @@ static lx_bool_t lx_window_glfw_init_vulkan(lx_window_glfw_t* window) {
 
     // enable debug report extension
     lx_bool_t has_debug_report_extension = lx_false;
-    static lx_char_t const* debug_report_extensions[] = {VK_EXT_DEBUG_REPORT_EXTENSION_NAME};
+    lx_char_t const* debug_report_extensions[] = {VK_EXT_DEBUG_REPORT_EXTENSION_NAME};
     if (lx_vk_instance_extensions_check(debug_report_extensions, lx_arrayn(debug_report_extensions))) {
         lx_vk_instance_extensions_add(debug_report_extensions, lx_arrayn(debug_report_extensions));
         has_debug_report_extension = lx_true;
@@ -485,6 +485,14 @@ static lx_void_t lx_window_glfw_quit(lx_window_ref_t self) {
 static lx_void_t lx_window_glfw_exit(lx_window_ref_t self) {
     lx_window_glfw_t* window = (lx_window_glfw_t*)self;
     if (window) {
+        if (window->base.canvas) {
+            lx_canvas_exit(window->base.canvas);
+            window->base.canvas = lx_null;
+        }
+        if (window->base.device) {
+            lx_device_exit(window->base.device);
+            window->base.device = lx_null;
+        }
 #ifdef LX_CONFIG_DEVICE_HAVE_VULKAN
 #   ifdef LX_DEBUG
         if (window->debug_messenger) {
@@ -502,14 +510,6 @@ static lx_void_t lx_window_glfw_exit(lx_window_ref_t self) {
         }
         lx_vk_context_exit();
 #endif
-        if (window->base.canvas) {
-            lx_canvas_exit(window->base.canvas);
-            window->base.canvas = lx_null;
-        }
-        if (window->base.device) {
-            lx_device_exit(window->base.device);
-            window->base.device = lx_null;
-        }
         lx_free(window);
     }
 }

@@ -144,18 +144,18 @@ static lx_bool_t lx_window_android_init_vulkan(lx_window_android_t* window, ANat
          *
          * @see https://developer.android.com/ndk/guides/graphics/validation-layer
          */
-        static lx_char_t const* validation_layers[] = {"VK_LAYER_KHRONOS_validation"};
+        lx_char_t const* validation_layers[] = {"VK_LAYER_KHRONOS_validation"};
         if (lx_vk_validation_layers_check(validation_layers, lx_arrayn(validation_layers))) {
             lx_vk_validation_layers_add(validation_layers, lx_arrayn(validation_layers));
         }
 
         // enable instance extensions: VK_KHR_surface, VK_KHR_android_surface
-        static lx_char_t const* instance_extensions[] = {VK_KHR_SURFACE_EXTENSION_NAME, VK_KHR_ANDROID_SURFACE_EXTENSION_NAME};
+        lx_char_t const* instance_extensions[] = {VK_KHR_SURFACE_EXTENSION_NAME, VK_KHR_ANDROID_SURFACE_EXTENSION_NAME};
         lx_vk_instance_extensions_add(instance_extensions, lx_arrayn(instance_extensions));
 
         // enable debug utils extension
         lx_bool_t has_debug_utils_extension = lx_false;
-        static lx_char_t const* debug_utils_extensions[] = {VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
+        lx_char_t const* debug_utils_extensions[] = {VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
         if (lx_vk_instance_extensions_check(debug_utils_extensions, lx_arrayn(debug_utils_extensions))) {
             lx_vk_instance_extensions_add(debug_utils_extensions, lx_arrayn(debug_utils_extensions));
             has_debug_utils_extension = lx_true;
@@ -163,7 +163,7 @@ static lx_bool_t lx_window_android_init_vulkan(lx_window_android_t* window, ANat
 
         // enable debug report extension
         lx_bool_t has_debug_report_extension = lx_false;
-        static lx_char_t const* debug_report_extensions[] = {VK_EXT_DEBUG_REPORT_EXTENSION_NAME};
+        lx_char_t const* debug_report_extensions[] = {VK_EXT_DEBUG_REPORT_EXTENSION_NAME};
         if (lx_vk_instance_extensions_check(debug_report_extensions, lx_arrayn(debug_report_extensions))) {
             lx_vk_instance_extensions_add(debug_report_extensions, lx_arrayn(debug_report_extensions));
             has_debug_report_extension = lx_true;
