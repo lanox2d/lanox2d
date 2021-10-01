@@ -99,10 +99,10 @@ static lx_bool_t lx_device_vulkan_swapchain_init(lx_vulkan_device_t* device) {
         swapchain_createinfo.imageSharingMode      = VK_SHARING_MODE_EXCLUSIVE;
         swapchain_createinfo.queueFamilyIndexCount = 1;
         swapchain_createinfo.pQueueFamilyIndices   = &device->gpu_familyidx;
-        swapchain_createinfo.preTransform          = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
-        swapchain_createinfo.compositeAlpha        = VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR;
+        swapchain_createinfo.preTransform          = surface_capabilities.currentTransform;
+        swapchain_createinfo.compositeAlpha        = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
         swapchain_createinfo.presentMode           = VK_PRESENT_MODE_FIFO_KHR;
-        swapchain_createinfo.clipped               = VK_FALSE;
+        swapchain_createinfo.clipped               = VK_TRUE;
         swapchain_createinfo.oldSwapchain          = VK_NULL_HANDLE;
         if (vkCreateSwapchainKHR(device->device, &swapchain_createinfo, lx_null, &device->swapchain.swapchain) != VK_SUCCESS) {
             lx_trace_e("create swapchain failed!");
