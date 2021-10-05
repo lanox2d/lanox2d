@@ -131,29 +131,6 @@ static lx_bool_t lx_device_vulkan_swapchain_init(lx_vulkan_device_t* device) {
     return ok;
 }
 
-static lx_void_t lx_device_vulkan_swapchain_exit(lx_vulkan_device_t* device) {
-    lx_assert_and_check_return(device && device->device);
-    lx_uint32_t i;
-    if (device->swapchain.framebuffers) {
-        for (i = 0; i < device->swapchain.images_count; i++) {
-            vkDestroyFramebuffer(device->device, device->swapchain.framebuffers[i], lx_null);
-        }
-        lx_free(device->swapchain.framebuffers);
-        device->swapchain.framebuffers = lx_null;
-    }
-    if (device->swapchain.imageviews) {
-        for (i = 0; i < device->swapchain.images_count; i++) {
-            vkDestroyImageView(device->device, device->swapchain.imageviews[i], lx_null);
-        }
-        lx_free(device->swapchain.imageviews);
-        device->swapchain.imageviews = lx_null;
-    }
-    if (device->swapchain.swapchain) {
-        vkDestroySwapchainKHR(device->device, device->swapchain.swapchain, lx_null);
-        device->swapchain.swapchain = lx_null;
-    }
-}
-
 static lx_bool_t lx_device_vulkan_renderpass_init(lx_vulkan_device_t* device) {
     lx_assert_and_check_return_val(device, lx_false);
 
@@ -194,13 +171,6 @@ static lx_bool_t lx_device_vulkan_renderpass_init(lx_vulkan_device_t* device) {
     renderpass_createinfo.pDependencies   = lx_null;
 
     return vkCreateRenderPass(device->device, &renderpass_createinfo, lx_null, &device->renderpass) == VK_SUCCESS;
-}
-
-static lx_void_t lx_device_vulkan_renderpass_exit(lx_vulkan_device_t* device) {
-    if (device && device->renderpass) {
-        vkDestroyRenderPass(device->device, device->renderpass, lx_null);
-        device->renderpass = lx_null;
-    }
 }
 
 static lx_bool_t lx_device_vulkan_framebuffers_init(lx_vulkan_device_t* device) {
@@ -286,10 +256,31 @@ static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
     lx_vulkan_device_t* device = (lx_vulkan_device_t*)self;
     if (device) {
         // destroy render pass
-        lx_device_vulkan_renderpass_exit(device);
+        if (device->renderpass) {
+            vkDestroyRenderPass(device->device, device->renderpass, lx_null);
+            device->renderpass = lx_null;
+        }
 
         // destroy swapchain
-        lx_device_vulkan_swapchain_exit(device);
+        lx_uint32_t i;
+        if (device->swapchain.framebuffers) {
+            for (i = 0; i < device->swapchain.images_count; i++) {
+                vkDestroyFramebuffer(device->device, device->swapchain.framebuffers[i], lx_null);
+            }
+            lx_free(device->swapchain.framebuffers);
+            device->swapchain.framebuffers = lx_null;
+        }
+        if (device->swapchain.imageviews) {
+            for (i = 0; i < device->swapchain.images_count; i++) {
+                vkDestroyImageView(device->device, device->swapchain.imageviews[i], lx_null);
+            }
+            lx_free(device->swapchain.imageviews);
+            device->swapchain.imageviews = lx_null;
+        }
+        if (device->swapchain.swapchain) {
+            vkDestroySwapchainKHR(device->device, device->swapchain.swapchain, lx_null);
+            device->swapchain.swapchain = lx_null;
+        }
 
         // destroy device
         if (device->device) {
