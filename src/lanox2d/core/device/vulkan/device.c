@@ -148,13 +148,6 @@ static lx_void_t lx_device_vulkan_swapchain_exit(lx_vulkan_device_t* device) {
         lx_free(device->swapchain.imageviews);
         device->swapchain.imageviews = lx_null;
     }
-    if (device->swapchain.images) {
-        for (i = 0; i < device->swapchain.images_count; i++) {
-            vkDestroyImage(device->device, device->swapchain.images[i], lx_null);
-        }
-        lx_free(device->swapchain.images);
-        device->swapchain.images = lx_null;
-    }
     if (device->swapchain.swapchain) {
         vkDestroySwapchainKHR(device->device, device->swapchain.swapchain, lx_null);
         device->swapchain.swapchain = lx_null;
