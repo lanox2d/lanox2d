@@ -154,7 +154,7 @@ static lx_void_t lx_device_vulkan_swapchain_exit(lx_vulkan_device_t* device) {
     }
 }
 
-static lx_bool_t lx_device_vulkan_render_pass_init(lx_vulkan_device_t* device) {
+static lx_bool_t lx_device_vulkan_renderpass_init(lx_vulkan_device_t* device) {
     lx_assert_and_check_return_val(device, lx_false);
 
     VkAttachmentDescription attachment_descriptions = {};
@@ -183,23 +183,23 @@ static lx_bool_t lx_device_vulkan_render_pass_init(lx_vulkan_device_t* device) {
     subpass_description.preserveAttachmentCount = 0;
     subpass_description.pPreserveAttachments    = lx_null;
 
-    VkRenderPassCreateInfo render_pass_createinfo = {};
-    render_pass_createinfo.sType           = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-    render_pass_createinfo.pNext           = lx_null;
-    render_pass_createinfo.attachmentCount = 1;
-    render_pass_createinfo.pAttachments    = &attachment_descriptions;
-    render_pass_createinfo.subpassCount    = 1;
-    render_pass_createinfo.pSubpasses      = &subpass_description;
-    render_pass_createinfo.dependencyCount = 0;
-    render_pass_createinfo.pDependencies   = lx_null;
+    VkRenderPassCreateInfo renderpass_createinfo = {};
+    renderpass_createinfo.sType           = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+    renderpass_createinfo.pNext           = lx_null;
+    renderpass_createinfo.attachmentCount = 1;
+    renderpass_createinfo.pAttachments    = &attachment_descriptions;
+    renderpass_createinfo.subpassCount    = 1;
+    renderpass_createinfo.pSubpasses      = &subpass_description;
+    renderpass_createinfo.dependencyCount = 0;
+    renderpass_createinfo.pDependencies   = lx_null;
 
-    return vkCreateRenderPass(device->device, &render_pass_createinfo, lx_null, &device->render_pass) == VK_SUCCESS;
+    return vkCreateRenderPass(device->device, &renderpass_createinfo, lx_null, &device->renderpass) == VK_SUCCESS;
 }
 
-static lx_void_t lx_device_vulkan_render_pass_exit(lx_vulkan_device_t* device) {
-    if (device && device->render_pass) {
-        vkDestroyRenderPass(device->device, device->render_pass, lx_null);
-        device->render_pass = lx_null;
+static lx_void_t lx_device_vulkan_renderpass_exit(lx_vulkan_device_t* device) {
+    if (device && device->renderpass) {
+        vkDestroyRenderPass(device->device, device->renderpass, lx_null);
+        device->renderpass = lx_null;
     }
 }
 
@@ -264,7 +264,7 @@ static lx_bool_t lx_device_vulkan_framebuffers_init(lx_vulkan_device_t* device) 
             VkFramebufferCreateInfo fb_createinfo = {};
             fb_createinfo.sType           = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
             fb_createinfo.pNext           = lx_null,
-            fb_createinfo.renderPass      = device->render_pass,
+            fb_createinfo.renderPass      = device->renderpass,
             fb_createinfo.attachmentCount = 1,
             fb_createinfo.pAttachments    = attachments,
             fb_createinfo.width           = (lx_uint32_t)(device->swapchain.framesize.width),
@@ -286,7 +286,7 @@ static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
     lx_vulkan_device_t* device = (lx_vulkan_device_t*)self;
     if (device) {
         // destroy render pass
-        lx_device_vulkan_render_pass_exit(device);
+        lx_device_vulkan_renderpass_exit(device);
 
         // destroy swapchain
         lx_device_vulkan_swapchain_exit(device);
@@ -350,7 +350,7 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
         }
 
         // init render pass
-        if (!lx_device_vulkan_render_pass_init(device)) {
+        if (!lx_device_vulkan_renderpass_init(device)) {
             lx_trace_e("failed to init render pass!");
             break;
         }

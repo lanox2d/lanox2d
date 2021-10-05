@@ -54,7 +54,7 @@ typedef struct lx_vulkan_device_t_ {
     VkPhysicalDevice            gpu_device;
     lx_uint32_t                 gpu_familyidx;
     lx_vulkan_swapchain_t       swapchain;
-    VkRenderPass                render_pass;
+    VkRenderPass                renderpass;
 }lx_vulkan_device_t;
 
 #endif
