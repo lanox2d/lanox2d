@@ -46,17 +46,21 @@ lx_extern_c_enter
  */
 lx_pipeline_ref_t       lx_pipeline_init(lx_vulkan_device_t* device, lx_size_t type, lx_char_t const* vshader, lx_char_t const* fshader);
 
-/* init sold pipeline
+/* init solid pipeline
+ *
+ * @param device        the vulkan device
  *
  * @return              the pipeline
  */
-lx_pipeline_ref_t       lx_pipeline_init_solid(lx_noarg_t);
+lx_pipeline_ref_t       lx_pipeline_init_solid(lx_vulkan_device_t* device);
 
 /* init texture pipeline
  *
+ * @param device        the vulkan device
+ *
  * @return              the pipeline
  */
-lx_pipeline_ref_t       lx_pipeline_init_texture(lx_noarg_t);
+lx_pipeline_ref_t       lx_pipeline_init_texture(lx_vulkan_device_t* device);
 
 /* exit pipeline
  *

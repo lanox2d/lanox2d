@@ -69,7 +69,7 @@ typedef enum lx_gl_program_location_e_ {
  */
 lx_gl_program_ref_t     lx_gl_program_init(lx_size_t type, lx_char_t const* vshader, lx_char_t const* fshader);
 
-/* init sold program
+/* init solid program
  *
  * @return              the program
  */

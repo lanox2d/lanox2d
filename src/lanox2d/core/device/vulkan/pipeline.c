@@ -45,6 +45,8 @@ lx_pipeline_ref_t lx_pipeline_init(lx_vulkan_device_t* device, lx_size_t type, l
 
     lx_bool_t ok = lx_false;
     lx_pipeline_t* pipeline = lx_null;
+    VkShaderModule vshader_module = lx_null;
+    VkShaderModule fshader_module = lx_null;
     do {
         // init pipeline
         pipeline = lx_malloc0_type(lx_pipeline_t);
@@ -65,9 +67,42 @@ lx_pipeline_ref_t lx_pipeline_init(lx_vulkan_device_t* device, lx_size_t type, l
             break;
         }
 
+        // create vertex shader
+        VkShaderModuleCreateInfo vshader_createinfo = {};
+        vshader_createinfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+        vshader_createinfo.pNext = lx_null;
+        vshader_createinfo.flags = 0;
+        vshader_createinfo.codeSize = (lx_uint32_t)lx_strlen(vshader);
+        vshader_createinfo.pCode = (lx_uint32_t*)vshader;
+        if (vkCreateShaderModule(device->device, &vshader_createinfo, lx_null, &vshader_module) != VK_SUCCESS) {
+            break;
+        }
+
+        // create fragment shader
+        VkShaderModuleCreateInfo fshader_createinfo = {};
+        fshader_createinfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+        fshader_createinfo.pNext = lx_null;
+        fshader_createinfo.flags = 0;
+        fshader_createinfo.codeSize = (lx_uint32_t)lx_strlen(fshader);
+        fshader_createinfo.pCode = (lx_uint32_t*)fshader;
+        if (vkCreateShaderModule(device->device, &fshader_createinfo, lx_null, &fshader_module) != VK_SUCCESS) {
+            break;
+        }
+
         ok = lx_true;
     } while (0);
 
+    // free shaders
+    if (vshader_module) {
+        vkDestroyShaderModule(device->device, vshader_module, lx_null);
+        vshader_module = lx_null;
+    }
+    if (fshader_module) {
+        vkDestroyShaderModule(device->device, fshader_module, lx_null);
+        fshader_module = lx_null;
+    }
+
+    // free pipeline if failed
     if (!ok && pipeline) {
         lx_pipeline_exit((lx_pipeline_ref_t)pipeline);
         pipeline = lx_null;
@@ -75,12 +110,24 @@ lx_pipeline_ref_t lx_pipeline_init(lx_vulkan_device_t* device, lx_size_t type, l
     return (lx_pipeline_ref_t)pipeline;
 }
 
-lx_pipeline_ref_t lx_pipeline_init_solid() {
-    return lx_null;
+lx_pipeline_ref_t lx_pipeline_init_solid(lx_vulkan_device_t* device) {
+    static lx_char_t const vshader[] = {
+#include "solid.vs.h"
+    };
+    static lx_char_t const fshader[] = {
+#include "solid.fs.h"
+    };
+    return lx_pipeline_init(device, LX_PIPELINE_TYPE_SOLID, vshader, fshader);
 }
 
-lx_pipeline_ref_t lx_pipeline_init_texture() {
-    return lx_null;
+lx_pipeline_ref_t lx_pipeline_init_texture(lx_vulkan_device_t* device) {
+    static lx_char_t const vshader[] = {
+#include "texture.vs.h"
+    };
+    static lx_char_t const fshader[] = {
+#include "texture.fs.h"
+    };
+    return lx_pipeline_init(device, LX_PIPELINE_TYPE_TEXTURE, vshader, fshader);
 }
 
 lx_void_t lx_pipeline_exit(lx_pipeline_ref_t self) {

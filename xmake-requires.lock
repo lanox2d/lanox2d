@@ -306,43 +306,49 @@
     ["macosx|x86_64"] = {
         ["cmake#31fecfc4"] = {
             repo = {
-                commit = "c77b0ee9c174ccf0f38f78669448f7b24f2f1170",
-                url = "/Users/ruki/projects/personal/xmake-repo"
+                branch = "master",
+                commit = "1af27f63f34e263acc90559ff0c412b03c6d970a",
+                url = "https://gitee.com/tboox/xmake-repo.git"
             },
             version = "3.21.0"
         },
         ["glfw#31fecfc4"] = {
             repo = {
-                commit = "c77b0ee9c174ccf0f38f78669448f7b24f2f1170",
-                url = "/Users/ruki/projects/personal/xmake-repo"
+                branch = "master",
+                commit = "eda7adee81bac151f87c507030cc0dd8ab299462",
+                url = "https://gitee.com/tboox/xmake-repo.git"
             },
             version = "3.3.4"
         },
         ["ninja#31fecfc4"] = {
             repo = {
-                commit = "c77b0ee9c174ccf0f38f78669448f7b24f2f1170",
-                url = "/Users/ruki/projects/personal/xmake-repo"
+                branch = "master",
+                commit = "5f11bb0b3d922b4d71ab77acae19c1df1df7f236",
+                url = "https://gitee.com/tboox/xmake-repo.git"
             },
             version = "1.10.2"
         },
         ["opengl#31fecfc4"] = {
             repo = {
-                commit = "c77b0ee9c174ccf0f38f78669448f7b24f2f1170",
-                url = "/Users/ruki/projects/personal/xmake-repo"
+                branch = "master",
+                commit = "5f11bb0b3d922b4d71ab77acae19c1df1df7f236",
+                url = "https://gitee.com/tboox/xmake-repo.git"
             },
             version = "latest"
         },
         ["vulkan-headers 1.2.189#31fecfc4"] = {
             repo = {
-                commit = "c77b0ee9c174ccf0f38f78669448f7b24f2f1170",
-                url = "/Users/ruki/projects/personal/xmake-repo"
+                branch = "master",
+                commit = "381880a00d99f41f90cd041a09684b4a845713b4",
+                url = "https://gitee.com/tboox/xmake-repo.git"
             },
             version = "1.2.189+1"
         },
         ["vulkan-loader#31fecfc4"] = {
             repo = {
-                commit = "c77b0ee9c174ccf0f38f78669448f7b24f2f1170",
-                url = "/Users/ruki/projects/personal/xmake-repo"
+                branch = "master",
+                commit = "381880a00d99f41f90cd041a09684b4a845713b4",
+                url = "https://gitee.com/tboox/xmake-repo.git"
             },
             version = "1.2.189+1"
         }

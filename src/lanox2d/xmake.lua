@@ -82,6 +82,9 @@ target("lanox2d")
     end
     if is_config("device", "vulkan") then
         add_files("core/device/vulkan/**.c")
+        add_files("core/device/vulkan/shaders/*.vs")
+        add_files("core/device/vulkan/shaders/*.fs")
+        add_rules("utils.bin2c", {extensions = {".vs", ".fs"}})
     end
     if is_config("device", "skia") then
         set_languages("c++14")
