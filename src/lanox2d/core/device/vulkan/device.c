@@ -23,6 +23,7 @@
  * includes
  */
 #include "device.h"
+#include "pipeline.h"
 #ifdef LX_CONFIG_WINDOW_HAVE_GLFW
 #   include <GLFW/glfw3.h>
 #endif
@@ -263,48 +264,20 @@ static lx_bool_t lx_device_vulkan_framebuffers_init(lx_vulkan_device_t* device) 
     return ok;
 }
 
-static lx_bool_t lx_device_vulkan_graphics_pipeline_init(lx_vulkan_device_t* device) {
-    lx_assert_and_check_return_val(device, lx_false);
-    lx_bool_t ok = lx_false;
-    do {
-
-        // create pipeline layout (empty)
-        VkPipelineLayoutCreateInfo pipeline_layout_createinfo = {};
-        pipeline_layout_createinfo.sType                  = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-        pipeline_layout_createinfo.pNext                  = lx_null;
-        pipeline_layout_createinfo.setLayoutCount         = 0;
-        pipeline_layout_createinfo.pSetLayouts            = lx_null;
-        pipeline_layout_createinfo.pushConstantRangeCount = 0;
-        pipeline_layout_createinfo.pPushConstantRanges    = lx_null;
-        if (vkCreatePipelineLayout(device->device, &pipeline_layout_createinfo, lx_null, &device->pipeline_layout) != VK_SUCCESS) {
-            break;
-        }
-
-        ok = lx_true;
-    } while (0);
-    return ok;
-}
-
 static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
     lx_vulkan_device_t* device = (lx_vulkan_device_t*)self;
     if (device) {
 
-        // destroy pipeline
-        if (device->pipeline) {
-            vkDestroyPipeline(device->device, device->pipeline, lx_null);
-            device->pipeline = lx_null;
-        }
-        if (device->pipeline_cache) {
-            vkDestroyPipelineCache(device->device, device->pipeline_cache, lx_null);
-            device->pipeline_cache = lx_null;
-        }
-        if (device->pipeline_layout) {
-            vkDestroyPipelineLayout(device->device, device->pipeline_layout, lx_null);
-            device->pipeline_layout = lx_null;
+        // destroy pipelines
+        lx_uint32_t i;
+        for (i = 0; i < lx_arrayn(device->pipelines); i++) {
+            if (device->pipelines[i]) {
+                lx_pipeline_exit(device->pipelines[i]);
+                device->pipelines[i] = lx_null;
+            }
         }
 
         // destroy framebuffers
-        lx_uint32_t i;
         if (device->framebuffers) {
             for (i = 0; i < device->images_count; i++) {
                 vkDestroyFramebuffer(device->device, device->framebuffers[i], lx_null);
@@ -407,12 +380,6 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
         // init framebuffers
         if (!lx_device_vulkan_framebuffers_init(device)) {
             lx_trace_e("failed to init framebuffers!");
-            break;
-        }
-
-        // init graphics pipeline
-        if (!lx_device_vulkan_graphics_pipeline_init(device)) {
-            lx_trace_e("failed to init graphics pipeline!");
             break;
         }
 

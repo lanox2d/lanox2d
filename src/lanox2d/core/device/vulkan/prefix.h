@@ -30,6 +30,20 @@
 #include "../../private/stroker.h"
 #include "../../../platform/window.h"
 
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * types
+ */
+
+// the pipeline type enum
+typedef enum lx_pipeline_type_e_ {
+    LX_PIPELINE_TYPE_NONE    = 0
+,   LX_PIPELINE_TYPE_SOLID   = 1
+,   LX_PIPELINE_TYPE_TEXTURE = 2
+,   LX_PIPELINE_TYPE_MAXN    = 3
+}lx_pipeline_type_e;
+
+// the pipeline ref type
+typedef lx_typeref(pipeline);
 
 #endif
 
