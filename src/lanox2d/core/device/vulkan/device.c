@@ -135,8 +135,7 @@ static lx_bool_t lx_device_vulkan_imageviews_init(lx_vulkan_device_t* device) {
     lx_assert_and_check_return_val(device && device->device && device->swapchain, lx_false);
 
     lx_bool_t ok = lx_false;
-    do
-    {
+    do {
         // get swapchain images
         vkGetSwapchainImagesKHR(device->device, device->swapchain, &device->images_count, lx_null);
         lx_assert_and_check_break(device->images_count);
@@ -234,8 +233,7 @@ static lx_bool_t lx_device_vulkan_framebuffers_init(lx_vulkan_device_t* device) 
     lx_assert_and_check_return_val(device && device->device && device->swapchain, lx_false);
 
     lx_bool_t ok = lx_false;
-    do
-    {
+    do {
         // create framebuffers
         lx_uint32_t images_count = device->images_count;
         device->framebuffers = lx_nalloc0_type(images_count, VkFramebuffer);
@@ -260,6 +258,15 @@ static lx_bool_t lx_device_vulkan_framebuffers_init(lx_vulkan_device_t* device) 
             }
         }
 
+        ok = lx_true;
+    } while (0);
+    return ok;
+}
+
+static lx_bool_t lx_device_vulkan_graphics_pipeline_init(lx_vulkan_device_t* device) {
+    lx_assert_and_check_return_val(device, lx_false);
+    lx_bool_t ok = lx_false;
+    do {
         ok = lx_true;
     } while (0);
     return ok;
@@ -372,6 +379,12 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
         // init framebuffers
         if (!lx_device_vulkan_framebuffers_init(device)) {
             lx_trace_e("failed to init framebuffers!");
+            break;
+        }
+
+        // init graphics pipeline
+        if (!lx_device_vulkan_graphics_pipeline_init(device)) {
+            lx_trace_e("failed to init graphics pipeline!");
             break;
         }
 
