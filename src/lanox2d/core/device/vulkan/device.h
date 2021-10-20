@@ -51,6 +51,7 @@ typedef struct lx_vulkan_device_t_ {
     VkQueue                     queue;
     VkDevice                    device;
     VkSurfaceKHR                surface;
+    VkRenderPass                renderpass;
 
     // gpu device
     VkPhysicalDevice            gpu_device;
@@ -64,7 +65,11 @@ typedef struct lx_vulkan_device_t_ {
     VkImageView*                imageviews;
     VkFramebuffer*              framebuffers;
     lx_uint32_t                 images_count;
-    VkRenderPass                renderpass;
+
+    // graphics pipeline
+    VkPipeline                  pipeline;
+    VkPipelineCache             pipeline_cache;
+    VkPipelineLayout            pipeline_layout;
 }lx_vulkan_device_t;
 
 #endif

@@ -267,6 +267,19 @@ static lx_bool_t lx_device_vulkan_graphics_pipeline_init(lx_vulkan_device_t* dev
     lx_assert_and_check_return_val(device, lx_false);
     lx_bool_t ok = lx_false;
     do {
+
+        // create pipeline layout (empty)
+        VkPipelineLayoutCreateInfo pipeline_layout_createinfo = {};
+        pipeline_layout_createinfo.sType                  = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+        pipeline_layout_createinfo.pNext                  = lx_null;
+        pipeline_layout_createinfo.setLayoutCount         = 0;
+        pipeline_layout_createinfo.pSetLayouts            = lx_null;
+        pipeline_layout_createinfo.pushConstantRangeCount = 0;
+        pipeline_layout_createinfo.pPushConstantRanges    = lx_null;
+        if (vkCreatePipelineLayout(device->device, &pipeline_layout_createinfo, lx_null, &device->pipeline_layout) != VK_SUCCESS) {
+            break;
+        }
+
         ok = lx_true;
     } while (0);
     return ok;
@@ -275,10 +288,19 @@ static lx_bool_t lx_device_vulkan_graphics_pipeline_init(lx_vulkan_device_t* dev
 static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
     lx_vulkan_device_t* device = (lx_vulkan_device_t*)self;
     if (device) {
-        // destroy render pass
-        if (device->renderpass) {
-            vkDestroyRenderPass(device->device, device->renderpass, lx_null);
-            device->renderpass = lx_null;
+
+        // destroy pipeline
+        if (device->pipeline) {
+            vkDestroyPipeline(device->device, device->pipeline, lx_null);
+            device->pipeline = lx_null;
+        }
+        if (device->pipeline_cache) {
+            vkDestroyPipelineCache(device->device, device->pipeline_cache, lx_null);
+            device->pipeline_cache = lx_null;
+        }
+        if (device->pipeline_layout) {
+            vkDestroyPipelineLayout(device->device, device->pipeline_layout, lx_null);
+            device->pipeline_layout = lx_null;
         }
 
         // destroy framebuffers
@@ -289,6 +311,12 @@ static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
             }
             lx_free(device->framebuffers);
             device->framebuffers = lx_null;
+        }
+
+        // destroy render pass
+        if (device->renderpass) {
+            vkDestroyRenderPass(device->device, device->renderpass, lx_null);
+            device->renderpass = lx_null;
         }
 
         // destroy imageviews
