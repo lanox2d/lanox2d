@@ -295,8 +295,14 @@ static lx_bool_t lx_window_glfw_init_vulkan(lx_window_glfw_t* window) {
     }
     createinfo.ppEnabledLayerNames = lx_vk_validation_layers(&createinfo.enabledLayerCount);
     createinfo.ppEnabledExtensionNames = lx_vk_instance_extensions(&createinfo.enabledExtensionCount);
-    if (vkCreateInstance(&createinfo, lx_null, &window->instance) != VK_SUCCESS) {
-        lx_trace_e("failed to create vulkan instance!");
+    VkResult ok = vkCreateInstance(&createinfo, lx_null, &window->instance);
+    if (ok != VK_SUCCESS) {
+        lx_trace_e("failed to create vulkan instance, error: %d!", (lx_int_t)ok);
+#ifdef LX_CONFIG_OS_MACOSX
+        if (ok == VK_ERROR_INCOMPATIBLE_DRIVER) {
+            lx_trace_e("maybe you need install vulkan driver sdk on macOS, @see https://vulkan.lunarg.com/sdk/home#mac");
+        }
+#endif
         return lx_false;
     }
 
