@@ -70,7 +70,7 @@ static lx_bool_t lx_device_vulkan_swapchain_init(lx_vulkan_device_t* device) {
         // get the surface capabilities
         VkSurfaceCapabilitiesKHR surface_capabilities;
         vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device->gpu_device, device->surface, &surface_capabilities);
-        device->swapchain.framesize = surface_capabilities.currentExtent;
+        device->framesize = surface_capabilities.currentExtent;
 
         // query the list of supported surface format and choose one we like
         lx_uint32_t format_count = 0;
@@ -90,7 +90,7 @@ static lx_bool_t lx_device_vulkan_swapchain_init(lx_vulkan_device_t* device) {
             }
         }
         lx_assert_and_check_break(chosen_format < format_count);
-        device->swapchain.format = formats[chosen_format].format;
+        device->format = formats[chosen_format].format;
 
         // create swapchain
         VkSwapchainCreateInfoKHR swapchain_createinfo = {};
@@ -115,7 +115,7 @@ static lx_bool_t lx_device_vulkan_swapchain_init(lx_vulkan_device_t* device) {
         swapchain_createinfo.presentMode           = VK_PRESENT_MODE_FIFO_KHR;
         swapchain_createinfo.clipped               = VK_TRUE;
         swapchain_createinfo.oldSwapchain          = VK_NULL_HANDLE;
-        if (vkCreateSwapchainKHR(device->device, &swapchain_createinfo, lx_null, &device->swapchain.swapchain) != VK_SUCCESS) {
+        if (vkCreateSwapchainKHR(device->device, &swapchain_createinfo, lx_null, &device->swapchain) != VK_SUCCESS) {
             lx_trace_e("create swapchain failed!");
             break;
         }
@@ -131,11 +131,68 @@ static lx_bool_t lx_device_vulkan_swapchain_init(lx_vulkan_device_t* device) {
     return ok;
 }
 
+static lx_bool_t lx_device_vulkan_imageviews_init(lx_vulkan_device_t* device) {
+    lx_assert_and_check_return_val(device && device->device && device->swapchain, lx_false);
+
+    lx_bool_t ok = lx_false;
+    do
+    {
+        // get swapchain images
+        vkGetSwapchainImagesKHR(device->device, device->swapchain, &device->images_count, lx_null);
+        lx_assert_and_check_break(device->images_count);
+        lx_uint32_t images_count = device->images_count;
+
+        device->images = lx_nalloc0_type(images_count, VkImage);
+        lx_assert_and_check_break(device->images);
+
+        if (vkGetSwapchainImagesKHR(device->device, device->swapchain, &device->images_count, device->images) != VK_SUCCESS) {
+            break;
+        }
+
+        // create image views
+        device->imageviews = lx_nalloc0_type(images_count, VkImageView);
+        lx_assert_and_check_break(device->imageviews);
+
+        lx_uint32_t i;
+        for (i = 0; i < images_count; i++) {
+            VkImageViewCreateInfo view_createinfo = {};
+            view_createinfo.sType            = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+            view_createinfo.pNext            = lx_null;
+            view_createinfo.flags            = 0;
+            view_createinfo.image            = device->images[i];
+            view_createinfo.viewType         = VK_IMAGE_VIEW_TYPE_2D;
+            view_createinfo.format           = device->format;
+
+            VkComponentMapping components = {};
+            components.r = VK_COMPONENT_SWIZZLE_R;
+            components.g = VK_COMPONENT_SWIZZLE_G;
+            components.b = VK_COMPONENT_SWIZZLE_B;
+            components.a = VK_COMPONENT_SWIZZLE_A;
+            view_createinfo.components       = components;
+
+            VkImageSubresourceRange subresource_range = {};
+            subresource_range.aspectMask     = VK_IMAGE_ASPECT_COLOR_BIT;
+            subresource_range.baseMipLevel   = 0;
+            subresource_range.levelCount     = 1;
+            subresource_range.baseArrayLayer = 0;
+            subresource_range.layerCount     = 1;
+            view_createinfo.subresourceRange = subresource_range;
+            if (vkCreateImageView(device->device, &view_createinfo, lx_null, &device->imageviews[i]) != VK_SUCCESS) {
+                break;
+            }
+        }
+        lx_assert_and_check_break(i == images_count);
+
+        ok = lx_true;
+    } while (0);
+    return ok;
+}
+
 static lx_bool_t lx_device_vulkan_renderpass_init(lx_vulkan_device_t* device) {
     lx_assert_and_check_return_val(device, lx_false);
 
     VkAttachmentDescription attachment_descriptions = {};
-    attachment_descriptions.format         = device->swapchain.format;
+    attachment_descriptions.format         = device->format;
     attachment_descriptions.samples        = VK_SAMPLE_COUNT_1_BIT;
     attachment_descriptions.loadOp         = VK_ATTACHMENT_LOAD_OP_CLEAR;
     attachment_descriptions.storeOp        = VK_ATTACHMENT_STORE_OP_STORE;
@@ -174,75 +231,31 @@ static lx_bool_t lx_device_vulkan_renderpass_init(lx_vulkan_device_t* device) {
 }
 
 static lx_bool_t lx_device_vulkan_framebuffers_init(lx_vulkan_device_t* device) {
-    lx_assert_and_check_return_val(device && device->device && device->swapchain.swapchain, lx_false);
+    lx_assert_and_check_return_val(device && device->device && device->swapchain, lx_false);
 
     lx_bool_t ok = lx_false;
     do
     {
-        // get swapchain images
-        vkGetSwapchainImagesKHR(device->device, device->swapchain.swapchain, &device->swapchain.images_count, lx_null);
-        lx_assert_and_check_break(device->swapchain.images_count);
-        lx_uint32_t images_count = device->swapchain.images_count;
-
-        device->swapchain.images = lx_nalloc0_type(images_count, VkImage);
-        lx_assert_and_check_break(device->swapchain.images);
-
-        if (vkGetSwapchainImagesKHR(device->device, device->swapchain.swapchain, &device->swapchain.images_count, device->swapchain.images) != VK_SUCCESS) {
-            break;
-        }
-
-        // create image views
-        device->swapchain.imageviews = lx_nalloc0_type(images_count, VkImageView);
-        lx_assert_and_check_break(device->swapchain.imageviews);
+        // create framebuffers
+        lx_uint32_t images_count = device->images_count;
+        device->framebuffers = lx_nalloc0_type(images_count, VkFramebuffer);
+        lx_assert_and_check_break(device->framebuffers);
 
         lx_uint32_t i;
         for (i = 0; i < images_count; i++) {
-            VkImageViewCreateInfo view_createinfo = {};
-            view_createinfo.sType            = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-            view_createinfo.pNext            = lx_null;
-            view_createinfo.flags            = 0;
-            view_createinfo.image            = device->swapchain.images[i];
-            view_createinfo.viewType         = VK_IMAGE_VIEW_TYPE_2D;
-            view_createinfo.format           = device->swapchain.format;
-
-            VkComponentMapping components = {};
-            components.r = VK_COMPONENT_SWIZZLE_R;
-            components.g = VK_COMPONENT_SWIZZLE_G;
-            components.b = VK_COMPONENT_SWIZZLE_B;
-            components.a = VK_COMPONENT_SWIZZLE_A;
-            view_createinfo.components       = components;
-
-            VkImageSubresourceRange subresource_range = {};
-            subresource_range.aspectMask     = VK_IMAGE_ASPECT_COLOR_BIT;
-            subresource_range.baseMipLevel   = 0;
-            subresource_range.levelCount     = 1;
-            subresource_range.baseArrayLayer = 0;
-            subresource_range.layerCount     = 1;
-            view_createinfo.subresourceRange = subresource_range;
-            if (vkCreateImageView(device->device, &view_createinfo, lx_null, &device->swapchain.imageviews[i]) != VK_SUCCESS) {
-                break;
-            }
-        }
-        lx_assert_and_check_break(i == images_count);
-
-        // create framebuffers
-        device->swapchain.framebuffers = lx_nalloc0_type(images_count, VkFramebuffer);
-        lx_assert_and_check_break(device->swapchain.framebuffers);
-
-        for (i = 0; i < images_count; i++) {
-            VkImageView attachments[1] = {device->swapchain.imageviews[i]};
+            VkImageView attachments[1] = {device->imageviews[i]};
             VkFramebufferCreateInfo fb_createinfo = {};
             fb_createinfo.sType           = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
             fb_createinfo.pNext           = lx_null,
             fb_createinfo.renderPass      = device->renderpass,
             fb_createinfo.attachmentCount = 1,
             fb_createinfo.pAttachments    = attachments,
-            fb_createinfo.width           = (lx_uint32_t)(device->swapchain.framesize.width),
-            fb_createinfo.height          = (lx_uint32_t)(device->swapchain.framesize.height),
+            fb_createinfo.width           = (lx_uint32_t)(device->framesize.width),
+            fb_createinfo.height          = (lx_uint32_t)(device->framesize.height),
             fb_createinfo.layers          = 1,
             fb_createinfo.attachmentCount = 1;
 
-            if (vkCreateFramebuffer(device->device, &fb_createinfo, lx_null, &device->swapchain.framebuffers[i]) != VK_SUCCESS) {
+            if (vkCreateFramebuffer(device->device, &fb_createinfo, lx_null, &device->framebuffers[i]) != VK_SUCCESS) {
                 break;
             }
         }
@@ -261,25 +274,29 @@ static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
             device->renderpass = lx_null;
         }
 
-        // destroy swapchain
+        // destroy framebuffers
         lx_uint32_t i;
-        if (device->swapchain.framebuffers) {
-            for (i = 0; i < device->swapchain.images_count; i++) {
-                vkDestroyFramebuffer(device->device, device->swapchain.framebuffers[i], lx_null);
+        if (device->framebuffers) {
+            for (i = 0; i < device->images_count; i++) {
+                vkDestroyFramebuffer(device->device, device->framebuffers[i], lx_null);
             }
-            lx_free(device->swapchain.framebuffers);
-            device->swapchain.framebuffers = lx_null;
+            lx_free(device->framebuffers);
+            device->framebuffers = lx_null;
         }
-        if (device->swapchain.imageviews) {
-            for (i = 0; i < device->swapchain.images_count; i++) {
-                vkDestroyImageView(device->device, device->swapchain.imageviews[i], lx_null);
+
+        // destroy imageviews
+        if (device->imageviews) {
+            for (i = 0; i < device->images_count; i++) {
+                vkDestroyImageView(device->device, device->imageviews[i], lx_null);
             }
-            lx_free(device->swapchain.imageviews);
-            device->swapchain.imageviews = lx_null;
+            lx_free(device->imageviews);
+            device->imageviews = lx_null;
         }
-        if (device->swapchain.swapchain) {
-            vkDestroySwapchainKHR(device->device, device->swapchain.swapchain, lx_null);
-            device->swapchain.swapchain = lx_null;
+
+        // destroy swapchain
+        if (device->swapchain) {
+            vkDestroySwapchainKHR(device->device, device->swapchain, lx_null);
+            device->swapchain = lx_null;
         }
 
         // destroy device
@@ -340,13 +357,19 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
             break;
         }
 
+        // init image views
+        if (!lx_device_vulkan_imageviews_init(device)) {
+            lx_trace_e("failed to init image views!");
+            break;
+        }
+
         // init render pass
         if (!lx_device_vulkan_renderpass_init(device)) {
             lx_trace_e("failed to init render pass!");
             break;
         }
 
-        // init framebuffers for swapchain
+        // init framebuffers
         if (!lx_device_vulkan_framebuffers_init(device)) {
             lx_trace_e("failed to init framebuffers!");
             break;

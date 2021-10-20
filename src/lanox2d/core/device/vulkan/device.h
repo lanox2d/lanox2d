@@ -51,9 +51,19 @@ typedef struct lx_vulkan_device_t_ {
     VkQueue                     queue;
     VkDevice                    device;
     VkSurfaceKHR                surface;
+
+    // gpu device
     VkPhysicalDevice            gpu_device;
     lx_uint32_t                 gpu_familyidx;
-    lx_vulkan_swapchain_t       swapchain;
+
+    // swapchain
+    VkSwapchainKHR              swapchain;
+    VkExtent2D                  framesize;
+    VkFormat                    format;
+    VkImage*                    images;
+    VkImageView*                imageviews;
+    VkFramebuffer*              framebuffers;
+    lx_uint32_t                 images_count;
     VkRenderPass                renderpass;
 }lx_vulkan_device_t;
 
