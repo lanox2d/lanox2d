@@ -24,6 +24,7 @@
  */
 #include "device.h"
 #include "pipeline.h"
+#include "renderer.h"
 #ifdef LX_CONFIG_WINDOW_HAVE_GLFW
 #   include <GLFW/glfw3.h>
 #endif
@@ -32,26 +33,47 @@
  * private implementation
  */
 
-static lx_bool_t lx_device_vulkan_draw_lock(lx_device_ref_t self) {
-    return lx_true;
-}
-
-static lx_void_t lx_device_vulkan_draw_commit(lx_device_ref_t self) {
-}
-
 static lx_void_t lx_device_vulkan_draw_clear(lx_device_ref_t self, lx_color_t color) {
 }
 
 static lx_void_t lx_device_vulkan_draw_lines(lx_device_ref_t self, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds) {
+    lx_vulkan_device_t* device = (lx_vulkan_device_t*)self;
+    lx_assert(device && points && count);
+
+    if (lx_vk_renderer_init(device)) {
+        lx_vk_renderer_draw_lines(device, points, count, bounds);
+        lx_vk_renderer_exit(device);
+    }
 }
 
 static lx_void_t lx_device_vulkan_draw_points(lx_device_ref_t self, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds) {
+    lx_vulkan_device_t* device = (lx_vulkan_device_t*)self;
+    lx_assert(device && points && count);
+
+    if (lx_vk_renderer_init(device)) {
+        lx_vk_renderer_draw_points(device, points, count, bounds);
+        lx_vk_renderer_exit(device);
+    }
 }
 
 static lx_void_t lx_device_vulkan_draw_polygon(lx_device_ref_t self, lx_polygon_ref_t polygon, lx_shape_ref_t hint, lx_rect_ref_t bounds) {
+    lx_vulkan_device_t* device = (lx_vulkan_device_t*)self;
+    lx_assert(device && polygon);
+
+    if (lx_vk_renderer_init(device)) {
+        lx_vk_renderer_draw_polygon(device, polygon, hint, bounds);
+        lx_vk_renderer_exit(device);
+    }
 }
 
 static lx_void_t lx_device_vulkan_draw_path(lx_device_ref_t self, lx_path_ref_t path) {
+    lx_vulkan_device_t* device = (lx_vulkan_device_t*)self;
+    lx_assert(device && path);
+
+    if (lx_vk_renderer_init(device)) {
+        lx_vk_renderer_draw_path(device, path);
+        lx_vk_renderer_exit(device);
+    }
 }
 
 static lx_bool_t lx_device_vulkan_swapchain_init(lx_vulkan_device_t* device) {
@@ -384,8 +406,6 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
         device->base.draw_points  = lx_device_vulkan_draw_points;
         device->base.draw_polygon = lx_device_vulkan_draw_polygon;
         device->base.draw_path    = lx_device_vulkan_draw_path;
-        device->base.draw_lock    = lx_device_vulkan_draw_lock;
-        device->base.draw_commit  = lx_device_vulkan_draw_commit;
         device->base.exit         = lx_device_vulkan_exit;
         device->instance          = (VkInstance)vkinstance;
         device->surface           = (VkSurfaceKHR)vksurface;
