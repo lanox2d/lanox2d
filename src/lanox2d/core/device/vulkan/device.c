@@ -327,6 +327,7 @@ static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
             lx_free(device->command_buffers);
             device->command_buffers = lx_null;
         }
+        device->command_buffers_count = 0;
 
         // destroy command pool
         if (device->command_pool) {
