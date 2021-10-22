@@ -264,6 +264,41 @@ static lx_bool_t lx_device_vulkan_framebuffers_init(lx_vulkan_device_t* device) 
     return ok;
 }
 
+static lx_bool_t lx_device_vulkan_commandbuffers_init(lx_vulkan_device_t* device) {
+    lx_assert_and_check_return_val(device && device->device, lx_false);
+
+    lx_bool_t ok = lx_false;
+    do {
+        // create a pool of command buffers to allocate command buffer from
+        VkCommandPoolCreateInfo pool_createinfo = {};
+        pool_createinfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+        pool_createinfo.pNext = lx_null;
+        pool_createinfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+        pool_createinfo.queueFamilyIndex = device->gpu_familyidx;
+        if (vkCreateCommandPool(device->device, &pool_createinfo, lx_null, &device->command_pool) != VK_SUCCESS) {
+            break;
+        }
+
+        // create command buffers
+        device->command_buffers_count = device->images_count;
+        device->command_buffers = lx_nalloc0_type(device->command_buffers_count, VkCommandBuffer);
+        lx_assert_and_check_break(device->command_buffers);
+
+        VkCommandBufferAllocateInfo buffer_createinfo = {};
+        buffer_createinfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+        buffer_createinfo.pNext = lx_null;
+        buffer_createinfo.commandPool = device->command_pool;
+        buffer_createinfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        buffer_createinfo.commandBufferCount = device->command_buffers_count;
+        if (vkAllocateCommandBuffers(device->device, &buffer_createinfo, device->command_buffers) != VK_SUCCESS) {
+            break;
+        }
+
+        ok = lx_true;
+    } while (0);
+    return ok;
+}
+
 static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
     lx_vulkan_device_t* device = (lx_vulkan_device_t*)self;
     if (device) {
@@ -284,6 +319,19 @@ static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
             }
             lx_free(device->framebuffers);
             device->framebuffers = lx_null;
+        }
+
+        // destroy command buffers
+        if (device->command_buffers) {
+            vkFreeCommandBuffers(device->device, device->command_pool, device->command_buffers_count, device->command_buffers);
+            lx_free(device->command_buffers);
+            device->command_buffers = lx_null;
+        }
+
+        // destroy command pool
+        if (device->command_pool) {
+            vkDestroyCommandPool(device->device, device->command_pool, lx_null);
+            device->command_pool = lx_null;
         }
 
         // destroy render pass
@@ -380,6 +428,12 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
         // init framebuffers
         if (!lx_device_vulkan_framebuffers_init(device)) {
             lx_trace_e("failed to init framebuffers!");
+            break;
+        }
+
+        // init commandbuffers
+        if (!lx_device_vulkan_commandbuffers_init(device)) {
+            lx_trace_e("failed to init commandbuffers!");
             break;
         }
 

@@ -69,6 +69,11 @@ typedef struct lx_vulkan_device_t_ {
     // graphics pipelines
     lx_pipeline_ref_t           pipelines[LX_PIPELINE_TYPE_MAXN];
 
+    // command buffers
+    VkCommandPool               command_pool;
+    VkCommandBuffer*            command_buffers;
+    lx_uint32_t                 command_buffers_count;
+
 }lx_vulkan_device_t;
 
 #endif
