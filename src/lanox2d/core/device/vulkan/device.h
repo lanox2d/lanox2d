@@ -55,6 +55,8 @@ typedef struct lx_vulkan_device_t_ {
     VkDevice                    device;
     VkSurfaceKHR                surface;
     VkRenderPass                renderpass;
+    VkSemaphore                 semaphore;
+    VkFence                     fence;
 
     // gpu device
     VkPhysicalDevice            gpu_device;

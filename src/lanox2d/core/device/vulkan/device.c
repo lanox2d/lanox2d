@@ -306,9 +306,53 @@ static lx_bool_t lx_device_vulkan_commandbuffers_init(lx_vulkan_device_t* device
     return ok;
 }
 
+static lx_bool_t lx_device_vulkan_semaphore_init(lx_vulkan_device_t* device) {
+    lx_assert_and_check_return_val(device && device->device, lx_false);
+
+    lx_bool_t ok = lx_false;
+    do {
+        /* we need to create a fence to be able, in the main loop, to wait for our
+         * draw command(s) to finish before swapping the framebuffers
+         */
+        VkFenceCreateInfo fence_createinfo = {};
+        fence_createinfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+        fence_createinfo.pNext = lx_null;
+        fence_createinfo.flags = 0;
+        if (vkCreateFence(device->device, &fence_createinfo, lx_null, &device->fence) != VK_SUCCESS) {
+            break;
+        }
+
+        /* we need to create a semaphore to be able to wait, in the main loop, for our
+         * framebuffer to be available for us before drawing.
+         */
+        VkSemaphoreCreateInfo semaphore_createinfo = {};
+        semaphore_createinfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+        semaphore_createinfo.pNext = lx_null;
+        semaphore_createinfo.flags = 0;
+        if (vkCreateSemaphore(device->device, &semaphore_createinfo, lx_null, &device->semaphore) != VK_SUCCESS) {
+            break;
+        }
+
+        ok = lx_true;
+    } while (0);
+    return ok;
+}
+
 static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
     lx_vulkan_device_t* device = (lx_vulkan_device_t*)self;
     if (device) {
+
+        // destroy semaphore
+        if (device->semaphore) {
+            vkDestroySemaphore(device->device, device->semaphore, lx_null);
+            device->semaphore = lx_null;
+        }
+
+        // destroy fence
+        if (device->fence) {
+            vkDestroyFence(device->device, device->fence, lx_null);
+            device->fence = lx_null;
+        }
 
         // destroy pipelines
         lx_uint32_t i;
@@ -452,6 +496,12 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
         // init commandbuffers
         if (!lx_device_vulkan_commandbuffers_init(device)) {
             lx_trace_e("failed to init commandbuffers!");
+            break;
+        }
+
+        // init semaphore
+        if (!lx_device_vulkan_semaphore_init(device)) {
+            lx_trace_e("failed to init semaphore!");
             break;
         }
 
