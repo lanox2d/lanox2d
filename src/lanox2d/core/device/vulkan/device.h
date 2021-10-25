@@ -70,6 +70,7 @@ typedef struct lx_vulkan_device_t_ {
     VkImageView*                imageviews;
     VkFramebuffer*              framebuffers;
     lx_uint32_t                 images_count;
+    lx_uint32_t                 imageindex;
 
     // graphics pipelines
     lx_pipeline_ref_t           pipelines[LX_PIPELINE_TYPE_MAXN];

@@ -88,11 +88,32 @@ static lx_inline lx_bool_t lx_vk_renderer_stroke_only(lx_vulkan_device_t* device
  * implementation
  */
 lx_bool_t lx_vk_renderer_draw_lock(lx_vulkan_device_t* device) {
-    lx_assert_and_check_return_val(device && device->base.matrix && device->base.paint, lx_false);
+    lx_assert(device && device->device && device->swapchain && device->semaphore);
+
+    // get the framebuffer index we should draw in
+    if (vkAcquireNextImageKHR(device->device, device->swapchain, UINT64_MAX, device->semaphore, VK_NULL_HANDLE, &device->imageindex) != VK_SUCCESS) {
+        return lx_false;
+    }
+    if (vkResetFences(device->device, 1, &device->fence) != VK_SUCCESS) {
+        return lx_false;
+    }
     return lx_true;
 }
 
 lx_void_t lx_vk_renderer_draw_commit(lx_vulkan_device_t* device) {
+
+    // present frame
+    VkResult result;
+    VkPresentInfoKHR present_info = {};
+    present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+    present_info.pNext = lx_null;
+    present_info.waitSemaphoreCount = 0;
+    present_info.pWaitSemaphores = lx_null;
+    present_info.swapchainCount = 1;
+    present_info.pSwapchains = &device->swapchain;
+    present_info.pImageIndices = &device->imageindex;
+    present_info.pResults = &result;
+    vkQueuePresentKHR(device->queue, &present_info);
 }
 
 lx_void_t lx_vk_renderer_draw_clear(lx_vulkan_device_t* device, lx_color_t color) {
