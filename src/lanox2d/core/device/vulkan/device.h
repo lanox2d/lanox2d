@@ -47,6 +47,9 @@ typedef struct lx_vulkan_swapchain_t_ {
 typedef struct lx_vulkan_device_t_ {
     lx_device_t                 base;
     lx_window_ref_t             window;
+    lx_stroker_ref_t            stroker;
+
+    // vulkan instance
     VkInstance                  instance;
     VkQueue                     queue;
     VkDevice                    device;

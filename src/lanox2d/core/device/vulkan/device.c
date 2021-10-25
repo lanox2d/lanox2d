@@ -383,6 +383,12 @@ static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
             vkDestroyDevice(device->device, lx_null);
             device->device = lx_null;
         }
+
+        // destroy stroker
+        if (device->stroker) {
+            lx_stroker_exit(device->stroker);
+            device->stroker = lx_null;
+        }
         lx_free(device);
     }
 }
@@ -409,6 +415,10 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
         device->base.exit         = lx_device_vulkan_exit;
         device->instance          = (VkInstance)vkinstance;
         device->surface           = (VkSurfaceKHR)vksurface;
+
+        // init stroker
+        device->stroker = lx_stroker_init();
+        lx_assert_and_check_break(device->stroker);
 
         // select gpu device
         device->gpu_device = lx_vk_physical_device_select(device->instance);
