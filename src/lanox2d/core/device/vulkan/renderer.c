@@ -87,12 +87,15 @@ static lx_inline lx_bool_t lx_vk_renderer_stroke_only(lx_vulkan_device_t* device
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_bool_t lx_vk_renderer_init(lx_vulkan_device_t* device) {
+lx_bool_t lx_vk_renderer_draw_lock(lx_vulkan_device_t* device) {
     lx_assert_and_check_return_val(device && device->base.matrix && device->base.paint, lx_false);
     return lx_true;
 }
 
-lx_void_t lx_vk_renderer_exit(lx_vulkan_device_t* device) {
+lx_void_t lx_vk_renderer_draw_commit(lx_vulkan_device_t* device) {
+}
+
+lx_void_t lx_vk_renderer_draw_clear(lx_vulkan_device_t* device, lx_color_t color) {
 }
 
 lx_void_t lx_vk_renderer_draw_path(lx_vulkan_device_t* device, lx_path_ref_t path) {

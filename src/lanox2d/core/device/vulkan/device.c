@@ -33,47 +33,32 @@
  * private implementation
  */
 
+static lx_bool_t lx_device_vulkan_draw_lock(lx_device_ref_t self) {
+    return lx_vk_renderer_draw_lock((lx_vulkan_device_t*)self);
+}
+
+static lx_void_t lx_device_vulkan_draw_commit(lx_device_ref_t self) {
+    lx_vk_renderer_draw_commit((lx_vulkan_device_t*)self);
+}
+
 static lx_void_t lx_device_vulkan_draw_clear(lx_device_ref_t self, lx_color_t color) {
+    lx_vk_renderer_draw_clear((lx_vulkan_device_t*)self, color);
 }
 
 static lx_void_t lx_device_vulkan_draw_lines(lx_device_ref_t self, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds) {
-    lx_vulkan_device_t* device = (lx_vulkan_device_t*)self;
-    lx_assert(device && points && count);
-
-    if (lx_vk_renderer_init(device)) {
-        lx_vk_renderer_draw_lines(device, points, count, bounds);
-        lx_vk_renderer_exit(device);
-    }
+    lx_vk_renderer_draw_lines((lx_vulkan_device_t*)self, points, count, bounds);
 }
 
 static lx_void_t lx_device_vulkan_draw_points(lx_device_ref_t self, lx_point_ref_t points, lx_size_t count, lx_rect_ref_t bounds) {
-    lx_vulkan_device_t* device = (lx_vulkan_device_t*)self;
-    lx_assert(device && points && count);
-
-    if (lx_vk_renderer_init(device)) {
-        lx_vk_renderer_draw_points(device, points, count, bounds);
-        lx_vk_renderer_exit(device);
-    }
+    lx_vk_renderer_draw_points((lx_vulkan_device_t*)self, points, count, bounds);
 }
 
 static lx_void_t lx_device_vulkan_draw_polygon(lx_device_ref_t self, lx_polygon_ref_t polygon, lx_shape_ref_t hint, lx_rect_ref_t bounds) {
-    lx_vulkan_device_t* device = (lx_vulkan_device_t*)self;
-    lx_assert(device && polygon);
-
-    if (lx_vk_renderer_init(device)) {
-        lx_vk_renderer_draw_polygon(device, polygon, hint, bounds);
-        lx_vk_renderer_exit(device);
-    }
+    lx_vk_renderer_draw_polygon((lx_vulkan_device_t*)self, polygon, hint, bounds);
 }
 
 static lx_void_t lx_device_vulkan_draw_path(lx_device_ref_t self, lx_path_ref_t path) {
-    lx_vulkan_device_t* device = (lx_vulkan_device_t*)self;
-    lx_assert(device && path);
-
-    if (lx_vk_renderer_init(device)) {
-        lx_vk_renderer_draw_path(device, path);
-        lx_vk_renderer_exit(device);
-    }
+    lx_vk_renderer_draw_path((lx_vulkan_device_t*)self, path);
 }
 
 static lx_bool_t lx_device_vulkan_swapchain_init(lx_vulkan_device_t* device) {
@@ -407,6 +392,8 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
         device = lx_malloc0_type(lx_vulkan_device_t);
         lx_assert_and_check_break(device);
 
+        device->base.draw_lock    = lx_device_vulkan_draw_lock;
+        device->base.draw_commit  = lx_device_vulkan_draw_commit;
         device->base.draw_clear   = lx_device_vulkan_draw_clear;
         device->base.draw_lines   = lx_device_vulkan_draw_lines;
         device->base.draw_points  = lx_device_vulkan_draw_points;

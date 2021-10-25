@@ -433,7 +433,14 @@ static lx_void_t lx_window_glfw_runloop(lx_window_ref_t self) {
 
         // draw
         lx_hong_t starttime = lx_mclock();
+#ifdef LX_CONFIG_DEVICE_HAVE_VULKAN
+        if (lx_device_draw_lock(window->base.device)) {
+            window->base.on_draw((lx_window_ref_t)window, window->base.canvas);
+            lx_device_draw_commit(window->base.device);
+        }
+#else
         window->base.on_draw((lx_window_ref_t)window, window->base.canvas);
+#endif
 
         // flush
         glfwSwapBuffers(window->window);

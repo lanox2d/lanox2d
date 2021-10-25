@@ -35,19 +35,26 @@ lx_extern_c_enter
  * interface
  */
 
-/* init renderer
+/* lock to draw
  *
  * @param device    the device
  *
  * @return          lx_true or lx_false
  */
-lx_bool_t           lx_vk_renderer_init(lx_vulkan_device_t* device);
+lx_bool_t           lx_vk_renderer_draw_lock(lx_vulkan_device_t* device);
 
-/* exit renderer
+/* commit to draw
  *
  * @param device    the device
  */
-lx_void_t           lx_vk_renderer_exit(lx_vulkan_device_t* device);
+lx_void_t           lx_vk_renderer_draw_commit(lx_vulkan_device_t* device);
+
+/* draw clear color
+ *
+ * @param device    the device
+ * @param color     the color
+ */
+lx_void_t           lx_vk_renderer_draw_clear(lx_vulkan_device_t* device, lx_color_t color);
 
 /* draw path
  *
