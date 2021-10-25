@@ -94,6 +94,7 @@ lx_bool_t lx_vk_renderer_draw_lock(lx_vulkan_device_t* device) {
     if (vkAcquireNextImageKHR(device->device, device->swapchain, UINT64_MAX, device->semaphore, VK_NULL_HANDLE, &device->imageindex) != VK_SUCCESS) {
         return lx_false;
     }
+    lx_assert_and_check_return_val(device->imageindex < device->command_buffers_count, lx_false);
     if (vkResetFences(device->device, 1, &device->fence) != VK_SUCCESS) {
         return lx_false;
     }
@@ -101,6 +102,26 @@ lx_bool_t lx_vk_renderer_draw_lock(lx_vulkan_device_t* device) {
 }
 
 lx_void_t lx_vk_renderer_draw_commit(lx_vulkan_device_t* device) {
+    lx_assert(device->imageindex < device->command_buffers_count);
+
+    // submit command buffers
+    VkPipelineStageFlags wait_stage_mask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    VkSubmitInfo submit_info = {};
+    submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    submit_info.pNext = lx_null;
+    submit_info.waitSemaphoreCount = 1;
+    submit_info.pWaitSemaphores = &device->semaphore;
+    submit_info.pWaitDstStageMask = &wait_stage_mask;
+    submit_info.commandBufferCount = 1;
+    submit_info.pCommandBuffers = &device->command_buffers[device->imageindex];
+    submit_info.signalSemaphoreCount = 0;
+    submit_info.pSignalSemaphores = lx_null;
+    if (vkQueueSubmit(device->queue, 1, &submit_info, device->fence) != VK_SUCCESS) {
+        return;
+    }
+    if (vkWaitForFences(device->device, 1, &device->fence, VK_TRUE, 100000000) != VK_SUCCESS) {
+        return;
+    }
 
     // present frame
     VkResult result;
