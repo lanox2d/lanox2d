@@ -345,13 +345,13 @@ static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
         // destroy semaphore
         if (device->semaphore) {
             vkDestroySemaphore(device->device, device->semaphore, lx_null);
-            device->semaphore = lx_null;
+            device->semaphore = 0;
         }
 
         // destroy fence
         if (device->fence) {
             vkDestroyFence(device->device, device->fence, lx_null);
-            device->fence = lx_null;
+            device->fence = 0;
         }
 
         // destroy pipelines
@@ -383,13 +383,13 @@ static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
         // destroy command pool
         if (device->command_pool) {
             vkDestroyCommandPool(device->device, device->command_pool, lx_null);
-            device->command_pool = lx_null;
+            device->command_pool = 0;
         }
 
         // destroy render pass
         if (device->renderpass) {
             vkDestroyRenderPass(device->device, device->renderpass, lx_null);
-            device->renderpass = lx_null;
+            device->renderpass = 0;
         }
 
         // destroy imageviews
@@ -404,7 +404,7 @@ static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
         // destroy swapchain
         if (device->swapchain) {
             vkDestroySwapchainKHR(device->device, device->swapchain, lx_null);
-            device->swapchain = lx_null;
+            device->swapchain = 0;
         }
 
         // destroy device

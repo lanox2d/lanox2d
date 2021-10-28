@@ -4,19 +4,21 @@ task("apk_build")
     }}
     on_run(function ()
         import("core.base.option")
+        import("detect.sdks.find_android_sdk")
         os.cd(os.scriptdir())
         if option.get("release") then
             os.exec("./gradlew app:assembleRelease")
             print("resigning apk ..")
             local apkfile_signed = "./app/build/outputs/apk/release/app-release-signed.apk"
             local apkfile_unsigned = "./app/build/outputs/apk/release/app-release-unsigned.apk"
-            local java_home = assert(os.getenv("JAVA_HOME"), "$JAVA_HOME not found!")
-            local jarsigner = path.join(java_home, "bin", "jarsigner" .. (is_host("windows") and ".exe" or ""))
-            assert(os.isfile(jarsigner), "%s not found!", jarsigner)
             local alias = "test"
             local storepass = "1234567890"
-            local argv = {"-keystore", path.join(os.scriptdir(), "res", "sign.keystore"), "-signedjar", apkfile_signed, "-digestalg", "SHA1", "-sigalg", "MD5withRSA", apkfile_unsigned, alias, "--storepass", storepass}
-            os.runv(jarsigner, argv)
+            local keystore = path.join(os.scriptdir(), "res", "sign.keystore")
+            local android_sdk = assert(find_android_sdk(), "Android SDK not found!")
+            local apksigner = path.join(android_sdk.sdkdir, "build-tools", android_sdk.build_toolver, "apksigner")
+            assert(os.isfile(apksigner), "apksigner not found!")
+            local argv = {"sign", "--ks", keystore, "--ks-key-alias", alias, "--ks-pass", "pass:" .. storepass, "--out", apkfile_signed, apkfile_unsigned}
+            os.runv(apksigner, argv)
             print("resigning apk ok!")
         else
             os.exec("./gradlew app:assembleDebug")

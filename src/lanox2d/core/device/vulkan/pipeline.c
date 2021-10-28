@@ -45,8 +45,8 @@ lx_pipeline_ref_t lx_pipeline_init(lx_vulkan_device_t* device, lx_size_t type, l
 
     lx_bool_t ok = lx_false;
     lx_pipeline_t* pipeline = lx_null;
-    VkShaderModule vshader_module = lx_null;
-    VkShaderModule fshader_module = lx_null;
+    VkShaderModule vshader_module = 0;
+    VkShaderModule fshader_module = 0;
     do {
         // init pipeline
         pipeline = lx_malloc0_type(lx_pipeline_t);
@@ -237,11 +237,11 @@ lx_pipeline_ref_t lx_pipeline_init(lx_vulkan_device_t* device, lx_size_t type, l
     // free shaders
     if (vshader_module) {
         vkDestroyShaderModule(device->device, vshader_module, lx_null);
-        vshader_module = lx_null;
+        vshader_module = 0;
     }
     if (fshader_module) {
         vkDestroyShaderModule(device->device, fshader_module, lx_null);
-        fshader_module = lx_null;
+        fshader_module = 0;
     }
 
     // free pipeline if failed
@@ -278,15 +278,15 @@ lx_void_t lx_pipeline_exit(lx_pipeline_ref_t self) {
         lx_assert(pipeline->device && pipeline->device->device);
         if (pipeline->pipeline) {
             vkDestroyPipeline(pipeline->device->device, pipeline->pipeline, lx_null);
-            pipeline->pipeline = lx_null;
+            pipeline->pipeline = 0;
         }
         if (pipeline->pipeline_cache) {
             vkDestroyPipelineCache(pipeline->device->device, pipeline->pipeline_cache, lx_null);
-            pipeline->pipeline_cache = lx_null;
+            pipeline->pipeline_cache = 0;
         }
         if (pipeline->pipeline_layout) {
             vkDestroyPipelineLayout(pipeline->device->device, pipeline->pipeline_layout, lx_null);
-            pipeline->pipeline_layout = lx_null;
+            pipeline->pipeline_layout = 0;
         }
         lx_free(pipeline);
     }
