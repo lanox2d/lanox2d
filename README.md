@@ -25,6 +25,92 @@
 
 Lanox2D is a lightweight and fast 2D vector graphics engine.
 
+## Build
+
+### Prepare
+
+We need to install the [Xmake](https://github.com/xmake-io/xmake) cross-platform build tool first.
+
+### Build the platform
+
+#### Host Platform
+
+By default, Windows/Linux/macOS platforms only require one-click compilation, and Xmake will select the optimal rendering device and window.
+
+```console
+$ xmake
+```
+
+#### Android
+
+Compile the library and generate the apk package of the Example project.
+
+```console
+$ xmake apk_build
+```
+
+Of course, we can also directly use Android Studio to open the internal project to directly compile and run.
+
+#### iOS
+
+Compile the library and generate the ipa package of the Example project.
+
+```console
+$ xmake ipa_build
+```
+
+Of course, we can also directly use Xcode to open the internal project to directly compile and run.
+
+### Rendering equipment
+
+Currently, we support the following rendering devices:
+
+- opengl
+- vulkan
+- metal
+- bitmap
+- skia
+
+#### OpenGL
+
+On Linux, we use OpenGL as the default rendering device by default, but on other platforms, if we also want to use OpenGL, we can manually configure the switch.
+
+```console
+$ xmake f --window=glfw [--device=opengl]
+$ xmake
+```
+
+Usually, we only need to switch to the glfw window, and xmake will use OpenGL by default.
+
+We can also switch to use Glut as a window.
+
+```console
+$ xmake f --window=glut
+$ xmake
+```
+
+#### Vulkan
+
+```console
+$ xmake f --device=vulkan --window=glfw
+$ xmake
+```
+
+#### Metal
+
+On macOS/iOS, we will use Metal as the rendering device by default.
+
+### Render window
+
+We can switch the following window types through the `xmake f --window=xxx` configuration.
+
+- glfw
+- glut
+- sdl
+- fbdev
+- android
+- mach
+
 ## Contacts
 
 * Email：[waruqi@gmail.com](mailto:waruqi@gmail.com)

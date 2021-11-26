@@ -315,15 +315,15 @@
         ["glfw#31fecfc4"] = {
             repo = {
                 branch = "master",
-                commit = "eda7adee81bac151f87c507030cc0dd8ab299462",
+                commit = "bf44b47c1dc3e0b0821233c639d8b957a3893f5d",
                 url = "https://gitee.com/tboox/xmake-repo.git"
             },
-            version = "3.3.4"
+            version = "3.3.5"
         },
         ["ninja#31fecfc4"] = {
             repo = {
                 branch = "master",
-                commit = "5f11bb0b3d922b4d71ab77acae19c1df1df7f236",
+                commit = "bf44b47c1dc3e0b0821233c639d8b957a3893f5d",
                 url = "https://gitee.com/tboox/xmake-repo.git"
             },
             version = "1.10.2"
@@ -331,7 +331,7 @@
         ["opengl#31fecfc4"] = {
             repo = {
                 branch = "master",
-                commit = "5f11bb0b3d922b4d71ab77acae19c1df1df7f236",
+                commit = "bf44b47c1dc3e0b0821233c639d8b957a3893f5d",
                 url = "https://gitee.com/tboox/xmake-repo.git"
             },
             version = "latest"
