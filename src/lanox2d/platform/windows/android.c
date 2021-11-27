@@ -168,6 +168,9 @@ static lx_bool_t lx_window_android_init_vulkan(lx_window_android_t* window, ANat
             lx_vk_instance_extensions_add(debug_report_extensions, lx_arrayn(debug_report_extensions));
             has_debug_report_extension = lx_true;
         }
+#else
+        lx_bool_t has_debug_utils_extension = lx_false;
+        lx_bool_t has_debug_report_extension = lx_false;
 #endif
         createinfo.ppEnabledLayerNames     = lx_vk_validation_layers(&createinfo.enabledLayerCount);
         createinfo.ppEnabledExtensionNames = lx_vk_instance_extensions(&createinfo.enabledExtensionCount);
