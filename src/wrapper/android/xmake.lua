@@ -32,6 +32,10 @@ task("apk_install")
     on_run(function ()
         import("core.base.option")
         os.cd(os.scriptdir())
+        -- enable validation layers
+        os.exec("adb shell settings put global enable_gpu_debug_layers 1")
+        os.exec("adb shell settings put global gpu_debug_app io.lanox2d.example")
+        os.exec("adb shell settings put global gpu_debug_layers VK_LAYER_KHRONOS_validation")
         if option.get("release") then
             os.exec("adb install -r ./app/build/outputs/apk/release/app-release-signed.apk")
         else
