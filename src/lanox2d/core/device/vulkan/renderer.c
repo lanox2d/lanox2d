@@ -144,6 +144,62 @@ static lx_inline lx_bool_t lx_vk_renderer_stroke_only(lx_vulkan_device_t* device
         /*&&  !device->shader*/);
 }
 
+static lx_bool_t lx_vk_renderer_draw_prepare(lx_vulkan_device_t* device) {
+    if (device->renderer_prepared) {
+        return lx_true;
+    }
+
+    // get current command buffer
+    lx_assert_and_check_return_val(device->imageindex < device->command_buffers_count, lx_false);
+    VkCommandBuffer cmdbuffer = device->command_buffers[device->imageindex];
+
+    // we start by creating and declare the "beginning" our command buffer
+    VkCommandBufferBeginInfo cmdbuffer_begininfo = {};
+    cmdbuffer_begininfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    cmdbuffer_begininfo.pNext = lx_null;
+    cmdbuffer_begininfo.flags = 0;
+    cmdbuffer_begininfo.pInheritanceInfo = lx_null;
+    if (vkBeginCommandBuffer(cmdbuffer, &cmdbuffer_begininfo) != VK_SUCCESS) {
+        return lx_false;
+    }
+
+    // transition the display image to color attachment layout
+    lx_vk_renderer_set_imagelayout(cmdbuffer, device->images[device->imageindex],
+        VK_IMAGE_LAYOUT_UNDEFINED,
+        VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+        VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+        VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
+
+    // now we start a renderpass. Any draw command has to be recorded in a renderpass
+    VkClearValue clear_values;
+    clear_values.color = device->clear_color;
+    VkRenderPassBeginInfo renderpass_begininfo = {};
+    renderpass_begininfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    renderpass_begininfo.pNext = lx_null;
+    renderpass_begininfo.renderPass = device->renderpass;
+    renderpass_begininfo.framebuffer = device->framebuffers[device->imageindex];
+    renderpass_begininfo.renderArea.offset.x = 0;
+    renderpass_begininfo.renderArea.offset.y = 0;
+    renderpass_begininfo.renderArea.extent = device->framesize;
+    renderpass_begininfo.clearValueCount = 1;
+    renderpass_begininfo.pClearValues = &clear_values;
+    vkCmdBeginRenderPass(cmdbuffer, &renderpass_begininfo, VK_SUBPASS_CONTENTS_INLINE);
+
+#if 0
+    // bind pipeline to the command buffer
+    vkCmdBindPipeline(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, device->pipeline);
+
+    VkDeviceSize offset = 0;
+    vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &buffers.vertexBuf_, &offset);
+
+    // draw triangle
+    vkCmdDraw(cmdbuffer, 3, 1, 0, 0);
+#endif
+
+    device->renderer_prepared = lx_true;
+    return lx_true;
+}
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
@@ -158,11 +214,20 @@ lx_bool_t lx_vk_renderer_draw_lock(lx_vulkan_device_t* device) {
     if (vkResetFences(device->device, 1, &device->fence) != VK_SUCCESS) {
         return lx_false;
     }
+
+    // reset renderer
+    device->renderer_prepared = lx_false;
     return lx_true;
 }
 
 lx_void_t lx_vk_renderer_draw_commit(lx_vulkan_device_t* device) {
     lx_assert(device->imageindex < device->command_buffers_count);
+    lx_assert_and_check_return(device->renderer_prepared);
+
+    // command end
+    VkCommandBuffer cmdbuffer = device->command_buffers[device->imageindex];
+    vkCmdEndRenderPass(cmdbuffer);
+    vkEndCommandBuffer(cmdbuffer);
 
     // submit command buffers
     VkPipelineStageFlags wait_stage_mask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
@@ -198,67 +263,19 @@ lx_void_t lx_vk_renderer_draw_commit(lx_vulkan_device_t* device) {
 }
 
 lx_void_t lx_vk_renderer_draw_clear(lx_vulkan_device_t* device, lx_color_t color) {
-#if 1
-    // get current command buffer
-    lx_assert_and_check_return(device->imageindex < device->command_buffers_count);
-    VkCommandBuffer cmdbuffer = device->command_buffers[device->imageindex];
-
-    // we start by creating and declare the "beginning" our command buffer
-    VkCommandBufferBeginInfo cmdbuffer_begininfo = {};
-    cmdbuffer_begininfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-    cmdbuffer_begininfo.pNext = lx_null;
-    cmdbuffer_begininfo.flags = 0;
-    cmdbuffer_begininfo.pInheritanceInfo = lx_null;
-    if (vkBeginCommandBuffer(cmdbuffer, &cmdbuffer_begininfo) != VK_SUCCESS) {
-        return ;
-    }
-
-    // transition the display image to color attachment layout
-    lx_vk_renderer_set_imagelayout(cmdbuffer, device->images[device->imageindex],
-        VK_IMAGE_LAYOUT_UNDEFINED,
-        VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-        VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
-        VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
-
-    // now we start a renderpass. Any draw command has to be recorded in a renderpass
-    VkClearColorValue clear_color;
-    VkClearValue clear_values;
-    clear_color.float32[0] = 1.0f;
-    clear_color.float32[1] = 0.0f;
-    clear_color.float32[2] = 0.0f;
-    clear_color.float32[3] = 0.0f;
-    clear_values.color = clear_color;
-    VkRenderPassBeginInfo renderpass_begininfo = {};
-    renderpass_begininfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-    renderpass_begininfo.pNext = lx_null;
-    renderpass_begininfo.renderPass = device->renderpass;
-    renderpass_begininfo.framebuffer = device->framebuffers[device->imageindex];
-    renderpass_begininfo.renderArea.offset.x = 0;
-    renderpass_begininfo.renderArea.offset.y = 0;
-    renderpass_begininfo.renderArea.extent = device->framesize;
-    renderpass_begininfo.clearValueCount = 1;
-    renderpass_begininfo.pClearValues = &clear_values;
-    vkCmdBeginRenderPass(cmdbuffer, &renderpass_begininfo, VK_SUBPASS_CONTENTS_INLINE);
-
-#if 0
-    // bind pipeline to the command buffer
-    vkCmdBindPipeline(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, device->pipeline);
-
-    VkDeviceSize offset = 0;
-    vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &buffers.vertexBuf_, &offset);
-
-    // draw triangle
-    vkCmdDraw(cmdbuffer, 3, 1, 0, 0);
-#endif
-
-    // command end
-    vkCmdEndRenderPass(cmdbuffer);
-    vkEndCommandBuffer(cmdbuffer);
-#endif
+    device->clear_color.float32[0] = (lx_float_t)color.r / 0xff;
+    device->clear_color.float32[1] = (lx_float_t)color.g / 0xff;
+    device->clear_color.float32[2] = (lx_float_t)color.b / 0xff;
+    device->clear_color.float32[3] = (lx_float_t)color.a / 0xff;
+    lx_vk_renderer_draw_prepare(device);
 }
 
 lx_void_t lx_vk_renderer_draw_path(lx_vulkan_device_t* device, lx_path_ref_t path) {
     lx_assert(device && device->base.paint && path);
+
+    if (!lx_vk_renderer_draw_prepare(device)) {
+        return ;
+    }
 
     lx_size_t mode = lx_paint_mode(device->base.paint);
     if (mode & LX_PAINT_MODE_FILL) {
@@ -279,6 +296,10 @@ lx_void_t lx_vk_renderer_draw_lines(lx_vulkan_device_t* device, lx_point_ref_t p
     lx_check_return(lx_paint_mode(device->base.paint) & LX_PAINT_MODE_STROKE);
     lx_check_return((lx_paint_stroke_width(device->base.paint) > 0));
 
+    if (!lx_vk_renderer_draw_prepare(device)) {
+        return ;
+    }
+
     lx_vk_renderer_apply_paint(device, bounds);
     if (lx_vk_renderer_stroke_only(device)) {
         lx_vk_renderer_stroke_lines(device, points, count);
@@ -292,6 +313,10 @@ lx_void_t lx_vk_renderer_draw_points(lx_vulkan_device_t* device, lx_point_ref_t 
     lx_check_return(lx_paint_mode(device->base.paint) & LX_PAINT_MODE_STROKE);
     lx_check_return((lx_paint_stroke_width(device->base.paint) > 0));
 
+    if (!lx_vk_renderer_draw_prepare(device)) {
+        return ;
+    }
+
     lx_vk_renderer_apply_paint(device, bounds);
     if (lx_vk_renderer_stroke_only(device)) {
         lx_vk_renderer_stroke_points(device, points, count);
@@ -302,6 +327,10 @@ lx_void_t lx_vk_renderer_draw_points(lx_vulkan_device_t* device, lx_point_ref_t 
 
 lx_void_t lx_vk_renderer_draw_polygon(lx_vulkan_device_t* device, lx_polygon_ref_t polygon, lx_shape_ref_t hint, lx_rect_ref_t bounds) {
     lx_assert(device && device->base.paint && polygon && polygon->points && polygon->counts);
+
+    if (!lx_vk_renderer_draw_prepare(device)) {
+        return ;
+    }
 
     if (hint && hint->type == LX_SHAPE_TYPE_LINE) {
         lx_point_t points[2];

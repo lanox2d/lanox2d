@@ -69,6 +69,10 @@ typedef struct lx_vulkan_device_t_ {
     VkCommandBuffer*            command_buffers;
     lx_uint32_t                 command_buffers_count;
 
+    // renderer
+    lx_bool_t                   renderer_prepared;
+    VkClearColorValue           clear_color;
+
 }lx_vulkan_device_t;
 
 #endif
