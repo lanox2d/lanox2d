@@ -54,7 +54,7 @@ public class GLESSurfaceView extends GLSurfaceView {
         setEGLConfigChooser(8, 8, 8, 8, 16, 4);
 
         // init render
-        setRenderer(new GLESSurfaceViewRenderer(this));
+        setRenderer(new GLESSurfaceRenderer(this));
 
         // init focus
         requestFocus();

@@ -15,7 +15,7 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        GLESSurfaceViewRenderer.java
+ * @file        GLESSurfaceRenderer.java
  */
 package io.lanox2d.lib.gles;
 
@@ -26,13 +26,13 @@ import javax.microedition.khronos.egl.EGLConfig;
 
 import io.lanox2d.lib.NativeWindow;
 
-public class GLESSurfaceViewRenderer implements GLSurfaceView.Renderer {
+public class GLESSurfaceRenderer implements GLSurfaceView.Renderer {
     private static final String TAG = "Lanox2dGLViewRenderer";
     private boolean started = false;
     private GLESSurfaceView view;
     private NativeWindow nativeWindow;
 
-    public GLESSurfaceViewRenderer(GLESSurfaceView view)  {
+    public GLESSurfaceRenderer(GLESSurfaceView view)  {
         this.view = view;
         this.nativeWindow = NativeWindow.getInstance();
     }
