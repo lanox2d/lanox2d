@@ -11,10 +11,12 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 
 import io.lanox2d.lib.NativeWindow;
+import io.lanox2d.lib.vulkan.VkSurfaceView;
 
 public class MainActivity extends AppCompatActivity implements Runnable {
 
     private TextView        infoView;
+    private VkSurfaceView   surfaceView;
     private Handler         handler = new Handler();
     private float           fps = 0;
 
@@ -24,7 +26,9 @@ public class MainActivity extends AppCompatActivity implements Runnable {
         setContentView(R.layout.activity_main);
 
         infoView = (TextView)this.findViewById(R.id.InfoView);
+        surfaceView = (VkSurfaceView)this.findViewById(R.id.Lanox2dView);
 
+        final String imagePath = Utils.getAssetsFile(this.getApplicationContext(), "test.png").getAbsolutePath();
         NativeWindow.getInstance().setNativeWindowListener(new NativeWindow.NativeWindowListener() {
 
             private long fps_time = 0;
@@ -35,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements Runnable {
                 // load tests
                 //NativeTest.getInstance().loadEmptyWindow();
                 //NativeTest.getInstance().loadShapeWindow("path");
-                NativeTest.getInstance().loadShapeWindow("path", getAssetsFile("test.png").getAbsolutePath());
+                NativeTest.getInstance().loadShapeWindow("path", imagePath);
             }
 
             @Override
@@ -67,24 +71,21 @@ public class MainActivity extends AppCompatActivity implements Runnable {
         handler.postDelayed(this, 1000);
     }
 
-    public File getAssetsFile(String name) {
-        try {
-            File outputDir = this.getApplicationContext().getCacheDir();
-            File outputFile = File.createTempFile("assets", ".tmp", outputDir);
-            InputStream is = this.getApplicationContext().getAssets().open(name);
-            FileOutputStream fos = new FileOutputStream(outputFile);
-            byte[] buffer = new byte[8192];
-            int byteCount = 0;
-            while ((byteCount = is.read(buffer)) != -1) {
-                fos.write(buffer, 0, byteCount);
-            }
-            fos.flush();
-            is.close();
-            fos.close();
-            return outputFile;
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-        return null;
+    @Override
+    public void onPause() {
+        surfaceView.onPause();
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        surfaceView.onResume();
+        super.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+        surfaceView.onDestroy();
+        super.onDestroy();
     }
 }

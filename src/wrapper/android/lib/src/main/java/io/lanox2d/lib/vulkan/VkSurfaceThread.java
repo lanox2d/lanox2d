@@ -35,6 +35,8 @@ public class VkSurfaceThread extends Thread {
     private boolean shouldExit = false;
     private boolean exited = false;
     private boolean resumed = false;
+    private boolean rendererResumed = false;
+    private boolean rendererInitialized = false;
     private boolean hasSurface = false;
     private boolean surfaceChanged = false;
     private int surfaceWidth = 0;
@@ -106,25 +108,46 @@ public class VkSurfaceThread extends Thread {
 
     @Override
     public void run() {
-        boolean locked = false;
-        while (true) {
-            lock.lock();
-            locked = true;
-            try {
-                // should exit?
-                if (shouldExit) {
-                    break ;
+        try {
+            boolean broken = false;
+            while (true) {
+                lock.lock();
+                while (true) {
+                    if (shouldExit) {
+                        renderer.onDestroy();
+                        broken = true;
+                        break;
+                    }
+                    if (readyToDraw()) {
+                        if (!rendererResumed) {
+                            rendererResumed = true;
+                            renderer.onResume();
+                            if (!rendererInitialized) {
+                                rendererInitialized = true;
+                                renderer.onSurfaceCreated();
+                            }
+                        }
+                        if (surfaceChanged) {
+                            renderer.onSurfaceChanged(surfaceWidth, surfaceHeight);
+                            surfaceChanged = false;
+                        }
+                        break;
+                    } else if (rendererResumed) {
+                        rendererResumed = false;
+                        renderer.onPause();
+                    }
+                    lockCondition.await();
                 }
-            } catch (Throwable e) {
-                e.printStackTrace();
-                break;
+                lock.unlock();
+                if (broken) {
+                    break;
+                }
+                renderer.onDrawFrame();
             }
-            lock.unlock();
-            locked = false;
+        } catch (Throwable e) {
+            e.printStackTrace();
+        } finally {
+            threadExiting();
         }
-        if (locked) {
-            lock.unlock();
-        }
-        threadExiting();
     }
 }

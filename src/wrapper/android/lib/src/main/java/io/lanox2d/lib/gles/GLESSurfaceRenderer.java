@@ -57,5 +57,4 @@ public class GLESSurfaceRenderer implements GLSurfaceView.Renderer {
             nativeWindow.resizeWindow(view.getWidth(), view.getHeight());
         }
     }
-
 }

@@ -20,8 +20,10 @@
 package io.lanox2d.lib.vulkan;
 
 import io.lanox2d.lib.NativeWindow;
+import io.lanox2d.lib.common.Logger;
 
 public class VkSurfaceRenderer {
+    private static final String TAG = "VkSurfaceRenderer";
 
     private VkSurfaceView surfaceView;
     private NativeWindow nativeWindow;
@@ -33,26 +35,37 @@ public class VkSurfaceRenderer {
     }
 
     public void onPause() {
+        Logger.i(TAG, "onPause");
     }
 
     public void onResume() {
+        Logger.i(TAG, "onResume");
     }
 
     public void onSurfaceCreated() {
+        Logger.i(TAG, "onSurfaceCreated");
     }
 
     public void onSurfaceDestroyed() {
+        Logger.i(TAG, "onSurfaceDestroyed");
     }
 
     public void onSurfaceChanged(int width, int height) {
+        Logger.i(TAG, "onSurfaceChanged");
         if (!started && nativeWindow.initWindow(width, height, surfaceView.getHolder().getSurface())) {
             started = true;
+        } else if (started) {
+            nativeWindow.resizeWindow(width, height);
         }
     }
 
     public void onDrawFrame() {
+        if (started) {
+            nativeWindow.drawWindow();
+        }
     }
 
     public void onDestroy() {
+        Logger.i(TAG, "onDestroy");
     }
 }

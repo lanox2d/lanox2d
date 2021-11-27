@@ -55,8 +55,14 @@ static lx_void_t lx_window_android_draw(lx_window_ref_t self) {
     lx_window_android_t* window = (lx_window_android_t*)self;
     lx_assert(window && window->base.on_draw);
 
-    // do draw
+#ifdef LX_CONFIG_DEVICE_HAVE_VULKAN
+    if (lx_device_draw_lock(window->base.device)) {
+        window->base.on_draw((lx_window_ref_t)window, window->base.canvas);
+        lx_device_draw_commit(window->base.device);
+    }
+#else
     window->base.on_draw((lx_window_ref_t)window, window->base.canvas);
+#endif
 }
 
 static lx_void_t lx_window_android_resize(lx_window_ref_t self, lx_size_t width, lx_size_t height) {
