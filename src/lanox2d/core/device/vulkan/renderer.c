@@ -29,6 +29,66 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
+static lx_void_t lx_vk_renderer_set_imagelayout(VkCommandBuffer cmdbuffer, VkImage image,
+    VkImageLayout oldlayout, VkImageLayout newlayout,
+    VkPipelineStageFlags srcstages, VkPipelineStageFlags dststages) {
+
+    VkImageMemoryBarrier image_memory_barrier = {};
+    image_memory_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    image_memory_barrier.pNext = lx_null;
+    image_memory_barrier.srcAccessMask = 0;
+    image_memory_barrier.dstAccessMask = 0;
+    image_memory_barrier.oldLayout = oldlayout;
+    image_memory_barrier.newLayout = newlayout;
+    image_memory_barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    image_memory_barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    image_memory_barrier.image = image;
+    image_memory_barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    image_memory_barrier.subresourceRange.baseMipLevel = 0;
+    image_memory_barrier.subresourceRange.levelCount = 1;
+    image_memory_barrier.subresourceRange.baseArrayLayer = 0;
+    image_memory_barrier.subresourceRange.layerCount = 1;
+
+    switch (oldlayout) {
+    case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
+        image_memory_barrier.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+        break;
+    case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
+        image_memory_barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+        break;
+    case VK_IMAGE_LAYOUT_PREINITIALIZED:
+        image_memory_barrier.srcAccessMask = VK_ACCESS_HOST_WRITE_BIT;
+        break;
+    default:
+        break;
+    }
+
+    switch (newlayout) {
+    case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
+        image_memory_barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+        break;
+    case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
+        image_memory_barrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+        break;
+    case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
+        image_memory_barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+        break;
+    case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
+        image_memory_barrier.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+        break;
+    case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
+        image_memory_barrier.dstAccessMask =
+            VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+        break;
+    case VK_IMAGE_LAYOUT_PRESENT_SRC_KHR:
+        image_memory_barrier.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+        break;
+    default:
+        break;
+    }
+    vkCmdPipelineBarrier(cmdbuffer, srcstages, dststages, 0, 0, lx_null, 0, lx_null, 1, &image_memory_barrier);
+}
+
 static lx_inline lx_void_t lx_vk_renderer_apply_paint(lx_vulkan_device_t* device, lx_rect_ref_t bounds) {
     lx_assert(device);
 }
@@ -79,9 +139,9 @@ static lx_inline lx_bool_t lx_vk_renderer_stroke_only(lx_vulkan_device_t* device
 
     // width == 1 and solid? only stroke it
     return (    1.0f == lx_paint_stroke_width(device->base.paint)
-            &&  1.0f == lx_abs(device->base.matrix->sx)
-            &&  1.0f == lx_abs(device->base.matrix->sy)
-            /*&&  !device->shader*/);
+        &&  1.0f == lx_abs(device->base.matrix->sx)
+        &&  1.0f == lx_abs(device->base.matrix->sy)
+        /*&&  !device->shader*/);
 }
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -138,6 +198,63 @@ lx_void_t lx_vk_renderer_draw_commit(lx_vulkan_device_t* device) {
 }
 
 lx_void_t lx_vk_renderer_draw_clear(lx_vulkan_device_t* device, lx_color_t color) {
+#if 1
+    // get current command buffer
+    lx_assert_and_check_return(device->imageindex < device->command_buffers_count);
+    VkCommandBuffer cmdbuffer = device->command_buffers[device->imageindex];
+
+    // we start by creating and declare the "beginning" our command buffer
+    VkCommandBufferBeginInfo cmdbuffer_begininfo = {};
+    cmdbuffer_begininfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    cmdbuffer_begininfo.pNext = lx_null;
+    cmdbuffer_begininfo.flags = 0;
+    cmdbuffer_begininfo.pInheritanceInfo = lx_null;
+    if (vkBeginCommandBuffer(cmdbuffer, &cmdbuffer_begininfo) != VK_SUCCESS) {
+        return ;
+    }
+
+    // transition the display image to color attachment layout
+    lx_vk_renderer_set_imagelayout(cmdbuffer, device->images[device->imageindex],
+        VK_IMAGE_LAYOUT_UNDEFINED,
+        VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+        VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+        VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
+
+    // now we start a renderpass. Any draw command has to be recorded in a renderpass
+    VkClearColorValue clear_color;
+    VkClearValue clear_values;
+    clear_color.float32[0] = 1.0f;
+    clear_color.float32[1] = 0.0f;
+    clear_color.float32[2] = 0.0f;
+    clear_color.float32[3] = 0.0f;
+    clear_values.color = clear_color;
+    VkRenderPassBeginInfo renderpass_begininfo = {};
+    renderpass_begininfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    renderpass_begininfo.pNext = lx_null;
+    renderpass_begininfo.renderPass = device->renderpass;
+    renderpass_begininfo.framebuffer = device->framebuffers[device->imageindex];
+    renderpass_begininfo.renderArea.offset.x = 0;
+    renderpass_begininfo.renderArea.offset.y = 0;
+    renderpass_begininfo.renderArea.extent = device->framesize;
+    renderpass_begininfo.clearValueCount = 1;
+    renderpass_begininfo.pClearValues = &clear_values;
+    vkCmdBeginRenderPass(cmdbuffer, &renderpass_begininfo, VK_SUBPASS_CONTENTS_INLINE);
+
+#if 0
+    // bind pipeline to the command buffer
+    vkCmdBindPipeline(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, device->pipeline);
+
+    VkDeviceSize offset = 0;
+    vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &buffers.vertexBuf_, &offset);
+
+    // draw triangle
+    vkCmdDraw(cmdbuffer, 3, 1, 0, 0);
+#endif
+
+    // command end
+    vkCmdEndRenderPass(cmdbuffer);
+    vkEndCommandBuffer(cmdbuffer);
+#endif
 }
 
 lx_void_t lx_vk_renderer_draw_path(lx_vulkan_device_t* device, lx_path_ref_t path) {

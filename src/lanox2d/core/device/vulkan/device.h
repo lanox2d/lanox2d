@@ -32,17 +32,6 @@
  * types
  */
 
-// the vulkan swapchain type
-typedef struct lx_vulkan_swapchain_t_ {
-    VkSwapchainKHR              swapchain;
-    VkExtent2D                  framesize;
-    VkFormat                    format;
-    VkImage*                    images;
-    VkImageView*                imageviews;
-    VkFramebuffer*              framebuffers;
-    lx_uint32_t                 images_count;
-} lx_vulkan_swapchain_t;
-
 // the vulkan device type
 typedef struct lx_vulkan_device_t_ {
     lx_device_t                 base;
