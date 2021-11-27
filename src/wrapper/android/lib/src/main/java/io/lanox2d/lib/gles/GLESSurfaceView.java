@@ -15,7 +15,7 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        Lanox2dGLView.java
+ * @file        GLESSurfaceView.java
  */
 package io.lanox2d.lib.gles;
 
@@ -31,10 +31,10 @@ import io.lanox2d.lib.Lanox2d;
 import io.lanox2d.lib.NativeWindow;
 import io.lanox2d.lib.common.Logger;
 
-public class Lanox2dGLView extends GLSurfaceView {
+public class GLESSurfaceView extends GLSurfaceView {
     private static final String TAG = "Lanox2dGLView";
 
-    public Lanox2dGLView(Context context, AttributeSet attrs) {
+    public GLESSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         // init lanox2d
@@ -54,7 +54,7 @@ public class Lanox2dGLView extends GLSurfaceView {
         setEGLConfigChooser(8, 8, 8, 8, 16, 4);
 
         // init render
-        setRenderer(new Lanox2dGLViewRenderer(this));
+        setRenderer(new GLESSurfaceViewRenderer(this));
 
         // init focus
         requestFocus();

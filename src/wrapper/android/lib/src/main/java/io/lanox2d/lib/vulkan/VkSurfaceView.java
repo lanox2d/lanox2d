@@ -15,7 +15,7 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        Lanox2dVkView.java
+ * @file        VkSurfaceView.java
  */
 package io.lanox2d.lib.vulkan;
 
@@ -28,13 +28,13 @@ import io.lanox2d.lib.Lanox2d;
 import io.lanox2d.lib.NativeWindow;
 import io.lanox2d.lib.common.Logger;
 
-public class Lanox2dVkView extends SurfaceView implements SurfaceHolder.Callback {
+public class VkSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     private static final String TAG = "Lanox2dVkView";
     private boolean started = false;
 	private SurfaceHolder holder;
     private NativeWindow nativeWindow;
 
-    public Lanox2dVkView(Context context, AttributeSet attrs) {
+    public VkSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         // init lanox2d
