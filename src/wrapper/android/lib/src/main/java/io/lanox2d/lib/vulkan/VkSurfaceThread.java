@@ -19,5 +19,62 @@
  */
 package io.lanox2d.lib.vulkan;
 
-public class VkSurfaceThread {
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
+
+import io.lanox2d.lib.common.Logger;
+
+public class VkSurfaceThread extends Thread {
+    private static final String TAG = "VkSurfaceThread";
+
+    private VkSurfaceRenderer renderer;
+    private ReentrantLock lock = new ReentrantLock();
+    private Condition lockCondition = lock.newCondition();
+    private boolean shouldExit = false;
+    private boolean exited = false;
+
+    VkSurfaceThread(VkSurfaceRenderer renderer) {
+        this.renderer = renderer;
+    }
+
+    private void threadExiting() {
+        lock.lock();
+        exited = true;
+        lockCondition.signalAll();
+        lock.unlock();
+    }
+
+    public void blockingExit() {
+        lock.lock();
+        shouldExit = true;
+        lockCondition.signalAll();
+        while (!exited) {
+            try {
+                Logger.i(TAG, "Waiting on exit for " + getName());
+                lockCondition.await();
+            } catch (InterruptedException e) {
+                currentThread().interrupt();
+            }
+        }
+        lock.unlock();
+    }
+
+    @Override
+    public void run() {
+        try {
+            while (true) {
+                lock.lock();
+                while (true) {
+                    if (shouldExit) {
+                       return ;
+                    }
+                }
+                lock.unlock();
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+        } finally {
+            threadExiting();
+        }
+    }
 }

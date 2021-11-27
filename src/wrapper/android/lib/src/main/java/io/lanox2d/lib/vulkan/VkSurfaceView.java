@@ -33,6 +33,8 @@ public class VkSurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private boolean started = false;
 	private SurfaceHolder holder;
     private NativeWindow nativeWindow;
+    private VkSurfaceThread thread;
+    private VkSurfaceRenderer renderer;
 
     public VkSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -46,6 +48,20 @@ public class VkSurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
         // init native window
         this.nativeWindow = NativeWindow.getInstance();
+
+        // start renderer
+        startRenderer(new VkSurfaceRenderer());
+    }
+
+    // start renderer
+    public void startRenderer(VkSurfaceRenderer renderer) {
+        this.renderer = renderer;
+        thread = new VkSurfaceThread(renderer);
+        thread.start();
+    }
+
+    public void onDestroy() {
+
     }
 
     @Override
