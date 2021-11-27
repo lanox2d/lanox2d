@@ -19,6 +19,8 @@
  */
 package io.lanox2d.lib.vulkan;
 
+import android.view.SurfaceHolder;
+
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -32,9 +34,18 @@ public class VkSurfaceThread extends Thread {
     private Condition lockCondition = lock.newCondition();
     private boolean shouldExit = false;
     private boolean exited = false;
+    private boolean resumed = false;
+    private boolean hasSurface = false;
+    private boolean surfaceChanged = false;
+    private int surfaceWidth = 0;
+    private int surfaceHeight = 0;
 
     VkSurfaceThread(VkSurfaceRenderer renderer) {
         this.renderer = renderer;
+    }
+
+    private boolean readyToDraw() {
+        return hasSurface && resumed;
     }
 
     private void threadExiting() {
@@ -59,22 +70,61 @@ public class VkSurfaceThread extends Thread {
         lock.unlock();
     }
 
+    public void onPause() {
+        lock.lock();
+        resumed = false;
+        lockCondition.signalAll();
+        lock.unlock();
+    }
+
+    public void onResume() {
+        lock.lock();
+        resumed = true;
+        lockCondition.signalAll();
+        lock.unlock();
+    }
+
+    public void onSurfaceCreated() {
+    }
+
+    public void onSurfaceDestroyed() {
+        lock.lock();
+        hasSurface = false;
+        lockCondition.signalAll();
+        lock.unlock();
+    }
+
+    public void onSurfaceChanged(int width, int height) {
+        lock.lock();
+        hasSurface = true;
+        surfaceChanged = true;
+        surfaceWidth = width;
+        surfaceHeight = height;
+        lockCondition.signalAll();
+        lock.unlock();
+    }
+
     @Override
     public void run() {
-        try {
-            while (true) {
-                lock.lock();
-                while (true) {
-                    if (shouldExit) {
-                       return ;
-                    }
+        boolean locked = false;
+        while (true) {
+            lock.lock();
+            locked = true;
+            try {
+                // should exit?
+                if (shouldExit) {
+                    break ;
                 }
-                lock.unlock();
+            } catch (Throwable e) {
+                e.printStackTrace();
+                break;
             }
-        } catch (Throwable e) {
-            e.printStackTrace();
-        } finally {
-            threadExiting();
+            lock.unlock();
+            locked = false;
         }
+        if (locked) {
+            lock.unlock();
+        }
+        threadExiting();
     }
 }

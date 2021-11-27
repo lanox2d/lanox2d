@@ -19,5 +19,40 @@
  */
 package io.lanox2d.lib.vulkan;
 
+import io.lanox2d.lib.NativeWindow;
+
 public class VkSurfaceRenderer {
+
+    private VkSurfaceView surfaceView;
+    private NativeWindow nativeWindow;
+    private boolean started = false;
+
+    VkSurfaceRenderer(VkSurfaceView surfaceView) {
+        this.surfaceView = surfaceView;
+        this.nativeWindow = NativeWindow.getInstance();
+    }
+
+    public void onPause() {
+    }
+
+    public void onResume() {
+    }
+
+    public void onSurfaceCreated() {
+    }
+
+    public void onSurfaceDestroyed() {
+    }
+
+    public void onSurfaceChanged(int width, int height) {
+        if (!started && nativeWindow.initWindow(width, height, surfaceView.getHolder().getSurface())) {
+            started = true;
+        }
+    }
+
+    public void onDrawFrame() {
+    }
+
+    public void onDestroy() {
+    }
 }

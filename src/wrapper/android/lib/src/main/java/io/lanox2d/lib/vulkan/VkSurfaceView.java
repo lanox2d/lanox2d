@@ -30,11 +30,7 @@ import io.lanox2d.lib.common.Logger;
 
 public class VkSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     private static final String TAG = "Lanox2dVkView";
-    private boolean started = false;
-	private SurfaceHolder holder;
-    private NativeWindow nativeWindow;
     private VkSurfaceThread thread;
-    private VkSurfaceRenderer renderer;
 
     public VkSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -43,40 +39,54 @@ public class VkSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         Lanox2d.init(context);
 
         // bind holder
-		holder = this.getHolder();
-		holder.addCallback(this);
-
-        // init native window
-        this.nativeWindow = NativeWindow.getInstance();
+		this.getHolder().addCallback(this);
 
         // start renderer
-        startRenderer(new VkSurfaceRenderer());
+        startRenderer(new VkSurfaceRenderer(this));
     }
 
     // start renderer
     public void startRenderer(VkSurfaceRenderer renderer) {
-        this.renderer = renderer;
         thread = new VkSurfaceThread(renderer);
         thread.start();
     }
 
     public void onDestroy() {
+        if (thread != null) {
+            thread.blockingExit();
+        }
+    }
 
+    public void onPause() {
+        if (thread != null) {
+            thread.onPause();
+        }
+    }
+
+    public void onResume() {
+        if (thread != null) {
+            thread.onResume();
+        }
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-
+        if (thread != null) {
+            thread.onSurfaceCreated();
+        }
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
+        if (thread != null) {
+            thread.onSurfaceDestroyed();
+        }
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        if (!started && nativeWindow.initWindow(width, height, holder.getSurface())) {
-            started = true;
+        if (thread != null) {
+            thread.onSurfaceChanged(width, height);
         }
     }
 }
