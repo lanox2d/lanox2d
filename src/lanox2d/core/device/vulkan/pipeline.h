@@ -44,7 +44,7 @@ lx_extern_c_enter
  *
  * @return              the pipeline
  */
-lx_pipeline_ref_t       lx_pipeline_init(lx_vulkan_device_t* device, lx_size_t type, lx_char_t const* vshader, lx_char_t const* fshader);
+lx_vk_pipeline_ref_t    lx_vk_pipeline_init(lx_vulkan_device_t* device, lx_size_t type, lx_char_t const* vshader, lx_char_t const* fshader);
 
 /* init solid pipeline
  *
@@ -52,7 +52,7 @@ lx_pipeline_ref_t       lx_pipeline_init(lx_vulkan_device_t* device, lx_size_t t
  *
  * @return              the pipeline
  */
-lx_pipeline_ref_t       lx_pipeline_init_solid(lx_vulkan_device_t* device);
+lx_vk_pipeline_ref_t    lx_vk_pipeline_init_solid(lx_vulkan_device_t* device);
 
 /* init texture pipeline
  *
@@ -60,13 +60,21 @@ lx_pipeline_ref_t       lx_pipeline_init_solid(lx_vulkan_device_t* device);
  *
  * @return              the pipeline
  */
-lx_pipeline_ref_t       lx_pipeline_init_texture(lx_vulkan_device_t* device);
+lx_vk_pipeline_ref_t    lx_vk_pipeline_init_texture(lx_vulkan_device_t* device);
 
 /* exit pipeline
  *
  * @param pipeline      the pipeline
  */
-lx_void_t               lx_pipeline_exit(lx_pipeline_ref_t pipeline);
+lx_void_t               lx_vk_pipeline_exit(lx_vk_pipeline_ref_t pipeline);
+
+/* get native pipeline
+ *
+ * @param pipeline      the pipeline
+ *
+ * @return              the native pipeline
+ */
+VkPipeline              lx_vk_pipeline_native(lx_vk_pipeline_ref_t pipeline);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

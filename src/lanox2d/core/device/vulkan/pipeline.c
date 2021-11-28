@@ -29,27 +29,27 @@
  */
 
 // the pipeline type
-typedef struct lx_pipeline_t {
+typedef struct lx_vk_pipeline_t {
     lx_size_t           type;
     VkPipeline          pipeline;
     VkPipelineCache     pipeline_cache;
     VkPipelineLayout    pipeline_layout;
     lx_vulkan_device_t* device;
-}lx_pipeline_t;
+}lx_vk_pipeline_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_pipeline_ref_t lx_pipeline_init(lx_vulkan_device_t* device, lx_size_t type, lx_char_t const* vshader, lx_char_t const* fshader) {
+lx_vk_pipeline_ref_t lx_vk_pipeline_init(lx_vulkan_device_t* device, lx_size_t type, lx_char_t const* vshader, lx_char_t const* fshader) {
     lx_assert_and_check_return_val(device && device->device && vshader && fshader, lx_null);
 
     lx_bool_t ok = lx_false;
-    lx_pipeline_t* pipeline = lx_null;
+    lx_vk_pipeline_t* pipeline = lx_null;
     VkShaderModule vshader_module = 0;
     VkShaderModule fshader_module = 0;
     do {
         // init pipeline
-        pipeline = lx_malloc0_type(lx_pipeline_t);
+        pipeline = lx_malloc0_type(lx_vk_pipeline_t);
         lx_assert_and_check_break(pipeline);
 
         pipeline->type   = type;
@@ -246,34 +246,34 @@ lx_pipeline_ref_t lx_pipeline_init(lx_vulkan_device_t* device, lx_size_t type, l
 
     // free pipeline if failed
     if (!ok && pipeline) {
-        lx_pipeline_exit((lx_pipeline_ref_t)pipeline);
+        lx_vk_pipeline_exit((lx_vk_pipeline_ref_t)pipeline);
         pipeline = lx_null;
     }
-    return (lx_pipeline_ref_t)pipeline;
+    return (lx_vk_pipeline_ref_t)pipeline;
 }
 
-lx_pipeline_ref_t lx_pipeline_init_solid(lx_vulkan_device_t* device) {
+lx_vk_pipeline_ref_t lx_vk_pipeline_init_solid(lx_vulkan_device_t* device) {
     static lx_char_t const vshader[] = {
 #include "solid.vs.h"
     };
     static lx_char_t const fshader[] = {
 #include "solid.fs.h"
     };
-    return lx_pipeline_init(device, LX_PIPELINE_TYPE_SOLID, vshader, fshader);
+    return lx_vk_pipeline_init(device, LX_VK_PIPELINE_TYPE_SOLID, vshader, fshader);
 }
 
-lx_pipeline_ref_t lx_pipeline_init_texture(lx_vulkan_device_t* device) {
+lx_vk_pipeline_ref_t lx_vk_pipeline_init_texture(lx_vulkan_device_t* device) {
     static lx_char_t const vshader[] = {
 #include "texture.vs.h"
     };
     static lx_char_t const fshader[] = {
 #include "texture.fs.h"
     };
-    return lx_pipeline_init(device, LX_PIPELINE_TYPE_TEXTURE, vshader, fshader);
+    return lx_vk_pipeline_init(device, LX_VK_PIPELINE_TYPE_TEXTURE, vshader, fshader);
 }
 
-lx_void_t lx_pipeline_exit(lx_pipeline_ref_t self) {
-    lx_pipeline_t* pipeline = (lx_pipeline_t*)self;
+lx_void_t lx_vk_pipeline_exit(lx_vk_pipeline_ref_t self) {
+    lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
     if (pipeline) {
         lx_assert(pipeline->device && pipeline->device->device);
         if (pipeline->pipeline) {
@@ -290,4 +290,9 @@ lx_void_t lx_pipeline_exit(lx_pipeline_ref_t self) {
         }
         lx_free(pipeline);
     }
+}
+
+VkPipeline lx_vk_pipeline_native(lx_vk_pipeline_ref_t self) {
+    lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
+    return pipeline? pipeline->pipeline : 0;
 }

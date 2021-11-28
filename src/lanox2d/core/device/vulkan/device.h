@@ -62,7 +62,7 @@ typedef struct lx_vulkan_device_t_ {
     lx_uint32_t                 imageindex;
 
     // graphics pipelines
-    lx_pipeline_ref_t           pipelines[LX_PIPELINE_TYPE_MAXN];
+    lx_vk_pipeline_ref_t        pipelines[LX_VK_PIPELINE_TYPE_MAXN];
 
     // command buffers
     VkCommandPool               command_pool;

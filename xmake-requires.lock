@@ -305,42 +305,42 @@
         ["cmake#31fecfc4"] = {
             repo = {
                 commit = "c4f049ce18ef1cc515cc0d07bd6b92f5115a03bb",
-                url = "/Users/ruki/projects/personal/xmake-repo"
+                url = "/Users/ruki/projects/personal/xmake-repo/"
             },
             version = "3.21.0"
         },
         ["glfw#31fecfc4"] = {
             repo = {
                 commit = "c4f049ce18ef1cc515cc0d07bd6b92f5115a03bb",
-                url = "/Users/ruki/projects/personal/xmake-repo"
+                url = "/Users/ruki/projects/personal/xmake-repo/"
             },
             version = "3.3.5"
         },
         ["ninja#31fecfc4"] = {
             repo = {
                 commit = "c4f049ce18ef1cc515cc0d07bd6b92f5115a03bb",
-                url = "/Users/ruki/projects/personal/xmake-repo"
+                url = "/Users/ruki/projects/personal/xmake-repo/"
             },
             version = "1.10.2"
         },
         ["opengl#31fecfc4"] = {
             repo = {
                 commit = "c4f049ce18ef1cc515cc0d07bd6b92f5115a03bb",
-                url = "/Users/ruki/projects/personal/xmake-repo"
+                url = "/Users/ruki/projects/personal/xmake-repo/"
             },
             version = "latest"
         },
         ["vulkan-headers 1.2.189#31fecfc4"] = {
             repo = {
                 commit = "c77b0ee9c174ccf0f38f78669448f7b24f2f1170",
-                url = "/Users/ruki/projects/personal/xmake-repo"
+                url = "/Users/ruki/projects/personal/xmake-repo/"
             },
             version = "1.2.189+1"
         },
         ["vulkan-loader#31fecfc4"] = {
             repo = {
                 commit = "c77b0ee9c174ccf0f38f78669448f7b24f2f1170",
-                url = "/Users/ruki/projects/personal/xmake-repo"
+                url = "/Users/ruki/projects/personal/xmake-repo/"
             },
             version = "1.2.189+1"
         }

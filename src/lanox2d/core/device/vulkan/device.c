@@ -358,7 +358,7 @@ static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
         lx_uint32_t i;
         for (i = 0; i < lx_arrayn(device->pipelines); i++) {
             if (device->pipelines[i]) {
-                lx_pipeline_exit(device->pipelines[i]);
+                lx_vk_pipeline_exit(device->pipelines[i]);
                 device->pipelines[i] = lx_null;
             }
         }

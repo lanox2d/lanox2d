@@ -35,15 +35,15 @@
  */
 
 // the pipeline type enum
-typedef enum lx_pipeline_type_e_ {
-    LX_PIPELINE_TYPE_NONE    = 0
-,   LX_PIPELINE_TYPE_SOLID   = 1
-,   LX_PIPELINE_TYPE_TEXTURE = 2
-,   LX_PIPELINE_TYPE_MAXN    = 3
-}lx_pipeline_type_e;
+typedef enum lx_vk_pipeline_type_e_ {
+    LX_VK_PIPELINE_TYPE_NONE    = 0
+,   LX_VK_PIPELINE_TYPE_SOLID   = 1
+,   LX_VK_PIPELINE_TYPE_TEXTURE = 2
+,   LX_VK_PIPELINE_TYPE_MAXN    = 3
+}lx_vk_pipeline_type_e;
 
 // the pipeline ref type
-typedef lx_typeref(pipeline);
+typedef lx_typeref(vk_pipeline);
 
 #endif
 
