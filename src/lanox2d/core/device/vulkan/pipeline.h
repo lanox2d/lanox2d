@@ -35,32 +35,21 @@ lx_extern_c_enter
  * interfaces
  */
 
-/* init pipeline
+/* get solid pipeline
  *
  * @param device        the vulkan device
- * @param type          the pipeline type
- * @param vshader       the vertex shader content
- * @param fshader       the fragment shader content
  *
  * @return              the pipeline
  */
-lx_vk_pipeline_ref_t    lx_vk_pipeline_init(lx_vulkan_device_t* device, lx_size_t type, lx_char_t const* vshader, lx_char_t const* fshader);
+lx_vk_pipeline_ref_t    lx_vk_pipeline_solid(lx_vulkan_device_t* device);
 
-/* init solid pipeline
+/* get texture pipeline
  *
  * @param device        the vulkan device
  *
  * @return              the pipeline
  */
-lx_vk_pipeline_ref_t    lx_vk_pipeline_init_solid(lx_vulkan_device_t* device);
-
-/* init texture pipeline
- *
- * @param device        the vulkan device
- *
- * @return              the pipeline
- */
-lx_vk_pipeline_ref_t    lx_vk_pipeline_init_texture(lx_vulkan_device_t* device);
+lx_vk_pipeline_ref_t    lx_vk_pipeline_texture(lx_vulkan_device_t* device);
 
 /* exit pipeline
  *

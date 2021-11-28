@@ -23,6 +23,7 @@
  * includes
  */
 #include "renderer.h"
+#include "pipeline.h"
 #include "../../quality.h"
 #include "../../tess/tess.h"
 
@@ -184,6 +185,12 @@ static lx_bool_t lx_vk_renderer_draw_prepare(lx_vulkan_device_t* device) {
     renderpass_begininfo.clearValueCount = 1;
     renderpass_begininfo.pClearValues = &clear_values;
     vkCmdBeginRenderPass(cmdbuffer, &renderpass_begininfo, VK_SUBPASS_CONTENTS_INLINE);
+
+    // TODO
+    lx_vk_pipeline_ref_t pipeline = lx_vk_pipeline_solid(device);
+    if (pipeline) {
+        lx_trace_i("pipeline: %p", lx_vk_pipeline_native(pipeline));
+    }
 
 #if 0
     // bind pipeline to the command buffer
