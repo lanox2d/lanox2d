@@ -25,13 +25,17 @@
 
 Lanox2D is a lightweight and fast 2D vector graphics engine.
 
+## Note
+
+This project is still in the internal development process, we will not provide any technical support.
+
 ## Build
 
 ### Prepare
 
 We need to install the [Xmake](https://github.com/xmake-io/xmake) cross-platform build tool first.
 
-### Build the platform
+### Platform
 
 #### Host Platform
 
@@ -61,7 +65,7 @@ $ xmake ipa_build
 
 Of course, we can also directly use Xcode to open the internal project to directly compile and run.
 
-### Rendering equipment
+### Rendering device
 
 Currently, we support the following rendering devices:
 
