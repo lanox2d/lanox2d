@@ -272,20 +272,20 @@ static lx_vk_pipeline_ref_t lx_vk_pipeline_get(lx_vulkan_device_t* device,
 
 lx_vk_pipeline_ref_t lx_vk_pipeline_solid(lx_vulkan_device_t* device) {
     static lx_char_t const vshader[] = {
-#include "solid.vs.h"
+#include "solid.vert.spv.h"
     };
     static lx_char_t const fshader[] = {
-#include "solid.fs.h"
+#include "solid.frag.spv.h"
     };
     return lx_vk_pipeline_get(device, LX_VK_PIPELINE_TYPE_SOLID, "solid", vshader, fshader);
 }
 
 lx_vk_pipeline_ref_t lx_vk_pipeline_texture(lx_vulkan_device_t* device) {
     static lx_char_t const vshader[] = {
-#include "texture.vs.h"
+#include "texture.vert.spv.h"
     };
     static lx_char_t const fshader[] = {
-#include "texture.fs.h"
+#include "texture.frag.spv.h"
     };
     return lx_vk_pipeline_get(device, LX_VK_PIPELINE_TYPE_TEXTURE, "texture", vshader, fshader);
 }

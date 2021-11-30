@@ -302,14 +302,6 @@
         }
     },
     ["macosx|x86_64"] = {
-        ["ca-certificates#31fecfc4"] = {
-            repo = {
-                branch = "master",
-                commit = "bf44b47c1dc3e0b0821233c639d8b957a3893f5d",
-                url = "https://gitee.com/tboox/xmake-repo.git"
-            },
-            version = "20211118"
-        },
         ["cmake#31fecfc4"] = {
             repo = {
                 branch = "master",
@@ -326,14 +318,6 @@
             },
             version = "3.3.5"
         },
-        ["glslang#31fecfc4"] = {
-            repo = {
-                branch = "master",
-                commit = "bf44b47c1dc3e0b0821233c639d8b957a3893f5d",
-                url = "https://gitee.com/tboox/xmake-repo.git"
-            },
-            version = "1.2.189+1"
-        },
         ["ninja#31fecfc4"] = {
             repo = {
                 branch = "master",
@@ -349,38 +333,6 @@
                 url = "https://gitee.com/tboox/xmake-repo.git"
             },
             version = "latest"
-        },
-        ["openssl#31fecfc4"] = {
-            repo = {
-                branch = "master",
-                commit = "25ab9366fc42f832b04019abfd79d1b11a5ca1f6",
-                url = "https://gitee.com/tboox/xmake-repo.git"
-            },
-            version = "1.1.1l"
-        },
-        ["python 3.x#31fecfc4"] = {
-            repo = {
-                branch = "master",
-                commit = "41e4118be27a241f28d584687516c4ec34abc35b",
-                url = "https://gitee.com/tboox/xmake-repo.git"
-            },
-            version = "3.9.6"
-        },
-        ["spirv-headers#31fecfc4"] = {
-            repo = {
-                branch = "master",
-                commit = "dc73a574b59bb0c0dc06cd6c6d70fbe525470ed8",
-                url = "https://gitee.com/tboox/xmake-repo.git"
-            },
-            version = "1.5.5"
-        },
-        ["spirv-tools#31fecfc4"] = {
-            repo = {
-                branch = "master",
-                commit = "dc73a574b59bb0c0dc06cd6c6d70fbe525470ed8",
-                url = "https://gitee.com/tboox/xmake-repo.git"
-            },
-            version = "2021.3"
         },
         ["vulkan-headers 1.2.189#31fecfc4"] = {
             repo = {

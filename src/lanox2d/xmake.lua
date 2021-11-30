@@ -84,8 +84,7 @@ target("lanox2d")
         add_files("core/device/vulkan/**.c")
         add_files("core/device/vulkan/shaders/*.vert")
         add_files("core/device/vulkan/shaders/*.frag")
-        add_rules("utils.bin2c", {extensions = {".vert", ".frag"}})
-        add_packages("glslang")
+        add_rules("utils.glsl2spv", {bin2c = true})
     end
     if is_config("device", "skia") then
         set_languages("c++14")
