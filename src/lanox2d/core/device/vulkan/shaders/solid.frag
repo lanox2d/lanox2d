@@ -1,8 +1,8 @@
-#version 330
+#version 440
 precision mediump float;
 
-in vec4 vColors;
-out vec4 finalColor;
+layout(location = 0) in vec4 vColors;
+layout(location = 0) out vec4 finalColor;
 
 void main() {
    finalColor = vColors;

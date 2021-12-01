@@ -7,12 +7,15 @@ layout(location = 2) in vec4 aVertices;
 
 layout(location = 0) out vec4 vColors;
 layout(location = 1) out vec4 vTexcoords;
-uniform mat4 uMatrixModel;
-uniform mat4 uMatrixProject;
-uniform mat4 uMatrixTexcoord;
+layout(binding = 0) uniform uMatrix
+{
+    mat4 model;
+    mat4 projection;
+    mat4 texcoord;
+}matrix;
 
 void main() {
    vColors = aColor;
-   vTexcoords = uMatrixTexcoord * aTexcoords;
-   gl_Position = uMatrixProject * uMatrixModel * aVertices;
+   vTexcoords = matrix.texcoord * aTexcoords;
+   gl_Position = matrix.projection * matrix.model * aVertices;
 }
