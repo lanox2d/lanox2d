@@ -18,6 +18,7 @@ end
 if is_config("device", "vulkan") then
     if is_plat("windows", "linux", "macosx") then
         add_requires("vulkan-loader", {alias = "vulkan"})
+        add_requires("glslang", {configs = {binaryonly = true}})
     elseif is_plat("android") then
         add_requires("vulkan-validationlayers")
     end
