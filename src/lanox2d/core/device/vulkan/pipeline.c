@@ -41,7 +41,7 @@ typedef struct lx_vk_pipeline_t {
  * private implementation
  */
 static lx_vk_pipeline_ref_t lx_vk_pipeline_init(lx_vulkan_device_t* device,
-    lx_size_t type, lx_char_t const* name, lx_char_t const* vshader, lx_size_t vshader_size,
+    lx_size_t type, lx_char_t const* vshader, lx_size_t vshader_size,
     lx_char_t const* fshader, lx_size_t fshader_size) {
     lx_assert_and_check_return_val(device && device->device && vshader && fshader, lx_null);
 
@@ -98,15 +98,15 @@ static lx_vk_pipeline_ref_t lx_vk_pipeline_init(lx_vulkan_device_t* device,
         shader_stages[0].flags = 0;
         shader_stages[0].stage = VK_SHADER_STAGE_VERTEX_BIT;
         shader_stages[0].module = vshader_module;
-        shader_stages[0].pName = name;
+        shader_stages[0].pName = "main";
         shader_stages[0].pSpecializationInfo = lx_null;
 
         shader_stages[1].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
         shader_stages[1].pNext = lx_null;
         shader_stages[1].flags = 0;
-        shader_stages[1].stage = VK_SHADER_STAGE_VERTEX_BIT;
+        shader_stages[1].stage = VK_SHADER_STAGE_FRAGMENT_BIT;
         shader_stages[1].module = fshader_module;
-        shader_stages[1].pName = name;
+        shader_stages[1].pName = "main";
         shader_stages[1].pSpecializationInfo = lx_null;
 
         // init viewport
@@ -255,14 +255,14 @@ static lx_vk_pipeline_ref_t lx_vk_pipeline_init(lx_vulkan_device_t* device,
 }
 
 static lx_vk_pipeline_ref_t lx_vk_pipeline_get(lx_vulkan_device_t* device,
-    lx_size_t type, lx_char_t const* name, lx_char_t const* vshader, lx_size_t vshader_size,
+    lx_size_t type, lx_char_t const* vshader, lx_size_t vshader_size,
     lx_char_t const* fshader, lx_size_t fshader_size) {
     lx_assert_and_check_return_val(device && vshader && fshader, lx_null);
     lx_assert_and_check_return_val(type < lx_arrayn(device->pipelines), lx_null);
 
     lx_vk_pipeline_ref_t pipeline = device->pipelines[type];
     if (!pipeline) {
-        pipeline = lx_vk_pipeline_init(device, type, name, vshader, vshader_size, fshader, fshader_size);
+        pipeline = lx_vk_pipeline_init(device, type, vshader, vshader_size, fshader, fshader_size);
         device->pipelines[type] = pipeline;
     }
     return pipeline;
@@ -279,7 +279,7 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_solid(lx_vulkan_device_t* device) {
     static lx_char_t const fshader[] = {
 #include "solid.frag.spv.h"
     };
-    return lx_vk_pipeline_get(device, LX_VK_PIPELINE_TYPE_SOLID, "solid", vshader, sizeof(vshader), fshader, sizeof(fshader));
+    return lx_vk_pipeline_get(device, LX_VK_PIPELINE_TYPE_SOLID, vshader, sizeof(vshader), fshader, sizeof(fshader));
 }
 
 lx_vk_pipeline_ref_t lx_vk_pipeline_texture(lx_vulkan_device_t* device) {
@@ -289,7 +289,7 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_texture(lx_vulkan_device_t* device) {
     static lx_char_t const fshader[] = {
 #include "texture.frag.spv.h"
     };
-    return lx_vk_pipeline_get(device, LX_VK_PIPELINE_TYPE_TEXTURE, "texture", vshader, sizeof(vshader), fshader, sizeof(fshader));
+    return lx_vk_pipeline_get(device, LX_VK_PIPELINE_TYPE_TEXTURE, vshader, sizeof(vshader), fshader, sizeof(fshader));
 }
 
 lx_void_t lx_vk_pipeline_exit(lx_vk_pipeline_ref_t self) {
