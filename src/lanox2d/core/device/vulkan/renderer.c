@@ -90,8 +90,28 @@ static lx_void_t lx_vk_renderer_set_imagelayout(VkCommandBuffer cmdbuffer, VkIma
     vkCmdPipelineBarrier(cmdbuffer, srcstages, dststages, 0, 0, lx_null, 0, lx_null, 1, &image_memory_barrier);
 }
 
+static lx_inline lx_void_t lx_vk_renderer_apply_paint_shader(lx_vulkan_device_t* device, lx_shader_ref_t shader, lx_rect_ref_t bounds) {
+}
+
+static lx_inline lx_void_t lx_vk_renderer_apply_paint_solid(lx_vulkan_device_t* device) {
+    VkCommandBuffer cmdbuffer = device->renderer_cmdbuffer;
+    lx_vk_pipeline_ref_t pipeline = lx_vk_pipeline_solid(device);
+    lx_assert_and_check_return(cmdbuffer && pipeline);
+
+    // bind pipeline to the command buffer
+    vkCmdBindPipeline(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, lx_vk_pipeline_native(pipeline));
+}
+
 static lx_inline lx_void_t lx_vk_renderer_apply_paint(lx_vulkan_device_t* device, lx_rect_ref_t bounds) {
     lx_assert(device);
+
+    // apply paint
+    lx_shader_ref_t shader = lx_paint_shader(device->base.paint);
+    if (shader) {
+        lx_vk_renderer_apply_paint_shader(device, shader, bounds);
+    } else {
+        lx_vk_renderer_apply_paint_solid(device);
+    }
 }
 
 static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* device, lx_polygon_ref_t polygon, lx_rect_ref_t bounds, lx_size_t rule) {
@@ -173,7 +193,7 @@ static lx_bool_t lx_vk_renderer_draw_prepare(lx_vulkan_device_t* device) {
 
     // now we start a renderpass. Any draw command has to be recorded in a renderpass
     VkClearValue clear_values;
-    clear_values.color = device->clear_color;
+    clear_values.color = device->renderer_clear_color;
     VkRenderPassBeginInfo renderpass_begininfo = {};
     renderpass_begininfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
     renderpass_begininfo.pNext = lx_null;
@@ -186,15 +206,7 @@ static lx_bool_t lx_vk_renderer_draw_prepare(lx_vulkan_device_t* device) {
     renderpass_begininfo.pClearValues = &clear_values;
     vkCmdBeginRenderPass(cmdbuffer, &renderpass_begininfo, VK_SUBPASS_CONTENTS_INLINE);
 
-    // TODO
-    lx_vk_pipeline_ref_t pipeline = lx_vk_pipeline_solid(device);
-    if (pipeline) {
-        lx_trace_i("pipeline: %p", lx_vk_pipeline_native(pipeline));
-    }
-
 #if 0
-    // bind pipeline to the command buffer
-    vkCmdBindPipeline(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, device->pipeline);
 
     VkDeviceSize offset = 0;
     vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &buffers.vertexBuf_, &offset);
@@ -204,6 +216,7 @@ static lx_bool_t lx_vk_renderer_draw_prepare(lx_vulkan_device_t* device) {
 #endif
 
     device->renderer_prepared = lx_true;
+    device->renderer_cmdbuffer = cmdbuffer;
     return lx_true;
 }
 
@@ -270,10 +283,10 @@ lx_void_t lx_vk_renderer_draw_commit(lx_vulkan_device_t* device) {
 }
 
 lx_void_t lx_vk_renderer_draw_clear(lx_vulkan_device_t* device, lx_color_t color) {
-    device->clear_color.float32[0] = (lx_float_t)color.r / 0xff;
-    device->clear_color.float32[1] = (lx_float_t)color.g / 0xff;
-    device->clear_color.float32[2] = (lx_float_t)color.b / 0xff;
-    device->clear_color.float32[3] = (lx_float_t)color.a / 0xff;
+    device->renderer_clear_color.float32[0] = (lx_float_t)color.r / 0xff;
+    device->renderer_clear_color.float32[1] = (lx_float_t)color.g / 0xff;
+    device->renderer_clear_color.float32[2] = (lx_float_t)color.b / 0xff;
+    device->renderer_clear_color.float32[3] = (lx_float_t)color.a / 0xff;
     lx_vk_renderer_draw_prepare(device);
 }
 
