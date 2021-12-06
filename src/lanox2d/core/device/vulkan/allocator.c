@@ -41,9 +41,28 @@ typedef struct lx_vk_allocator_t {
  * implementation
  */
 lx_vk_allocator_ref_t lx_vk_allocator_init(lx_vulkan_device_t* device) {
-    return lx_null;
+    lx_bool_t ok = lx_false;
+    lx_vk_allocator_t* allocator = lx_null;
+    do {
+        // init allocator
+        allocator = lx_malloc0_type(lx_vk_allocator_t);
+        lx_assert_and_check_break(allocator);
+
+        allocator->device = device;
+
+        ok = lx_true;
+    } while (0);
+    if (!ok && allocator) {
+        lx_vk_allocator_exit((lx_vk_allocator_ref_t)allocator);
+        allocator = lx_null;
+    }
+    return (lx_vk_allocator_ref_t)allocator;
 }
 
-lx_void_t lx_vk_allocator_exit(lx_vk_allocator_ref_t allocator) {
+lx_void_t lx_vk_allocator_exit(lx_vk_allocator_ref_t self) {
+    lx_vk_allocator_t* allocator = (lx_vk_allocator_t*)self;
+    if (self) {
+        lx_free(allocator);
+    }
 }
 

@@ -45,9 +45,15 @@ lx_vk_allocator_ref_t   lx_vk_allocator_init(lx_vulkan_device_t* device);
 
 /*! exit the vulkan buffer allocator
  *
- * @param               the vulkan allocator
+ * @param allocator     the vulkan allocator
  */
 lx_void_t               lx_vk_allocator_exit(lx_vk_allocator_ref_t allocator);
+
+/*! allocate the vulkan buffer
+ *
+ * @param               the vulkan allocator
+ */
+lx_void_t               lx_vk_allocator_malloc(lx_vk_allocator_ref_t allocator, lx_size_t size);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
