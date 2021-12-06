@@ -112,6 +112,10 @@ static lx_inline lx_void_t lx_vk_renderer_apply_paint_solid(lx_vulkan_device_t* 
 
     // apply color
     // TODO
+#if 0
+    VkDeviceSize offset = 0;
+    vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &buffers.vertexBuf_, &offset);
+#endif
 }
 
 static lx_inline lx_void_t lx_vk_renderer_apply_paint(lx_vulkan_device_t* device, lx_rect_ref_t bounds) {
@@ -133,6 +137,10 @@ static lx_inline lx_void_t lx_vk_renderer_apply_paint(lx_vulkan_device_t* device
 }
 
 static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* device, lx_polygon_ref_t polygon, lx_rect_ref_t bounds, lx_size_t rule) {
+#if 0
+    // TODO draw triangle
+    vkCmdDraw(cmdbuffer, 3, 1, 0, 0);
+#endif
 }
 
 static lx_inline lx_void_t lx_vk_renderer_stroke_lines(lx_vulkan_device_t* device, lx_point_ref_t points, lx_size_t count) {
@@ -224,15 +232,7 @@ static lx_bool_t lx_vk_renderer_draw_prepare(lx_vulkan_device_t* device) {
     renderpass_begininfo.pClearValues = &clear_values;
     vkCmdBeginRenderPass(cmdbuffer, &renderpass_begininfo, VK_SUBPASS_CONTENTS_INLINE);
 
-#if 0
-
-    VkDeviceSize offset = 0;
-    vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &buffers.vertexBuf_, &offset);
-
-    // draw triangle
-    vkCmdDraw(cmdbuffer, 3, 1, 0, 0);
-#endif
-
+    // prepare ok
     device->renderer_prepared = lx_true;
     device->renderer_cmdbuffer = cmdbuffer;
     return lx_true;
