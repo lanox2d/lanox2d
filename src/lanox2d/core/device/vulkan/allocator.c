@@ -30,7 +30,8 @@
 
 // the vulkan allocator type
 typedef struct lx_vk_allocator_t {
-    lx_vulkan_device_t* device;
+    lx_vulkan_device_t*     device;
+    VkBufferUsageFlagBits   buffer_type;
 }lx_vk_allocator_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -40,7 +41,7 @@ typedef struct lx_vk_allocator_t {
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_vk_allocator_ref_t lx_vk_allocator_init(lx_vulkan_device_t* device) {
+lx_vk_allocator_ref_t lx_vk_allocator_init(lx_vulkan_device_t* device, VkBufferUsageFlagBits buffer_type) {
     lx_bool_t ok = lx_false;
     lx_vk_allocator_t* allocator = lx_null;
     do {
@@ -48,7 +49,8 @@ lx_vk_allocator_ref_t lx_vk_allocator_init(lx_vulkan_device_t* device) {
         allocator = lx_malloc0_type(lx_vk_allocator_t);
         lx_assert_and_check_break(allocator);
 
-        allocator->device = device;
+        allocator->device      = device;
+        allocator->buffer_type = buffer_type;
 
         ok = lx_true;
     } while (0);

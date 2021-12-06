@@ -38,10 +38,11 @@ lx_extern_c_enter
 /*! init the vulkan buffer allocator
  *
  * @param device        the vulkan device
+ * @param buffer_type   the buffer type
  *
  * @return              the vulkan allocator
  */
-lx_vk_allocator_ref_t   lx_vk_allocator_init(lx_vulkan_device_t* device);
+lx_vk_allocator_ref_t   lx_vk_allocator_init(lx_vulkan_device_t* device, VkBufferUsageFlagBits buffer_type);
 
 /*! exit the vulkan buffer allocator
  *
