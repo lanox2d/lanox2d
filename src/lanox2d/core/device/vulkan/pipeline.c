@@ -42,7 +42,7 @@ typedef struct lx_vk_pipeline_t {
  */
 static lx_vk_pipeline_ref_t lx_vk_pipeline_init(lx_vulkan_device_t* device,
     lx_size_t type, lx_char_t const* vshader, lx_size_t vshader_size,
-    lx_char_t const* fshader, lx_size_t fshader_size) {
+    lx_char_t const* fshader, lx_size_t fshader_size, VkPipelineVertexInputStateCreateInfo* vertex_inputinfo) {
     lx_assert_and_check_return_val(device && device->device && vshader && fshader, lx_null);
 
     lx_bool_t ok = lx_false;
@@ -177,26 +177,6 @@ static lx_vk_pipeline_ref_t lx_vk_pipeline_init(lx_vulkan_device_t* device,
         input_assemblyinfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
         input_assemblyinfo.primitiveRestartEnable = VK_FALSE;
 
-        // init vertex input state
-        VkVertexInputBindingDescription vertex_input_bindings = {};
-        vertex_input_bindings.binding = 0;
-        vertex_input_bindings.stride = 3 * sizeof(lx_float_t);
-        vertex_input_bindings.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-
-        VkVertexInputAttributeDescription vertex_input_attributes[1];
-        vertex_input_attributes[0].location = 0;
-        vertex_input_attributes[0].binding = 0;
-        vertex_input_attributes[0].format = VK_FORMAT_R32G32B32_SFLOAT;
-        vertex_input_attributes[0].offset = 0;
-
-        VkPipelineVertexInputStateCreateInfo vertex_inputinfo = {};
-        vertex_inputinfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-        vertex_inputinfo.pNext = lx_null;
-        vertex_inputinfo.vertexBindingDescriptionCount = 1;
-        vertex_inputinfo.pVertexBindingDescriptions = &vertex_input_bindings;
-        vertex_inputinfo.vertexAttributeDescriptionCount = 1;
-        vertex_inputinfo.pVertexAttributeDescriptions = vertex_input_attributes;
-
         // create the pipeline cache
         VkPipelineCacheCreateInfo pipeline_cacheinfo = {};
         pipeline_cacheinfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
@@ -215,7 +195,7 @@ static lx_vk_pipeline_ref_t lx_vk_pipeline_init(lx_vulkan_device_t* device,
         pipeline_createinfo.flags = 0;
         pipeline_createinfo.stageCount = 2;
         pipeline_createinfo.pStages = shader_stages;
-        pipeline_createinfo.pVertexInputState = &vertex_inputinfo;
+        pipeline_createinfo.pVertexInputState = vertex_inputinfo;
         pipeline_createinfo.pInputAssemblyState = &input_assemblyinfo;
         pipeline_createinfo.pTessellationState = lx_null;
         pipeline_createinfo.pViewportState = &viewport_info;
@@ -256,13 +236,13 @@ static lx_vk_pipeline_ref_t lx_vk_pipeline_init(lx_vulkan_device_t* device,
 
 static lx_vk_pipeline_ref_t lx_vk_pipeline_get(lx_vulkan_device_t* device,
     lx_size_t type, lx_char_t const* vshader, lx_size_t vshader_size,
-    lx_char_t const* fshader, lx_size_t fshader_size) {
+    lx_char_t const* fshader, lx_size_t fshader_size, VkPipelineVertexInputStateCreateInfo* vertex_inputinfo) {
     lx_assert_and_check_return_val(device && vshader && fshader, lx_null);
     lx_assert_and_check_return_val(type < lx_arrayn(device->pipelines), lx_null);
 
     lx_vk_pipeline_ref_t pipeline = device->pipelines[type];
     if (!pipeline) {
-        pipeline = lx_vk_pipeline_init(device, type, vshader, vshader_size, fshader, fshader_size);
+        pipeline = lx_vk_pipeline_init(device, type, vshader, vshader_size, fshader, fshader_size, vertex_inputinfo);
         device->pipelines[type] = pipeline;
     }
     return pipeline;
@@ -279,7 +259,35 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_solid(lx_vulkan_device_t* device) {
     static lx_char_t const fshader[] = {
 #include "solid.frag.spv.h"
     };
-    return lx_vk_pipeline_get(device, LX_VK_PIPELINE_TYPE_SOLID, vshader, sizeof(vshader), fshader, sizeof(fshader));
+
+    // init vertex input state
+    VkVertexInputBindingDescription vertex_input_bindings = {};
+    vertex_input_bindings.binding = 0;
+    vertex_input_bindings.stride = 3 * sizeof(lx_float_t);
+    vertex_input_bindings.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+    VkVertexInputAttributeDescription vertex_input_attributes[2];
+    vertex_input_attributes[0].location = 0;
+    vertex_input_attributes[0].binding = 0;
+    vertex_input_attributes[0].format = VK_FORMAT_R32G32B32_SFLOAT;
+    vertex_input_attributes[0].offset = 0;
+
+    vertex_input_attributes[1].location = 1;
+    vertex_input_attributes[1].binding = 0;
+    vertex_input_attributes[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+    vertex_input_attributes[1].offset = 0;
+
+    VkPipelineVertexInputStateCreateInfo vertex_inputinfo = {};
+    vertex_inputinfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    vertex_inputinfo.pNext = lx_null;
+    vertex_inputinfo.vertexBindingDescriptionCount = 1;
+    vertex_inputinfo.pVertexBindingDescriptions = &vertex_input_bindings;
+    vertex_inputinfo.vertexAttributeDescriptionCount = 2;
+    vertex_inputinfo.pVertexAttributeDescriptions = vertex_input_attributes;
+
+    // get pipeline
+    return lx_vk_pipeline_get(device, LX_VK_PIPELINE_TYPE_SOLID,
+        vshader, sizeof(vshader), fshader, sizeof(fshader), &vertex_inputinfo);
 }
 
 lx_vk_pipeline_ref_t lx_vk_pipeline_texture(lx_vulkan_device_t* device) {
@@ -289,7 +297,35 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_texture(lx_vulkan_device_t* device) {
     static lx_char_t const fshader[] = {
 #include "texture.frag.spv.h"
     };
-    return lx_vk_pipeline_get(device, LX_VK_PIPELINE_TYPE_TEXTURE, vshader, sizeof(vshader), fshader, sizeof(fshader));
+
+    // init vertex input state
+    VkVertexInputBindingDescription vertex_input_bindings = {};
+    vertex_input_bindings.binding = 0;
+    vertex_input_bindings.stride = 3 * sizeof(lx_float_t);
+    vertex_input_bindings.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+    VkVertexInputAttributeDescription vertex_input_attributes[2];
+    vertex_input_attributes[0].location = 0;
+    vertex_input_attributes[0].binding = 0;
+    vertex_input_attributes[0].format = VK_FORMAT_R32G32B32_SFLOAT;
+    vertex_input_attributes[0].offset = 0;
+
+    vertex_input_attributes[1].location = 1;
+    vertex_input_attributes[1].binding = 0;
+    vertex_input_attributes[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+    vertex_input_attributes[1].offset = 0;
+
+    VkPipelineVertexInputStateCreateInfo vertex_inputinfo = {};
+    vertex_inputinfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    vertex_inputinfo.pNext = lx_null;
+    vertex_inputinfo.vertexBindingDescriptionCount = 1;
+    vertex_inputinfo.pVertexBindingDescriptions = &vertex_input_bindings;
+    vertex_inputinfo.vertexAttributeDescriptionCount = 2;
+    vertex_inputinfo.pVertexAttributeDescriptions = vertex_input_attributes;
+
+    // get pipeline
+    return lx_vk_pipeline_get(device, LX_VK_PIPELINE_TYPE_TEXTURE,
+        vshader, sizeof(vshader), fshader, sizeof(fshader), &vertex_inputinfo);
 }
 
 lx_void_t lx_vk_pipeline_exit(lx_vk_pipeline_ref_t self) {
