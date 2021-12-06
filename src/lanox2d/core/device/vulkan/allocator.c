@@ -15,39 +15,35 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        prefix.h
+ * @file        allocator.c
  *
  */
-#ifndef LX_CORE_DEVICE_VULKAN_PREFIX_H
-#define LX_CORE_DEVICE_VULKAN_PREFIX_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "../prefix.h"
-#include "../../path.h"
-#include "../../paint.h"
-#include "../../private/stroker.h"
-#include "../../../platform/window.h"
+#include "allocator.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * types
  */
 
-// the pipeline type enum
-typedef enum lx_vk_pipeline_type_e_ {
-    LX_VK_PIPELINE_TYPE_NONE    = 0
-,   LX_VK_PIPELINE_TYPE_SOLID   = 1
-,   LX_VK_PIPELINE_TYPE_TEXTURE = 2
-,   LX_VK_PIPELINE_TYPE_MAXN    = 3
-}lx_vk_pipeline_type_e;
+// the vulkan allocator type
+typedef struct lx_vk_allocator_t {
+    lx_vulkan_device_t* device;
+}lx_vk_allocator_t;
 
-// the pipeline ref type
-typedef lx_typeref(vk_pipeline);
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * private implementation
+ */
 
-// the allocator ref type
-typedef lx_typeref(vk_allocator);
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * implementation
+ */
+lx_vk_allocator_ref_t lx_vk_allocator_init(lx_vulkan_device_t* device) {
+    return lx_null;
+}
 
-#endif
-
+lx_void_t lx_vk_allocator_exit(lx_vk_allocator_ref_t allocator) {
+}
 
