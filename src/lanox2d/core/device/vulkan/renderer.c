@@ -95,15 +95,33 @@ static lx_inline lx_void_t lx_vk_renderer_apply_paint_shader(lx_vulkan_device_t*
 
 static lx_inline lx_void_t lx_vk_renderer_apply_paint_solid(lx_vulkan_device_t* device) {
     VkCommandBuffer cmdbuffer = device->renderer_cmdbuffer;
-    lx_vk_pipeline_ref_t pipeline = lx_vk_pipeline_solid(device);
-    lx_assert_and_check_return(cmdbuffer && pipeline);
+    lx_paint_ref_t paint = device->base.paint;
+    lx_assert(cmdbuffer && paint);
 
-    // bind pipeline to the command buffer
+    // get color
+    lx_color_t color = lx_paint_color(paint);
+    lx_byte_t alpha = lx_paint_alpha(paint);
+    if (alpha != 0xff) {
+        color.a = alpha;
+    }
+
+    // enable color pipeline
+    lx_vk_pipeline_ref_t pipeline = lx_vk_pipeline_solid(device);
+    lx_assert_and_check_return(pipeline);
     vkCmdBindPipeline(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, lx_vk_pipeline_native(pipeline));
+
+    // apply color
+    // TODO
 }
 
 static lx_inline lx_void_t lx_vk_renderer_apply_paint(lx_vulkan_device_t* device, lx_rect_ref_t bounds) {
     lx_assert(device);
+
+    // set projection matrix
+    // TODO
+
+    // set model matrix
+    // TODO
 
     // apply paint
     lx_shader_ref_t shader = lx_paint_shader(device->base.paint);
