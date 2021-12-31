@@ -47,7 +47,6 @@ typedef struct lx_vk_buffer_chunk_t_ {
 typedef struct lx_vk_allocator_t {
     lx_vulkan_device_t*     device;
     lx_vk_buffer_chunk_t    chunks[LX_VK_BUFFER_CHUNK_MAXN];
-    lx_size_t               chunks_count;
     lx_size_t               chunks_active_index;
     VkBufferUsageFlagBits   buffer_type;
 }lx_vk_allocator_t;
@@ -55,10 +54,6 @@ typedef struct lx_vk_allocator_t {
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
-static lx_vk_buffer_chunk_t* lx_vk_buffer_chunk_select(lx_vk_allocator_t* allocator, lx_size_t size) {
-    return lx_null;
-}
-
 static lx_bool_t lx_vk_buffer_chunk_alloc(lx_vk_allocator_t* allocator, lx_vk_buffer_chunk_t* chunk, lx_size_t size, lx_vk_buffer_t* buffer) {
     return lx_false;
 }
@@ -99,19 +94,25 @@ lx_void_t lx_vk_allocator_exit(lx_vk_allocator_ref_t self) {
 lx_bool_t lx_vk_allocator_alloc(lx_vk_allocator_ref_t self, lx_size_t size, lx_vk_buffer_t* buffer) {
     lx_vk_allocator_t* allocator = (lx_vk_allocator_t*)self;
     lx_assert(allocator && size && buffer);
-//    lx_assert_and_check_return(allocator->chunks_active_index < allocator->chunks_count);
+    lx_assert(allocator->chunks_active_index < lx_arrayn(allocator->chunks));
 
-    lx_vk_buffer_chunk_t* chunk = lx_vk_buffer_chunk_select(allocator, size);
-    if (chunk) {
-        return lx_vk_buffer_chunk_alloc(allocator, chunk, size, buffer);
+    lx_size_t i = allocator->chunks_active_index;
+    lx_bool_t ok = lx_vk_buffer_chunk_alloc(allocator, &allocator->chunks[i], size, buffer);
+    if (!ok) {
+        for (i = 0; i < lx_arrayn(allocator->chunks); i++) {
+            if (lx_vk_buffer_chunk_alloc(allocator, &allocator->chunks[i], size, buffer)) {
+                ok = lx_true;
+                break;
+            }
+        }
     }
-    return lx_false;
+    return ok;
 }
 
 lx_void_t lx_vk_allocator_free(lx_vk_allocator_ref_t self, lx_vk_buffer_t* buffer) {
     lx_vk_allocator_t* allocator = (lx_vk_allocator_t*)self;
     lx_assert(allocator && buffer);
-    lx_assert_and_check_return(buffer->chunk_id < allocator->chunks_count);
+    lx_assert(buffer->chunk_id < lx_arrayn(allocator->chunks));
 
     lx_vk_buffer_chunk_free(allocator, &allocator->chunks[buffer->chunk_id], buffer);
 }
