@@ -61,6 +61,13 @@ lx_void_t               lx_vk_allocator_exit(lx_vk_allocator_ref_t allocator);
  */
 lx_bool_t               lx_vk_allocator_alloc(lx_vk_allocator_ref_t allocator, lx_size_t size, lx_vk_buffer_t* buffer);
 
+/*! free the vulkan buffer
+ *
+ * @param allocator     the vulkan allocator
+ * @param buffer        the allocated buffer
+ */
+lx_void_t               lx_vk_allocator_free(lx_vk_allocator_ref_t allocator, lx_vk_buffer_t* buffer);
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */
