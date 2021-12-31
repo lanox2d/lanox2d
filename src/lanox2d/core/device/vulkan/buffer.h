@@ -15,17 +15,16 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        allocator.h
+ * @file        buffer.h
  *
  */
-#ifndef LX_CORE_DEVICE_VULKAN_ALLOCATOR_H
-#define LX_CORE_DEVICE_VULKAN_ALLOCATOR_H
+#ifndef LX_CORE_DEVICE_VULKAN_BUFFER_H
+#define LX_CORE_DEVICE_VULKAN_BUFFER_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
 #include "device.h"
-#include "buffer.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
@@ -33,33 +32,19 @@
 lx_extern_c_enter
 
 /* //////////////////////////////////////////////////////////////////////////////////////
+ * types
+ */
+
+// the vulkan buffer type
+typedef struct lx_vk_buffer_t_ {
+    VkBuffer*       buffer;
+    lx_size_t       offset;
+    lx_size_t       size;
+}lx_vk_buffer_t;
+
+/* //////////////////////////////////////////////////////////////////////////////////////
  * interfaces
  */
-
-/*! init the vulkan buffer allocator
- *
- * @param device        the vulkan device
- * @param buffer_type   the buffer type, e.g. VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, ...
- *
- * @return              the vulkan allocator
- */
-lx_vk_allocator_ref_t   lx_vk_allocator_init(lx_vulkan_device_t* device, VkBufferUsageFlagBits buffer_type);
-
-/*! exit the vulkan buffer allocator
- *
- * @param allocator     the vulkan allocator
- */
-lx_void_t               lx_vk_allocator_exit(lx_vk_allocator_ref_t allocator);
-
-/*! allocate the vulkan buffer
- *
- * @param allocator     the vulkan allocator
- * @param size          the required buffer size
- * @param buffer        the allocated buffer
- *
- * @return              lx_true or lx_false
- */
-lx_bool_t               lx_vk_allocator_alloc(lx_vk_allocator_ref_t allocator, lx_size_t size, lx_vk_buffer_t* buffer);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
