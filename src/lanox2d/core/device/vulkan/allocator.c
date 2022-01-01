@@ -39,6 +39,7 @@
 // the buffer chunk type
 typedef struct lx_vk_buffer_chunk_t_ {
     VkBuffer                buffer;
+    lx_bool_t               inited;
     lx_size_t               free_size;
     lx_size_t               total_size;
 }lx_vk_buffer_chunk_t;
@@ -54,7 +55,86 @@ typedef struct lx_vk_allocator_t {
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
+static lx_bool_t lx_vk_map_memory_type_to_index(lx_vk_allocator_t* allocator, lx_uint32_t type_bits, VkFlags requirements_mask, lx_uint32_t* type_index) {
+    VkPhysicalDeviceMemoryProperties memory_properties;
+    vkGetPhysicalDeviceMemoryProperties(allocator->device->gpu_device, &memory_properties);
+    // search memtypes to find first index with those properties
+    for (lx_uint32_t i = 0; i < 32; i++) {
+        if ((type_bits & 1) == 1) {
+            // type is available, does it match user properties?
+            if ((memory_properties.memoryTypes[i].propertyFlags & requirements_mask) == requirements_mask) {
+                *type_index = i;
+                return lx_true;
+            }
+        }
+        type_bits >>= 1;
+    }
+    return lx_false;
+}
+
+static lx_bool_t lx_vk_buffer_chunk_init(lx_vk_allocator_t* allocator, lx_vk_buffer_chunk_t* chunk) {
+    lx_assert(allocator && allocator->device && chunk);
+
+    lx_bool_t ok = lx_false;
+    do {
+        // create buffer
+        lx_vulkan_device_t* device = allocator->device;
+        VkBufferCreateInfo create_buffer_info = {};
+        create_buffer_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        create_buffer_info.pNext = lx_null;
+        create_buffer_info.flags = 0;
+        create_buffer_info.size = LX_VK_BUFFER_CHUNK_SIZE;
+        create_buffer_info.usage = allocator->buffer_type;
+        create_buffer_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        create_buffer_info.queueFamilyIndexCount = 1;
+        create_buffer_info.pQueueFamilyIndices = &device->gpu_familyidx;
+        if (vkCreateBuffer(device->device, &create_buffer_info, lx_null, &chunk->buffer) != VK_SUCCESS) {
+            lx_trace_e("create vulkan buffer failed!");
+            break;
+        }
+
+        VkMemoryRequirements memory_req;
+        vkGetBufferMemoryRequirements(device->device, chunk->buffer, &memory_req);
+
+        // assign the proper memory type for that buffer
+        VkMemoryAllocateInfo alloc_info = {};
+        alloc_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        alloc_info.pNext = lx_null;
+        alloc_info.allocationSize = memory_req.size;
+        alloc_info.memoryTypeIndex = 0;
+        if (!lx_vk_map_memory_type_to_index(allocator, memory_req.memoryTypeBits,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+            &alloc_info.memoryTypeIndex)) {
+            break;
+        }
+
+        // allocate memory for the buffer
+        VkDeviceMemory device_memory;
+        if (vkAllocateMemory(device->device, &alloc_info, lx_null, &device_memory) != VK_SUCCESS) {
+            lx_trace_e("allocate vulkan device memory failed!");
+            break;
+        }
+
+        // bind buffer memory
+        if (vkBindBufferMemory(device->device, chunk->buffer, device_memory, 0) != VK_SUCCESS) {
+            lx_trace_e("bind vulkan buffer memory failed!");
+            break;
+        }
+
+        ok = lx_true;
+    } while (0);
+    return ok;
+}
+
+static lx_void_t lx_vk_buffer_chunk_exit(lx_vk_allocator_t* allocator, lx_vk_buffer_chunk_t* chunk) {
+    if (chunk->inited) {
+    }
+}
+
 static lx_bool_t lx_vk_buffer_chunk_alloc(lx_vk_allocator_t* allocator, lx_vk_buffer_chunk_t* chunk, lx_size_t size, lx_vk_buffer_t* buffer) {
+    if (!chunk->inited && !lx_vk_buffer_chunk_init(allocator, chunk)) {
+        return lx_false;
+    }
     return lx_false;
 }
 
@@ -65,6 +145,8 @@ static lx_void_t lx_vk_buffer_chunk_free(lx_vk_allocator_t* allocator, lx_vk_buf
  * implementation
  */
 lx_vk_allocator_ref_t lx_vk_allocator_init(lx_vulkan_device_t* device, VkBufferUsageFlagBits buffer_type) {
+    lx_assert_and_check_return_val(device, lx_null);
+
     lx_bool_t ok = lx_false;
     lx_vk_allocator_t* allocator = lx_null;
     do {
@@ -87,6 +169,10 @@ lx_vk_allocator_ref_t lx_vk_allocator_init(lx_vulkan_device_t* device, VkBufferU
 lx_void_t lx_vk_allocator_exit(lx_vk_allocator_ref_t self) {
     lx_vk_allocator_t* allocator = (lx_vk_allocator_t*)self;
     if (self) {
+        lx_size_t i;
+        for (i = 0; i < lx_arrayn(allocator->chunks); i++) {
+            lx_vk_buffer_chunk_exit(allocator, &allocator->chunks[i]);
+        }
         lx_free(allocator);
     }
 }
