@@ -25,12 +25,22 @@
  * includes
  */
 #include "device.h"
-#include "buffer.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */
 lx_extern_c_enter
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * types
+ */
+
+// the vulkan buffer type
+typedef struct lx_vk_buffer_t_ {
+    lx_pointer_t    chunk;
+    lx_size_t       offset;
+    lx_size_t       size;
+}lx_vk_buffer_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * interfaces
@@ -67,6 +77,15 @@ lx_bool_t               lx_vk_allocator_alloc(lx_vk_allocator_ref_t allocator, l
  * @param buffer        the allocated buffer
  */
 lx_void_t               lx_vk_allocator_free(lx_vk_allocator_ref_t allocator, lx_vk_buffer_t* buffer);
+
+/*! get data of the vulkan buffer
+ *
+ * @param allocator     the vulkan allocator
+ * @param buffer        the allocated buffer
+ *
+ * @return              the buffer data pointer
+ */
+lx_pointer_t            lx_vk_allocator_data(lx_vk_allocator_ref_t allocator, lx_vk_buffer_t* buffer);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

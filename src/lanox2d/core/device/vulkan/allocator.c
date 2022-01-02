@@ -39,9 +39,11 @@
 // the buffer chunk type
 typedef struct lx_vk_buffer_chunk_t_ {
     VkBuffer                buffer;
+    VkDeviceMemory          device_memory;
     lx_bool_t               inited;
-    lx_size_t               free_size;
-    lx_size_t               total_size;
+    lx_pointer_t            mapped_data;
+    lx_size_t               mapped_offset;
+    lx_size_t               mapped_size;
 }lx_vk_buffer_chunk_t;
 
 // the vulkan allocator type
@@ -109,14 +111,13 @@ static lx_bool_t lx_vk_buffer_chunk_init(lx_vk_allocator_t* allocator, lx_vk_buf
         }
 
         // allocate memory for the buffer
-        VkDeviceMemory device_memory;
-        if (vkAllocateMemory(device->device, &alloc_info, lx_null, &device_memory) != VK_SUCCESS) {
+        if (vkAllocateMemory(device->device, &alloc_info, lx_null, &chunk->device_memory) != VK_SUCCESS) {
             lx_trace_e("allocate vulkan device memory failed!");
             break;
         }
 
         // bind buffer memory
-        if (vkBindBufferMemory(device->device, chunk->buffer, device_memory, 0) != VK_SUCCESS) {
+        if (vkBindBufferMemory(device->device, chunk->buffer, chunk->device_memory, 0) != VK_SUCCESS) {
             lx_trace_e("bind vulkan buffer memory failed!");
             break;
         }
@@ -128,6 +129,12 @@ static lx_bool_t lx_vk_buffer_chunk_init(lx_vk_allocator_t* allocator, lx_vk_buf
 
 static lx_void_t lx_vk_buffer_chunk_exit(lx_vk_allocator_t* allocator, lx_vk_buffer_chunk_t* chunk) {
     if (chunk->inited) {
+        lx_vulkan_device_t* device = allocator->device;
+        lx_assert(device);
+        if (chunk->mapped_data) {
+            vkUnmapMemory(device->device, chunk->device_memory);
+            chunk->mapped_data = lx_null;
+        }
         vkDestroyBuffer(allocator->device->device, chunk->buffer, lx_null);
         chunk->inited = lx_false;
     }
@@ -137,9 +144,9 @@ static lx_bool_t lx_vk_buffer_chunk_alloc(lx_vk_allocator_t* allocator, lx_vk_bu
     if (!chunk->inited && !lx_vk_buffer_chunk_init(allocator, chunk)) {
         return lx_false;
     }
-    buffer->buffer = &chunk->buffer;
+    buffer->chunk  = chunk;
     buffer->offset = 0;
-    buffer->size = size;
+    buffer->size   = size;
     return lx_true;
 }
 
@@ -202,8 +209,34 @@ lx_bool_t lx_vk_allocator_alloc(lx_vk_allocator_ref_t self, lx_size_t size, lx_v
 
 lx_void_t lx_vk_allocator_free(lx_vk_allocator_ref_t self, lx_vk_buffer_t* buffer) {
     lx_vk_allocator_t* allocator = (lx_vk_allocator_t*)self;
-    lx_assert(allocator && buffer);
-    lx_assert(buffer->chunk_id < lx_arrayn(allocator->chunks));
+    lx_assert(allocator && buffer && buffer->chunk);
 
-    lx_vk_buffer_chunk_free(allocator, &allocator->chunks[buffer->chunk_id], buffer);
+    lx_vk_buffer_chunk_free(allocator, buffer->chunk, buffer);
+}
+
+lx_pointer_t lx_vk_allocator_data(lx_vk_allocator_ref_t self, lx_vk_buffer_t* buffer) {
+    lx_vk_allocator_t* allocator = (lx_vk_allocator_t*)self;
+    lx_assert(allocator && buffer && buffer->chunk);
+
+    // this buffer has been mapped?
+    lx_vk_buffer_chunk_t* chunk = (lx_vk_buffer_chunk_t*)buffer->chunk;
+    if (chunk->mapped_data && chunk->mapped_offset == buffer->offset && chunk->mapped_size == buffer->size) {
+        return chunk->mapped_data;
+    }
+
+    // unmap the previous buffer
+    lx_vulkan_device_t* device = allocator->device;
+    lx_assert(device);
+    if (chunk->mapped_data) {
+        vkUnmapMemory(device->device, chunk->device_memory);
+        chunk->mapped_data = lx_null;
+    }
+
+    // map the buffer data
+    if (vkMapMemory(device->device, chunk->device_memory, buffer->offset, buffer->size, 0, &chunk->mapped_data) != VK_SUCCESS) {
+        return lx_null;
+    }
+    chunk->mapped_offset = buffer->offset;
+    chunk->mapped_size = buffer->size;
+    return chunk->mapped_data;
 }
