@@ -141,6 +141,7 @@ static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* devic
     lx_vk_buffer_t vertex_buffer;
     lx_bool_t ok = lx_vk_allocator_alloc(device->vertex_buffer_allocator, 100, &vertex_buffer);
     lx_trace_i("vertex_buffer: %d, size: %lu", ok, vertex_buffer.size);
+    lx_trace_i("vertex_buffer data: %p", lx_vk_allocator_data(device->vertex_buffer_allocator, &vertex_buffer));
 #if 0
     // TODO draw triangle
     vkCmdDraw(cmdbuffer, 3, 1, 0, 0);
