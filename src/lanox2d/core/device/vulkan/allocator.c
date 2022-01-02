@@ -128,6 +128,8 @@ static lx_bool_t lx_vk_buffer_chunk_init(lx_vk_allocator_t* allocator, lx_vk_buf
 
 static lx_void_t lx_vk_buffer_chunk_exit(lx_vk_allocator_t* allocator, lx_vk_buffer_chunk_t* chunk) {
     if (chunk->inited) {
+        vkDestroyBuffer(allocator->device->device, chunk->buffer, lx_null);
+        chunk->inited = lx_false;
     }
 }
 
@@ -135,7 +137,10 @@ static lx_bool_t lx_vk_buffer_chunk_alloc(lx_vk_allocator_t* allocator, lx_vk_bu
     if (!chunk->inited && !lx_vk_buffer_chunk_init(allocator, chunk)) {
         return lx_false;
     }
-    return lx_false;
+    buffer->buffer = &chunk->buffer;
+    buffer->offset = 0;
+    buffer->size = size;
+    return lx_true;
 }
 
 static lx_void_t lx_vk_buffer_chunk_free(lx_vk_allocator_t* allocator, lx_vk_buffer_chunk_t* chunk, lx_vk_buffer_t* buffer) {

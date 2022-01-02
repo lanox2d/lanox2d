@@ -24,6 +24,7 @@
  */
 #include "renderer.h"
 #include "pipeline.h"
+#include "allocator.h"
 #include "../../quality.h"
 #include "../../tess/tess.h"
 
@@ -137,6 +138,9 @@ static lx_inline lx_void_t lx_vk_renderer_apply_paint(lx_vulkan_device_t* device
 }
 
 static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* device, lx_polygon_ref_t polygon, lx_rect_ref_t bounds, lx_size_t rule) {
+    lx_vk_buffer_t vertex_buffer;
+    lx_bool_t ok = lx_vk_allocator_alloc(device->vertex_buffer_allocator, 100, &vertex_buffer);
+    lx_trace_i("vertex_buffer: %d, size: %lu", ok, vertex_buffer.size);
 #if 0
     // TODO draw triangle
     vkCmdDraw(cmdbuffer, 3, 1, 0, 0);

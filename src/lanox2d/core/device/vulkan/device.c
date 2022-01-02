@@ -25,6 +25,7 @@
 #include "device.h"
 #include "pipeline.h"
 #include "renderer.h"
+#include "allocator.h"
 #ifdef LX_CONFIG_WINDOW_HAVE_GLFW
 #   include <GLFW/glfw3.h>
 #endif
@@ -363,6 +364,12 @@ static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
             }
         }
 
+        // destroy vertex buffer allocator
+        if (device->vertex_buffer_allocator) {
+            lx_vk_allocator_exit(device->vertex_buffer_allocator);
+            device->vertex_buffer_allocator = lx_null;
+        }
+
         // destroy framebuffers
         if (device->framebuffers) {
             for (i = 0; i < device->images_count; i++) {
@@ -504,6 +511,10 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
             lx_trace_e("failed to init semaphore!");
             break;
         }
+
+        // init vertex buffer allocator
+        device->vertex_buffer_allocator = lx_vk_allocator_init(device, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+        lx_assert_and_check_break(device->vertex_buffer_allocator);
 
         // ok
         ok = lx_true;

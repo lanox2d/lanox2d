@@ -69,6 +69,9 @@ typedef struct lx_vulkan_device_t_ {
     VkCommandBuffer*            command_buffers;
     lx_uint32_t                 command_buffers_count;
 
+    // vertex buffer allocator
+    lx_vk_allocator_ref_t       vertex_buffer_allocator;
+
     // renderer
     lx_bool_t                   renderer_prepared;
     VkCommandBuffer             renderer_cmdbuffer;
