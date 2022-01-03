@@ -122,6 +122,7 @@ static lx_bool_t lx_vk_buffer_chunk_init(lx_vk_allocator_t* allocator, lx_vk_buf
             break;
         }
 
+        chunk->inited = lx_true;
         ok = lx_true;
     } while (0);
     return ok;
@@ -135,6 +136,7 @@ static lx_void_t lx_vk_buffer_chunk_exit(lx_vk_allocator_t* allocator, lx_vk_buf
             vkUnmapMemory(device->device, chunk->device_memory);
             chunk->mapped_data = lx_null;
         }
+        vkFreeMemory(allocator->device->device, chunk->device_memory, lx_null);
         vkDestroyBuffer(allocator->device->device, chunk->buffer, lx_null);
         chunk->inited = lx_false;
     }
@@ -147,6 +149,7 @@ static lx_bool_t lx_vk_buffer_chunk_alloc(lx_vk_allocator_t* allocator, lx_vk_bu
     buffer->chunk  = chunk;
     buffer->offset = 0;
     buffer->size   = size;
+    buffer->buffer = &chunk->buffer;
     return lx_true;
 }
 

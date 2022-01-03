@@ -113,10 +113,6 @@ static lx_inline lx_void_t lx_vk_renderer_apply_paint_solid(lx_vulkan_device_t* 
 
     // apply color
     // TODO
-#if 0
-    VkDeviceSize offset = 0;
-    vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &buffers.vertexBuf_, &offset);
-#endif
 }
 
 static lx_inline lx_void_t lx_vk_renderer_apply_paint(lx_vulkan_device_t* device, lx_rect_ref_t bounds) {
@@ -138,14 +134,23 @@ static lx_inline lx_void_t lx_vk_renderer_apply_paint(lx_vulkan_device_t* device
 }
 
 static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* device, lx_polygon_ref_t polygon, lx_rect_ref_t bounds, lx_size_t rule) {
+    VkCommandBuffer cmdbuffer = device->renderer_cmdbuffer;
+
+    static const lx_float_t vertex_data[] = {
+      -1.0f, -1.0f, 0.0f,
+      1.0f, -1.0f, 0.0f,
+      0.0f, 1.0f, 0.0f
+    };
+
     lx_vk_buffer_t vertex_buffer;
-    lx_bool_t ok = lx_vk_allocator_alloc(device->vertex_buffer_allocator, 100, &vertex_buffer);
-    lx_trace_i("vertex_buffer: %d, size: %lu", ok, vertex_buffer.size);
-    lx_trace_i("vertex_buffer data: %p", lx_vk_allocator_data(device->vertex_buffer_allocator, &vertex_buffer));
-#if 0
-    // TODO draw triangle
-    vkCmdDraw(cmdbuffer, 3, 1, 0, 0);
-#endif
+    if (lx_vk_allocator_alloc(device->vertex_buffer_allocator, sizeof(vertex_data), &vertex_buffer)) {
+        lx_pointer_t data = lx_vk_allocator_data(device->vertex_buffer_allocator, &vertex_buffer);
+        lx_memcpy(data, vertex_data, sizeof(vertex_data));
+
+        VkDeviceSize offset = 0;
+        vkCmdBindVertexBuffers(cmdbuffer, 0, 1, vertex_buffer.buffer, &offset);
+        vkCmdDraw(cmdbuffer, 3, 1, 0, 0);
+    }
 }
 
 static lx_inline lx_void_t lx_vk_renderer_stroke_lines(lx_vulkan_device_t* device, lx_point_ref_t points, lx_size_t count) {

@@ -38,6 +38,7 @@ lx_extern_c_enter
 // the vulkan buffer type
 typedef struct lx_vk_buffer_t_ {
     lx_pointer_t    chunk;
+    VkBuffer*       buffer;
     lx_size_t       offset;
     lx_size_t       size;
 }lx_vk_buffer_t;
