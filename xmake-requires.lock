@@ -390,6 +390,14 @@
             },
             version = "1.2.189+1"
         },
+        ["vulkan-headers#31fecfc4"] = {
+            repo = {
+                branch = "master",
+                commit = "f2cfd62f2511db50ba3cd38e12faa7720f367062",
+                url = "https://gitee.com/tboox/xmake-repo.git"
+            },
+            version = "1.2.198+0"
+        },
         ["vulkan-loader#31fecfc4"] = {
             repo = {
                 branch = "master",
@@ -397,6 +405,14 @@
                 url = "https://gitee.com/tboox/xmake-repo.git"
             },
             version = "1.2.189+1"
+        },
+        ["vulkan-memory-allocator#31fecfc4"] = {
+            repo = {
+                branch = "master",
+                commit = "f2cfd62f2511db50ba3cd38e12faa7720f367062",
+                url = "https://gitee.com/tboox/xmake-repo.git"
+            },
+            version = "v2.3.0"
         }
     }
 }

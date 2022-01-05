@@ -17,11 +17,12 @@ end
 -- we should use libvulkan instead of MoltenVK on macOS for glfw, @see https://github.com/achirkin/vulkan/issues/24
 if is_config("device", "vulkan") then
     if is_plat("windows", "linux", "macosx") then
-        add_requires("vulkan-loader", {alias = "vulkan"})
+        add_requires("vulkan-loader")
         add_requires("glslang", {configs = {binaryonly = true}})
     elseif is_plat("android") then
         add_requires("vulkan-validationlayers")
     end
+    add_requires("vulkan-memory-allocator")
 end
 
 -- skia package

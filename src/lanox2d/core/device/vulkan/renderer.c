@@ -142,13 +142,19 @@ static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* devic
       0.0f, 1.0f, 0.0f
     };
 
+#if 0
+    static const lx_float_t color_data[] = {
+        1.0f, 0.0f, 0.0f, 0.0f
+    };
+#endif
+
     lx_vk_buffer_t vertex_buffer;
     if (lx_vk_allocator_alloc(device->vertex_buffer_allocator, sizeof(vertex_data), &vertex_buffer)) {
         lx_pointer_t data = lx_vk_allocator_data(device->vertex_buffer_allocator, &vertex_buffer);
         lx_memcpy(data, vertex_data, sizeof(vertex_data));
 
         VkDeviceSize offset = 0;
-        vkCmdBindVertexBuffers(cmdbuffer, 0, 1, vertex_buffer.buffer, &offset);
+        vkCmdBindVertexBuffers(cmdbuffer, 0, 2, vertex_buffer.buffer, &offset);
         vkCmdDraw(cmdbuffer, 3, 1, 0, 0);
     }
 }
