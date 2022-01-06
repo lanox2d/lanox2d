@@ -261,28 +261,32 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_solid(lx_vulkan_device_t* device) {
     };
 
     // init vertex input state
-    VkVertexInputBindingDescription vertex_input_bindings = {};
-    vertex_input_bindings.binding = 0;
-    vertex_input_bindings.stride = 3 * sizeof(lx_float_t);
-    vertex_input_bindings.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+    VkVertexInputBindingDescription vertex_input_bindings[2];
+    vertex_input_bindings[0].binding = 0; // for vertices buffer
+    vertex_input_bindings[0].stride = 3 * sizeof(lx_float_t);
+    vertex_input_bindings[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+    vertex_input_bindings[1].binding = 1; // for color buffer
+    vertex_input_bindings[1].stride = 3 * sizeof(lx_float_t);
+    vertex_input_bindings[1].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
     VkVertexInputAttributeDescription vertex_input_attributes[2];
-    vertex_input_attributes[0].location = 0;
+    vertex_input_attributes[0].location = 0; // layout(location = 0) in vec4 aVertices;
     vertex_input_attributes[0].binding = 0;
     vertex_input_attributes[0].format = VK_FORMAT_R32G32B32_SFLOAT;
     vertex_input_attributes[0].offset = 0;
 
-    vertex_input_attributes[1].location = 1;
-    vertex_input_attributes[1].binding = 0;
+    vertex_input_attributes[1].location = 1; // layout(location = 1) in vec4 aColor;
+    vertex_input_attributes[1].binding = 1;
     vertex_input_attributes[1].format = VK_FORMAT_R32G32B32_SFLOAT;
     vertex_input_attributes[1].offset = 0;
 
     VkPipelineVertexInputStateCreateInfo vertex_inputinfo = {};
     vertex_inputinfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
     vertex_inputinfo.pNext = lx_null;
-    vertex_inputinfo.vertexBindingDescriptionCount = 1;
-    vertex_inputinfo.pVertexBindingDescriptions = &vertex_input_bindings;
-    vertex_inputinfo.vertexAttributeDescriptionCount = 2;
+    vertex_inputinfo.vertexBindingDescriptionCount = lx_arrayn(vertex_input_bindings);
+    vertex_inputinfo.pVertexBindingDescriptions = vertex_input_bindings;
+    vertex_inputinfo.vertexAttributeDescriptionCount = lx_arrayn(vertex_input_attributes);
     vertex_inputinfo.pVertexAttributeDescriptions = vertex_input_attributes;
 
     // get pipeline

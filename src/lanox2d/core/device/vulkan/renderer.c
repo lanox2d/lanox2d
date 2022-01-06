@@ -154,7 +154,7 @@ static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* devic
         lx_memcpy(data, vertex_data, sizeof(vertex_data));
 
         VkDeviceSize offset = 0;
-        vkCmdBindVertexBuffers(cmdbuffer, 0, 2, vertex_buffer.buffer, &offset);
+        vkCmdBindVertexBuffers(cmdbuffer, 0, 1, vertex_buffer.buffer, &offset);
         vkCmdDraw(cmdbuffer, 3, 1, 0, 0);
     }
 }
