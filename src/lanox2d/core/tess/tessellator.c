@@ -120,11 +120,11 @@ static lx_void_t lx_tessellator_result_append(lx_tessellator_t* tessellator) {
 
     // bind polygon points data
     if (tessellator->polygon.total) {
-        tessellator->polygon.points = lx_array_data(polygon_points);
+        tessellator->polygon.points = (lx_point_ref_t)lx_array_data(polygon_points);
         if (polygon_counts) {
             lx_uint16_t zero = 0;
             lx_array_insert_tail(polygon_counts, &zero);
-            tessellator->polygon.counts = lx_array_data(polygon_counts);
+            tessellator->polygon.counts = (lx_uint16_t*)lx_array_data(polygon_counts);
         }
     }
 }
