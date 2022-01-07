@@ -82,6 +82,7 @@ target("lanox2d")
     end
     if is_config("device", "vulkan") then
         add_files("core/device/vulkan/**.c")
+        add_files("core/device/vulkan/allocator.cc", {languages = "c++14"})
         add_files("core/device/vulkan/shaders/*.vert")
         add_files("core/device/vulkan/shaders/*.frag")
         add_rules("utils.glsl2spv", {bin2c = true})
