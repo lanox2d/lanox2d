@@ -91,13 +91,22 @@ lx_void_t lx_vk_allocator_exit(lx_vk_allocator_ref_t self) {
 lx_bool_t lx_vk_allocator_alloc(lx_vk_allocator_ref_t self, lx_size_t size, lx_vk_buffer_t* buffer) {
     lx_vk_allocator_t* allocator = (lx_vk_allocator_t*)self;
     lx_assert(allocator && size && buffer);
-    return lx_false;
+
+    VkBufferCreateInfo buffer_info = {};
+    buffer_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    buffer_info.size = size;
+    buffer_info.usage = allocator->buffer_type;
+
+    VmaAllocationCreateInfo vmaalloc_info = {};
+    vmaalloc_info.usage = VMA_MEMORY_USAGE_CPU_TO_GPU;
+    return vmaCreateBuffer(allocator->allocator, &buffer_info, &vmaalloc_info, &buffer->buffer, (VmaAllocation*)buffer->privdata, lx_null) == VK_SUCCESS;
 }
 
 lx_void_t lx_vk_allocator_free(lx_vk_allocator_ref_t self, lx_vk_buffer_t* buffer) {
     lx_vk_allocator_t* allocator = (lx_vk_allocator_t*)self;
     lx_assert(allocator && buffer);
 
+    vmaDestroyBuffer(allocator->allocator, buffer->buffer, *((VmaAllocation*)buffer->privdata));
 }
 
 lx_pointer_t lx_vk_allocator_data(lx_vk_allocator_ref_t self, lx_vk_buffer_t* buffer) {

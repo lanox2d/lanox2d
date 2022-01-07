@@ -37,10 +37,10 @@ lx_extern_c_enter
 
 // the vulkan buffer type
 typedef struct lx_vk_buffer_t_ {
-    VkBuffer*       buffer;
+    VkBuffer        buffer;
     lx_size_t       offset;
     lx_size_t       size;
-    lx_byte_t       privdata[64]; // the private data, only for internal allocator
+    lx_byte_t       privdata[16]; // the private data, only for internal allocator
 }lx_vk_buffer_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
