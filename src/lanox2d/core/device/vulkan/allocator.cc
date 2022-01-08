@@ -109,9 +109,14 @@ lx_void_t lx_vk_allocator_free(lx_vk_allocator_ref_t self, lx_vk_buffer_t* buffe
     vmaDestroyBuffer(allocator->allocator, buffer->buffer, *((VmaAllocation*)buffer->privdata));
 }
 
-lx_pointer_t lx_vk_allocator_data(lx_vk_allocator_ref_t self, lx_vk_buffer_t* buffer) {
+lx_void_t lx_vk_allocator_copy(lx_vk_allocator_ref_t self, lx_vk_buffer_t* buffer, lx_pointer_t data, lx_size_t size) {
     lx_vk_allocator_t* allocator = (lx_vk_allocator_t*)self;
-    lx_assert(allocator && buffer);
+    lx_assert(allocator && buffer && data && size);
 
-    return lx_null;
+    lx_pointer_t buffer_data = lx_null;
+    vmaMapMemory(allocator->allocator, *((VmaAllocation*)buffer->privdata), &buffer_data);
+    if (buffer_data) {
+        lx_memcpy(buffer_data, data, size);
+        vmaUnmapMemory(allocator->allocator, *((VmaAllocation*)buffer->privdata));
+    }
 }
