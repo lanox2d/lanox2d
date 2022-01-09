@@ -1,6 +1,6 @@
 #include "lanox2d/lanox2d.h"
 
-static lx_void_t itemfree(lx_pointer_t item) {
+static lx_void_t itemfree(lx_pointer_t item, lx_pointer_t udata) {
     lx_trace_i("free: %lu", *((lx_size_t*)item));
 }
 

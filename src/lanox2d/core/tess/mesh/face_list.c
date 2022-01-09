@@ -66,7 +66,7 @@ typedef struct lx_mesh_face_list_t_ {
 static lx_void_t lx_mesh_face_exit(lx_pointer_t data, lx_cpointer_t udata) {
     lx_mesh_face_list_t* list = (lx_mesh_face_list_t*)udata;
     if (list && list->element.free && data) {
-        list->element.free((lx_pointer_t)((lx_mesh_face_ref_t)data + 1));
+        list->element.free((lx_pointer_t)((lx_mesh_face_ref_t)data + 1), list->element.udata);
     }
 }
 

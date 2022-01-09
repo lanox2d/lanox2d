@@ -124,11 +124,11 @@ lx_object_stack_ref_t lx_object_stack_init(lx_size_t grow, lx_size_t type) {
         stack->cache_size = grow? grow : 8;
 
         // init cache
-        stack->cache = lx_stack_init(grow, lx_element_mem(sizeof(lx_handle_t), lx_null));
+        stack->cache = lx_stack_init(grow, lx_element_mem(sizeof(lx_handle_t), lx_null, lx_null));
         lx_assert_and_check_break(stack->cache);
 
         // init stack
-        stack->stack = lx_stack_init(grow, lx_element_mem(sizeof(lx_handle_t), lx_null));
+        stack->stack = lx_stack_init(grow, lx_element_mem(sizeof(lx_handle_t), lx_null, lx_null));
         lx_assert_and_check_break(stack->stack);
 
         // ok

@@ -208,7 +208,7 @@ lx_bool_t lx_array_resize(lx_array_ref_t self, lx_size_t size) {
         if (array->element.free) {
             lx_size_t  i;
             for (i = size; i < arraysize; i++) {
-                array->element.free(arraydata + i * itemsize);
+                array->element.free(arraydata + i * itemsize, array->element.udata);
             }
         }
     }
@@ -242,7 +242,7 @@ lx_void_t lx_array_clear(lx_array_ref_t self) {
             lx_size_t  size = array->size;
             lx_size_t  itemsize = array->element.size;
             for (i = 0; i < size; i++) {
-                array->element.free(data + i * itemsize);
+                array->element.free(data + i * itemsize, array->element.udata);
             }
         }
         array->size = 0;
@@ -306,7 +306,7 @@ lx_void_t lx_array_replace(lx_array_ref_t self, lx_size_t index, lx_cpointer_t d
         lx_pointer_t item = lx_array_item(self, index);
         lx_assert_and_check_return(item);
         if (array->element.free) {
-            array->element.free(item);
+            array->element.free(item, array->element.udata);
         }
         if (array->element.size == sizeof(lx_pointer_t)) {
             *((lx_pointer_t*)item) = *((lx_pointer_t*)data);

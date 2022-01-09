@@ -151,6 +151,7 @@ static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* devic
     lx_vk_buffer_t vertex_buffer;
     if (lx_vk_allocator_alloc(device->vertex_buffer_allocator, sizeof(vertex_data), &vertex_buffer)) {
         lx_vk_allocator_copy(device->vertex_buffer_allocator, &vertex_buffer, (lx_pointer_t)vertex_data, sizeof(vertex_data));
+        lx_array_insert_tail(device->vertex_buffers, &vertex_buffer);
 
         VkDeviceSize offset = 0;
         vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &vertex_buffer.buffer, &offset);
@@ -258,6 +259,7 @@ static lx_bool_t lx_vk_renderer_draw_prepare(lx_vulkan_device_t* device) {
  */
 lx_bool_t lx_vk_renderer_draw_lock(lx_vulkan_device_t* device) {
     lx_assert(device && device->device && device->swapchain && device->semaphore);
+    lx_assert(device->vertex_buffers);
 
     // get the framebuffer index we should draw in
     if (vkAcquireNextImageKHR(device->device, device->swapchain, UINT64_MAX, device->semaphore, VK_NULL_HANDLE, &device->imageindex) != VK_SUCCESS) {
@@ -270,6 +272,7 @@ lx_bool_t lx_vk_renderer_draw_lock(lx_vulkan_device_t* device) {
 
     // reset renderer
     device->renderer_prepared = lx_false;
+    lx_array_clear(device->vertex_buffers);
     return lx_true;
 }
 

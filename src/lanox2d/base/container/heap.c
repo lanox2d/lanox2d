@@ -296,7 +296,7 @@ static lx_void_t lx_heap_iterator_remove(lx_iterator_ref_t iterator, lx_size_t i
     // free the item first
     lx_size_t step = heap->element.size;
     if (heap->element.free) {
-        heap->element.free(heap->data + itor * step);
+        heap->element.free(heap->data + itor * step, heap->element.udata);
     }
 
     // the removed item is not the last item?
@@ -416,7 +416,7 @@ lx_void_t lx_heap_clear(lx_heap_ref_t self) {
             lx_size_t size = heap->size;
             lx_size_t i = 0;
             for (i = 0; i < size; i++) {
-                heap->element.free(heap->data + i * heap->element.size);
+                heap->element.free(heap->data + i * heap->element.size, heap->element.udata);
             }
         }
         heap->size = 0;
@@ -477,7 +477,7 @@ lx_void_t lx_heap_pop(lx_heap_ref_t self) {
 
     // free the top item first
     if (heap->element.free) {
-        heap->element.free(heap->data);
+        heap->element.free(heap->data, heap->element.udata);
     }
 
     // the last item is not in top

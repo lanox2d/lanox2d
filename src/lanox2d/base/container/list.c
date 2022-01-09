@@ -70,7 +70,7 @@ typedef struct lx_list_t {
 static lx_void_t lx_list_item_exit(lx_pointer_t data, lx_cpointer_t udata) {
     lx_list_t* list = (lx_list_t*)udata;
     if (list && list->element.free) {
-        list->element.free((lx_pointer_t)(((lx_list_entry_t*)data) + 1));
+        list->element.free((lx_pointer_t)(((lx_list_entry_t*)data) + 1), list->element.udata);
     }
 }
 
@@ -240,7 +240,7 @@ lx_void_t lx_list_replace(lx_list_ref_t self, lx_size_t itor, lx_cpointer_t data
 
     lx_pointer_t item = (lx_pointer_t)(((lx_list_entry_t*)node) + 1);
     if (list->element.free) {
-        list->element.free(item);
+        list->element.free(item, list->element.udata);
     }
     lx_memcpy((lx_pointer_t)item, data, list->element.size);
 }

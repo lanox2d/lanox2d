@@ -44,7 +44,7 @@ lx_canvas_ref_t lx_canvas_init(lx_device_ref_t device) {
 
         // init matrix
         lx_matrix_clear(&canvas->matrix);
-        canvas->matrix_stack = lx_stack_init(8, lx_element_mem(sizeof(lx_matrix_t), lx_null));
+        canvas->matrix_stack = lx_stack_init(8, lx_element_mem(sizeof(lx_matrix_t), lx_null, lx_null));
         lx_assert_and_check_break(canvas->matrix_stack);
         lx_device_bind_matrix(canvas->device, &canvas->matrix);
 

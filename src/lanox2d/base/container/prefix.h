@@ -32,9 +32,10 @@
 
 /// the element type
 typedef struct lx_element_t_ {
-    lx_size_t size;
-    lx_long_t (*comp)(lx_cpointer_t litem, lx_cpointer_t ritem);
-    lx_void_t (*free)(lx_pointer_t item);
+    lx_size_t    size;
+    lx_long_t    (*comp)(lx_cpointer_t litem, lx_cpointer_t ritem);
+    lx_void_t    (*free)(lx_pointer_t item, lx_pointer_t udata);
+    lx_pointer_t udata;
 }lx_element_t;
 
 /// the element comparer type
@@ -43,11 +44,12 @@ typedef lx_long_t (*lx_element_comp_t)(lx_cpointer_t litem, lx_cpointer_t ritem)
 /* //////////////////////////////////////////////////////////////////////////////////////
  * inline interfaces
  */
-static lx_element_t lx_inline lx_element_mem(lx_size_t size, lx_void_t (*free)(lx_pointer_t item)) {
+static lx_element_t lx_inline lx_element_mem(lx_size_t size, lx_void_t (*free)(lx_pointer_t item, lx_pointer_t udata), lx_pointer_t udata) {
     lx_element_t element;
     element.size = size;
     element.free = free;
     element.comp = lx_null;
+    element.udata = udata;
     return element;
 }
 

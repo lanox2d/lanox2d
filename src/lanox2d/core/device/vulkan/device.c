@@ -31,6 +31,15 @@
 #endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
+ * macros
+ */
+#ifdef LX_CONFIG_SMALL
+#   define LX_DEVICE_VERTEX_BUFFERS_GROW      (64)
+#else
+#   define LX_DEVICE_VERTEX_BUFFERS_GROW      (128)
+#endif
+
+/* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
 
@@ -339,6 +348,14 @@ static lx_bool_t lx_device_vulkan_semaphore_init(lx_vulkan_device_t* device) {
     return ok;
 }
 
+static lx_void_t lx_device_vulkan_vertex_buffer_exit(lx_pointer_t item, lx_pointer_t udata) {
+    lx_vk_buffer_t* buffer = (lx_vk_buffer_t*)item;
+    lx_vk_allocator_ref_t allocator = (lx_vk_allocator_ref_t)udata;
+    if (allocator && buffer) {
+        lx_vk_allocator_free(allocator, buffer);
+    }
+}
+
 static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
     lx_vulkan_device_t* device = (lx_vulkan_device_t*)self;
     if (device) {
@@ -362,6 +379,12 @@ static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
                 lx_vk_pipeline_exit(device->pipelines[i]);
                 device->pipelines[i] = lx_null;
             }
+        }
+
+        // destroy vertex buffers
+        if (device->vertex_buffers) {
+            lx_array_exit(device->vertex_buffers);
+            device->vertex_buffers = lx_null;
         }
 
         // destroy vertex buffer allocator
@@ -515,6 +538,11 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
         // init vertex buffer allocator
         device->vertex_buffer_allocator = lx_vk_allocator_init(device, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
         lx_assert_and_check_break(device->vertex_buffer_allocator);
+
+        // init vertex buffers
+        device->vertex_buffers = lx_array_init(LX_DEVICE_VERTEX_BUFFERS_GROW,
+            lx_element_mem(sizeof(lx_vk_buffer_t), lx_device_vulkan_vertex_buffer_exit, (lx_pointer_t)device->vertex_buffer_allocator));
+        lx_assert_and_check_break(device->vertex_buffers);
 
         // ok
         ok = lx_true;

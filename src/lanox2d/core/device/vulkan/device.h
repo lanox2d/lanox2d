@@ -76,6 +76,7 @@ typedef struct lx_vulkan_device_t_ {
     lx_bool_t                   renderer_prepared;
     VkCommandBuffer             renderer_cmdbuffer;
     VkClearColorValue           renderer_clear_color;
+    lx_array_ref_t              vertex_buffers;
 
 }lx_vulkan_device_t;
 

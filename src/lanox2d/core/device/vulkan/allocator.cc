@@ -128,7 +128,6 @@ lx_void_t lx_vk_allocator_copy(lx_vk_allocator_ref_t self, lx_vk_buffer_t* buffe
     VmaAllocationInfo vma_allocinfo;
     vmaGetAllocationInfo(allocator->allocator, vma_buffer->allocation, &vma_allocinfo);
     lx_assert(size <= vma_allocinfo.size);
-    lx_trace_i("%lu %lu %lu", vma_allocinfo.offset, vma_allocinfo.size, size);
 #endif
 
     lx_pointer_t buffer_data = lx_null;
