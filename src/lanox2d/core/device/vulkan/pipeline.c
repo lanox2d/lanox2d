@@ -267,7 +267,7 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_solid(lx_vulkan_device_t* device) {
     vertex_input_bindings[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
     vertex_input_bindings[1].binding = 1; // for color buffer
-    vertex_input_bindings[1].stride = 3 * sizeof(lx_float_t);
+    vertex_input_bindings[1].stride = 4 * sizeof(lx_float_t);
     vertex_input_bindings[1].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
     VkVertexInputAttributeDescription vertex_input_attributes[2];

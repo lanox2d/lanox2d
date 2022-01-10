@@ -9,6 +9,5 @@ layout(location = 0) out vec4 finalColor;
 
 void main() {
    finalColor = vColors;
-//   finalColor = vec4(0.91, 0.26,  0.21, 1.0);
 }
 
