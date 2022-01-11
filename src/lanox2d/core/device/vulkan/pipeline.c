@@ -41,8 +41,8 @@ typedef struct lx_vk_pipeline_t {
  * private implementation
  */
 static lx_vk_pipeline_ref_t lx_vk_pipeline_init(lx_vulkan_device_t* device,
-    lx_size_t type, lx_char_t const* vshader, lx_size_t vshader_size,
-    lx_char_t const* fshader, lx_size_t fshader_size, VkPipelineVertexInputStateCreateInfo* vertex_inputinfo) {
+    lx_size_t type, lx_char_t const* vshader, lx_size_t vshader_size, lx_char_t const* fshader, lx_size_t fshader_size,
+    VkPipelineVertexInputStateCreateInfo* vertex_inputinfo, VkPipelineLayoutCreateInfo* pipeline_layoutinfo) {
     lx_assert_and_check_return_val(device && device->device && vshader && fshader, lx_null);
 
     lx_bool_t ok = lx_false;
@@ -58,14 +58,7 @@ static lx_vk_pipeline_ref_t lx_vk_pipeline_init(lx_vulkan_device_t* device,
         pipeline->device = device;
 
         // create pipeline layout (empty)
-        VkPipelineLayoutCreateInfo pipeline_layout_createinfo = {};
-        pipeline_layout_createinfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-        pipeline_layout_createinfo.pNext = lx_null;
-        pipeline_layout_createinfo.setLayoutCount = 0;
-        pipeline_layout_createinfo.pSetLayouts = lx_null;
-        pipeline_layout_createinfo.pushConstantRangeCount = 0;
-        pipeline_layout_createinfo.pPushConstantRanges = lx_null;
-        if (vkCreatePipelineLayout(device->device, &pipeline_layout_createinfo, lx_null, &pipeline->pipeline_layout) != VK_SUCCESS) {
+        if (vkCreatePipelineLayout(device->device, pipeline_layoutinfo, lx_null, &pipeline->pipeline_layout) != VK_SUCCESS) {
             break;
         }
 
@@ -235,14 +228,14 @@ static lx_vk_pipeline_ref_t lx_vk_pipeline_init(lx_vulkan_device_t* device,
 }
 
 static lx_vk_pipeline_ref_t lx_vk_pipeline_get(lx_vulkan_device_t* device,
-    lx_size_t type, lx_char_t const* vshader, lx_size_t vshader_size,
-    lx_char_t const* fshader, lx_size_t fshader_size, VkPipelineVertexInputStateCreateInfo* vertex_inputinfo) {
+    lx_size_t type, lx_char_t const* vshader, lx_size_t vshader_size, lx_char_t const* fshader, lx_size_t fshader_size,
+    VkPipelineVertexInputStateCreateInfo* vertex_inputinfo, VkPipelineLayoutCreateInfo* pipeline_layoutinfo) {
     lx_assert_and_check_return_val(device && vshader && fshader, lx_null);
     lx_assert_and_check_return_val(type < lx_arrayn(device->pipelines), lx_null);
 
     lx_vk_pipeline_ref_t pipeline = device->pipelines[type];
     if (!pipeline) {
-        pipeline = lx_vk_pipeline_init(device, type, vshader, vshader_size, fshader, fshader_size, vertex_inputinfo);
+        pipeline = lx_vk_pipeline_init(device, type, vshader, vshader_size, fshader, fshader_size, vertex_inputinfo, pipeline_layoutinfo);
         device->pipelines[type] = pipeline;
     }
     return pipeline;
@@ -278,7 +271,7 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_solid(lx_vulkan_device_t* device) {
 
     vertex_input_attributes[1].location = 1; // layout(location = 1) in vec4 aColor;
     vertex_input_attributes[1].binding = 1;
-    vertex_input_attributes[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+    vertex_input_attributes[1].format = VK_FORMAT_R32G32B32A32_SFLOAT;
     vertex_input_attributes[1].offset = 0;
 
     VkPipelineVertexInputStateCreateInfo vertex_inputinfo = {};
@@ -289,9 +282,28 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_solid(lx_vulkan_device_t* device) {
     vertex_inputinfo.vertexAttributeDescriptionCount = lx_arrayn(vertex_input_attributes);
     vertex_inputinfo.pVertexAttributeDescriptions = vertex_input_attributes;
 
+#if 0
+    VkPushConstantRange push_constant_range = {};
+    push_constant_range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    push_constant_range.offset = 0;
+    push_constant_range.size = sizeof(.);
+
+    pipeline_layoutinfo.pushConstantRangeCount  = 1;
+    pipeline_layoutinfo.pPushConstantRanges = &push_constant_range;
+#endif
+
+    // init pipeline layout info
+    VkPipelineLayoutCreateInfo pipeline_layoutinfo;
+	pipeline_layoutinfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+	pipeline_layoutinfo.pNext = lx_null;
+	pipeline_layoutinfo.setLayoutCount = 0;
+	pipeline_layoutinfo.pSetLayouts = lx_null;
+	pipeline_layoutinfo.pushConstantRangeCount = 0;
+	pipeline_layoutinfo.pPushConstantRanges = lx_null;
+
     // get pipeline
     return lx_vk_pipeline_get(device, LX_VK_PIPELINE_TYPE_SOLID,
-        vshader, sizeof(vshader), fshader, sizeof(fshader), &vertex_inputinfo);
+        vshader, sizeof(vshader), fshader, sizeof(fshader), &vertex_inputinfo, &pipeline_layoutinfo);
 }
 
 lx_vk_pipeline_ref_t lx_vk_pipeline_texture(lx_vulkan_device_t* device) {
@@ -327,9 +339,18 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_texture(lx_vulkan_device_t* device) {
     vertex_inputinfo.vertexAttributeDescriptionCount = 2;
     vertex_inputinfo.pVertexAttributeDescriptions = vertex_input_attributes;
 
+    // init pipeline layout info
+    VkPipelineLayoutCreateInfo pipeline_layoutinfo;
+	pipeline_layoutinfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+	pipeline_layoutinfo.pNext = lx_null;
+	pipeline_layoutinfo.setLayoutCount = 0;
+	pipeline_layoutinfo.pSetLayouts = lx_null;
+	pipeline_layoutinfo.pushConstantRangeCount = 0;
+	pipeline_layoutinfo.pPushConstantRanges = lx_null;
+
     // get pipeline
     return lx_vk_pipeline_get(device, LX_VK_PIPELINE_TYPE_TEXTURE,
-        vshader, sizeof(vshader), fshader, sizeof(fshader), &vertex_inputinfo);
+        vshader, sizeof(vshader), fshader, sizeof(fshader), &vertex_inputinfo, &pipeline_layoutinfo);
 }
 
 lx_void_t lx_vk_pipeline_exit(lx_vk_pipeline_ref_t self) {
