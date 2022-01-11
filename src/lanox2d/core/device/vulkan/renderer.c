@@ -113,7 +113,7 @@ static lx_inline lx_void_t lx_vk_renderer_apply_paint_solid(lx_vulkan_device_t* 
 
     // apply color
     lx_float_t color_data[] = {(lx_float_t)color.r / 0xff, (lx_float_t)color.g / 0xff, (lx_float_t)color.b / 0xff, (lx_float_t)color.a / 0xff};
-    vkCmdPushConstants(cmdbuffer, lx_vk_pipeline_layout(pipeline), VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(color_data), color_data);
+    vkCmdPushConstants(cmdbuffer, lx_vk_pipeline_layout(pipeline), VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(color_data), color_data);
 }
 
 static lx_inline lx_void_t lx_vk_renderer_apply_paint(lx_vulkan_device_t* device, lx_rect_ref_t bounds) {

@@ -273,9 +273,9 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_solid(lx_vulkan_device_t* device) {
     vertex_inputinfo.vertexAttributeDescriptionCount = lx_arrayn(vertex_input_attributes);
     vertex_inputinfo.pVertexAttributeDescriptions = vertex_input_attributes;
 
-    // aColor as push-constant
+    // fragment.aColor as push-constant
     VkPushConstantRange push_constant_range = {};
-    push_constant_range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    push_constant_range.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
     push_constant_range.offset = 0;
     push_constant_range.size = 4 * sizeof(lx_float_t);
 

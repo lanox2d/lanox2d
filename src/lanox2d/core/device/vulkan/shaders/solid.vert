@@ -5,12 +5,7 @@
 precision mediump float;
 
 layout(location = 0) in vec4 aVertices;
-//layout(location = 1) in vec4 aColor;
-layout(push_constant) uniform PushConsts {
-    vec4 aColor;
-} pushConsts;
 
-layout(location = 0) out vec4 vColors;
 /*
 layout(binding = 0) uniform uMatrix
 {
@@ -20,7 +15,6 @@ layout(binding = 0) uniform uMatrix
 */
 
 void main() {
-   vColors = pushConsts.aColor;
 //   gl_Position = matrix.projection * matrix.model * aVertices;
    gl_Position = aVertices;
 }

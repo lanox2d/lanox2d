@@ -4,10 +4,13 @@
 
 precision mediump float;
 
-layout(location = 0) in vec4 vColors;
+layout(push_constant) uniform PushConsts {
+    vec4 aColor;
+} pushConsts;
+
 layout(location = 0) out vec4 finalColor;
 
 void main() {
-   finalColor = vColors;
+   finalColor = pushConsts.aColor;
 }
 
