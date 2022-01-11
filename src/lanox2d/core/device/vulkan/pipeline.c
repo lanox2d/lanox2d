@@ -254,25 +254,16 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_solid(lx_vulkan_device_t* device) {
     };
 
     // init vertex input state
-    VkVertexInputBindingDescription vertex_input_bindings[2];
+    VkVertexInputBindingDescription vertex_input_bindings[1];
     vertex_input_bindings[0].binding = 0; // for vertices buffer
     vertex_input_bindings[0].stride = 3 * sizeof(lx_float_t);
     vertex_input_bindings[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
-    vertex_input_bindings[1].binding = 1; // for color buffer
-    vertex_input_bindings[1].stride = 4 * sizeof(lx_float_t);
-    vertex_input_bindings[1].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-
-    VkVertexInputAttributeDescription vertex_input_attributes[2];
+    VkVertexInputAttributeDescription vertex_input_attributes[1];
     vertex_input_attributes[0].location = 0; // layout(location = 0) in vec4 aVertices;
     vertex_input_attributes[0].binding = 0;
     vertex_input_attributes[0].format = VK_FORMAT_R32G32B32_SFLOAT;
     vertex_input_attributes[0].offset = 0;
-
-    vertex_input_attributes[1].location = 1; // layout(location = 1) in vec4 aColor;
-    vertex_input_attributes[1].binding = 1;
-    vertex_input_attributes[1].format = VK_FORMAT_R32G32B32A32_SFLOAT;
-    vertex_input_attributes[1].offset = 0;
 
     VkPipelineVertexInputStateCreateInfo vertex_inputinfo = {};
     vertex_inputinfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -282,15 +273,11 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_solid(lx_vulkan_device_t* device) {
     vertex_inputinfo.vertexAttributeDescriptionCount = lx_arrayn(vertex_input_attributes);
     vertex_inputinfo.pVertexAttributeDescriptions = vertex_input_attributes;
 
-#if 0
+    // aColor as push-constant
     VkPushConstantRange push_constant_range = {};
     push_constant_range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
     push_constant_range.offset = 0;
-    push_constant_range.size = sizeof(.);
-
-    pipeline_layoutinfo.pushConstantRangeCount  = 1;
-    pipeline_layoutinfo.pPushConstantRanges = &push_constant_range;
-#endif
+    push_constant_range.size = 4 * sizeof(lx_float_t);
 
     // init pipeline layout info
     VkPipelineLayoutCreateInfo pipeline_layoutinfo;
@@ -298,8 +285,8 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_solid(lx_vulkan_device_t* device) {
 	pipeline_layoutinfo.pNext = lx_null;
 	pipeline_layoutinfo.setLayoutCount = 0;
 	pipeline_layoutinfo.pSetLayouts = lx_null;
-	pipeline_layoutinfo.pushConstantRangeCount = 0;
-	pipeline_layoutinfo.pPushConstantRanges = lx_null;
+	pipeline_layoutinfo.pushConstantRangeCount = 1;
+	pipeline_layoutinfo.pPushConstantRanges = &push_constant_range;
 
     // get pipeline
     return lx_vk_pipeline_get(device, LX_VK_PIPELINE_TYPE_SOLID,
@@ -376,4 +363,9 @@ lx_void_t lx_vk_pipeline_exit(lx_vk_pipeline_ref_t self) {
 VkPipeline lx_vk_pipeline_native(lx_vk_pipeline_ref_t self) {
     lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
     return pipeline? pipeline->pipeline : 0;
+}
+
+VkPipelineLayout lx_vk_pipeline_layout(lx_vk_pipeline_ref_t self) {
+    lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
+    return pipeline? pipeline->pipeline_layout : 0;
 }

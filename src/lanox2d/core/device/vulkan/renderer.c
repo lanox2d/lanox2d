@@ -112,7 +112,8 @@ static lx_inline lx_void_t lx_vk_renderer_apply_paint_solid(lx_vulkan_device_t* 
     vkCmdBindPipeline(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, lx_vk_pipeline_native(pipeline));
 
     // apply color
-    // TODO
+    lx_float_t color_data[] = {(lx_float_t)color.r / 0xff, (lx_float_t)color.g / 0xff, (lx_float_t)color.b / 0xff, (lx_float_t)color.a / 0xff};
+    vkCmdPushConstants(cmdbuffer, lx_vk_pipeline_layout(pipeline), VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(color_data), color_data);
 }
 
 static lx_inline lx_void_t lx_vk_renderer_apply_paint(lx_vulkan_device_t* device, lx_rect_ref_t bounds) {
@@ -142,29 +143,14 @@ static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* devic
       0.0f, 1.0f, 0.0f
     };
 
-    static const lx_float_t color_data[] = {
-        1.0f, 0.0f, 0.0f, 0.0f,
-        1.0f, 0.0f, 0.0f, 0.0f,
-        1.0f, 0.0f, 0.0f, 0.0f
-    };
-
     lx_vk_buffer_t vertex_buffer;
     if (lx_vk_allocator_alloc(device->vertex_buffer_allocator, sizeof(vertex_data), &vertex_buffer)) {
         lx_vk_allocator_copy(device->vertex_buffer_allocator, &vertex_buffer, (lx_pointer_t)vertex_data, sizeof(vertex_data));
         lx_array_insert_tail(device->vertex_buffers, &vertex_buffer);
     }
 
-    lx_vk_buffer_t color_buffer;
-    if (lx_vk_allocator_alloc(device->vertex_buffer_allocator, sizeof(color_data), &color_buffer)) {
-        lx_vk_allocator_copy(device->vertex_buffer_allocator, &color_buffer, (lx_pointer_t)color_data, sizeof(color_data));
-        lx_array_insert_tail(device->vertex_buffers, &color_buffer);
-    }
-
-    VkDeviceSize offsets[2] = {0};
-    VkBuffer buffers[2];
-    buffers[0] = vertex_buffer.buffer;
-    buffers[1] = color_buffer.buffer;
-    vkCmdBindVertexBuffers(cmdbuffer, 0, 2, buffers, offsets);
+    VkDeviceSize offset = 0;
+    vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &vertex_buffer.buffer, &offset);
     vkCmdDraw(cmdbuffer, 3, 1, 0, 0);
 }
 

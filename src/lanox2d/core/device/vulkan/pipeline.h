@@ -65,6 +65,14 @@ lx_void_t               lx_vk_pipeline_exit(lx_vk_pipeline_ref_t pipeline);
  */
 VkPipeline              lx_vk_pipeline_native(lx_vk_pipeline_ref_t pipeline);
 
+/* get pipeline layout
+ *
+ * @param pipeline      the pipeline
+ *
+ * @return              the pipeline layout
+ */
+VkPipelineLayout        lx_vk_pipeline_layout(lx_vk_pipeline_ref_t pipeline);
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */
