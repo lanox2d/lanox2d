@@ -6,13 +6,11 @@ precision mediump float;
 
 layout(location = 0) in vec4 aVertices;
 
-/*
 layout(binding = 0) uniform uMatrix
 {
+    mat4 projection;
     mat4 model;
-    uniform mat4 projection;
 }matrix;
-*/
 
 void main() {
 //   gl_Position = matrix.projection * matrix.model * aVertices;

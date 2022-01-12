@@ -81,7 +81,7 @@ target("lanox2d")
         add_files("core/tess/**.c")
     end
     if is_config("device", "vulkan") then
-        add_files("core/device/vulkan/**.c")
+        add_files("core/device/vulkan/**.c|pipelines/*.c")
         add_files("core/device/vulkan/allocator.cc", {languages = "c++14"})
         add_files("core/device/vulkan/shaders/*.vert")
         add_files("core/device/vulkan/shaders/*.frag")

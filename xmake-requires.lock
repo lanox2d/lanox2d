@@ -313,7 +313,7 @@
         ["cmake#31fecfc4"] = {
             repo = {
                 branch = "master",
-                commit = "f2cfd62f2511db50ba3cd38e12faa7720f367062",
+                commit = "ead7c103db403f6c81aecc9ae698bf6d5f955c1b",
                 url = "https://gitee.com/tboox/xmake-repo.git"
             },
             version = "3.21.0"
@@ -321,7 +321,7 @@
         ["glfw#31fecfc4"] = {
             repo = {
                 branch = "master",
-                commit = "f2cfd62f2511db50ba3cd38e12faa7720f367062",
+                commit = "ead7c103db403f6c81aecc9ae698bf6d5f955c1b",
                 url = "https://gitee.com/tboox/xmake-repo.git"
             },
             version = "3.3.5"
@@ -329,7 +329,7 @@
         ["glslang#173fd386"] = {
             repo = {
                 branch = "master",
-                commit = "f2cfd62f2511db50ba3cd38e12faa7720f367062",
+                commit = "ead7c103db403f6c81aecc9ae698bf6d5f955c1b",
                 url = "https://gitee.com/tboox/xmake-repo.git"
             },
             version = "1.2.189+1"
@@ -337,7 +337,7 @@
         ["ninja#31fecfc4"] = {
             repo = {
                 branch = "master",
-                commit = "f2cfd62f2511db50ba3cd38e12faa7720f367062",
+                commit = "ead7c103db403f6c81aecc9ae698bf6d5f955c1b",
                 url = "https://gitee.com/tboox/xmake-repo.git"
             },
             version = "1.10.2"
@@ -345,7 +345,7 @@
         ["opengl#31fecfc4"] = {
             repo = {
                 branch = "master",
-                commit = "f2cfd62f2511db50ba3cd38e12faa7720f367062",
+                commit = "ead7c103db403f6c81aecc9ae698bf6d5f955c1b",
                 url = "https://gitee.com/tboox/xmake-repo.git"
             },
             version = "latest"
@@ -377,7 +377,7 @@
         ["spirv-tools#31fecfc4"] = {
             repo = {
                 branch = "master",
-                commit = "f2cfd62f2511db50ba3cd38e12faa7720f367062",
+                commit = "ead7c103db403f6c81aecc9ae698bf6d5f955c1b",
                 url = "https://gitee.com/tboox/xmake-repo.git"
             },
             version = "2021.4"

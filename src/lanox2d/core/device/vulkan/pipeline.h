@@ -69,9 +69,10 @@ VkPipeline              lx_vk_pipeline_native(lx_vk_pipeline_ref_t pipeline);
  *
  * @param pipeline      the pipeline
  *
- * @return              the pipeline layout
+ * @return              the pipeline
  */
 VkPipelineLayout        lx_vk_pipeline_layout(lx_vk_pipeline_ref_t pipeline);
+
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
