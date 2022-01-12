@@ -231,20 +231,6 @@ static lx_vk_pipeline_ref_t lx_vk_pipeline_init(lx_vulkan_device_t* device,
     return (lx_vk_pipeline_ref_t)pipeline;
 }
 
-static lx_vk_pipeline_ref_t lx_vk_pipeline_init_with_cache(lx_vulkan_device_t* device,
-    lx_size_t type, lx_char_t const* vshader, lx_size_t vshader_size, lx_char_t const* fshader, lx_size_t fshader_size,
-    VkPipelineVertexInputStateCreateInfo* vertex_inputinfo, VkPipelineLayoutCreateInfo* pipeline_layoutinfo) {
-    lx_assert_and_check_return_val(device && vshader && fshader, lx_null);
-    lx_assert_and_check_return_val(type < lx_arrayn(device->pipelines), lx_null);
-
-    lx_vk_pipeline_ref_t pipeline = device->pipelines[type];
-    if (!pipeline) {
-        pipeline = lx_vk_pipeline_init(device, type, vshader, vshader_size, fshader, fshader_size, vertex_inputinfo, pipeline_layoutinfo);
-        device->pipelines[type] = pipeline;
-    }
-    return pipeline;
-}
-
 /* //////////////////////////////////////////////////////////////////////////////////////
  * pipelines
  */
