@@ -30,11 +30,15 @@
 
 // the pipeline type
 typedef struct lx_vk_pipeline_t {
-    lx_size_t           type;
-    VkPipeline          pipeline;
-    VkPipelineCache     pipeline_cache;
-    VkPipelineLayout    pipeline_layout;
-    lx_vulkan_device_t* device;
+    lx_size_t               type;
+    VkPipeline              pipeline;
+    VkPipelineCache         pipeline_cache;
+    VkPipelineLayout        pipeline_layout;
+    VkDescriptorPool        descritptor_pool;
+    VkDescriptorSetLayout   descritptor_set_layout;
+    VkDescriptorSet         descritptor_sets[16];
+    lx_size_t               descritptor_sets_count;
+    lx_vulkan_device_t*     device;
 }lx_vk_pipeline_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -254,16 +258,29 @@ lx_void_t lx_vk_pipeline_exit(lx_vk_pipeline_ref_t self) {
     lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
     if (pipeline) {
         lx_assert(pipeline->device && pipeline->device->device);
+        VkDevice device = pipeline->device->device;
+        if (pipeline->descritptor_pool) {
+            if (pipeline->descritptor_sets_count) {
+                vkFreeDescriptorSets(device, pipeline->descritptor_pool, pipeline->descritptor_sets_count, pipeline->descritptor_sets);
+                pipeline->descritptor_sets_count = 0;
+            }
+            if (pipeline->descritptor_set_layout) {
+                vkDestroyDescriptorSetLayout(device, pipeline->descritptor_set_layout, lx_null);
+                pipeline->descritptor_set_layout = 0;
+            }
+            vkDestroyDescriptorPool(device, pipeline->descritptor_pool, lx_null);
+            pipeline->descritptor_pool = 0;
+        }
         if (pipeline->pipeline) {
-            vkDestroyPipeline(pipeline->device->device, pipeline->pipeline, lx_null);
+            vkDestroyPipeline(device, pipeline->pipeline, lx_null);
             pipeline->pipeline = 0;
         }
         if (pipeline->pipeline_cache) {
-            vkDestroyPipelineCache(pipeline->device->device, pipeline->pipeline_cache, lx_null);
+            vkDestroyPipelineCache(device, pipeline->pipeline_cache, lx_null);
             pipeline->pipeline_cache = 0;
         }
         if (pipeline->pipeline_layout) {
-            vkDestroyPipelineLayout(pipeline->device->device, pipeline->pipeline_layout, lx_null);
+            vkDestroyPipelineLayout(device, pipeline->pipeline_layout, lx_null);
             pipeline->pipeline_layout = 0;
         }
         lx_free(pipeline);
