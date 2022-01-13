@@ -34,35 +34,36 @@ typedef struct lx_vk_pipeline_t {
     VkPipeline              pipeline;
     VkPipelineCache         pipeline_cache;
     VkPipelineLayout        pipeline_layout;
-    VkDescriptorPool        descritptor_pool;
-    VkDescriptorSetLayout   descritptor_set_layout;
-    VkDescriptorSet         descritptor_sets[16];
-    lx_size_t               descritptor_sets_count;
+    VkDescriptorPool        descriptor_pool;
+    VkDescriptorSetLayout   descriptor_set_layout;
+    VkDescriptorSet         descriptor_sets[16];
+    lx_size_t               descriptor_sets_count;
     lx_vulkan_device_t*     device;
 }lx_vk_pipeline_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
-static lx_vk_pipeline_ref_t lx_vk_pipeline_init(lx_vulkan_device_t* device,
-    lx_size_t type, lx_char_t const* vshader, lx_size_t vshader_size, lx_char_t const* fshader, lx_size_t fshader_size,
-    VkPipelineVertexInputStateCreateInfo* vertex_inputinfo, VkPipelineLayoutCreateInfo* pipeline_layoutinfo) {
-    lx_assert_and_check_return_val(device && device->device && vshader && fshader, lx_null);
-
-    lx_bool_t ok = lx_false;
-    lx_vk_pipeline_t* pipeline = lx_null;
-    VkShaderModule vshader_module = 0;
-    VkShaderModule fshader_module = 0;
-    do {
-        // init pipeline
-        pipeline = lx_malloc0_type(lx_vk_pipeline_t);
-        lx_assert_and_check_break(pipeline);
-
+static lx_vk_pipeline_t* lx_vk_pipeline_init(lx_vulkan_device_t* device, lx_size_t type) {
+    lx_vk_pipeline_t* pipeline = lx_malloc0_type(lx_vk_pipeline_t);
+    if (pipeline) {
         pipeline->type   = type;
         pipeline->device = device;
+    }
+    return pipeline;
+}
+static lx_bool_t lx_vk_pipeline_create(lx_vk_pipeline_t* pipeline,
+    lx_char_t const* vshader, lx_size_t vshader_size, lx_char_t const* fshader, lx_size_t fshader_size,
+    VkPipelineVertexInputStateCreateInfo* vertex_input_info, VkPipelineLayoutCreateInfo* pipeline_layout_info) {
+    lx_assert_and_check_return_val(pipeline && pipeline->device, lx_false);
 
-        // create pipeline layout (empty)
-        if (vkCreatePipelineLayout(device->device, pipeline_layoutinfo, lx_null, &pipeline->pipeline_layout) != VK_SUCCESS) {
+    lx_bool_t ok = lx_false;
+    VkShaderModule vshader_module = 0;
+    VkShaderModule fshader_module = 0;
+    lx_vulkan_device_t* device = pipeline->device;
+    do {
+        // create pipeline layout
+        if (vkCreatePipelineLayout(device->device, pipeline_layout_info, lx_null, &pipeline->pipeline_layout) != VK_SUCCESS) {
             break;
         }
 
@@ -168,45 +169,45 @@ static lx_vk_pipeline_ref_t lx_vk_pipeline_init(lx_vulkan_device_t* device,
         raster_info.lineWidth = 1;
 
         // init input assembler state
-        VkPipelineInputAssemblyStateCreateInfo input_assemblyinfo = {};
-        input_assemblyinfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-        input_assemblyinfo.pNext = lx_null;
-        input_assemblyinfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-        input_assemblyinfo.primitiveRestartEnable = VK_FALSE;
+        VkPipelineInputAssemblyStateCreateInfo input_assembly_info = {};
+        input_assembly_info.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+        input_assembly_info.pNext = lx_null;
+        input_assembly_info.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+        input_assembly_info.primitiveRestartEnable = VK_FALSE;
 
         // create the pipeline cache
-        VkPipelineCacheCreateInfo pipeline_cacheinfo = {};
-        pipeline_cacheinfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
-        pipeline_cacheinfo.pNext = lx_null;
-        pipeline_cacheinfo.flags = 0; // reserved, must be 0
-        pipeline_cacheinfo.initialDataSize = 0;
-        pipeline_cacheinfo.pInitialData = lx_null;
-        if (vkCreatePipelineCache(device->device, &pipeline_cacheinfo, lx_null, &pipeline->pipeline_cache) != VK_SUCCESS) {
+        VkPipelineCacheCreateInfo cache_info = {};
+        cache_info.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
+        cache_info.pNext = lx_null;
+        cache_info.flags = 0; // reserved, must be 0
+        cache_info.initialDataSize = 0;
+        cache_info.pInitialData = lx_null;
+        if (vkCreatePipelineCache(device->device, &cache_info, lx_null, &pipeline->pipeline_cache) != VK_SUCCESS) {
             break;
         }
 
         // create the pipeline
-        VkGraphicsPipelineCreateInfo pipeline_createinfo = {};
-        pipeline_createinfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-        pipeline_createinfo.pNext = lx_null;
-        pipeline_createinfo.flags = 0;
-        pipeline_createinfo.stageCount = 2;
-        pipeline_createinfo.pStages = shader_stages;
-        pipeline_createinfo.pVertexInputState = vertex_inputinfo;
-        pipeline_createinfo.pInputAssemblyState = &input_assemblyinfo;
-        pipeline_createinfo.pTessellationState = lx_null;
-        pipeline_createinfo.pViewportState = &viewport_info;
-        pipeline_createinfo.pRasterizationState = &raster_info;
-        pipeline_createinfo.pMultisampleState = &multisample_info;
-        pipeline_createinfo.pDepthStencilState = lx_null;
-        pipeline_createinfo.pColorBlendState = &color_blendinfo;
-        pipeline_createinfo.pDynamicState = lx_null;
-        pipeline_createinfo.layout = pipeline->pipeline_layout;
-        pipeline_createinfo.renderPass = device->renderpass;
-        pipeline_createinfo.subpass = 0;
-        pipeline_createinfo.basePipelineHandle = VK_NULL_HANDLE;
-        pipeline_createinfo.basePipelineIndex = 0;
-        if (vkCreateGraphicsPipelines(device->device, pipeline->pipeline_cache, 1, &pipeline_createinfo, lx_null, &pipeline->pipeline) != VK_SUCCESS) {
+        VkGraphicsPipelineCreateInfo pipeline_info = {};
+        pipeline_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+        pipeline_info.pNext = lx_null;
+        pipeline_info.flags = 0;
+        pipeline_info.stageCount = 2;
+        pipeline_info.pStages = shader_stages;
+        pipeline_info.pVertexInputState = vertex_input_info;
+        pipeline_info.pInputAssemblyState = &input_assembly_info;
+        pipeline_info.pTessellationState = lx_null;
+        pipeline_info.pViewportState = &viewport_info;
+        pipeline_info.pRasterizationState = &raster_info;
+        pipeline_info.pMultisampleState = &multisample_info;
+        pipeline_info.pDepthStencilState = lx_null;
+        pipeline_info.pColorBlendState = &color_blendinfo;
+        pipeline_info.pDynamicState = lx_null;
+        pipeline_info.layout = pipeline->pipeline_layout;
+        pipeline_info.renderPass = device->renderpass;
+        pipeline_info.subpass = 0;
+        pipeline_info.basePipelineHandle = VK_NULL_HANDLE;
+        pipeline_info.basePipelineIndex = 0;
+        if (vkCreateGraphicsPipelines(device->device, pipeline->pipeline_cache, 1, &pipeline_info, lx_null, &pipeline->pipeline) != VK_SUCCESS) {
             break;
         }
 
@@ -222,13 +223,7 @@ static lx_vk_pipeline_ref_t lx_vk_pipeline_init(lx_vulkan_device_t* device,
         vkDestroyShaderModule(device->device, fshader_module, lx_null);
         fshader_module = 0;
     }
-
-    // free pipeline if failed
-    if (!ok && pipeline) {
-        lx_vk_pipeline_exit((lx_vk_pipeline_ref_t)pipeline);
-        pipeline = lx_null;
-    }
-    return (lx_vk_pipeline_ref_t)pipeline;
+    return ok;
 }
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -245,17 +240,17 @@ lx_void_t lx_vk_pipeline_exit(lx_vk_pipeline_ref_t self) {
     if (pipeline) {
         lx_assert(pipeline->device && pipeline->device->device);
         VkDevice device = pipeline->device->device;
-        if (pipeline->descritptor_pool) {
-            if (pipeline->descritptor_sets_count) {
-                vkFreeDescriptorSets(device, pipeline->descritptor_pool, pipeline->descritptor_sets_count, pipeline->descritptor_sets);
-                pipeline->descritptor_sets_count = 0;
+        if (pipeline->descriptor_pool) {
+            if (pipeline->descriptor_sets_count) {
+                vkFreeDescriptorSets(device, pipeline->descriptor_pool, pipeline->descriptor_sets_count, pipeline->descriptor_sets);
+                pipeline->descriptor_sets_count = 0;
             }
-            if (pipeline->descritptor_set_layout) {
-                vkDestroyDescriptorSetLayout(device, pipeline->descritptor_set_layout, lx_null);
-                pipeline->descritptor_set_layout = 0;
+            if (pipeline->descriptor_set_layout) {
+                vkDestroyDescriptorSetLayout(device, pipeline->descriptor_set_layout, lx_null);
+                pipeline->descriptor_set_layout = 0;
             }
-            vkDestroyDescriptorPool(device, pipeline->descritptor_pool, lx_null);
-            pipeline->descritptor_pool = 0;
+            vkDestroyDescriptorPool(device, pipeline->descriptor_pool, lx_null);
+            pipeline->descriptor_pool = 0;
         }
         if (pipeline->pipeline) {
             vkDestroyPipeline(device, pipeline->pipeline, lx_null);

@@ -25,6 +25,42 @@
 #include "prefix.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
+ * private implementation
+ */
+lx_bool_t lx_vk_descriptor_sets_init(lx_vulkan_device_t* device, lx_vk_pipeline_t* pipeline) {
+    VkDescriptorPoolSize pool_size = {};
+    pool_size.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+    pool_size.descriptorCount = 1;
+
+    VkDescriptorPoolCreateInfo descriptor_poolinfo = {};
+    descriptor_poolinfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+    descriptor_poolinfo.pNext = lx_null;
+    descriptor_poolinfo.maxSets = 1;
+    descriptor_poolinfo.poolSizeCount = 1;
+    descriptor_poolinfo.pPoolSizes = &pool_size;
+
+#if 0
+    if (vkCreateDescriptorPool(device->device, &descriptor_poolinfo, lx_null, &pipeline->descriptor_pool) != VK_SUCCESS) {
+        break;
+    }
+#endif
+
+#if 0
+    VkDescriptorSetAllocateInfo descriptor_setsinfo = {};
+    descriptor_setsinfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    descriptor_setsinfo.pNext = lx_null;
+    descriptor_setsinfo.descriptorPool = pipeline->descriptor_pool;
+    descriptor_setsinfo.descriptorSetCount = 1;
+    descriptor_setsinfo.pSetLayouts = &pipeline->descritptor_set_layout; // we need create it when creating pipeline layout
+    if (vkAllocateDescriptorSets(device->device, &descriptor_setsinfo, pipeline->descriptor_sets) != VK_SUCCESS) {
+        break;
+    }
+#endif
+
+    return lx_true;
+}
+
+/* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
 
@@ -40,44 +76,85 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_solid(lx_vulkan_device_t* device) {
 #include "solid.frag.spv.h"
         };
 
-        // init vertex input state
-        VkVertexInputBindingDescription vertex_input_bindings[1];
-        vertex_input_bindings[0].binding = 0; // for vertices buffer
-        vertex_input_bindings[0].stride = 3 * sizeof(lx_float_t);
-        vertex_input_bindings[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+        lx_bool_t ok = lx_false;
+        lx_vk_pipeline_t* pipeline_solid = lx_null;
+        do {
+            pipeline_solid = lx_vk_pipeline_init(device, type);
+            lx_assert_and_check_break(pipeline_solid);
 
-        VkVertexInputAttributeDescription vertex_input_attributes[1];
-        vertex_input_attributes[0].location = 0; // layout(location = 0) in vec4 aVertices;
-        vertex_input_attributes[0].binding = 0;
-        vertex_input_attributes[0].format = VK_FORMAT_R32G32B32_SFLOAT;
-        vertex_input_attributes[0].offset = 0;
+            // init vertex input state
+            VkVertexInputBindingDescription vertex_input_bindings[1];
+            vertex_input_bindings[0].binding = 0; // for vertices buffer
+            vertex_input_bindings[0].stride = 3 * sizeof(lx_float_t);
+            vertex_input_bindings[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
-        VkPipelineVertexInputStateCreateInfo vertex_inputinfo = {};
-        vertex_inputinfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-        vertex_inputinfo.pNext = lx_null;
-        vertex_inputinfo.vertexBindingDescriptionCount = lx_arrayn(vertex_input_bindings);
-        vertex_inputinfo.pVertexBindingDescriptions = vertex_input_bindings;
-        vertex_inputinfo.vertexAttributeDescriptionCount = lx_arrayn(vertex_input_attributes);
-        vertex_inputinfo.pVertexAttributeDescriptions = vertex_input_attributes;
+            VkVertexInputAttributeDescription vertex_input_attributes[1];
+            vertex_input_attributes[0].location = 0; // layout(location = 0) in vec4 aVertices;
+            vertex_input_attributes[0].binding = 0;
+            vertex_input_attributes[0].format = VK_FORMAT_R32G32B32_SFLOAT;
+            vertex_input_attributes[0].offset = 0;
 
-        // fragment.aColor as push-constant
-        VkPushConstantRange push_constant_range = {};
-        push_constant_range.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-        push_constant_range.offset = 0;
-        push_constant_range.size = 4 * sizeof(lx_float_t);
+            VkPipelineVertexInputStateCreateInfo vertex_input_info = {};
+            vertex_input_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+            vertex_input_info.pNext = lx_null;
+            vertex_input_info.vertexBindingDescriptionCount = lx_arrayn(vertex_input_bindings);
+            vertex_input_info.pVertexBindingDescriptions = vertex_input_bindings;
+            vertex_input_info.vertexAttributeDescriptionCount = lx_arrayn(vertex_input_attributes);
+            vertex_input_info.pVertexAttributeDescriptions = vertex_input_attributes;
 
-        // init pipeline layout info
-        VkPipelineLayoutCreateInfo pipeline_layoutinfo;
-        pipeline_layoutinfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-        pipeline_layoutinfo.pNext = lx_null;
-        pipeline_layoutinfo.setLayoutCount = 0;
-        pipeline_layoutinfo.pSetLayouts = lx_null;
-        pipeline_layoutinfo.pushConstantRangeCount = 1;
-        pipeline_layoutinfo.pPushConstantRanges = &push_constant_range;
+            // init push-constant
+            VkPushConstantRange push_constant_range = {};
+            push_constant_range.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+            push_constant_range.offset = 0;
+            push_constant_range.size = 4 * sizeof(lx_float_t);
 
-        pipeline = lx_vk_pipeline_init(device, type,
-            vshader, sizeof(vshader), fshader, sizeof(fshader), &vertex_inputinfo, &pipeline_layoutinfo);
-        device->pipelines[type] = pipeline;
+            // init descriptor set layout
+            VkDescriptorSetLayoutBinding descriptor_set_layout_binding = {};
+            descriptor_set_layout_binding.binding = 0;
+            descriptor_set_layout_binding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+            descriptor_set_layout_binding.descriptorCount = 1;
+            descriptor_set_layout_binding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+            descriptor_set_layout_binding.pImmutableSamplers = lx_null;
+
+            VkDescriptorSetLayoutCreateInfo descriptor_set_layout_info = {};
+            descriptor_set_layout_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+            descriptor_set_layout_info.pNext = lx_null;
+            descriptor_set_layout_info.bindingCount = 1;
+            descriptor_set_layout_info.pBindings = &descriptor_set_layout_binding;
+            if (vkCreateDescriptorSetLayout(device->device, &descriptor_set_layout_info, lx_null, &pipeline_solid->descriptor_set_layout) != VK_SUCCESS) {
+                break;
+            }
+
+            // init pipeline layout info
+            VkPipelineLayoutCreateInfo pipeline_layout_info;
+            pipeline_layout_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+            pipeline_layout_info.pNext = lx_null;
+            pipeline_layout_info.setLayoutCount = 1;
+            pipeline_layout_info.pSetLayouts = &pipeline_solid->descriptor_set_layout;
+            pipeline_layout_info.pushConstantRangeCount = 1;
+            pipeline_layout_info.pPushConstantRanges = &push_constant_range;
+
+            // init descriptor sets
+            if (!lx_vk_descriptor_sets_init(device, pipeline_solid)) {
+                break;
+            }
+
+            // create pipeline
+            if (!lx_vk_pipeline_create(pipeline_solid,
+                vshader, sizeof(vshader), fshader, sizeof(fshader), &vertex_input_info, &pipeline_layout_info)) {
+                break;
+            }
+
+            // ok
+            pipeline = (lx_vk_pipeline_ref_t)pipeline_solid;
+            device->pipelines[type] = pipeline;
+            ok = lx_true;
+        } while (0);
+
+        if (!ok && pipeline_solid) {
+            lx_vk_pipeline_exit((lx_vk_pipeline_ref_t)pipeline_solid);
+            pipeline_solid = lx_null;
+        }
     }
     return pipeline;
 }
