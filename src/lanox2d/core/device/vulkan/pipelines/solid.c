@@ -27,7 +27,9 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
-lx_bool_t lx_vk_descriptor_sets_init(lx_vulkan_device_t* device, lx_vk_pipeline_t* pipeline) {
+static lx_bool_t lx_vk_descriptor_sets_init(lx_vulkan_device_t* device, lx_vk_pipeline_t* pipeline) {
+
+    // create descriptor pool
     VkDescriptorPoolSize pool_size = {};
     pool_size.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
     pool_size.descriptorCount = 1;
@@ -39,23 +41,21 @@ lx_bool_t lx_vk_descriptor_sets_init(lx_vulkan_device_t* device, lx_vk_pipeline_
     descriptor_poolinfo.poolSizeCount = 1;
     descriptor_poolinfo.pPoolSizes = &pool_size;
 
-#if 0
     if (vkCreateDescriptorPool(device->device, &descriptor_poolinfo, lx_null, &pipeline->descriptor_pool) != VK_SUCCESS) {
-        break;
+        return lx_false;
     }
-#endif
 
-#if 0
+    // create descriptor sets
     VkDescriptorSetAllocateInfo descriptor_setsinfo = {};
     descriptor_setsinfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
     descriptor_setsinfo.pNext = lx_null;
     descriptor_setsinfo.descriptorPool = pipeline->descriptor_pool;
     descriptor_setsinfo.descriptorSetCount = 1;
-    descriptor_setsinfo.pSetLayouts = &pipeline->descritptor_set_layout; // we need create it when creating pipeline layout
+    descriptor_setsinfo.pSetLayouts = &pipeline->descriptor_set_layout;
     if (vkAllocateDescriptorSets(device->device, &descriptor_setsinfo, pipeline->descriptor_sets) != VK_SUCCESS) {
-        break;
+        return lx_false;
     }
-#endif
+    pipeline->descriptor_sets_count = 1;
 
     return lx_true;
 }
