@@ -65,7 +65,7 @@ static lx_vk_pipeline_t* lx_vk_pipeline_init(lx_vulkan_device_t* device, lx_size
                 break;
             }
         }
-        lx_assert_and_check_break(i != pipeline->descriptor_count);
+        lx_assert_and_check_break(i == pipeline->descriptor_count);
 
         ok = lx_true;
     } while (0);
