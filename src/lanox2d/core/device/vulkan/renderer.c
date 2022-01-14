@@ -144,8 +144,8 @@ static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* devic
     };
 
     lx_vk_buffer_t vertex_buffer;
-    if (lx_vk_allocator_alloc(device->vertex_buffer_allocator, sizeof(vertex_data), &vertex_buffer)) {
-        lx_vk_allocator_copy(device->vertex_buffer_allocator, &vertex_buffer, (lx_pointer_t)vertex_data, sizeof(vertex_data));
+    if (lx_vk_allocator_alloc(device->allocator_vertex, sizeof(vertex_data), &vertex_buffer)) {
+        lx_vk_allocator_copy(device->allocator_vertex, &vertex_buffer, (lx_pointer_t)vertex_data, sizeof(vertex_data));
         lx_array_insert_tail(device->vertex_buffers, &vertex_buffer);
     }
 

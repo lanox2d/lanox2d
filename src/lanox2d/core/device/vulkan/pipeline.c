@@ -47,10 +47,23 @@ typedef struct lx_vk_pipeline_t {
  * private implementation
  */
 static lx_vk_pipeline_t* lx_vk_pipeline_init(lx_vulkan_device_t* device, lx_size_t type) {
-    lx_vk_pipeline_t* pipeline = lx_malloc0_type(lx_vk_pipeline_t);
-    if (pipeline) {
+    lx_bool_t ok = lx_false;
+    lx_vk_pipeline_t* pipeline = lx_null;
+    do {
+        pipeline = lx_malloc0_type(lx_vk_pipeline_t);
+        lx_assert_and_check_break(pipeline);
+
         pipeline->type   = type;
         pipeline->device = device;
+        if (!lx_vk_allocator_alloc(device->allocator_uniform, sizeof(lx_vk_ubo_matrix_t), &pipeline->ubo_matrix)) {
+            break;
+        }
+
+        ok = lx_true;
+    } while (0);
+    if (!ok && pipeline) {
+        lx_vk_pipeline_exit((lx_vk_pipeline_ref_t)pipeline);
+        pipeline = lx_null;
     }
     return pipeline;
 }
@@ -240,30 +253,37 @@ static lx_bool_t lx_vk_pipeline_create(lx_vk_pipeline_t* pipeline,
 lx_void_t lx_vk_pipeline_exit(lx_vk_pipeline_ref_t self) {
     lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
     if (pipeline) {
-        lx_assert(pipeline->device && pipeline->device->device);
-        VkDevice device = pipeline->device->device;
+        lx_vulkan_device_t* device = pipeline->device;
+        lx_assert(device && device->device);
+
+        // free ubo
+        lx_vk_allocator_free(device->allocator_uniform, &pipeline->ubo_matrix);
+
+        // free descriptor set
         if (pipeline->descriptor_pool) {
             if (pipeline->descriptor_sets_count) {
-                vkFreeDescriptorSets(device, pipeline->descriptor_pool, pipeline->descriptor_sets_count, pipeline->descriptor_sets);
+                vkFreeDescriptorSets(device->device, pipeline->descriptor_pool, pipeline->descriptor_sets_count, pipeline->descriptor_sets);
                 pipeline->descriptor_sets_count = 0;
             }
             if (pipeline->descriptor_set_layout) {
-                vkDestroyDescriptorSetLayout(device, pipeline->descriptor_set_layout, lx_null);
+                vkDestroyDescriptorSetLayout(device->device, pipeline->descriptor_set_layout, lx_null);
                 pipeline->descriptor_set_layout = 0;
             }
-            vkDestroyDescriptorPool(device, pipeline->descriptor_pool, lx_null);
+            vkDestroyDescriptorPool(device->device, pipeline->descriptor_pool, lx_null);
             pipeline->descriptor_pool = 0;
         }
+
+        // free pipeline
         if (pipeline->pipeline) {
-            vkDestroyPipeline(device, pipeline->pipeline, lx_null);
+            vkDestroyPipeline(device->device, pipeline->pipeline, lx_null);
             pipeline->pipeline = 0;
         }
         if (pipeline->pipeline_cache) {
-            vkDestroyPipelineCache(device, pipeline->pipeline_cache, lx_null);
+            vkDestroyPipelineCache(device->device, pipeline->pipeline_cache, lx_null);
             pipeline->pipeline_cache = 0;
         }
         if (pipeline->pipeline_layout) {
-            vkDestroyPipelineLayout(device, pipeline->pipeline_layout, lx_null);
+            vkDestroyPipelineLayout(device->device, pipeline->pipeline_layout, lx_null);
             pipeline->pipeline_layout = 0;
         }
         lx_free(pipeline);

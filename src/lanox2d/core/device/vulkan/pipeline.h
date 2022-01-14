@@ -37,10 +37,10 @@ lx_extern_c_enter
  */
 
 // the matrix uniform buffer object type
-typedef struct lx_ubo_matrix_t_ {
+typedef struct lx_vk_ubo_matrix_t_ {
     lx_aligned(16) lx_vk_matrix_t projection;
     lx_aligned(16) lx_vk_matrix_t model;
-}lx_ubo_matrix_t;
+}lx_vk_ubo_matrix_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * interfaces

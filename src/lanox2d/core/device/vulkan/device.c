@@ -387,10 +387,14 @@ static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
             device->vertex_buffers = lx_null;
         }
 
-        // destroy vertex buffer allocator
-        if (device->vertex_buffer_allocator) {
-            lx_vk_allocator_exit(device->vertex_buffer_allocator);
-            device->vertex_buffer_allocator = lx_null;
+        // destroy buffer allocator
+        if (device->allocator_vertex) {
+            lx_vk_allocator_exit(device->allocator_vertex);
+            device->allocator_vertex = lx_null;
+        }
+        if (device->allocator_uniform) {
+            lx_vk_allocator_exit(device->allocator_uniform);
+            device->allocator_uniform = lx_null;
         }
 
         // destroy framebuffers
@@ -535,13 +539,15 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
             break;
         }
 
-        // init vertex buffer allocator
-        device->vertex_buffer_allocator = lx_vk_allocator_init(device, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
-        lx_assert_and_check_break(device->vertex_buffer_allocator);
+        // init buffer allocator
+        device->allocator_vertex = lx_vk_allocator_init(device, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+        device->allocator_uniform = lx_vk_allocator_init(device, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
+        lx_assert_and_check_break(device->allocator_vertex);
+        lx_assert_and_check_break(device->allocator_uniform);
 
         // init vertex buffers
         device->vertex_buffers = lx_array_init(LX_DEVICE_VERTEX_BUFFERS_GROW,
-            lx_element_mem(sizeof(lx_vk_buffer_t), lx_device_vulkan_vertex_buffer_exit, (lx_pointer_t)device->vertex_buffer_allocator));
+            lx_element_mem(sizeof(lx_vk_buffer_t), lx_device_vulkan_vertex_buffer_exit, (lx_pointer_t)device->allocator_vertex));
         lx_assert_and_check_break(device->vertex_buffers);
 
         // ok
