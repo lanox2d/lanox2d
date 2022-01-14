@@ -48,6 +48,11 @@ typedef lx_typeref(vk_pipeline);
 // the allocator ref type
 typedef lx_typeref(vk_allocator);
 
+// the matrix type
+typedef lx_float_t         lx_vk_matrix_t[16];
+typedef lx_vk_matrix_t*    lx_vk_matrix_ref_t;
+
+
 #endif
 
 

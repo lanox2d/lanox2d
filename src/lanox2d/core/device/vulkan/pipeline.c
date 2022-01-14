@@ -23,6 +23,7 @@
  * includes
  */
 #include "pipeline.h"
+#include "allocator.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * types
@@ -39,6 +40,7 @@ typedef struct lx_vk_pipeline_t {
     VkDescriptorSet         descriptor_sets[16];
     lx_size_t               descriptor_sets_count;
     lx_vulkan_device_t*     device;
+    lx_vk_buffer_t          ubo_matrix;
 }lx_vk_pipeline_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
