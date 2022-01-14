@@ -36,10 +36,10 @@ typedef struct lx_vk_pipeline_t {
     VkPipelineCache         pipeline_cache;
     VkPipelineLayout        pipeline_layout;
     VkDescriptorPool        descriptor_pool;
-	lx_size_t               descriptor_count;
+	lx_uint32_t             descriptor_count;
     VkDescriptorSetLayout   descriptor_set_layout;
     VkDescriptorSet         descriptor_sets[16];
-    lx_size_t               descriptor_sets_count;
+    lx_uint32_t             descriptor_sets_count;
     lx_vulkan_device_t*     device;
     lx_vk_buffer_t          ubo_matrix[2];
 }lx_vk_pipeline_t;
@@ -309,4 +309,14 @@ VkPipeline lx_vk_pipeline_native(lx_vk_pipeline_ref_t self) {
 VkPipelineLayout lx_vk_pipeline_layout(lx_vk_pipeline_ref_t self) {
     lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
     return pipeline? pipeline->pipeline_layout : 0;
+}
+
+VkDescriptorSet* lx_vk_pipeline_descriptor_sets(lx_vk_pipeline_ref_t self) {
+    lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
+    return pipeline? pipeline->descriptor_sets : lx_null;
+}
+
+lx_uint32_t lx_vk_pipeline_descriptor_sets_count(lx_vk_pipeline_ref_t self) {
+    lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
+    return pipeline? pipeline->descriptor_sets_count : 0;
 }

@@ -137,6 +137,11 @@ static lx_inline lx_void_t lx_vk_renderer_apply_paint(lx_vulkan_device_t* device
 static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* device, lx_polygon_ref_t polygon, lx_rect_ref_t bounds, lx_size_t rule) {
     VkCommandBuffer cmdbuffer = device->renderer_cmdbuffer;
 
+    lx_vk_pipeline_ref_t pipeline = lx_vk_pipeline_solid(device);
+    vkCmdBindDescriptorSets(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+        lx_vk_pipeline_layout(pipeline), 0, lx_vk_pipeline_descriptor_sets_count(pipeline),
+        lx_vk_pipeline_descriptor_sets(pipeline), 0, lx_null);
+
     static const lx_float_t vertex_data[] = {
       -1.0f, -1.0f, 0.0f,
       1.0f, -1.0f, 0.0f,

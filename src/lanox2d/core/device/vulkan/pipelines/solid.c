@@ -27,7 +27,7 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
-static lx_bool_t lx_vk_descriptor_sets_init(lx_vulkan_device_t* device, lx_vk_pipeline_t* pipeline, lx_size_t descriptor_type) {
+static lx_bool_t lx_vk_descriptor_sets_init(lx_vulkan_device_t* device, lx_vk_pipeline_t* pipeline, lx_uint32_t descriptor_type) {
 
     // create descriptor pool
     VkDescriptorPoolSize pool_size = {};
@@ -132,7 +132,7 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_solid(lx_vulkan_device_t* device) {
             push_constant_range.size = 4 * sizeof(lx_float_t);
 
             // init descriptor set layout
-            lx_size_t descriptor_type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+            lx_uint32_t descriptor_type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
             VkDescriptorSetLayoutBinding descriptor_set_layout_binding = {};
             descriptor_set_layout_binding.binding = 0;
             descriptor_set_layout_binding.descriptorType = descriptor_type;
