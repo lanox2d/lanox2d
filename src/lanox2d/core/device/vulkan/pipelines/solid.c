@@ -63,17 +63,15 @@ static lx_bool_t lx_vk_descriptor_sets_init(lx_vulkan_device_t* device, lx_vk_pi
     lx_assert_and_check_return_val(descriptor_count <= lx_arrayn(descriptor_buffer_info), lx_false);
     lx_memset(descriptor_buffer_info, 0, sizeof(VkDescriptorBufferInfo) * descriptor_count);
     for (i = 0; i < descriptor_count; i++) {
-#if 0
-        descriptor_buffer_info[i].buffer = ;
+        descriptor_buffer_info[i].buffer = pipeline->ubo_matrix.buffer; // TODO swapchain count
         descriptor_buffer_info[i].offset = 0;
-        descriptor_buffer_info[i].range = sizeof(uniform_buffer);
-#endif
+        descriptor_buffer_info[i].range = sizeof(lx_vk_ubo_matrix_t);
     }
 
     VkWriteDescriptorSet write_descriptor_set = {};
     write_descriptor_set.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     write_descriptor_set.pNext = lx_null;
-    write_descriptor_set.dstSet = pipeline->descriptor_sets[0]; // TODO ?
+    write_descriptor_set.dstSet = pipeline->descriptor_sets[0];
     write_descriptor_set.dstBinding = 0;
     write_descriptor_set.dstArrayElement = 0;
     write_descriptor_set.descriptorCount = descriptor_count;
