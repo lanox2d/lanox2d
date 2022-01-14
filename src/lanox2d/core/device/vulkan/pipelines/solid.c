@@ -27,12 +27,12 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
-static lx_bool_t lx_vk_descriptor_sets_init(lx_vulkan_device_t* device, lx_vk_pipeline_t* pipeline, lx_size_t descriptor_type, lx_size_t descriptor_count) {
+static lx_bool_t lx_vk_descriptor_sets_init(lx_vulkan_device_t* device, lx_vk_pipeline_t* pipeline, lx_size_t descriptor_type) {
 
     // create descriptor pool
     VkDescriptorPoolSize pool_size = {};
     pool_size.type = descriptor_type;
-    pool_size.descriptorCount = descriptor_count;
+    pool_size.descriptorCount = pipeline->descriptor_count;
 
     VkDescriptorPoolCreateInfo descriptor_poolinfo = {};
     descriptor_poolinfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
@@ -57,13 +57,13 @@ static lx_bool_t lx_vk_descriptor_sets_init(lx_vulkan_device_t* device, lx_vk_pi
     }
     pipeline->descriptor_sets_count = 1;
 
-    // configure all descriptors for uniform buffer
+    // configure descriptor set[0]: uniform buffer descriptors
     lx_size_t i;
     VkDescriptorBufferInfo descriptor_buffer_info[16];
-    lx_assert_and_check_return_val(descriptor_count <= lx_arrayn(descriptor_buffer_info), lx_false);
-    lx_memset(descriptor_buffer_info, 0, sizeof(VkDescriptorBufferInfo) * descriptor_count);
-    for (i = 0; i < descriptor_count; i++) {
-        descriptor_buffer_info[i].buffer = pipeline->ubo_matrix.buffer; // TODO swapchain count
+    lx_assert_and_check_return_val(pipeline->descriptor_count <= lx_arrayn(descriptor_buffer_info), lx_false);
+    lx_memset(descriptor_buffer_info, 0, sizeof(VkDescriptorBufferInfo) * pipeline->descriptor_count);
+    for (i = 0; i < pipeline->descriptor_count; i++) {
+        descriptor_buffer_info[i].buffer = pipeline->ubo_matrix[i].buffer;
         descriptor_buffer_info[i].offset = 0;
         descriptor_buffer_info[i].range = sizeof(lx_vk_ubo_matrix_t);
     }
@@ -74,7 +74,7 @@ static lx_bool_t lx_vk_descriptor_sets_init(lx_vulkan_device_t* device, lx_vk_pi
     write_descriptor_set.dstSet = pipeline->descriptor_sets[0];
     write_descriptor_set.dstBinding = 0;
     write_descriptor_set.dstArrayElement = 0;
-    write_descriptor_set.descriptorCount = descriptor_count;
+    write_descriptor_set.descriptorCount = pipeline->descriptor_count;
     write_descriptor_set.descriptorType = descriptor_type;
     write_descriptor_set.pImageInfo = lx_null,
     write_descriptor_set.pBufferInfo = descriptor_buffer_info;
@@ -132,12 +132,11 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_solid(lx_vulkan_device_t* device) {
             push_constant_range.size = 4 * sizeof(lx_float_t);
 
             // init descriptor set layout
-            lx_size_t descriptor_count = 1;
             lx_size_t descriptor_type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
             VkDescriptorSetLayoutBinding descriptor_set_layout_binding = {};
             descriptor_set_layout_binding.binding = 0;
             descriptor_set_layout_binding.descriptorType = descriptor_type;
-            descriptor_set_layout_binding.descriptorCount = descriptor_count;
+            descriptor_set_layout_binding.descriptorCount = pipeline_solid->descriptor_count;
             descriptor_set_layout_binding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
             descriptor_set_layout_binding.pImmutableSamplers = lx_null;
 
@@ -160,7 +159,7 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_solid(lx_vulkan_device_t* device) {
             pipeline_layout_info.pPushConstantRanges = &push_constant_range;
 
             // init descriptor sets
-            if (!lx_vk_descriptor_sets_init(device, pipeline_solid, descriptor_type, descriptor_count)) {
+            if (!lx_vk_descriptor_sets_init(device, pipeline_solid, descriptor_type)) {
                 break;
             }
 

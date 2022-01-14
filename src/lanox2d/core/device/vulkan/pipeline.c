@@ -36,11 +36,12 @@ typedef struct lx_vk_pipeline_t {
     VkPipelineCache         pipeline_cache;
     VkPipelineLayout        pipeline_layout;
     VkDescriptorPool        descriptor_pool;
+	lx_size_t               descriptor_count;
     VkDescriptorSetLayout   descriptor_set_layout;
     VkDescriptorSet         descriptor_sets[16];
     lx_size_t               descriptor_sets_count;
     lx_vulkan_device_t*     device;
-    lx_vk_buffer_t          ubo_matrix;
+    lx_vk_buffer_t          ubo_matrix[2];
 }lx_vk_pipeline_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -53,11 +54,18 @@ static lx_vk_pipeline_t* lx_vk_pipeline_init(lx_vulkan_device_t* device, lx_size
         pipeline = lx_malloc0_type(lx_vk_pipeline_t);
         lx_assert_and_check_break(pipeline);
 
-        pipeline->type   = type;
-        pipeline->device = device;
-        if (!lx_vk_allocator_alloc(device->allocator_uniform, sizeof(lx_vk_ubo_matrix_t), &pipeline->ubo_matrix)) {
-            break;
+        pipeline->type             = type;
+        pipeline->device           = device;
+        pipeline->descriptor_count = device->images_count;
+        lx_assert_and_check_break(pipeline->descriptor_count <= lx_arrayn(pipeline->ubo_matrix));
+
+        lx_size_t i;
+        for (i = 0; i < pipeline->descriptor_count; i++) {
+            if (!lx_vk_allocator_alloc(device->allocator_uniform, sizeof(lx_vk_ubo_matrix_t), &pipeline->ubo_matrix[i])) {
+                break;
+            }
         }
+        lx_assert_and_check_break(i != pipeline->descriptor_count);
 
         ok = lx_true;
     } while (0);
@@ -257,7 +265,10 @@ lx_void_t lx_vk_pipeline_exit(lx_vk_pipeline_ref_t self) {
         lx_assert(device && device->device);
 
         // free ubo
-        lx_vk_allocator_free(device->allocator_uniform, &pipeline->ubo_matrix);
+        lx_size_t i;
+        for (i = 0; i < pipeline->descriptor_count; i++) {
+            lx_vk_allocator_free(device->allocator_uniform, &pipeline->ubo_matrix[i]);
+        }
 
         // free descriptor set
         if (pipeline->descriptor_pool) {
