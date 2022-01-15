@@ -119,7 +119,7 @@ lx_void_t lx_vk_allocator_free(lx_vk_allocator_ref_t self, lx_vk_buffer_t* buffe
     vmaDestroyBuffer(allocator->allocator, vma_buffer->buffer, vma_buffer->allocation);
 }
 
-lx_void_t lx_vk_allocator_copy(lx_vk_allocator_ref_t self, lx_vk_buffer_t* buffer, lx_pointer_t data, lx_size_t size) {
+lx_void_t lx_vk_allocator_copy(lx_vk_allocator_ref_t self, lx_vk_buffer_t* buffer, lx_size_t pos, lx_pointer_t data, lx_size_t size) {
     lx_vk_allocator_t* allocator = (lx_vk_allocator_t*)self;
     lx_vk_vma_buffer_t* vma_buffer = (lx_vk_vma_buffer_t*)buffer;
     lx_assert(allocator && vma_buffer && vma_buffer->allocation && data && size);
@@ -127,13 +127,13 @@ lx_void_t lx_vk_allocator_copy(lx_vk_allocator_ref_t self, lx_vk_buffer_t* buffe
 #ifdef LX_DEBUG
     VmaAllocationInfo vma_allocinfo;
     vmaGetAllocationInfo(allocator->allocator, vma_buffer->allocation, &vma_allocinfo);
-    lx_assert(size <= vma_allocinfo.size);
+    lx_assert(pos + size <= vma_allocinfo.size);
 #endif
 
     lx_pointer_t buffer_data = lx_null;
     vmaMapMemory(allocator->allocator, vma_buffer->allocation, &buffer_data);
     if (buffer_data) {
-        lx_memcpy(buffer_data, data, size);
+        lx_memcpy((lx_byte_t*)buffer_data + pos, data, size);
         vmaUnmapMemory(allocator->allocator, vma_buffer->allocation);
     }
 }

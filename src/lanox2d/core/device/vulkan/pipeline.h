@@ -33,16 +33,6 @@
 lx_extern_c_enter
 
 /* //////////////////////////////////////////////////////////////////////////////////////
- * types
- */
-
-// the matrix uniform buffer object type
-typedef struct lx_vk_ubo_matrix_t_ {
-    lx_aligned(16) lx_vk_matrix_t projection;
-    lx_aligned(16) lx_vk_matrix_t model;
-}lx_vk_ubo_matrix_t;
-
-/* //////////////////////////////////////////////////////////////////////////////////////
  * interfaces
  */
 
@@ -100,6 +90,19 @@ VkDescriptorSet*        lx_vk_pipeline_descriptor_sets(lx_vk_pipeline_ref_t pipe
  */
 lx_uint32_t             lx_vk_pipeline_descriptor_sets_count(lx_vk_pipeline_ref_t pipeline);
 
+/* set the model matrix
+ *
+ * @param pipeline      the pipeline
+ * @param matrix        the matrix
+ */
+lx_void_t               lx_vk_pipeline_matrix_set_model(lx_vk_pipeline_ref_t pipeline, lx_vk_matrix_ref_t matrix);
+
+/* set the projection matrix
+ *
+ * @param pipeline      the pipeline
+ * @param matrix        the matrix
+ */
+lx_void_t               lx_vk_pipeline_matrix_set_projection(lx_vk_pipeline_ref_t pipeline, lx_vk_matrix_ref_t matrix);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

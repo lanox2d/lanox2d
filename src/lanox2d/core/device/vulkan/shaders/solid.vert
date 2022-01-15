@@ -14,5 +14,5 @@ layout(binding = 0) uniform uMatrix
 
 void main() {
 //   gl_Position = matrix.projection * matrix.model * aVertices;
-   gl_Position = aVertices;
+   gl_Position = matrix.projection * aVertices;
 }

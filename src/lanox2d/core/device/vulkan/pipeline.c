@@ -44,6 +44,12 @@ typedef struct lx_vk_pipeline_t {
     lx_vk_buffer_t          ubo_matrix[2];
 }lx_vk_pipeline_t;
 
+// the matrix uniform buffer object type
+typedef struct lx_vk_ubo_matrix_t_ {
+    lx_aligned(16) lx_vk_matrix_t projection;
+    lx_aligned(16) lx_vk_matrix_t model;
+}lx_vk_ubo_matrix_t;
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
@@ -315,4 +321,20 @@ VkDescriptorSet* lx_vk_pipeline_descriptor_sets(lx_vk_pipeline_ref_t self) {
 lx_uint32_t lx_vk_pipeline_descriptor_sets_count(lx_vk_pipeline_ref_t self) {
     lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
     return pipeline? pipeline->descriptor_sets_count : 0;
+}
+
+lx_void_t lx_vk_pipeline_matrix_set_model(lx_vk_pipeline_ref_t self, lx_vk_matrix_ref_t matrix) {
+    lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
+    if (pipeline && pipeline->device) {
+        lx_vk_allocator_copy(pipeline->device->allocator_uniform, &pipeline->ubo_matrix[0], lx_offsetof(lx_vk_ubo_matrix_t, model), (lx_pointer_t)matrix, sizeof(lx_vk_matrix_t));
+        lx_vk_allocator_copy(pipeline->device->allocator_uniform, &pipeline->ubo_matrix[1], lx_offsetof(lx_vk_ubo_matrix_t, model), (lx_pointer_t)matrix, sizeof(lx_vk_matrix_t));
+    }
+}
+
+lx_void_t lx_vk_pipeline_matrix_set_projection(lx_vk_pipeline_ref_t self, lx_vk_matrix_ref_t matrix) {
+    lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
+    if (pipeline && pipeline->device) {
+        lx_vk_allocator_copy(pipeline->device->allocator_uniform, &pipeline->ubo_matrix[0], lx_offsetof(lx_vk_ubo_matrix_t, projection), (lx_pointer_t)matrix, sizeof(lx_vk_matrix_t));
+//        lx_vk_allocator_copy(pipeline->device->allocator_uniform, &pipeline->ubo_matrix[1], lx_offsetof(lx_vk_ubo_matrix_t, projection), (lx_pointer_t)matrix, sizeof(lx_vk_matrix_t));
+    }
 }

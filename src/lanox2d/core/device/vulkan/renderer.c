@@ -148,9 +148,14 @@ static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* devic
       0.0f, 1.0f, 0.0f
     };
 
+    lx_vk_matrix_t projection;
+    lx_vk_matrix_clear(&projection);
+    lx_vk_matrix_scale(&projection, 0.5f, 0.5f);
+    lx_vk_pipeline_matrix_set_projection(pipeline, &projection);
+
     lx_vk_buffer_t vertex_buffer;
     if (lx_vk_allocator_alloc(device->allocator_vertex, sizeof(vertex_data), &vertex_buffer)) {
-        lx_vk_allocator_copy(device->allocator_vertex, &vertex_buffer, (lx_pointer_t)vertex_data, sizeof(vertex_data));
+        lx_vk_allocator_copy(device->allocator_vertex, &vertex_buffer, 0, (lx_pointer_t)vertex_data, sizeof(vertex_data));
         lx_array_insert_tail(device->vertex_buffers, &vertex_buffer);
     }
 

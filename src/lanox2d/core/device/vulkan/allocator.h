@@ -83,10 +83,11 @@ lx_void_t               lx_vk_allocator_free(lx_vk_allocator_ref_t allocator, lx
  *
  * @param allocator     the vulkan allocator
  * @param buffer        the allocated buffer
+ * @param pos           the position
  * @param data          the copied data
  * @param size          the copied data size
  */
-lx_void_t               lx_vk_allocator_copy(lx_vk_allocator_ref_t allocator, lx_vk_buffer_t* buffer, lx_pointer_t data, lx_size_t size);
+lx_void_t               lx_vk_allocator_copy(lx_vk_allocator_ref_t allocator, lx_vk_buffer_t* buffer, lx_size_t pos, lx_pointer_t data, lx_size_t size);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
