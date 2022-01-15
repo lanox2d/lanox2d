@@ -272,10 +272,6 @@ lx_void_t lx_vk_pipeline_exit(lx_vk_pipeline_ref_t self) {
 
         // free descriptor set
         if (pipeline->descriptor_pool) {
-            if (pipeline->descriptor_sets_count) {
-                vkFreeDescriptorSets(device->device, pipeline->descriptor_pool, pipeline->descriptor_sets_count, pipeline->descriptor_sets);
-                pipeline->descriptor_sets_count = 0;
-            }
             if (pipeline->descriptor_set_layout) {
                 vkDestroyDescriptorSetLayout(device->device, pipeline->descriptor_set_layout, lx_null);
                 pipeline->descriptor_set_layout = 0;
