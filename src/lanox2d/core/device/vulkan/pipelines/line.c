@@ -15,7 +15,7 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        solid.c
+ * @file        line.c
  *
  */
 
@@ -27,7 +27,7 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
-static lx_bool_t lx_vk_descriptor_sets_init_solid(lx_vulkan_device_t* device, lx_vk_pipeline_t* pipeline, const lx_uint32_t descriptor_type, const lx_uint32_t descriptor_count) {
+static lx_bool_t lx_vk_descriptor_sets_init_line(lx_vulkan_device_t* device, lx_vk_pipeline_t* pipeline, const lx_uint32_t descriptor_type, const lx_uint32_t descriptor_count) {
 
     // create descriptor pool
     VkDescriptorPoolSize pool_size = {};
@@ -84,8 +84,8 @@ static lx_bool_t lx_vk_descriptor_sets_init_solid(lx_vulkan_device_t* device, lx
  * implementation
  */
 
-lx_vk_pipeline_ref_t lx_vk_pipeline_solid(lx_vulkan_device_t* device) {
-    const lx_size_t type = LX_VK_PIPELINE_TYPE_SOLID;
+lx_vk_pipeline_ref_t lx_vk_pipeline_line(lx_vulkan_device_t* device) {
+    const lx_size_t type = LX_VK_PIPELINE_TYPE_LINE;
     lx_assert(type < lx_arrayn(device->pipelines));
     lx_vk_pipeline_ref_t pipeline = device->pipelines[type];
     if (!pipeline) {
@@ -97,10 +97,10 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_solid(lx_vulkan_device_t* device) {
         };
 
         lx_bool_t ok = lx_false;
-        lx_vk_pipeline_t* pipeline_solid = lx_null;
+        lx_vk_pipeline_t* pipeline_line = lx_null;
         do {
-            pipeline_solid = lx_vk_pipeline_init(device, type);
-            lx_assert_and_check_break(pipeline_solid);
+            pipeline_line = lx_vk_pipeline_init(device, type);
+            lx_assert_and_check_break(pipeline_line);
 
             // init vertex input state
             VkVertexInputBindingDescription vertex_input_bindings[1];
@@ -143,7 +143,7 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_solid(lx_vulkan_device_t* device) {
             descriptor_set_layout_info.pNext = lx_null;
             descriptor_set_layout_info.bindingCount = 1;
             descriptor_set_layout_info.pBindings = &descriptor_set_layout_binding;
-            if (vkCreateDescriptorSetLayout(device->device, &descriptor_set_layout_info, lx_null, &pipeline_solid->descriptor_set_layout) != VK_SUCCESS) {
+            if (vkCreateDescriptorSetLayout(device->device, &descriptor_set_layout_info, lx_null, &pipeline_line->descriptor_set_layout) != VK_SUCCESS) {
                 break;
             }
 
@@ -152,30 +152,30 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_solid(lx_vulkan_device_t* device) {
             pipeline_layout_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
             pipeline_layout_info.pNext = lx_null;
             pipeline_layout_info.setLayoutCount = 1;
-            pipeline_layout_info.pSetLayouts = &pipeline_solid->descriptor_set_layout;
+            pipeline_layout_info.pSetLayouts = &pipeline_line->descriptor_set_layout;
             pipeline_layout_info.pushConstantRangeCount = 1;
             pipeline_layout_info.pPushConstantRanges = &push_constant_range;
 
             // init descriptor sets
-            if (!lx_vk_descriptor_sets_init_solid(device, pipeline_solid, descriptor_type, descriptor_count)) {
+            if (!lx_vk_descriptor_sets_init_line(device, pipeline_line, descriptor_type, descriptor_count)) {
                 break;
             }
 
             // create pipeline
-            if (!lx_vk_pipeline_create(pipeline_solid, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,
+            if (!lx_vk_pipeline_create(pipeline_line, VK_PRIMITIVE_TOPOLOGY_LINE_LIST,
                 vshader, sizeof(vshader), fshader, sizeof(fshader), &vertex_input_info, &pipeline_layout_info)) {
                 break;
             }
 
             // ok
-            pipeline = (lx_vk_pipeline_ref_t)pipeline_solid;
+            pipeline = (lx_vk_pipeline_ref_t)pipeline_line;
             device->pipelines[type] = pipeline;
             ok = lx_true;
         } while (0);
 
-        if (!ok && pipeline_solid) {
-            lx_vk_pipeline_exit((lx_vk_pipeline_ref_t)pipeline_solid);
-            pipeline_solid = lx_null;
+        if (!ok && pipeline_line) {
+            lx_vk_pipeline_exit((lx_vk_pipeline_ref_t)pipeline_line);
+            pipeline_line = lx_null;
         }
     }
     return pipeline;

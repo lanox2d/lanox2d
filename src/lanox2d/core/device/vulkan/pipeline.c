@@ -73,7 +73,7 @@ static lx_vk_pipeline_t* lx_vk_pipeline_init(lx_vulkan_device_t* device, lx_size
     }
     return pipeline;
 }
-static lx_bool_t lx_vk_pipeline_create(lx_vk_pipeline_t* pipeline,
+static lx_bool_t lx_vk_pipeline_create(lx_vk_pipeline_t* pipeline, VkPrimitiveTopology topology,
     lx_char_t const* vshader, lx_size_t vshader_size, lx_char_t const* fshader, lx_size_t fshader_size,
     VkPipelineVertexInputStateCreateInfo* vertex_input_info, VkPipelineLayoutCreateInfo* pipeline_layout_info) {
     lx_assert_and_check_return_val(pipeline && pipeline->device, lx_false);
@@ -193,7 +193,7 @@ static lx_bool_t lx_vk_pipeline_create(lx_vk_pipeline_t* pipeline,
         VkPipelineInputAssemblyStateCreateInfo input_assembly_info = {};
         input_assembly_info.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
         input_assembly_info.pNext = lx_null;
-        input_assembly_info.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+        input_assembly_info.topology = topology;
         input_assembly_info.primitiveRestartEnable = VK_FALSE;
 
         // create the pipeline cache
@@ -276,6 +276,7 @@ static lx_bool_t lx_vk_pipeline_create(lx_vk_pipeline_t* pipeline,
 /* //////////////////////////////////////////////////////////////////////////////////////
  * pipelines
  */
+#include "pipelines/line.c"
 #include "pipelines/solid.c"
 #include "pipelines/texture.c"
 

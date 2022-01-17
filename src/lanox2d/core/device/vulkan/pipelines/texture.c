@@ -81,7 +81,7 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_texture(lx_vulkan_device_t* device) {
             pipeline_layoutinfo.pPushConstantRanges = lx_null;
 
             // create pipeline
-            if (!lx_vk_pipeline_create(pipeline_texture,
+            if (!lx_vk_pipeline_create(pipeline_texture, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,
                 vshader, sizeof(vshader), fshader, sizeof(fshader), &vertex_inputinfo, &pipeline_layoutinfo)) {
                 break;
             }
