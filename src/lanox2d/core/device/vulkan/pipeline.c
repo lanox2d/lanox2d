@@ -232,6 +232,32 @@ static lx_bool_t lx_vk_pipeline_create(lx_vk_pipeline_t* pipeline,
             break;
         }
 
+        /* init projection matrix
+         *
+         * vulkan (origin)
+         *          |
+         *          |
+         *          |
+         *          |
+         * ---------O--------> x
+         *          |
+         *          |
+         *         \|/
+         *          y
+         *
+         * to (world)
+         *
+         *  O----------> x
+         *  |
+         *  |
+         * \|/
+         *  y
+         *
+         */
+        lx_vk_matrix_t projection;
+        lx_vk_matrix_orthof(&projection, 0.0f, device->base.width, device->base.height, 0.0f, -1.0f, 1.0f);
+        lx_vk_pipeline_matrix_set_projection((lx_vk_pipeline_ref_t)pipeline, &projection);
+
         ok = lx_true;
     } while (0);
 

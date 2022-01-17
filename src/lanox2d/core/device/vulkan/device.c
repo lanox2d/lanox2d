@@ -488,6 +488,8 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
         device->base.draw_polygon = lx_device_vulkan_draw_polygon;
         device->base.draw_path    = lx_device_vulkan_draw_path;
         device->base.exit         = lx_device_vulkan_exit;
+        device->base.width        = width;
+        device->base.height       = height;
         device->instance          = (VkInstance)vkinstance;
         device->surface           = (VkSurfaceKHR)vksurface;
 

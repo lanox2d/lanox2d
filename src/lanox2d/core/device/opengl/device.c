@@ -127,12 +127,14 @@ lx_device_ref_t lx_device_init_from_opengl(lx_size_t width, lx_size_t height, lx
         device = lx_malloc0_type(lx_opengl_device_t);
         lx_assert_and_check_break(device);
 
-        device->base.draw_clear            = lx_device_opengl_draw_clear;
-        device->base.draw_lines            = lx_device_opengl_draw_lines;
-        device->base.draw_points           = lx_device_opengl_draw_points;
-        device->base.draw_polygon          = lx_device_opengl_draw_polygon;
-        device->base.draw_path             = lx_device_opengl_draw_path;
-        device->base.exit                  = lx_device_opengl_exit;
+        device->base.draw_clear   = lx_device_opengl_draw_clear;
+        device->base.draw_lines   = lx_device_opengl_draw_lines;
+        device->base.draw_points  = lx_device_opengl_draw_points;
+        device->base.draw_polygon = lx_device_opengl_draw_polygon;
+        device->base.draw_path    = lx_device_opengl_draw_path;
+        device->base.exit         = lx_device_opengl_exit;
+        device->base.width        = width;
+        device->base.height       = height;
 
         // init stroker
         device->stroker = lx_stroker_init();

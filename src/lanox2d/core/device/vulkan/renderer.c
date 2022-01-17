@@ -91,10 +91,11 @@ static lx_void_t lx_vk_renderer_set_imagelayout(VkCommandBuffer cmdbuffer, VkIma
     vkCmdPipelineBarrier(cmdbuffer, srcstages, dststages, 0, 0, lx_null, 0, lx_null, 1, &image_memory_barrier);
 }
 
-static lx_inline lx_void_t lx_vk_renderer_apply_paint_shader(lx_vulkan_device_t* device, lx_shader_ref_t shader, lx_rect_ref_t bounds) {
+static lx_inline lx_vk_pipeline_ref_t lx_vk_renderer_apply_paint_shader(lx_vulkan_device_t* device, lx_shader_ref_t shader, lx_rect_ref_t bounds) {
+    return lx_null;
 }
 
-static lx_inline lx_void_t lx_vk_renderer_apply_paint_solid(lx_vulkan_device_t* device) {
+static lx_inline lx_vk_pipeline_ref_t lx_vk_renderer_apply_paint_solid(lx_vulkan_device_t* device) {
     VkCommandBuffer cmdbuffer = device->renderer_cmdbuffer;
     lx_paint_ref_t paint = device->base.paint;
     lx_assert(cmdbuffer && paint);
@@ -114,24 +115,31 @@ static lx_inline lx_void_t lx_vk_renderer_apply_paint_solid(lx_vulkan_device_t* 
     // apply color
     lx_float_t color_data[] = {(lx_float_t)color.r / 0xff, (lx_float_t)color.g / 0xff, (lx_float_t)color.b / 0xff, (lx_float_t)color.a / 0xff};
     vkCmdPushConstants(cmdbuffer, lx_vk_pipeline_layout(pipeline), VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(color_data), color_data);
+    return pipeline;
 }
 
 static lx_inline lx_void_t lx_vk_renderer_apply_paint(lx_vulkan_device_t* device, lx_rect_ref_t bounds) {
-    lx_assert(device);
-
-    // set projection matrix
-    // TODO
-
-    // set model matrix
-    // TODO
+    VkCommandBuffer cmdbuffer = device->renderer_cmdbuffer;
 
     // apply paint
+    lx_vk_pipeline_ref_t pipeline = lx_null;
     lx_shader_ref_t shader = lx_paint_shader(device->base.paint);
     if (shader) {
-        lx_vk_renderer_apply_paint_shader(device, shader, bounds);
+        pipeline = lx_vk_renderer_apply_paint_shader(device, shader, bounds);
     } else {
-        lx_vk_renderer_apply_paint_solid(device);
+        pipeline = lx_vk_renderer_apply_paint_solid(device);
     }
+    lx_assert_and_check_return(pipeline);
+
+    // set model matrix
+    lx_vk_matrix_t model;
+    lx_vk_matrix_convert(&model, device->base.matrix);
+    lx_vk_pipeline_matrix_set_model(pipeline, &model);
+
+    // bind pipeline
+    vkCmdBindDescriptorSets(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+        lx_vk_pipeline_layout(pipeline), 0, lx_vk_pipeline_descriptor_sets_count(pipeline),
+        lx_vk_pipeline_descriptor_sets(pipeline), 0, lx_null);
 }
 
 static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* device, lx_polygon_ref_t polygon, lx_rect_ref_t bounds, lx_size_t rule) {
@@ -139,92 +147,17 @@ static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* devic
 
     lx_tessellator_rule_set(device->tessellator, rule);
     lx_polygon_ref_t result = lx_tessellator_make(device->tessellator, polygon, bounds);
-    if (result) {
-
-        for (lx_size_t i = 0; i < result->total; i++) {
-            lx_trace_i("%{point}", &result->points[i]);
-        }
-        lx_trace_i("%lu", result->total);
-
-        lx_vk_pipeline_ref_t pipeline = lx_vk_pipeline_solid(device);
-        vkCmdBindDescriptorSets(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-            lx_vk_pipeline_layout(pipeline), 0, lx_vk_pipeline_descriptor_sets_count(pipeline),
-            lx_vk_pipeline_descriptor_sets(pipeline), 0, lx_null);
-
-#if 1
-        static const lx_float_t vertex_data[] = {
-          1.0f, 1.0f,
-          -1.0f, 1.0f,
-          1.0f, -1.0f,
-          1.0f, 1.0f,
-
-          1.0f, -1.0f,
-          -1.0f, 1.0f,
-          -1.0f, -1.0f,
-          1.0f, -1.0f
-        };
-
-        lx_vk_matrix_t projection;
-        lx_vk_matrix_clear(&projection);
-        lx_vk_matrix_scale(&projection, 0.5f, 0.5f);
-        lx_vk_pipeline_matrix_set_projection(pipeline, &projection);
-
-        lx_vk_matrix_t model;
-        lx_vk_matrix_clear(&model);
-        lx_vk_matrix_scale(&model, 0.5f, 0.5f);
-        lx_vk_pipeline_matrix_set_model(pipeline, &model);
-#else
-        static const lx_float_t vertex_data[] = {
-          200.0f, 200.0f,
-          -200.0f, 200.0f,
-          200.0f, -200.0f,
-          200.0f, 200.0f,
-
-          200.0f, -200.0f,
-         -200.0f, 200.0f,
-         -200.0f, -200.0f,
-         200.0f, -200.0f
-        };
-
-        lx_vk_matrix_t projection;
-        lx_vk_matrix_clear(&projection);
-        /* vulkan (origin)
-         *          y
-         *         /|\
-         *          |
-         *          |
-         * ---------O--------> x
-         *          |
-         *          |
-         *          |
-         *
-         * to (world)
-         *
-         *  O----------> x
-         *  |
-         *  |
-         * \|/
-         *  y
-         *
-         */
-        lx_vk_matrix_orthof(&projection, 0.0f, device->framesize.width, device->framesize.height, 0.0f, -1.0f, 1.0f);
-        lx_vk_pipeline_matrix_set_projection(pipeline, &projection);
-
-        lx_vk_matrix_t model;
-        lx_vk_matrix_clear(&model);
-        lx_vk_matrix_convert(&model, device->base.matrix);
-        lx_vk_pipeline_matrix_set_model(pipeline, &model);
-#endif
-
+    if (result && result->total > 0) {
         lx_vk_buffer_t vertex_buffer;
-        if (lx_vk_allocator_alloc(device->allocator_vertex, sizeof(vertex_data), &vertex_buffer)) {
-            lx_vk_allocator_copy(device->allocator_vertex, &vertex_buffer, 0, (lx_pointer_t)vertex_data, sizeof(vertex_data));
+        lx_size_t size = sizeof(lx_point_t) * result->total;
+        if (lx_vk_allocator_alloc(device->allocator_vertex, size, &vertex_buffer)) {
+            lx_vk_allocator_copy(device->allocator_vertex, &vertex_buffer, 0, (lx_pointer_t)result->points, size);
             lx_array_insert_tail(device->vertex_buffers, &vertex_buffer);
-        }
 
-        VkDeviceSize offset = 0;
-        vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &vertex_buffer.buffer, &offset);
-        vkCmdDraw(cmdbuffer, 8, 1, 0, 0);
+            VkDeviceSize offset = 0;
+            vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &vertex_buffer.buffer, &offset);
+            vkCmdDraw(cmdbuffer, result->total, 1, 0, 0);
+        }
     }
 }
 
