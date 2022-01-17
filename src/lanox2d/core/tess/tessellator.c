@@ -59,14 +59,14 @@ static lx_void_t lx_tessellator_result_clear(lx_tessellator_t* tessellator) {
 
     // clear polygon points
     if (!tessellator->polygon_points) {
-        tessellator->polygon_points = lx_array_init(LX_TESSELLATOR_POLYGON_POINTS_GROW, lx_element_mem(sizeof(lx_point_t), lx_null));
+        tessellator->polygon_points = lx_array_init(LX_TESSELLATOR_POLYGON_POINTS_GROW, lx_element_mem(sizeof(lx_point_t), lx_null, lx_null));
     }
     lx_array_clear(tessellator->polygon_points);
 
     // clear polygon counts
     if (tessellator->mode != LX_TESSELLATOR_MODE_TRIANGULATION) { // we need not counts to optimize memory if be only triangulation
         if (!tessellator->polygon_counts) {
-            tessellator->polygon_counts = lx_array_init(LX_TESSELLATOR_POLYGON_COUNTS_GROW, lx_element_mem(sizeof(lx_uint16_t), lx_null));
+            tessellator->polygon_counts = lx_array_init(LX_TESSELLATOR_POLYGON_COUNTS_GROW, lx_element_mem(sizeof(lx_uint16_t), lx_null, lx_null));
         }
         lx_array_clear(tessellator->polygon_counts);
     }

@@ -55,7 +55,7 @@ static lx_bool_t lx_tessellator_event_queue_find(lx_iterator_ref_t iterator, lx_
 lx_bool_t lx_tessellator_event_queue_make(lx_tessellator_t* tessellator) {
     lx_assert(tessellator);
     if (!tessellator->event_queue) {
-        lx_element_t element = lx_element_mem(sizeof(lx_cpointer_t), lx_null);
+        lx_element_t element = lx_element_mem(sizeof(lx_cpointer_t), lx_null, lx_null);
         element.comp = lx_tessellator_event_queue_comp;
         tessellator->event_queue = lx_priority_queue_init(0, element);
     }

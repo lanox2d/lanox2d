@@ -97,9 +97,9 @@ lx_bool_t lx_tessellator_mesh_make(lx_tessellator_t* tessellator, lx_polygon_ref
     if (!tessellator->mesh) {
 
         // init mesh
-        lx_element_t edge_element    = lx_element_mem(sizeof(lx_tessellator_edge_t), lx_null);
-        lx_element_t face_element    = lx_element_mem(sizeof(lx_tessellator_face_t), lx_null);
-        lx_element_t vertex_element  = lx_element_mem(sizeof(lx_tessellator_vertex_t), lx_null);
+        lx_element_t edge_element    = lx_element_mem(sizeof(lx_tessellator_edge_t), lx_null, lx_null);
+        lx_element_t face_element    = lx_element_mem(sizeof(lx_tessellator_face_t), lx_null, lx_null);
+        lx_element_t vertex_element  = lx_element_mem(sizeof(lx_tessellator_vertex_t), lx_null, lx_null);
         tessellator->mesh = lx_mesh_init(edge_element, face_element, vertex_element);
 
         /* init the order

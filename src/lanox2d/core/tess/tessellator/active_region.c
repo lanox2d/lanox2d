@@ -380,7 +380,7 @@ lx_bool_t lx_tessellator_active_regions_make(lx_tessellator_t* tessellator, lx_r
 
     // init active regions
     if (!tessellator->active_regions) {
-        lx_element_t element = lx_element_mem(sizeof(lx_tessellator_active_region_t), lx_null);
+        lx_element_t element = lx_element_mem(sizeof(lx_tessellator_active_region_t), lx_null, lx_null);
         element.comp = lx_tessellator_active_region_comp;
         tessellator->active_regions = lx_list_init(0, element);
         lx_assert_and_check_return_val(tessellator->active_regions, lx_false);

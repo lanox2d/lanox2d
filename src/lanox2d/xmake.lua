@@ -85,6 +85,7 @@ target("lanox2d")
         add_files("core/device/vulkan/allocator.cc", {languages = "c++14"})
         add_files("core/device/vulkan/shaders/*.vert")
         add_files("core/device/vulkan/shaders/*.frag")
+        add_files("core/tess/**.c")
         add_rules("utils.glsl2spv", {bin2c = true})
     end
     if is_config("device", "skia") then

@@ -36,7 +36,6 @@
 typedef struct lx_vulkan_device_t_ {
     lx_device_t                 base;
     lx_window_ref_t             window;
-    lx_stroker_ref_t            stroker;
 
     // vulkan instance
     VkInstance                  instance;
@@ -78,6 +77,8 @@ typedef struct lx_vulkan_device_t_ {
     VkCommandBuffer             renderer_cmdbuffer;
     VkClearColorValue           renderer_clear_color;
     lx_array_ref_t              vertex_buffers;
+    lx_tessellator_ref_t        tessellator;
+    lx_stroker_ref_t            stroker;
 
 }lx_vulkan_device_t;
 

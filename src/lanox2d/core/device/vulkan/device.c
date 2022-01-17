@@ -360,6 +360,16 @@ static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
     lx_vulkan_device_t* device = (lx_vulkan_device_t*)self;
     if (device) {
 
+        // destroy tessellator
+        if (device->tessellator) {
+            lx_tessellator_exit(device->tessellator);
+            device->tessellator = lx_null;
+        }
+        if (device->stroker) {
+            lx_stroker_exit(device->stroker);
+            device->stroker = lx_null;
+        }
+
         // destroy semaphore
         if (device->semaphore) {
             vkDestroySemaphore(device->device, device->semaphore, lx_null);
@@ -549,6 +559,18 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
         device->vertex_buffers = lx_array_init(LX_DEVICE_VERTEX_BUFFERS_GROW,
             lx_element_mem(sizeof(lx_vk_buffer_t), lx_device_vulkan_vertex_buffer_exit, (lx_pointer_t)device->allocator_vertex));
         lx_assert_and_check_break(device->vertex_buffers);
+
+        // init stroker
+        device->stroker = lx_stroker_init();
+        lx_assert_and_check_break(device->stroker);
+
+        // init tessellator
+        device->tessellator = lx_tessellator_init();
+        lx_assert_and_check_break(device->tessellator);
+
+        // init tessellator mode and flags
+        lx_tessellator_mode_set(device->tessellator, LX_TESSELLATOR_MODE_CONVEX);
+        lx_tessellator_flags_set(device->tessellator, LX_TESSELLATOR_FLAG_AUTOCLOSED);
 
         // ok
         ok = lx_true;

@@ -137,36 +137,41 @@ static lx_inline lx_void_t lx_vk_renderer_apply_paint(lx_vulkan_device_t* device
 static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* device, lx_polygon_ref_t polygon, lx_rect_ref_t bounds, lx_size_t rule) {
     VkCommandBuffer cmdbuffer = device->renderer_cmdbuffer;
 
-    lx_vk_pipeline_ref_t pipeline = lx_vk_pipeline_solid(device);
-    vkCmdBindDescriptorSets(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-        lx_vk_pipeline_layout(pipeline), 0, lx_vk_pipeline_descriptor_sets_count(pipeline),
-        lx_vk_pipeline_descriptor_sets(pipeline), 0, lx_null);
+    lx_tessellator_rule_set(device->tessellator, rule);
+    lx_polygon_ref_t result = lx_tessellator_make(device->tessellator, polygon, bounds);
+    if (result) {
 
-    static const lx_float_t vertex_data[] = {
-      -1.0f, -1.0f, 0.0f,
-      1.0f, -1.0f, 0.0f,
-      0.0f, 1.0f, 0.0f
-    };
+        lx_vk_pipeline_ref_t pipeline = lx_vk_pipeline_solid(device);
+        vkCmdBindDescriptorSets(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+            lx_vk_pipeline_layout(pipeline), 0, lx_vk_pipeline_descriptor_sets_count(pipeline),
+            lx_vk_pipeline_descriptor_sets(pipeline), 0, lx_null);
 
-    lx_vk_matrix_t projection;
-    lx_vk_matrix_clear(&projection);
-    lx_vk_matrix_scale(&projection, 0.5f, 0.5f);
-    lx_vk_pipeline_matrix_set_projection(pipeline, &projection);
+        static const lx_float_t vertex_data[] = {
+          -1.0f, -1.0f, 0.0f,
+          1.0f, -1.0f, 0.0f,
+          0.0f, 1.0f, 0.0f
+        };
 
-    lx_vk_matrix_t model;
-    lx_vk_matrix_clear(&model);
-    lx_vk_matrix_scale(&model, 0.5f, 0.5f);
-    lx_vk_pipeline_matrix_set_model(pipeline, &model);
+        lx_vk_matrix_t projection;
+        lx_vk_matrix_clear(&projection);
+        lx_vk_matrix_scale(&projection, 0.5f, 0.5f);
+        lx_vk_pipeline_matrix_set_projection(pipeline, &projection);
 
-    lx_vk_buffer_t vertex_buffer;
-    if (lx_vk_allocator_alloc(device->allocator_vertex, sizeof(vertex_data), &vertex_buffer)) {
-        lx_vk_allocator_copy(device->allocator_vertex, &vertex_buffer, 0, (lx_pointer_t)vertex_data, sizeof(vertex_data));
-        lx_array_insert_tail(device->vertex_buffers, &vertex_buffer);
+        lx_vk_matrix_t model;
+        lx_vk_matrix_clear(&model);
+        lx_vk_matrix_scale(&model, 0.5f, 0.5f);
+        lx_vk_pipeline_matrix_set_model(pipeline, &model);
+
+        lx_vk_buffer_t vertex_buffer;
+        if (lx_vk_allocator_alloc(device->allocator_vertex, sizeof(vertex_data), &vertex_buffer)) {
+            lx_vk_allocator_copy(device->allocator_vertex, &vertex_buffer, 0, (lx_pointer_t)vertex_data, sizeof(vertex_data));
+            lx_array_insert_tail(device->vertex_buffers, &vertex_buffer);
+        }
+
+        VkDeviceSize offset = 0;
+        vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &vertex_buffer.buffer, &offset);
+        vkCmdDraw(cmdbuffer, 3, 1, 0, 0);
     }
-
-    VkDeviceSize offset = 0;
-    vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &vertex_buffer.buffer, &offset);
-    vkCmdDraw(cmdbuffer, 3, 1, 0, 0);
 }
 
 static lx_inline lx_void_t lx_vk_renderer_stroke_lines(lx_vulkan_device_t* device, lx_point_ref_t points, lx_size_t count) {
