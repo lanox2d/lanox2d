@@ -111,7 +111,7 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_solid(lx_vulkan_device_t* device) {
             VkVertexInputAttributeDescription vertex_input_attributes[1];
             vertex_input_attributes[0].location = 0; // layout(location = 0) in vec4 aVertices;
             vertex_input_attributes[0].binding = 0;
-            vertex_input_attributes[0].format = VK_FORMAT_R32G32B32_SFLOAT;
+            vertex_input_attributes[0].format = VK_FORMAT_R32G32_SFLOAT; // TODO
             vertex_input_attributes[0].offset = 0;
 
             VkPipelineVertexInputStateCreateInfo vertex_input_info = {};
@@ -148,7 +148,7 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_solid(lx_vulkan_device_t* device) {
             }
 
             // init pipeline layout info
-            VkPipelineLayoutCreateInfo pipeline_layout_info;
+            VkPipelineLayoutCreateInfo pipeline_layout_info = {};
             pipeline_layout_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
             pipeline_layout_info.pNext = lx_null;
             pipeline_layout_info.setLayoutCount = 1;
