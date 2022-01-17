@@ -569,7 +569,7 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
         lx_assert_and_check_break(device->tessellator);
 
         // init tessellator mode and flags
-        lx_tessellator_mode_set(device->tessellator, LX_TESSELLATOR_MODE_CONVEX);
+        lx_tessellator_mode_set(device->tessellator, LX_TESSELLATOR_MODE_TRIANGULATION);
         lx_tessellator_flags_set(device->tessellator, LX_TESSELLATOR_FLAG_AUTOCLOSED);
 
         // ok

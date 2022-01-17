@@ -193,7 +193,7 @@ static lx_bool_t lx_vk_pipeline_create(lx_vk_pipeline_t* pipeline,
         VkPipelineInputAssemblyStateCreateInfo input_assembly_info = {};
         input_assembly_info.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
         input_assembly_info.pNext = lx_null;
-        input_assembly_info.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+        input_assembly_info.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
         input_assembly_info.primitiveRestartEnable = VK_FALSE;
 
         // create the pipeline cache

@@ -141,11 +141,9 @@ static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* devic
     lx_polygon_ref_t result = lx_tessellator_make(device->tessellator, polygon, bounds);
     if (result) {
 
-        lx_trace_i("%{point}", &result->points[0]);
-        lx_trace_i("%{point}", &result->points[1]);
-        lx_trace_i("%{point}", &result->points[2]);
-        lx_trace_i("%{point}", &result->points[3]);
-        lx_trace_i("%{point}", &result->points[4]);
+        for (lx_size_t i = 0; i < result->total; i++) {
+            lx_trace_i("%{point}", &result->points[i]);
+        }
         lx_trace_i("%lu", result->total);
 
         lx_vk_pipeline_ref_t pipeline = lx_vk_pipeline_solid(device);
@@ -155,11 +153,15 @@ static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* devic
 
 #if 1
         static const lx_float_t vertex_data[] = {
-          -1.0f, -1.0f,
-          1.0f, -1.0f,
           1.0f, 1.0f,
           -1.0f, 1.0f,
-          -1.0f, -1.0f
+          1.0f, -1.0f,
+          1.0f, 1.0f,
+
+          1.0f, -1.0f,
+          -1.0f, 1.0f,
+          -1.0f, -1.0f,
+          1.0f, -1.0f
         };
 
         lx_vk_matrix_t projection;
@@ -173,11 +175,15 @@ static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* devic
         lx_vk_pipeline_matrix_set_model(pipeline, &model);
 #else
         static const lx_float_t vertex_data[] = {
-          -200.0f, -200.0f,
-          200.0f, -200.0f,
           200.0f, 200.0f,
           -200.0f, 200.0f,
-          -200.0f, -200.0f
+          200.0f, -200.0f,
+          200.0f, 200.0f,
+
+          200.0f, -200.0f,
+         -200.0f, 200.0f,
+         -200.0f, -200.0f,
+         200.0f, -200.0f
         };
 
         lx_vk_matrix_t projection;
@@ -218,7 +224,7 @@ static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* devic
 
         VkDeviceSize offset = 0;
         vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &vertex_buffer.buffer, &offset);
-        vkCmdDraw(cmdbuffer, 5, 1, 0, 0);
+        vkCmdDraw(cmdbuffer, 8, 1, 0, 0);
     }
 }
 
