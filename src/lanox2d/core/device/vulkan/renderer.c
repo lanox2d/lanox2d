@@ -153,11 +153,13 @@ static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* devic
             lx_vk_pipeline_layout(pipeline), 0, lx_vk_pipeline_descriptor_sets_count(pipeline),
             lx_vk_pipeline_descriptor_sets(pipeline), 0, lx_null);
 
-#if 0
+#if 1
         static const lx_float_t vertex_data[] = {
           -1.0f, -1.0f,
           1.0f, -1.0f,
-          0.0f, 1.0f
+          1.0f, 1.0f,
+          -1.0f, 1.0f,
+          -1.0f, -1.0f
         };
 
         lx_vk_matrix_t projection;
@@ -180,12 +182,31 @@ static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* devic
 
         lx_vk_matrix_t projection;
         lx_vk_matrix_clear(&projection);
-        lx_vk_matrix_scale(&projection, 0.5f, 0.5f);
+        /* vulkan (origin)
+         *          y
+         *         /|\
+         *          |
+         *          |
+         * ---------O--------> x
+         *          |
+         *          |
+         *          |
+         *
+         * to (world)
+         *
+         *  O----------> x
+         *  |
+         *  |
+         * \|/
+         *  y
+         *
+         */
+        lx_vk_matrix_orthof(&projection, 0.0f, device->framesize.width, device->framesize.height, 0.0f, -1.0f, 1.0f);
         lx_vk_pipeline_matrix_set_projection(pipeline, &projection);
 
         lx_vk_matrix_t model;
         lx_vk_matrix_clear(&model);
-        lx_vk_matrix_scale(&model, 0.5f, 0.5f);
+        lx_vk_matrix_convert(&model, device->base.matrix);
         lx_vk_pipeline_matrix_set_model(pipeline, &model);
 #endif
 
@@ -197,7 +218,7 @@ static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* devic
 
         VkDeviceSize offset = 0;
         vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &vertex_buffer.buffer, &offset);
-        vkCmdDraw(cmdbuffer, 3, 1, 0, 0);
+        vkCmdDraw(cmdbuffer, 5, 1, 0, 0);
     }
 }
 
