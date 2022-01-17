@@ -162,7 +162,18 @@ static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* devic
 }
 
 static lx_inline lx_void_t lx_vk_renderer_stroke_lines(lx_vulkan_device_t* device, lx_point_ref_t points, lx_size_t count) {
-    lx_assert(device && points && count);
+    VkCommandBuffer cmdbuffer = device->renderer_cmdbuffer;
+
+	lx_vk_buffer_t vertex_buffer;
+	lx_size_t size = sizeof(lx_point_t) * count;
+	if (lx_vk_allocator_alloc(device->allocator_vertex, size, &vertex_buffer)) {
+		lx_vk_allocator_copy(device->allocator_vertex, &vertex_buffer, 0, (lx_pointer_t)points, size);
+		lx_array_insert_tail(device->vertex_buffers, &vertex_buffer);
+
+		VkDeviceSize offset = 0;
+		vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &vertex_buffer.buffer, &offset);
+		vkCmdDraw(cmdbuffer, count, 1, 0, 0);
+	}
 }
 
 static lx_inline lx_void_t lx_vk_renderer_stroke_points(lx_vulkan_device_t* device, lx_point_ref_t points, lx_size_t count) {
