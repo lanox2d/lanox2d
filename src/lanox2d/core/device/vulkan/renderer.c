@@ -141,15 +141,23 @@ static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* devic
     lx_polygon_ref_t result = lx_tessellator_make(device->tessellator, polygon, bounds);
     if (result) {
 
+        lx_trace_i("%{point}", &result->points[0]);
+        lx_trace_i("%{point}", &result->points[1]);
+        lx_trace_i("%{point}", &result->points[2]);
+        lx_trace_i("%{point}", &result->points[3]);
+        lx_trace_i("%{point}", &result->points[4]);
+        lx_trace_i("%lu", result->total);
+
         lx_vk_pipeline_ref_t pipeline = lx_vk_pipeline_solid(device);
         vkCmdBindDescriptorSets(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
             lx_vk_pipeline_layout(pipeline), 0, lx_vk_pipeline_descriptor_sets_count(pipeline),
             lx_vk_pipeline_descriptor_sets(pipeline), 0, lx_null);
 
+#if 0
         static const lx_float_t vertex_data[] = {
-          -1.0f, -1.0f, 0.0f,
-          1.0f, -1.0f, 0.0f,
-          0.0f, 1.0f, 0.0f
+          -1.0f, -1.0f,
+          1.0f, -1.0f,
+          0.0f, 1.0f
         };
 
         lx_vk_matrix_t projection;
@@ -161,6 +169,25 @@ static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* devic
         lx_vk_matrix_clear(&model);
         lx_vk_matrix_scale(&model, 0.5f, 0.5f);
         lx_vk_pipeline_matrix_set_model(pipeline, &model);
+#else
+        static const lx_float_t vertex_data[] = {
+          -200.0f, -200.0f,
+          200.0f, -200.0f,
+          200.0f, 200.0f,
+          -200.0f, 200.0f,
+          -200.0f, -200.0f
+        };
+
+        lx_vk_matrix_t projection;
+        lx_vk_matrix_clear(&projection);
+        lx_vk_matrix_scale(&projection, 0.5f, 0.5f);
+        lx_vk_pipeline_matrix_set_projection(pipeline, &projection);
+
+        lx_vk_matrix_t model;
+        lx_vk_matrix_clear(&model);
+        lx_vk_matrix_scale(&model, 0.5f, 0.5f);
+        lx_vk_pipeline_matrix_set_model(pipeline, &model);
+#endif
 
         lx_vk_buffer_t vertex_buffer;
         if (lx_vk_allocator_alloc(device->allocator_vertex, sizeof(vertex_data), &vertex_buffer)) {

@@ -105,7 +105,7 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_solid(lx_vulkan_device_t* device) {
             // init vertex input state
             VkVertexInputBindingDescription vertex_input_bindings[1];
             vertex_input_bindings[0].binding = 0; // for vertices buffer
-            vertex_input_bindings[0].stride = 3 * sizeof(lx_float_t);
+            vertex_input_bindings[0].stride = 2 * sizeof(lx_float_t);
             vertex_input_bindings[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
             VkVertexInputAttributeDescription vertex_input_attributes[1];
@@ -128,7 +128,7 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_solid(lx_vulkan_device_t* device) {
             push_constant_range.offset = 0;
             push_constant_range.size = 4 * sizeof(lx_float_t);
 
-            // init descriptor set layout
+            // init descriptor set layout (uniform buffer)
             const lx_uint32_t descriptor_count = 1;
             const lx_uint32_t descriptor_type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;//_DYNAMIC;
             VkDescriptorSetLayoutBinding descriptor_set_layout_binding = {};
