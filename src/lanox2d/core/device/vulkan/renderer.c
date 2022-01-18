@@ -129,8 +129,6 @@ static lx_inline lx_vk_pipeline_ref_t lx_vk_renderer_apply_paint_solid(lx_vulkan
 }
 
 static lx_inline lx_void_t lx_vk_renderer_apply_paint(lx_vulkan_device_t* device, lx_rect_ref_t bounds, lx_bool_t is_stroke) {
-
-    // apply paint
     lx_shader_ref_t shader = lx_paint_shader(device->base.paint);
     if (shader) {
         lx_vk_renderer_apply_paint_shader(device, shader, bounds);
@@ -140,8 +138,6 @@ static lx_inline lx_void_t lx_vk_renderer_apply_paint(lx_vulkan_device_t* device
 }
 
 static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* device, lx_polygon_ref_t polygon, lx_rect_ref_t bounds, lx_size_t rule) {
-    VkCommandBuffer cmdbuffer = device->renderer_cmdbuffer;
-
     lx_tessellator_rule_set(device->tessellator, rule);
     lx_polygon_ref_t result = lx_tessellator_make(device->tessellator, polygon, bounds);
     if (result && result->total > 0) {
@@ -152,6 +148,7 @@ static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* devic
             lx_array_insert_tail(device->vertex_buffers, &vertex_buffer);
 
             VkDeviceSize offset = 0;
+            VkCommandBuffer cmdbuffer = device->renderer_cmdbuffer;
             vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &vertex_buffer.buffer, &offset);
             vkCmdDraw(cmdbuffer, result->total, 1, 0, 0);
         }
@@ -159,8 +156,6 @@ static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* devic
 }
 
 static lx_inline lx_void_t lx_vk_renderer_stroke_lines(lx_vulkan_device_t* device, lx_point_ref_t points, lx_size_t count) {
-    VkCommandBuffer cmdbuffer = device->renderer_cmdbuffer;
-
 	lx_vk_buffer_t vertex_buffer;
 	lx_size_t size = sizeof(lx_point_t) * count;
 	if (lx_vk_allocator_alloc(device->allocator_vertex, size, &vertex_buffer)) {
@@ -168,6 +163,7 @@ static lx_inline lx_void_t lx_vk_renderer_stroke_lines(lx_vulkan_device_t* devic
 		lx_array_insert_tail(device->vertex_buffers, &vertex_buffer);
 
 		VkDeviceSize offset = 0;
+        VkCommandBuffer cmdbuffer = device->renderer_cmdbuffer;
 		vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &vertex_buffer.buffer, &offset);
 		vkCmdDraw(cmdbuffer, count, 1, 0, 0);
 	}
@@ -175,10 +171,29 @@ static lx_inline lx_void_t lx_vk_renderer_stroke_lines(lx_vulkan_device_t* devic
 
 static lx_inline lx_void_t lx_vk_renderer_stroke_points(lx_vulkan_device_t* device, lx_point_ref_t points, lx_size_t count) {
     lx_assert(device && points && count);
+    // TODO
 }
 
 static lx_inline lx_void_t lx_vk_renderer_stroke_polygon(lx_vulkan_device_t* device, lx_polygon_ref_t polygon) {
     lx_assert(device && polygon && polygon->points && polygon->counts);
+
+	lx_vk_buffer_t vertex_buffer;
+	lx_size_t size = sizeof(lx_point_t) * polygon->total;
+	if (lx_vk_allocator_alloc(device->allocator_vertex, size, &vertex_buffer)) {
+		lx_vk_allocator_copy(device->allocator_vertex, &vertex_buffer, 0, (lx_pointer_t)polygon->points, size);
+		lx_array_insert_tail(device->vertex_buffers, &vertex_buffer);
+
+        lx_uint16_t     count;
+        lx_size_t       index = 0;
+        lx_uint16_t*    counts = polygon->counts;
+        VkCommandBuffer cmdbuffer = device->renderer_cmdbuffer;
+        while ((count = *counts++)) {
+            VkDeviceSize offset = index;
+            vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &vertex_buffer.buffer, &offset);
+            vkCmdDraw(cmdbuffer, count, 1, 0, 0);
+            index += count;
+        }
+    }
 }
 
 static lx_void_t lx_vk_renderer_stroke_fill(lx_vulkan_device_t* device, lx_path_ref_t path) {

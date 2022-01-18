@@ -162,7 +162,7 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_line(lx_vulkan_device_t* device) {
             }
 
             // create pipeline
-            if (!lx_vk_pipeline_create(pipeline_line, VK_PRIMITIVE_TOPOLOGY_LINE_LIST,
+            if (!lx_vk_pipeline_create(pipeline_line, VK_PRIMITIVE_TOPOLOGY_LINE_STRIP,
                 vshader, sizeof(vshader), fshader, sizeof(fshader), &vertex_input_info, &pipeline_layout_info)) {
                 break;
             }
