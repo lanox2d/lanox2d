@@ -95,7 +95,7 @@ static lx_inline lx_vk_pipeline_ref_t lx_vk_renderer_apply_paint_shader(lx_vulka
     return lx_null;
 }
 
-static lx_inline lx_vk_pipeline_ref_t lx_vk_renderer_apply_paint_solid(lx_vulkan_device_t* device) {
+static lx_inline lx_vk_pipeline_ref_t lx_vk_renderer_apply_paint_solid(lx_vulkan_device_t* device, lx_bool_t is_stroke) {
     VkCommandBuffer cmdbuffer = device->renderer_cmdbuffer;
     lx_paint_ref_t paint = device->base.paint;
     lx_assert(cmdbuffer && paint);
@@ -108,38 +108,35 @@ static lx_inline lx_vk_pipeline_ref_t lx_vk_renderer_apply_paint_solid(lx_vulkan
     }
 
     // enable color pipeline
-    lx_vk_pipeline_ref_t pipeline = lx_vk_pipeline_solid(device);
+    lx_vk_pipeline_ref_t pipeline = is_stroke? lx_vk_pipeline_line(device) : lx_vk_pipeline_solid(device);
     lx_assert_and_check_return(pipeline);
     vkCmdBindPipeline(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, lx_vk_pipeline_native(pipeline));
 
     // apply color
     lx_float_t color_data[] = {(lx_float_t)color.r / 0xff, (lx_float_t)color.g / 0xff, (lx_float_t)color.b / 0xff, (lx_float_t)color.a / 0xff};
     vkCmdPushConstants(cmdbuffer, lx_vk_pipeline_layout(pipeline), VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(color_data), color_data);
-    return pipeline;
-}
-
-static lx_inline lx_void_t lx_vk_renderer_apply_paint(lx_vulkan_device_t* device, lx_rect_ref_t bounds) {
-    VkCommandBuffer cmdbuffer = device->renderer_cmdbuffer;
-
-    // apply paint
-    lx_vk_pipeline_ref_t pipeline = lx_null;
-    lx_shader_ref_t shader = lx_paint_shader(device->base.paint);
-    if (shader) {
-        pipeline = lx_vk_renderer_apply_paint_shader(device, shader, bounds);
-    } else {
-        pipeline = lx_vk_renderer_apply_paint_solid(device);
-    }
-    lx_assert_and_check_return(pipeline);
 
     // set model matrix
     lx_vk_matrix_t model;
     lx_vk_matrix_convert(&model, device->base.matrix);
     lx_vk_pipeline_matrix_set_model(pipeline, &model);
 
-    // bind pipeline
+    // bind descriptor set to pipeline (uniform buffer, ...)
     vkCmdBindDescriptorSets(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
         lx_vk_pipeline_layout(pipeline), 0, lx_vk_pipeline_descriptor_sets_count(pipeline),
         lx_vk_pipeline_descriptor_sets(pipeline), 0, lx_null);
+    return pipeline;
+}
+
+static lx_inline lx_void_t lx_vk_renderer_apply_paint(lx_vulkan_device_t* device, lx_rect_ref_t bounds, lx_bool_t is_stroke) {
+
+    // apply paint
+    lx_shader_ref_t shader = lx_paint_shader(device->base.paint);
+    if (shader) {
+        lx_vk_renderer_apply_paint_shader(device, shader, bounds);
+    } else {
+        lx_vk_renderer_apply_paint_solid(device, is_stroke);
+    }
 }
 
 static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* device, lx_polygon_ref_t polygon, lx_rect_ref_t bounds, lx_size_t rule) {
@@ -369,10 +366,11 @@ lx_void_t lx_vk_renderer_draw_lines(lx_vulkan_device_t* device, lx_point_ref_t p
         return ;
     }
 
-    lx_vk_renderer_apply_paint(device, bounds);
     if (lx_vk_renderer_stroke_only(device)) {
+        lx_vk_renderer_apply_paint(device, bounds, lx_true);
         lx_vk_renderer_stroke_lines(device, points, count);
     } else {
+        lx_vk_renderer_apply_paint(device, bounds, lx_false);
         lx_vk_renderer_stroke_fill(device, lx_stroker_make_from_lines(device->stroker, device->base.paint, points, count));
     }
 }
@@ -386,10 +384,11 @@ lx_void_t lx_vk_renderer_draw_points(lx_vulkan_device_t* device, lx_point_ref_t 
         return ;
     }
 
-    lx_vk_renderer_apply_paint(device, bounds);
     if (lx_vk_renderer_stroke_only(device)) {
+        lx_vk_renderer_apply_paint(device, bounds, lx_true);
         lx_vk_renderer_stroke_points(device, points, count);
     } else {
+        lx_vk_renderer_apply_paint(device, bounds, lx_false);
         lx_vk_renderer_stroke_fill(device, lx_stroker_make_from_points(device->stroker, device->base.paint, points, count));
     }
 }
@@ -412,16 +411,22 @@ lx_void_t lx_vk_renderer_draw_polygon(lx_vulkan_device_t* device, lx_polygon_ref
         return ;
     }
 
-    lx_vk_renderer_apply_paint(device, bounds);
+    lx_bool_t fill_applied = lx_false;
     lx_size_t mode = lx_paint_mode(device->base.paint);
     if (mode & LX_PAINT_MODE_FILL) {
+        lx_vk_renderer_apply_paint(device, bounds, lx_false);
         lx_vk_renderer_fill_polygon(device, polygon, bounds, lx_paint_fill_rule(device->base.paint));
+        fill_applied = lx_true;
     }
 
     if ((mode & LX_PAINT_MODE_STROKE) && (lx_paint_stroke_width(device->base.paint) > 0)) {
         if (lx_vk_renderer_stroke_only(device)) {
+            lx_vk_renderer_apply_paint(device, bounds, lx_true);
             lx_vk_renderer_stroke_polygon(device, polygon);
         } else {
+            if (!fill_applied) {
+                lx_vk_renderer_apply_paint(device, bounds, lx_false);
+            }
             lx_vk_renderer_stroke_fill(device, lx_stroker_make_from_polygon(device->stroker, device->base.paint, polygon, hint));
         }
     }
