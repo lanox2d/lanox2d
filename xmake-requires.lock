@@ -6,7 +6,7 @@
         ["cmake#31fecfc4"] = {
             repo = {
                 branch = "master",
-                commit = "ead7c103db403f6c81aecc9ae698bf6d5f955c1b",
+                commit = "d3260ca0867f8b26aa2a72818bca3e6113a4fc42",
                 url = "https://gitee.com/tboox/xmake-repo.git"
             },
             version = "3.22.1"
@@ -14,7 +14,7 @@
         ["vulkan-headers#31fecfc4"] = {
             repo = {
                 branch = "master",
-                commit = "58ee0f6412590070fc5cf62abad3d94447d695b3",
+                commit = "8d4f0875fe9a3c63be4948cefca9f232954e3e87",
                 url = "https://gitee.com/tboox/xmake-repo.git"
             },
             version = "1.2.198+0"
@@ -22,15 +22,15 @@
         ["vulkan-memory-allocator#31fecfc4"] = {
             repo = {
                 branch = "master",
-                commit = "58ee0f6412590070fc5cf62abad3d94447d695b3",
+                commit = "34bbe19dfdcfbcbc6879b4d6e77e6b377640bb4a",
                 url = "https://gitee.com/tboox/xmake-repo.git"
             },
-            version = "v2.3.0"
+            version = "2021.1.26"
         },
         ["vulkan-validationlayers#31fecfc4"] = {
             repo = {
                 branch = "master",
-                commit = "58ee0f6412590070fc5cf62abad3d94447d695b3",
+                commit = "8d4f0875fe9a3c63be4948cefca9f232954e3e87",
                 url = "https://gitee.com/tboox/xmake-repo.git"
             },
             version = "1.2.198+0"
@@ -40,7 +40,7 @@
         ["cmake#31fecfc4"] = {
             repo = {
                 branch = "master",
-                commit = "ead7c103db403f6c81aecc9ae698bf6d5f955c1b",
+                commit = "d3260ca0867f8b26aa2a72818bca3e6113a4fc42",
                 url = "https://gitee.com/tboox/xmake-repo.git"
             },
             version = "3.22.1"
@@ -48,7 +48,7 @@
         ["vulkan-headers#31fecfc4"] = {
             repo = {
                 branch = "master",
-                commit = "c3cf20c4a51694017ba1043c92a6441a62ff5772",
+                commit = "8d4f0875fe9a3c63be4948cefca9f232954e3e87",
                 url = "https://gitee.com/tboox/xmake-repo.git"
             },
             version = "1.2.198+0"
@@ -56,15 +56,15 @@
         ["vulkan-memory-allocator#31fecfc4"] = {
             repo = {
                 branch = "master",
-                commit = "c3cf20c4a51694017ba1043c92a6441a62ff5772",
+                commit = "34bbe19dfdcfbcbc6879b4d6e77e6b377640bb4a",
                 url = "https://gitee.com/tboox/xmake-repo.git"
             },
-            version = "v2.3.0"
+            version = "2021.1.26"
         },
         ["vulkan-validationlayers#31fecfc4"] = {
             repo = {
                 branch = "master",
-                commit = "58ee0f6412590070fc5cf62abad3d94447d695b3",
+                commit = "8d4f0875fe9a3c63be4948cefca9f232954e3e87",
                 url = "https://gitee.com/tboox/xmake-repo.git"
             },
             version = "1.2.198+0"

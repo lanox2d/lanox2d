@@ -15,7 +15,7 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        allocator.c
+ * @file        allocator.cc
  *
  */
 
@@ -24,6 +24,7 @@
  */
 #include "allocator.h"
 #define VMA_IMPLEMENTATION
+#define VMA_ASSERT lx_assert
 #include <vk_mem_alloc.h>
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -74,6 +75,13 @@ lx_vk_allocator_ref_t lx_vk_allocator_init(lx_vulkan_device_t* device, VkBufferU
         allocator_info.physicalDevice = device->gpu_device;
         allocator_info.device = device->device;
         allocator_info.instance = device->instance;
+#if defined(VMA_DYNAMIC_VULKAN_FUNCTIONS) && VMA_DYNAMIC_VULKAN_FUNCTIONS == 1
+        // we need init it on android, @see https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator/issues/56
+        VmaVulkanFunctions fn = {};
+        fn.vkGetInstanceProcAddr = vkGetInstanceProcAddr;
+        fn.vkGetDeviceProcAddr = vkGetDeviceProcAddr;
+        allocator_info.pVulkanFunctions = &fn;
+#endif
         if (vmaCreateAllocator(&allocator_info, &allocator->allocator) != VK_SUCCESS) {
             break;
         }
