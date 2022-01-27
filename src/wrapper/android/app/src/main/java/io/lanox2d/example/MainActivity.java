@@ -38,8 +38,8 @@ public class MainActivity extends AppCompatActivity implements Runnable {
             public void onInitWindow(int width, int height) {
                 // load tests
                 //NativeTest.getInstance().loadEmptyWindow();
-                //NativeTest.getInstance().loadShapeWindow("path");
-                NativeTest.getInstance().loadShapeWindow("path", imagePath);
+                NativeTest.getInstance().loadShapeWindow("path");
+                //NativeTest.getInstance().loadShapeWindow("path", imagePath);
             }
 
             @Override
