@@ -63,7 +63,7 @@ static lx_bool_t lx_vk_descriptor_sets_init_texture(lx_vulkan_device_t* device, 
     lx_memset(descriptor_buffer_info, 0, sizeof(VkDescriptorBufferInfo) * descriptor_count);
     descriptor_buffer_info[0].buffer = pipeline->ubo_matrix.buffer;
     descriptor_buffer_info[0].offset = 0;
-    descriptor_buffer_info[0].range = sizeof(lx_vk_ubo_matrix_t);
+    descriptor_buffer_info[0].range = sizeof(lx_vk_ubo_matrix_t); // TODO missing texcoord
 
     VkWriteDescriptorSet write_descriptor_set = {};
     write_descriptor_set.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -103,16 +103,25 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_texture(lx_vulkan_device_t* device) {
             lx_assert_and_check_break(pipeline_texture);
 
             // init vertex input state
-            VkVertexInputBindingDescription vertex_input_bindings[1];
+            VkVertexInputBindingDescription vertex_input_bindings[2];
             vertex_input_bindings[0].binding = 0; // for vertices buffer
             vertex_input_bindings[0].stride = 2 * sizeof(lx_float_t);
             vertex_input_bindings[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
-            VkVertexInputAttributeDescription vertex_input_attributes[1];
+            vertex_input_bindings[1].binding = 1; // for texcoord buffer
+            vertex_input_bindings[1].stride = 2 * sizeof(lx_float_t);
+            vertex_input_bindings[1].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+            VkVertexInputAttributeDescription vertex_input_attributes[2];
             vertex_input_attributes[0].location = 0; // layout(location = 0) in vec4 aVertices;
             vertex_input_attributes[0].binding = 0;
-            vertex_input_attributes[0].format = VK_FORMAT_R32G32_SFLOAT; // TODO
+            vertex_input_attributes[0].format = VK_FORMAT_R32G32_SFLOAT;
             vertex_input_attributes[0].offset = 0;
+
+            vertex_input_attributes[1].location = 1; // layout(location = 1) in vec4 aTexcoords;
+            vertex_input_attributes[1].binding = 1;
+            vertex_input_attributes[1].format = VK_FORMAT_R32G32_SFLOAT;
+            vertex_input_attributes[1].offset = 0;
 
             VkPipelineVertexInputStateCreateInfo vertex_input_info = {};
             vertex_input_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;

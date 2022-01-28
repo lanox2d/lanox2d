@@ -111,7 +111,7 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_points(lx_vulkan_device_t* device) {
             VkVertexInputAttributeDescription vertex_input_attributes[1];
             vertex_input_attributes[0].location = 0; // layout(location = 0) in vec4 aVertices;
             vertex_input_attributes[0].binding = 0;
-            vertex_input_attributes[0].format = VK_FORMAT_R32G32_SFLOAT; // TODO
+            vertex_input_attributes[0].format = VK_FORMAT_R32G32_SFLOAT;
             vertex_input_attributes[0].offset = 0;
 
             VkPipelineVertexInputStateCreateInfo vertex_input_info = {};
