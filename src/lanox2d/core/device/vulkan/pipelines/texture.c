@@ -25,6 +25,62 @@
 #include "prefix.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
+ * private implementation
+ */
+static lx_bool_t lx_vk_descriptor_sets_init_texture(lx_vulkan_device_t* device, lx_vk_pipeline_t* pipeline, const lx_uint32_t descriptor_type, const lx_uint32_t descriptor_count) {
+
+    // create descriptor pool
+    VkDescriptorPoolSize pool_size = {};
+    pool_size.type = descriptor_type;
+    pool_size.descriptorCount = descriptor_count;
+
+    VkDescriptorPoolCreateInfo descriptor_poolinfo = {};
+    descriptor_poolinfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+    descriptor_poolinfo.pNext = lx_null;
+    descriptor_poolinfo.maxSets = 1;
+    descriptor_poolinfo.poolSizeCount = 1;
+    descriptor_poolinfo.pPoolSizes = &pool_size;
+
+    if (vkCreateDescriptorPool(device->device, &descriptor_poolinfo, lx_null, &pipeline->descriptor_pool) != VK_SUCCESS) {
+        return lx_false;
+    }
+
+    // create descriptor sets
+    VkDescriptorSetAllocateInfo descriptor_setsinfo = {};
+    descriptor_setsinfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    descriptor_setsinfo.pNext = lx_null;
+    descriptor_setsinfo.descriptorPool = pipeline->descriptor_pool;
+    descriptor_setsinfo.descriptorSetCount = 1;
+    descriptor_setsinfo.pSetLayouts = &pipeline->descriptor_set_layout;
+    if (vkAllocateDescriptorSets(device->device, &descriptor_setsinfo, pipeline->descriptor_sets) != VK_SUCCESS) {
+        return lx_false;
+    }
+    pipeline->descriptor_sets_count = 1;
+
+    // configure descriptor set[0]: uniform buffer descriptors
+    VkDescriptorBufferInfo descriptor_buffer_info[1];
+    lx_assert_static(lx_arrayn(descriptor_buffer_info) == descriptor_count);
+    lx_memset(descriptor_buffer_info, 0, sizeof(VkDescriptorBufferInfo) * descriptor_count);
+    descriptor_buffer_info[0].buffer = pipeline->ubo_matrix.buffer;
+    descriptor_buffer_info[0].offset = 0;
+    descriptor_buffer_info[0].range = sizeof(lx_vk_ubo_matrix_t);
+
+    VkWriteDescriptorSet write_descriptor_set = {};
+    write_descriptor_set.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    write_descriptor_set.pNext = lx_null;
+    write_descriptor_set.dstSet = pipeline->descriptor_sets[0];
+    write_descriptor_set.dstBinding = 0;
+    write_descriptor_set.dstArrayElement = 0;
+    write_descriptor_set.descriptorCount = descriptor_count;
+    write_descriptor_set.descriptorType = descriptor_type;
+    write_descriptor_set.pImageInfo = lx_null,
+    write_descriptor_set.pBufferInfo = descriptor_buffer_info;
+    write_descriptor_set.pTexelBufferView = lx_null;
+    vkUpdateDescriptorSets(device->device, 1, &write_descriptor_set, 0, lx_null);
+    return lx_true;
+}
+
+/* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
 
@@ -47,42 +103,67 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_texture(lx_vulkan_device_t* device) {
             lx_assert_and_check_break(pipeline_texture);
 
             // init vertex input state
-            VkVertexInputBindingDescription vertex_input_bindings = {};
-            vertex_input_bindings.binding = 0;
-            vertex_input_bindings.stride = 3 * sizeof(lx_float_t);
-            vertex_input_bindings.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+            VkVertexInputBindingDescription vertex_input_bindings[1];
+            vertex_input_bindings[0].binding = 0; // for vertices buffer
+            vertex_input_bindings[0].stride = 2 * sizeof(lx_float_t);
+            vertex_input_bindings[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
-            VkVertexInputAttributeDescription vertex_input_attributes[2];
-            vertex_input_attributes[0].location = 0;
+            VkVertexInputAttributeDescription vertex_input_attributes[1];
+            vertex_input_attributes[0].location = 0; // layout(location = 0) in vec4 aVertices;
             vertex_input_attributes[0].binding = 0;
-            vertex_input_attributes[0].format = VK_FORMAT_R32G32B32_SFLOAT;
+            vertex_input_attributes[0].format = VK_FORMAT_R32G32_SFLOAT; // TODO
             vertex_input_attributes[0].offset = 0;
 
-            vertex_input_attributes[1].location = 1;
-            vertex_input_attributes[1].binding = 0;
-            vertex_input_attributes[1].format = VK_FORMAT_R32G32B32_SFLOAT;
-            vertex_input_attributes[1].offset = 0;
+            VkPipelineVertexInputStateCreateInfo vertex_input_info = {};
+            vertex_input_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+            vertex_input_info.pNext = lx_null;
+            vertex_input_info.vertexBindingDescriptionCount = lx_arrayn(vertex_input_bindings);
+            vertex_input_info.pVertexBindingDescriptions = vertex_input_bindings;
+            vertex_input_info.vertexAttributeDescriptionCount = lx_arrayn(vertex_input_attributes);
+            vertex_input_info.pVertexAttributeDescriptions = vertex_input_attributes;
 
-            VkPipelineVertexInputStateCreateInfo vertex_inputinfo = {};
-            vertex_inputinfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-            vertex_inputinfo.pNext = lx_null;
-            vertex_inputinfo.vertexBindingDescriptionCount = 1;
-            vertex_inputinfo.pVertexBindingDescriptions = &vertex_input_bindings;
-            vertex_inputinfo.vertexAttributeDescriptionCount = 2;
-            vertex_inputinfo.pVertexAttributeDescriptions = vertex_input_attributes;
+            // init push-constant
+            VkPushConstantRange push_constant_range = {};
+            push_constant_range.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+            push_constant_range.offset = 0;
+            push_constant_range.size = 4 * sizeof(lx_float_t);
+
+            // init descriptor set layout (uniform buffer)
+            const lx_uint32_t descriptor_count = 1;
+            const lx_uint32_t descriptor_type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;//_DYNAMIC;
+            VkDescriptorSetLayoutBinding descriptor_set_layout_binding = {};
+            descriptor_set_layout_binding.binding = 0;
+            descriptor_set_layout_binding.descriptorType = descriptor_type;
+            descriptor_set_layout_binding.descriptorCount = descriptor_count;
+            descriptor_set_layout_binding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+            descriptor_set_layout_binding.pImmutableSamplers = lx_null;
+
+            VkDescriptorSetLayoutCreateInfo descriptor_set_layout_info = {};
+            descriptor_set_layout_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+            descriptor_set_layout_info.pNext = lx_null;
+            descriptor_set_layout_info.bindingCount = 1;
+            descriptor_set_layout_info.pBindings = &descriptor_set_layout_binding;
+            if (vkCreateDescriptorSetLayout(device->device, &descriptor_set_layout_info, lx_null, &pipeline_texture->descriptor_set_layout) != VK_SUCCESS) {
+                break;
+            }
 
             // init pipeline layout info
-            VkPipelineLayoutCreateInfo pipeline_layoutinfo;
-            pipeline_layoutinfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-            pipeline_layoutinfo.pNext = lx_null;
-            pipeline_layoutinfo.setLayoutCount = 0;
-            pipeline_layoutinfo.pSetLayouts = lx_null;
-            pipeline_layoutinfo.pushConstantRangeCount = 0;
-            pipeline_layoutinfo.pPushConstantRanges = lx_null;
+            VkPipelineLayoutCreateInfo pipeline_layout_info = {};
+            pipeline_layout_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+            pipeline_layout_info.pNext = lx_null;
+            pipeline_layout_info.setLayoutCount = 1;
+            pipeline_layout_info.pSetLayouts = &pipeline_texture->descriptor_set_layout;
+            pipeline_layout_info.pushConstantRangeCount = 1;
+            pipeline_layout_info.pPushConstantRanges = &push_constant_range;
+
+            // init descriptor sets
+            if (!lx_vk_descriptor_sets_init_texture(device, pipeline_texture, descriptor_type, descriptor_count)) {
+                break;
+            }
 
             // create pipeline
             if (!lx_vk_pipeline_create(pipeline_texture, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,
-                vshader, sizeof(vshader), fshader, sizeof(fshader), &vertex_inputinfo, &pipeline_layoutinfo)) {
+                vshader, sizeof(vshader), fshader, sizeof(fshader), &vertex_input_info, &pipeline_layout_info)) {
                 break;
             }
 
@@ -99,4 +180,5 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_texture(lx_vulkan_device_t* device) {
     }
     return pipeline;
 }
+
 
