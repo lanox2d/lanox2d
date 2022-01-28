@@ -188,7 +188,7 @@ static lx_inline lx_void_t lx_vk_renderer_stroke_polygon(lx_vulkan_device_t* dev
         lx_uint16_t*    counts = polygon->counts;
         VkCommandBuffer cmdbuffer = device->renderer_cmdbuffer;
         while ((count = *counts++)) {
-            VkDeviceSize offset = index;
+            VkDeviceSize offset = index * sizeof(lx_point_t);
             vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &vertex_buffer.buffer, &offset);
             vkCmdDraw(cmdbuffer, count, 1, 0, 0);
             index += count;
