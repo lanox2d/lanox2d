@@ -36,13 +36,21 @@ lx_extern_c_enter
  * interfaces
  */
 
-/* get line pipeline
+/* get points pipeline
  *
  * @param device        the vulkan device
  *
  * @return              the pipeline
  */
-lx_vk_pipeline_ref_t    lx_vk_pipeline_line(lx_vulkan_device_t* device);
+lx_vk_pipeline_ref_t    lx_vk_pipeline_points(lx_vulkan_device_t* device);
+
+/* get lines pipeline
+ *
+ * @param device        the vulkan device
+ *
+ * @return              the pipeline
+ */
+lx_vk_pipeline_ref_t    lx_vk_pipeline_lines(lx_vulkan_device_t* device);
 
 /* get solid pipeline
  *

@@ -276,7 +276,8 @@ static lx_bool_t lx_vk_pipeline_create(lx_vk_pipeline_t* pipeline, VkPrimitiveTo
 /* //////////////////////////////////////////////////////////////////////////////////////
  * pipelines
  */
-#include "pipelines/line.c"
+#include "pipelines/points.c"
+#include "pipelines/lines.c"
 #include "pipelines/solid.c"
 #include "pipelines/texture.c"
 

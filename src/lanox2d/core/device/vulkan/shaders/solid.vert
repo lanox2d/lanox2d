@@ -13,5 +13,6 @@ layout(binding = 0) uniform uMatrix
 }matrix;
 
 void main() {
+   gl_PointSize = 1.0f;
    gl_Position = matrix.projection * matrix.model * aVertices;
 }
