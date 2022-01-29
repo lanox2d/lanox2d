@@ -24,7 +24,7 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "vk.h"
+#include "device.h"
 #include "../../private/shader.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -47,11 +47,12 @@ typedef struct lx_bitmap_shader_devdata_t_ {
 
 /* get devdata of bitmap shader
  *
+ * @param device            the vulkan device
  * @param shader            the bitmap shader
  *
  * @return                  the devdata
  */
-lx_bitmap_shader_devdata_t* lx_bitmap_shader_devdata(lx_bitmap_shader_t* shader);
+lx_bitmap_shader_devdata_t* lx_bitmap_shader_devdata(lx_vulkan_device_t* device, lx_bitmap_shader_t* shader);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

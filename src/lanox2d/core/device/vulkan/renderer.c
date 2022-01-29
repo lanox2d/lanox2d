@@ -96,7 +96,7 @@ static lx_void_t lx_vk_renderer_set_imagelayout(VkCommandBuffer cmdbuffer, VkIma
 static lx_void_t lx_vk_renderer_apply_shader_bitmap(lx_vulkan_device_t* device, lx_shader_ref_t shader, lx_rect_ref_t bounds) {
 
     // get bitmap texture
-    lx_bitmap_shader_devdata_t* devdata = lx_bitmap_shader_devdata((lx_bitmap_shader_t*)shader);
+    lx_bitmap_shader_devdata_t* devdata = lx_bitmap_shader_devdata(device, (lx_bitmap_shader_t*)shader);
     lx_assert(devdata);
 
     // get bitmap

@@ -35,11 +35,21 @@ static lx_void_t lx_bitmap_shader_devdata_free(lx_pointer_t devdata) {
     }
 }
 
-static lx_bool_t lx_bitmap_shader_load_texture(lx_bitmap_shader_devdata_t* devdata, lx_bitmap_ref_t bitmap) {
+static lx_bool_t lx_bitmap_shader_load_texture(lx_vulkan_device_t* device, lx_bitmap_shader_devdata_t* devdata, lx_bitmap_ref_t bitmap) {
+    // check for linear supportability
+    VkFormatProperties props;
+    lx_bool_t need_blit = lx_true;
+    const VkFormat format = VK_FORMAT_R8G8B8A8_UNORM;
+    vkGetPhysicalDeviceFormatProperties(device->gpu_device, format, &props);
+    lx_assert((props.linearTilingFeatures | props.optimalTilingFeatures) & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
+    if (props.linearTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) {
+        // linear format supporting the required texture
+        need_blit = lx_false;
+    }
     return lx_true;
 }
 
-static lx_bitmap_shader_devdata_t* lx_bitmap_shader_init_devdata(lx_bitmap_shader_t* shader) {
+static lx_bitmap_shader_devdata_t* lx_bitmap_shader_init_devdata(lx_vulkan_device_t* device, lx_bitmap_shader_t* shader) {
     lx_assert(shader);
 
     // get bitmap
@@ -55,7 +65,7 @@ static lx_bitmap_shader_devdata_t* lx_bitmap_shader_init_devdata(lx_bitmap_shade
         lx_assert_and_check_return_val(devdata, lx_null);
 
         // load texture from bitmap
-        if (!lx_bitmap_shader_load_texture(devdata, bitmap)) {
+        if (!lx_bitmap_shader_load_texture(device, devdata, bitmap)) {
             break;
         }
 
@@ -72,10 +82,10 @@ static lx_bitmap_shader_devdata_t* lx_bitmap_shader_init_devdata(lx_bitmap_shade
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_bitmap_shader_devdata_t* lx_bitmap_shader_devdata(lx_bitmap_shader_t* shader) {
+lx_bitmap_shader_devdata_t* lx_bitmap_shader_devdata(lx_vulkan_device_t* device, lx_bitmap_shader_t* shader) {
     lx_bitmap_shader_devdata_t* devdata = (lx_bitmap_shader_devdata_t*)shader->base.devdata;
     if (!devdata) {
-        devdata = lx_bitmap_shader_init_devdata(shader);
+        devdata = lx_bitmap_shader_init_devdata(device, shader);
         if (devdata) {
             shader->base.devdata_free = lx_bitmap_shader_devdata_free;
             shader->base.devdata = devdata;
