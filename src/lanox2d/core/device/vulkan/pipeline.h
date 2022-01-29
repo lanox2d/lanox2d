@@ -120,6 +120,13 @@ lx_void_t               lx_vk_pipeline_matrix_set_model(lx_vk_pipeline_ref_t pip
  */
 lx_void_t               lx_vk_pipeline_matrix_set_projection(lx_vk_pipeline_ref_t pipeline, lx_vk_matrix_ref_t matrix);
 
+/* set the texcoord matrix
+ *
+ * @param pipeline      the pipeline
+ * @param matrix        the matrix
+ */
+lx_void_t               lx_vk_pipeline_matrix_set_texcoord(lx_vk_pipeline_ref_t pipeline, lx_vk_matrix_ref_t matrix);
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */

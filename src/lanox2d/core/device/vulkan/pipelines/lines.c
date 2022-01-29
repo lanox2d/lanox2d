@@ -63,7 +63,7 @@ static lx_bool_t lx_vk_descriptor_sets_init_lines(lx_vulkan_device_t* device, lx
     lx_memset(descriptor_buffer_info, 0, sizeof(VkDescriptorBufferInfo) * descriptor_count);
     descriptor_buffer_info[0].buffer = pipeline->ubo_matrix.buffer;
     descriptor_buffer_info[0].offset = 0;
-    descriptor_buffer_info[0].range = sizeof(lx_vk_ubo_matrix_t);
+    descriptor_buffer_info[0].range = sizeof(lx_vk_ubo_vertex_matrix_t);
 
     VkWriteDescriptorSet write_descriptor_set = {};
     write_descriptor_set.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
