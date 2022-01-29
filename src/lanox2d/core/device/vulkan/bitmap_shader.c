@@ -27,11 +27,16 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
-
 static lx_void_t lx_bitmap_shader_devdata_free(lx_shader_ref_t self) {
     lx_shader_t* shader = (lx_shader_t*)self;
     lx_assert(shader);
 
+    lx_bitmap_shader_devdata_t* devdata = (lx_bitmap_shader_devdata_t*)shader->devdata;
+    if (devdata) {
+        // TODO
+        lx_free(devdata);
+        shader->devdata = lx_null;
+    }
 }
 
 static lx_bitmap_shader_devdata_t* lx_bitmap_shader_init_devdata(lx_bitmap_shader_t* shader) {
