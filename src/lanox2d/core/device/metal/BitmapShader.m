@@ -29,12 +29,10 @@
 
 @implementation BitmapShader
 
-static lx_void_t lx_bitmap_shader_devdata_free(lx_shader_ref_t shader) {
-    lx_assert(shader);
-    BitmapShader* bitmapShader = (BitmapShader*)((lx_shader_t*)shader)->devdata;
+static lx_void_t lx_bitmap_shader_devdata_free(lx_pointer_t devdata) {
+    BitmapShader* bitmapShader = (BitmapShader*)devdata;
     if (bitmapShader) {
         [bitmapShader release];
-        ((lx_shader_t*)shader)->devdata = lx_null;
     }
 }
 

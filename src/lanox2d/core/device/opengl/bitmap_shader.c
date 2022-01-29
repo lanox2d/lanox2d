@@ -41,18 +41,14 @@ static lx_inline lx_void_t lx_shader_texture_apply_wrap(lx_size_t tile_mode_s, l
     lx_glTexParameteri(LX_GL_TEXTURE_2D, LX_GL_TEXTURE_WRAP_T, wrap[tile_mode_t]);
 }
 
-static lx_void_t lx_bitmap_shader_devdata_free(lx_shader_ref_t self) {
-    lx_shader_t* shader = (lx_shader_t*)self;
-    lx_assert(shader);
-
-    lx_bitmap_shader_devdata_t* devdata = (lx_bitmap_shader_devdata_t*)shader->devdata;
-    if (devdata) {
-        if (devdata->texture) {
-            lx_glDeleteTextures(1, &devdata->texture);
-            devdata->texture = 0;
+static lx_void_t lx_bitmap_shader_devdata_free(lx_pointer_t devdata) {
+    lx_bitmap_shader_devdata_t* bitmap_devdata = (lx_bitmap_shader_devdata_t*)devdata;
+    if (bitmap_devdata) {
+        if (bitmap_devdata->texture) {
+            lx_glDeleteTextures(1, &bitmap_devdata->texture);
+            bitmap_devdata->texture = 0;
         }
-        lx_free(devdata);
-        shader->devdata = lx_null;
+        lx_free(bitmap_devdata);
     }
 }
 

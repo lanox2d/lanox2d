@@ -27,16 +27,16 @@
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
  */
-static lx_void_t lx_bitmap_shader_devdata_free(lx_shader_ref_t self) {
-    lx_shader_t* shader = (lx_shader_t*)self;
-    lx_assert(shader);
-
-    lx_bitmap_shader_devdata_t* devdata = (lx_bitmap_shader_devdata_t*)shader->devdata;
-    if (devdata) {
+static lx_void_t lx_bitmap_shader_devdata_free(lx_pointer_t devdata) {
+    lx_bitmap_shader_devdata_t* bitmap_devdata = (lx_bitmap_shader_devdata_t*)devdata;
+    if (bitmap_devdata) {
         // TODO
-        lx_free(devdata);
-        shader->devdata = lx_null;
+        lx_free(bitmap_devdata);
     }
+}
+
+static lx_bool_t lx_bitmap_shader_load_texture(lx_bitmap_shader_devdata_t* devdata, lx_bitmap_ref_t bitmap) {
+    return lx_true;
 }
 
 static lx_bitmap_shader_devdata_t* lx_bitmap_shader_init_devdata(lx_bitmap_shader_t* shader) {
@@ -46,10 +46,26 @@ static lx_bitmap_shader_devdata_t* lx_bitmap_shader_init_devdata(lx_bitmap_shade
     lx_bitmap_ref_t bitmap = shader->bitmap;
     lx_assert(bitmap);
 
-    // init bitmap shader devdata
-    lx_bitmap_shader_devdata_t* devdata = lx_malloc0_type(lx_bitmap_shader_devdata_t);
-    lx_assert_and_check_return_val(devdata, lx_null);
+    lx_bool_t ok = lx_false;
+    lx_bitmap_shader_devdata_t* devdata = lx_null;
+    do {
 
+        // init bitmap shader devdata
+        devdata = lx_malloc0_type(lx_bitmap_shader_devdata_t);
+        lx_assert_and_check_return_val(devdata, lx_null);
+
+        // load texture from bitmap
+        if (!lx_bitmap_shader_load_texture(devdata, bitmap)) {
+            break;
+        }
+
+        ok = lx_true;
+    } while (0);
+
+    if (!ok && devdata) {
+        lx_bitmap_shader_devdata_free(devdata);
+        devdata = lx_null;
+    }
     return devdata;
 }
 
