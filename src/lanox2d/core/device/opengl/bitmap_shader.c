@@ -15,13 +15,13 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        shader.c
+ * @file        bitmap_shader.c
  */
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "shader.h"
+#include "bitmap_shader.h"
 #include "../../shader.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////

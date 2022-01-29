@@ -15,11 +15,11 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        shader.h
+ * @file        bitmap_shader.h
  *
  */
-#ifndef LX_CORE_DEVICE_OPENGL_SHADER_H
-#define LX_CORE_DEVICE_OPENGL_SHADER_H
+#ifndef LX_CORE_DEVICE_OPENGL_BITMAP_SHADER_H
+#define LX_CORE_DEVICE_OPENGL_BITMAP_SHADER_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes

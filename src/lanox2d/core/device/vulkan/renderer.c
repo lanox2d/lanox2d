@@ -25,8 +25,10 @@
 #include "renderer.h"
 #include "pipeline.h"
 #include "allocator.h"
+#include "bitmap_shader.h"
 #include "../../quality.h"
 #include "../../tess/tess.h"
+#include "../../shader.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
@@ -91,11 +93,40 @@ static lx_void_t lx_vk_renderer_set_imagelayout(VkCommandBuffer cmdbuffer, VkIma
     vkCmdPipelineBarrier(cmdbuffer, srcstages, dststages, 0, 0, lx_null, 0, lx_null, 1, &image_memory_barrier);
 }
 
-static lx_inline lx_vk_pipeline_ref_t lx_vk_renderer_apply_paint_shader(lx_vulkan_device_t* device, lx_shader_ref_t shader, lx_rect_ref_t bounds) {
-    return lx_null;
+static lx_void_t lx_vk_renderer_apply_shader_bitmap(lx_vulkan_device_t* device, lx_shader_ref_t shader, lx_rect_ref_t bounds) {
+
+    // get bitmap texture
+    lx_bitmap_shader_devdata_t* devdata = lx_bitmap_shader_devdata((lx_bitmap_shader_t*)shader);
+    lx_assert(devdata);
+
+    // get bitmap
+    lx_bitmap_ref_t bitmap = ((lx_bitmap_shader_t*)shader)->bitmap;
+    lx_assert(bitmap);
+
+#if 0
+    // get bitmap width and height
+    lx_size_t width = lx_bitmap_width(bitmap);
+    lx_size_t height = lx_bitmap_height(bitmap);
+
+    // get paint
+    lx_paint_ref_t paint = device->base.paint;
+    lx_assert(paint);
+#endif
 }
 
-static lx_inline lx_vk_pipeline_ref_t lx_vk_renderer_apply_paint_solid(lx_vulkan_device_t* device, lx_size_t pipeline_type) {
+static lx_inline lx_void_t lx_vk_renderer_apply_paint_shader(lx_vulkan_device_t* device, lx_shader_ref_t shader, lx_rect_ref_t bounds) {
+    lx_size_t shader_type = lx_shader_type(shader);
+    switch (shader_type) {
+    case LX_SHADER_TYPE_BITMAP:
+        lx_vk_renderer_apply_shader_bitmap(device, shader, bounds);
+        break;
+    default:
+        lx_trace_e("not supported shader type!");
+        break;
+    }
+}
+
+static lx_inline lx_void_t lx_vk_renderer_apply_paint_solid(lx_vulkan_device_t* device, lx_size_t pipeline_type) {
     VkCommandBuffer cmdbuffer = device->renderer_cmdbuffer;
     lx_paint_ref_t paint = device->base.paint;
     lx_assert(cmdbuffer && paint);
@@ -138,7 +169,6 @@ static lx_inline lx_vk_pipeline_ref_t lx_vk_renderer_apply_paint_solid(lx_vulkan
     vkCmdBindDescriptorSets(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
         lx_vk_pipeline_layout(pipeline), 0, lx_vk_pipeline_descriptor_sets_count(pipeline),
         lx_vk_pipeline_descriptor_sets(pipeline), 0, lx_null);
-    return pipeline;
 }
 
 static lx_inline lx_void_t lx_vk_renderer_apply_paint(lx_vulkan_device_t* device, lx_rect_ref_t bounds) {

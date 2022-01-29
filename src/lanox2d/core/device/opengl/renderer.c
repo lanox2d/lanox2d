@@ -23,7 +23,7 @@
  * includes
  */
 #include "renderer.h"
-#include "shader.h"
+#include "bitmap_shader.h"
 #include "../../quality.h"
 #include "../../tess/tess.h"
 #include "../../shader.h"
