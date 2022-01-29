@@ -45,9 +45,12 @@ static lx_void_t lx_bitmap_shader_devdata_free(lx_shader_ref_t self) {
     lx_shader_t* shader = (lx_shader_t*)self;
     lx_assert(shader);
 
-    lx_GLuint_t texture = (lx_GLuint_t)(lx_size_t)shader->devdata;
-    if (texture) {
-        lx_glDeleteTextures(1, &texture);
+    lx_bitmap_shader_devdata_t* devdata = (lx_bitmap_shader_devdata_t*)shader->devdata;
+    if (devdata) {
+        if (devdata->texture) {
+            lx_glDeleteTextures(1, &devdata->texture);
+            devdata->texture = 0;
+        }
         shader->devdata = lx_null;
     }
 }

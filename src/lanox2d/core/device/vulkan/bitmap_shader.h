@@ -18,8 +18,8 @@
  * @file        bitmap_shader.h
  *
  */
-#ifndef LX_CORE_DEVICE_VULKAN_SHADER_H
-#define LX_CORE_DEVICE_VULKAN_SHADER_H
+#ifndef LX_CORE_DEVICE_VULKAN_BITMAP_SHADER_H
+#define LX_CORE_DEVICE_VULKAN_BITMAP_SHADER_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes

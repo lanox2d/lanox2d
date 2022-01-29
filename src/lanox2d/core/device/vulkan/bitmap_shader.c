@@ -28,15 +28,35 @@
  * private implementation
  */
 
+static lx_void_t lx_bitmap_shader_devdata_free(lx_shader_ref_t self) {
+    lx_shader_t* shader = (lx_shader_t*)self;
+    lx_assert(shader);
+
+}
+
+static lx_bitmap_shader_devdata_t* lx_bitmap_shader_init_devdata(lx_bitmap_shader_t* shader) {
+    lx_assert(shader);
+
+    // get bitmap
+    lx_bitmap_ref_t bitmap = shader->bitmap;
+    lx_assert(bitmap);
+
+    // init bitmap shader devdata
+    lx_bitmap_shader_devdata_t* devdata = lx_malloc0_type(lx_bitmap_shader_devdata_t);
+    lx_assert_and_check_return_val(devdata, lx_null);
+
+    return devdata;
+}
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
 lx_bitmap_shader_devdata_t* lx_bitmap_shader_devdata(lx_bitmap_shader_t* shader) {
     lx_bitmap_shader_devdata_t* devdata = (lx_bitmap_shader_devdata_t*)shader->base.devdata;
     if (!devdata) {
-       // devdata = lx_bitmap_shader_init_devdata(shader);
+        devdata = lx_bitmap_shader_init_devdata(shader);
         if (devdata) {
-            //shader->base.devdata_free = lx_bitmap_shader_devdata_free;
+            shader->base.devdata_free = lx_bitmap_shader_devdata_free;
             shader->base.devdata = devdata;
         }
     }
