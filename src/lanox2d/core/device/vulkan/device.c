@@ -503,6 +503,7 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
             lx_trace_e("failed to find a suitable GPU!");
             break;
         }
+        vkGetPhysicalDeviceMemoryProperties(device->gpu_device, &device->gpu_memory_properties);
 
         // init device extensions: VK_KHR_swapchain
         lx_char_t const* swapchain_extensions[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};

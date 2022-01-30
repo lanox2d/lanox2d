@@ -192,6 +192,13 @@ lx_void_t                       lx_vk_debug_report_setup(VkInstance instance, Vk
  */
 lx_void_t                       lx_vk_debug_report_cancel(VkInstance instance, VkDebugReportCallbackEXT debug_report_cb);
 
+/* a help function to map required memory property into a VK memory type
+ * memory type is an index into the array of 32 entries; or the bit index
+ * for the memory type ( each BIT of an 32 bit integer is a type ).
+ */
+lx_bool_t                       lx_vk_allocate_memory_type_from_properties(VkPhysicalDeviceMemoryProperties gpu_memory_properties, lx_uint32_t type_bits, VkFlags requirements_mask, lx_uint32_t* ptype_index);
+
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * vulkan interfaces
  */

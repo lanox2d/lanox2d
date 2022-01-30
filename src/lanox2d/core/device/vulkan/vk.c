@@ -778,6 +778,20 @@ lx_bool_t lx_vk_validation_layers_check(lx_char_t const** layers, lx_uint32_t co
     return lx_true;
 }
 
+lx_bool_t lx_vk_allocate_memory_type_from_properties(VkPhysicalDeviceMemoryProperties gpu_memory_properties,
+    lx_uint32_t type_bits, VkFlags requirements_mask, lx_uint32_t* ptype_index) {
+    for (lx_uint32_t i = 0; i < 32; i++) {
+        if ((type_bits & 1) == 1) {
+            if ((gpu_memory_properties.memoryTypes[i].propertyFlags & requirements_mask) == requirements_mask) {
+                *ptype_index = i;
+                return lx_true;
+            }
+        }
+        type_bits >>= 1;
+    }
+    return lx_false;
+}
+
 #ifdef LX_DEBUG
 lx_void_t lx_vk_debug_messenger_setup(VkInstance instance, VkDebugUtilsMessengerEXT* pdebug_messenger) {
     PFN_vkCreateDebugUtilsMessengerEXT pvkCreateDebugUtilsMessengerEXT = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");

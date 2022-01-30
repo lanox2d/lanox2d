@@ -49,6 +49,7 @@ typedef struct lx_vulkan_device_t_ {
     // gpu device
     VkPhysicalDevice            gpu_device;
     lx_uint32_t                 gpu_familyidx;
+    VkPhysicalDeviceMemoryProperties gpu_memory_properties;
 
     // swapchain
     VkSwapchainKHR              swapchain;

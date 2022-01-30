@@ -46,6 +46,51 @@ static lx_bool_t lx_bitmap_shader_load_texture(lx_vulkan_device_t* device, lx_bi
         // linear format supporting the required texture
         need_blit = lx_false;
     }
+
+    // create image
+    VkImageCreateInfo image_create_info = {};
+    image_create_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+    image_create_info.pNext = lx_null;
+    image_create_info.flags = 0;
+    image_create_info.imageType = VK_IMAGE_TYPE_2D;
+    image_create_info.format = format,
+        image_create_info.extent.width = lx_bitmap_width(bitmap);
+    image_create_info.extent.height = lx_bitmap_height(bitmap);
+    image_create_info.extent.depth = 1;
+    image_create_info.mipLevels = 1;
+    image_create_info.arrayLayers = 1;
+    image_create_info.samples = VK_SAMPLE_COUNT_1_BIT;
+    image_create_info.tiling = VK_IMAGE_TILING_LINEAR;
+    image_create_info.usage = (need_blit ? VK_IMAGE_USAGE_TRANSFER_SRC_BIT : VK_IMAGE_USAGE_SAMPLED_BIT),
+        image_create_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    image_create_info.queueFamilyIndexCount = 1;
+    image_create_info.pQueueFamilyIndices = &device->gpu_familyidx;
+    image_create_info.initialLayout = VK_IMAGE_LAYOUT_PREINITIALIZED;
+
+    if (vkCreateImage(device->device, &image_create_info, lx_null, &devdata->image) != VK_SUCCESS) {
+        return lx_false;
+    }
+
+    // allocate image memory
+    VkMemoryRequirements mem_reqs;
+    vkGetImageMemoryRequirements(device->device, devdata->image, &mem_reqs);
+
+    VkMemoryAllocateInfo mem_alloc = {};
+    mem_alloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    mem_alloc.pNext = lx_null;
+    mem_alloc.memoryTypeIndex = 0;
+    mem_alloc.allocationSize = mem_reqs.size;
+    if (!lx_vk_allocate_memory_type_from_properties(device->gpu_memory_properties, mem_reqs.memoryTypeBits,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, &mem_alloc.memoryTypeIndex)) {
+        return lx_false;
+    }
+    if (vkAllocateMemory(device->device, &mem_alloc, lx_null, &devdata->imagemem) != VK_SUCCESS) {
+        return lx_false;
+    }
+    if (vkBindImageMemory(device->device, devdata->image, devdata->imagemem, 0) != VK_SUCCESS) {
+        return lx_false;
+    }
+
     return lx_true;
 }
 
