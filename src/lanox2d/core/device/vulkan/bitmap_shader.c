@@ -22,6 +22,7 @@
  * includes
  */
 #include "bitmap_shader.h"
+#include "vk.h"
 #include "../../shader.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -129,6 +130,47 @@ static lx_bool_t lx_bitmap_shader_load_texture(lx_vulkan_device_t* device, lx_bi
             }
 #endif
             vkUnmapMemory(device->device, devdata->imagemem);
+        }
+
+        // set image layout to command pool
+        VkCommandPool cmd_pool;
+        VkCommandPoolCreateInfo cmd_poolinfo = {};
+        cmd_poolinfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+        cmd_poolinfo.pNext = lx_null;
+        cmd_poolinfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+        cmd_poolinfo.queueFamilyIndex = device->gpu_familyidx;
+        if (vkCreateCommandPool(device->device, &cmd_poolinfo, lx_null, &cmd_pool) != VK_SUCCESS) {
+            break;
+        }
+
+        VkCommandBuffer cmd;
+        VkCommandBufferAllocateInfo cmdinfo = {};
+        cmdinfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+        cmdinfo.pNext = lx_null;
+        cmdinfo.commandPool = cmd_pool;
+        cmdinfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        cmdinfo.commandBufferCount = 1;
+        if (vkAllocateCommandBuffers(device->device, &cmdinfo, &cmd) != VK_SUCCESS) {
+            break;
+        }
+
+        VkCommandBufferBeginInfo cmd_bufinfo = {};
+        cmd_bufinfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        cmd_bufinfo.pNext = lx_null;
+        cmd_bufinfo.flags = 0;
+        cmd_bufinfo.pInheritanceInfo = lx_null;
+        if (vkBeginCommandBuffer(cmd, &cmd_bufinfo) != VK_SUCCESS) {
+            break;
+        }
+
+        // if linear is supported, we are done
+        if (!need_blit) {
+            lx_vk_set_image_layout(cmd, devdata->image, VK_IMAGE_LAYOUT_PREINITIALIZED,
+                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                VK_PIPELINE_STAGE_HOST_BIT,
+                VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+        } else {
+            // TODO
         }
 
         ok = lx_true;

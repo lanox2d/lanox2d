@@ -273,7 +273,7 @@ LX_VK_API_DEFINE(vkGetPhysicalDeviceWin32PresentationSupportKHR);
 static lx_inline lx_bool_t lx_vk_device_is_suitable(VkPhysicalDevice device) {
     static lx_char_t const* device_extensions[] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
     return lx_vk_physical_device_find_family_queue(device, VK_QUEUE_GRAPHICS_BIT) >= 0 &&
-            lx_vk_device_extensions_check(device, device_extensions, lx_arrayn(device_extensions));
+        lx_vk_device_extensions_check(device, device_extensions, lx_arrayn(device_extensions));
 }
 
 #ifdef LX_DEBUG
@@ -790,6 +790,60 @@ lx_bool_t lx_vk_allocate_memory_type_from_properties(VkPhysicalDeviceMemoryPrope
         type_bits >>= 1;
     }
     return lx_false;
+}
+
+lx_void_t lx_vk_set_image_layout(VkCommandBuffer cmdbuffer, VkImage image,
+    VkImageLayout layout_old, VkImageLayout layout_new, VkPipelineStageFlags stages_src, VkPipelineStageFlags stages_dst) {
+    VkImageMemoryBarrier barrier = {};
+    barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    barrier.pNext = lx_null;
+    barrier.srcAccessMask = 0;
+    barrier.dstAccessMask = 0;
+    barrier.oldLayout = layout_old;
+    barrier.newLayout = layout_new;
+    barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    barrier.image = image;
+    barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    barrier.subresourceRange.baseMipLevel = 0;
+    barrier.subresourceRange.levelCount = 1;
+    barrier.subresourceRange.baseArrayLayer = 0;
+    barrier.subresourceRange.layerCount = 1;
+
+    switch (layout_old) {
+    case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
+        barrier.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+        break;
+    case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
+        barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+        break;
+    case VK_IMAGE_LAYOUT_PREINITIALIZED:
+        barrier.srcAccessMask = VK_ACCESS_HOST_WRITE_BIT;
+        break;
+    default:
+        break;
+    }
+
+    switch (layout_new) {
+    case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
+        barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+        break;
+    case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
+        barrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+        break;
+    case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
+        barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+        break;
+    case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
+        barrier.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+        break;
+    case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
+        barrier.dstAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+        break;
+    default:
+        break;
+    }
+    vkCmdPipelineBarrier(cmdbuffer, stages_src, stages_dst, 0, 0, lx_null, 0, lx_null, 1, &barrier);
 }
 
 #ifdef LX_DEBUG

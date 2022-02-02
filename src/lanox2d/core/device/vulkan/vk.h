@@ -198,6 +198,16 @@ lx_void_t                       lx_vk_debug_report_cancel(VkInstance instance, V
  */
 lx_bool_t                       lx_vk_allocate_memory_type_from_properties(VkPhysicalDeviceMemoryProperties gpu_memory_properties, lx_uint32_t type_bits, VkFlags requirements_mask, lx_uint32_t* ptype_index);
 
+/* set image layout
+ *
+ * @param cmdbuffer             the command buffer
+ * @param image                 the vulkan image
+ * @param layout_old            the old image layout
+ * @param layout_new            the new image layout
+ * @param stages_src            the source stages
+ * @param stages_dst            the destination stages
+ */
+lx_void_t                       lx_vk_set_image_layout(VkCommandBuffer cmdbuffer, VkImage image, VkImageLayout layout_old, VkImageLayout layout_new, VkPipelineStageFlags stages_src, VkPipelineStageFlags stages_dst);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * vulkan interfaces
