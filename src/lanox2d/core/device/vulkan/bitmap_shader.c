@@ -47,6 +47,8 @@ static lx_void_t lx_bitmap_shader_devdata_free(lx_pointer_t devdata) {
 static lx_bool_t lx_bitmap_shader_load_texture(lx_vulkan_device_t* device, lx_bitmap_shader_devdata_t* devdata,
     lx_bitmap_ref_t bitmap, VkImageUsageFlags usage, VkFlags required_props) {
     lx_bool_t ok = lx_false;
+    VkImage stage_image = VK_NULL_HANDLE;
+    VkDeviceMemory stage_imagemem = VK_NULL_HANDLE;
     do {
         // check for linear supportability
         VkFormatProperties props;
@@ -170,8 +172,69 @@ static lx_bool_t lx_bitmap_shader_load_texture(lx_vulkan_device_t* device, lx_bi
                 VK_PIPELINE_STAGE_HOST_BIT,
                 VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
         } else {
-            // TODO
+            // save current image and mem as staging image and memory
+            stage_image = devdata->image;
+            stage_imagemem = devdata->imagemem;
+            devdata->image = VK_NULL_HANDLE;
+            devdata->imagemem = VK_NULL_HANDLE;
+
+            // create a tile texture to blit into
+            image_create_info.tiling = VK_IMAGE_TILING_OPTIMAL;
+            image_create_info.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+            image_create_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+            if (vkCreateImage(device->device, &image_create_info, lx_null, &devdata->image) != VK_SUCCESS) {
+                break;
+            }
+            vkGetImageMemoryRequirements(device->device, devdata->image, &mem_reqs);
+
+            mem_alloc.allocationSize = mem_reqs.size;
+            if (!lx_vk_allocate_memory_type_from_properties(device->gpu_memory_properties, mem_reqs.memoryTypeBits,
+                    VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &mem_alloc.memoryTypeIndex)) {
+                break;
+            }
+            if (vkAllocateMemory(device->device, &mem_alloc, lx_null, &devdata->imagemem) != VK_SUCCESS) {
+                break;
+            }
+            if (vkBindImageMemory(device->device, devdata->image, devdata->imagemem, 0) != VK_SUCCESS) {
+                break;
+            }
+
+            // transitions image out of UNDEFINED type
+            lx_vk_set_image_layout(cmd, stage_image, VK_IMAGE_LAYOUT_PREINITIALIZED,
+                VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                VK_PIPELINE_STAGE_HOST_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
+            lx_vk_set_image_layout(cmd, devdata->image, VK_IMAGE_LAYOUT_UNDEFINED,
+                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                VK_PIPELINE_STAGE_HOST_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
+
+            VkImageCopy bltinfo = {};
+            bltinfo.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+            bltinfo.srcSubresource.mipLevel = 0;
+            bltinfo.srcSubresource.baseArrayLayer = 0;
+            bltinfo.srcSubresource.layerCount = 1;
+            bltinfo.srcOffset.x = 0;
+            bltinfo.srcOffset.y = 0;
+            bltinfo.srcOffset.z = 0;
+            bltinfo.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+            bltinfo.dstSubresource.mipLevel = 0;
+            bltinfo.dstSubresource.baseArrayLayer = 0;
+            bltinfo.dstSubresource.layerCount = 1;
+            bltinfo.dstOffset.x = 0;
+            bltinfo.dstOffset.y = 0;
+            bltinfo.dstOffset.z = 0;
+            bltinfo.extent.width = lx_bitmap_width(bitmap);
+            bltinfo.extent.height = lx_bitmap_height(bitmap);
+            bltinfo.extent.depth = 1;
+            vkCmdCopyImage(cmd, stage_image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                devdata->image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &bltinfo);
+
+            lx_vk_set_image_layout(cmd, devdata->image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                VK_PIPELINE_STAGE_TRANSFER_BIT,
+                VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
         }
+
+        // TODO
 
         ok = lx_true;
     } while (0);
