@@ -47,8 +47,11 @@ static lx_void_t lx_bitmap_shader_devdata_free(lx_pointer_t devdata) {
 static lx_bool_t lx_bitmap_shader_load_texture(lx_vulkan_device_t* device, lx_bitmap_shader_devdata_t* devdata,
     lx_bitmap_ref_t bitmap, VkImageUsageFlags usage, VkFlags required_props) {
     lx_bool_t ok = lx_false;
+    VkFence fence = VK_NULL_HANDLE;
     VkImage stage_image = VK_NULL_HANDLE;
     VkDeviceMemory stage_imagemem = VK_NULL_HANDLE;
+    VkCommandPool cmd_pool = VK_NULL_HANDLE;
+    VkCommandBuffer cmd = VK_NULL_HANDLE;
     do {
         // check for linear supportability
         VkFormatProperties props;
@@ -68,7 +71,7 @@ static lx_bool_t lx_bitmap_shader_load_texture(lx_vulkan_device_t* device, lx_bi
         image_create_info.flags = 0;
         image_create_info.imageType = VK_IMAGE_TYPE_2D;
         image_create_info.format = format,
-            image_create_info.extent.width = lx_bitmap_width(bitmap);
+        image_create_info.extent.width = lx_bitmap_width(bitmap);
         image_create_info.extent.height = lx_bitmap_height(bitmap);
         image_create_info.extent.depth = 1;
         image_create_info.mipLevels = 1;
@@ -135,7 +138,6 @@ static lx_bool_t lx_bitmap_shader_load_texture(lx_vulkan_device_t* device, lx_bi
         }
 
         // set image layout to command pool
-        VkCommandPool cmd_pool;
         VkCommandPoolCreateInfo cmd_poolinfo = {};
         cmd_poolinfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
         cmd_poolinfo.pNext = lx_null;
@@ -145,7 +147,6 @@ static lx_bool_t lx_bitmap_shader_load_texture(lx_vulkan_device_t* device, lx_bi
             break;
         }
 
-        VkCommandBuffer cmd;
         VkCommandBufferAllocateInfo cmdinfo = {};
         cmdinfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
         cmdinfo.pNext = lx_null;
@@ -234,10 +235,54 @@ static lx_bool_t lx_bitmap_shader_load_texture(lx_vulkan_device_t* device, lx_bi
                 VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
         }
 
-        // TODO
+        if (vkEndCommandBuffer(cmd) != VK_SUCCESS) {
+            break;
+        }
+
+        VkFenceCreateInfo fence_info = {};
+        fence_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+        fence_info.pNext = lx_null;
+        fence_info.flags = 0;
+        if (vkCreateFence(device->device, &fence_info, lx_null, &fence) != VK_SUCCESS) {
+            break;
+        }
+
+        VkSubmitInfo submit_info = {};
+        submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+        submit_info.pNext = lx_null;
+        submit_info.waitSemaphoreCount = 0;
+        submit_info.pWaitSemaphores = lx_null;
+        submit_info.pWaitDstStageMask = lx_null;
+        submit_info.commandBufferCount = 1;
+        submit_info.pCommandBuffers = &cmd;
+        submit_info.signalSemaphoreCount = 0;
+        submit_info.pSignalSemaphores = lx_null;
+        if (vkQueueSubmit(device->queue, 1, &submit_info, fence) != VK_SUCCESS) {
+            break;
+        }
+        if (vkWaitForFences(device->device, 1, &fence, VK_TRUE, 100000000) != VK_SUCCESS) {
+            break;
+        }
 
         ok = lx_true;
     } while (0);
+
+    if (fence != VK_NULL_HANDLE) {
+        vkDestroyFence(device->device, fence, lx_null);
+        fence = VK_NULL_HANDLE;
+    }
+    if (cmd_pool != VK_NULL_HANDLE) {
+        if (cmd != VK_NULL_HANDLE) {
+            vkFreeCommandBuffers(device->device, cmd_pool, 1, &cmd);
+            cmd = VK_NULL_HANDLE;
+        }
+        vkDestroyCommandPool(device->device, cmd_pool, lx_null);
+        cmd_pool = VK_NULL_HANDLE;
+    }
+    if (stage_image != VK_NULL_HANDLE) {
+        vkDestroyImage(device->device, stage_image, lx_null);
+        vkFreeMemory(device->device, stage_imagemem, lx_null);
+    }
 
     return ok;
 }
