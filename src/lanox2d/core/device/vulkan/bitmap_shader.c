@@ -48,7 +48,6 @@ static lx_void_t lx_bitmap_shader_devdata_free(lx_pointer_t devdata) {
             vkDestroyImageView(bitmap_devdata->device, bitmap_devdata->imageview, lx_null);
             bitmap_devdata->imageview = lx_null;
         }
-
         lx_free(bitmap_devdata);
     }
 }
