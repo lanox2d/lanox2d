@@ -138,8 +138,8 @@ static lx_bool_t lx_bitmap_shader_load_texture(lx_vulkan_device_t* device, lx_bi
 
             // get pixmap
             lx_pixmap_ref_t sp = lx_pixmap(lx_bitmap_pixfmt(bitmap), 0xff);
-            lx_pixmap_ref_t dp = lx_pixmap(LX_PIXFMT_RGBA8888, 0xff); // TODO
-            lx_assert_and_check_break(sp && dp);
+            lx_pixmap_ref_t dp = lx_pixmap(LX_PIXFMT_RGBA8888, 0xff);
+            lx_assert_and_check_break(sp && dp && format == VK_FORMAT_R8G8B8A8_UNORM);
 
             lx_size_t  j;
             lx_size_t  b = dp->btp;
