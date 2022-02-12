@@ -41,6 +41,8 @@ typedef struct lx_bitmap_shader_devdata_t_ {
     VkDevice            device;
     VkImage             image;
     VkDeviceMemory      imagemem;
+    VkImageView         imageview;
+    VkSampler           sampler;
     lx_matrix_t         matrix;
 }lx_bitmap_shader_devdata_t;
 

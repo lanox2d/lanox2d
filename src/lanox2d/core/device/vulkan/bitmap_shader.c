@@ -40,12 +40,21 @@ static lx_void_t lx_bitmap_shader_devdata_free(lx_pointer_t devdata) {
             vkFreeMemory(bitmap_devdata->device, bitmap_devdata->imagemem, lx_null);
             bitmap_devdata->imagemem = lx_null;
         }
+        if (bitmap_devdata->sampler) {
+            vkDestroySampler(bitmap_devdata->device, bitmap_devdata->sampler, lx_null);
+            bitmap_devdata->sampler = lx_null;
+        }
+        if (bitmap_devdata->imageview) {
+            vkDestroyImageView(bitmap_devdata->device, bitmap_devdata->imageview, lx_null);
+            bitmap_devdata->imageview = lx_null;
+        }
+
         lx_free(bitmap_devdata);
     }
 }
 
 static lx_bool_t lx_bitmap_shader_load_texture(lx_vulkan_device_t* device, lx_bitmap_shader_devdata_t* devdata,
-    lx_bitmap_ref_t bitmap, VkImageUsageFlags usage, VkFlags required_props) {
+    lx_bitmap_ref_t bitmap, VkFormat format, VkImageUsageFlags usage, VkFlags required_props) {
     lx_bool_t ok = lx_false;
     VkFence fence = VK_NULL_HANDLE;
     VkImage stage_image = VK_NULL_HANDLE;
@@ -56,7 +65,6 @@ static lx_bool_t lx_bitmap_shader_load_texture(lx_vulkan_device_t* device, lx_bi
         // check for linear supportability
         VkFormatProperties props;
         lx_bool_t need_blit = lx_true;
-        const VkFormat format = VK_FORMAT_R8G8B8A8_UNORM;
         vkGetPhysicalDeviceFormatProperties(device->gpu_device, format, &props);
         lx_assert((props.linearTilingFeatures | props.optimalTilingFeatures) & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
         if (props.linearTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) {
@@ -239,6 +247,7 @@ static lx_bool_t lx_bitmap_shader_load_texture(lx_vulkan_device_t* device, lx_bi
             break;
         }
 
+        // submit the image layout command
         VkFenceCreateInfo fence_info = {};
         fence_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
         fence_info.pNext = lx_null;
@@ -305,8 +314,52 @@ static lx_bitmap_shader_devdata_t* lx_bitmap_shader_init_devdata(lx_vulkan_devic
         devdata->device = device->device;
 
         // load texture from bitmap
-        if (!lx_bitmap_shader_load_texture(device, devdata, bitmap,
+        const VkFormat format = VK_FORMAT_R8G8B8A8_UNORM;
+        if (!lx_bitmap_shader_load_texture(device, devdata, bitmap, format,
                 VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)) {
+            break;
+        }
+
+        // create sampler
+        VkSamplerCreateInfo sampler_info = {};
+        sampler_info.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+        sampler_info.pNext = lx_null;
+        sampler_info.magFilter = VK_FILTER_NEAREST;
+        sampler_info.minFilter = VK_FILTER_NEAREST;
+        sampler_info.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
+        sampler_info.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+        sampler_info.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+        sampler_info.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+        sampler_info.mipLodBias = 0.0f;
+        sampler_info.maxAnisotropy = 1;
+        sampler_info.compareOp = VK_COMPARE_OP_NEVER;
+        sampler_info.minLod = 0.0f;
+        sampler_info.maxLod = 0.0f;
+        sampler_info.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
+        sampler_info.unnormalizedCoordinates = VK_FALSE;
+        if (vkCreateSampler(device->device, &sampler_info, lx_null, &devdata->sampler) != VK_SUCCESS) {
+            break;
+        }
+
+        // create image view
+        VkImageViewCreateInfo view_info = {};
+        view_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+        view_info.pNext = lx_null;
+        view_info.flags = 0;
+        view_info.image = VK_NULL_HANDLE;
+        view_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
+        view_info.format = format;
+        view_info.components.r = VK_COMPONENT_SWIZZLE_R;
+        view_info.components.g = VK_COMPONENT_SWIZZLE_G;
+        view_info.components.b = VK_COMPONENT_SWIZZLE_B;
+        view_info.components.a = VK_COMPONENT_SWIZZLE_A;
+        view_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        view_info.subresourceRange.baseMipLevel = 0;
+        view_info.subresourceRange.levelCount = 1;
+        view_info.subresourceRange.baseArrayLayer = 0;
+        view_info.subresourceRange.layerCount = 1;
+        view_info.image = devdata->image;
+        if (vkCreateImageView(device->device, &view_info, lx_null, &devdata->imageview) != VK_SUCCESS) {
             break;
         }
 
