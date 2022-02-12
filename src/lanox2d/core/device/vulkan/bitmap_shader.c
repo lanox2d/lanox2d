@@ -129,18 +129,38 @@ static lx_bool_t lx_bitmap_shader_load_texture(lx_vulkan_device_t* device, lx_bi
                 break;
             }
 
-#if 0
-            // TODO
-            for (int32_t y = 0; y < imgHeight; y++) {
-                unsigned char* row = (unsigned char*)((char*)data + layout.rowPitch * y);
-                for (int32_t x = 0; x < imgWidth; x++) {
-                    row[x * 4] = imageData[(x + y * imgWidth) * 4];
-                    row[x * 4 + 1] = imageData[(x + y * imgWidth) * 4 + 1];
-                    row[x * 4 + 2] = imageData[(x + y * imgWidth) * 4 + 2];
-                    row[x * 4 + 3] = imageData[(x + y * imgWidth) * 4 + 3];
+            // get bitmap data
+            lx_size_t width = lx_bitmap_width(bitmap);
+            lx_size_t height = lx_bitmap_height(bitmap);
+            lx_size_t row_bytes = lx_bitmap_row_bytes(bitmap);
+            lx_byte_t const* bitmap_data = lx_bitmap_data(bitmap);
+            lx_assert_and_check_break(bitmap_data && width && height);
+
+            // get pixmap
+            lx_pixmap_ref_t sp = lx_pixmap(lx_bitmap_pixfmt(bitmap), 0xff);
+            lx_pixmap_ref_t dp = lx_pixmap(LX_PIXFMT_RGBA8888, 0xff); // TODO
+            lx_assert_and_check_break(sp && dp);
+
+            lx_size_t  j;
+            lx_size_t  b = dp->btp;
+            lx_size_t  n = layout.rowPitch;
+            lx_byte_t* p = data;
+            for (j = 0; j < height; j++) {
+                lx_size_t  i = 0;
+                lx_byte_t* d = p;
+                lx_byte_t* e = p + n;
+                if (dp == sp) {
+                    for (i = 0; i < row_bytes && d < e; i += 4, d += b) {
+                        dp->pixel_copy(d, &bitmap_data[i], 0xff);
+                    }
+                } else {
+                    for (i = 0; i < row_bytes && d < e; i += 4, d += b) {
+                        dp->color_set(d, sp->color_get(&bitmap_data[i]));
+                    }
                 }
+                p += n;
+                bitmap_data += row_bytes;
             }
-#endif
             vkUnmapMemory(device->device, devdata->imagemem);
         }
 
@@ -319,7 +339,7 @@ static lx_bitmap_shader_devdata_t* lx_bitmap_shader_init_devdata(lx_vulkan_devic
             break;
         }
 
-        // create sampler
+        // create sampler, TODO nearest, repeat, ..
         VkSamplerCreateInfo sampler_info = {};
         sampler_info.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
         sampler_info.pNext = lx_null;
