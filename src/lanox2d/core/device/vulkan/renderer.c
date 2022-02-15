@@ -94,6 +94,9 @@ static lx_void_t lx_vk_renderer_set_imagelayout(VkCommandBuffer cmdbuffer, VkIma
 }
 
 static lx_void_t lx_vk_renderer_apply_shader_bitmap(lx_vulkan_device_t* device, lx_shader_ref_t shader, lx_rect_ref_t bounds) {
+    VkCommandBuffer cmdbuffer = device->renderer_cmdbuffer;
+    lx_paint_ref_t paint = device->base.paint;
+    lx_assert(cmdbuffer && paint);
 
     // get bitmap texture
     lx_bitmap_shader_devdata_t* devdata = lx_bitmap_shader_devdata(device, (lx_bitmap_shader_t*)shader);
@@ -103,14 +106,30 @@ static lx_void_t lx_vk_renderer_apply_shader_bitmap(lx_vulkan_device_t* device, 
     lx_bitmap_ref_t bitmap = ((lx_bitmap_shader_t*)shader)->bitmap;
     lx_assert(bitmap);
 
+    // enable texture pipeline
+    lx_vk_pipeline_ref_t pipeline = lx_vk_pipeline_texture(device);
+    lx_assert_and_check_return(pipeline);
+    vkCmdBindPipeline(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, lx_vk_pipeline_native(pipeline));
+
+    // apply color (only for alpha blend)
+    lx_byte_t alpha = lx_paint_alpha(paint);
+    lx_float_t color_data[] = {1.0f, 1.0f, 1.0f, (lx_float_t)alpha / 0xff};
+    vkCmdPushConstants(cmdbuffer, lx_vk_pipeline_layout(pipeline), VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(color_data), color_data);
+
 #if 0
     // get bitmap width and height
     lx_size_t width = lx_bitmap_width(bitmap);
     lx_size_t height = lx_bitmap_height(bitmap);
 
-    // get paint
-    lx_paint_ref_t paint = device->base.paint;
-    lx_assert(paint);
+    // set model matrix
+    lx_vk_matrix_t model;
+    lx_vk_matrix_convert(&model, device->base.matrix);
+    lx_vk_pipeline_matrix_set_model(pipeline, &model);
+
+    // bind descriptor set to pipeline (uniform buffer, ...)
+    vkCmdBindDescriptorSets(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+        lx_vk_pipeline_layout(pipeline), 0, lx_vk_pipeline_descriptor_sets_count(pipeline),
+        lx_vk_pipeline_descriptor_sets(pipeline), 0, lx_null);
 #endif
 }
 
