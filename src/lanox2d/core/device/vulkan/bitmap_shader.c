@@ -382,6 +382,57 @@ static lx_bitmap_shader_devdata_t* lx_bitmap_shader_init_devdata(lx_vulkan_devic
             break;
         }
 
+        /* convert world coordinate to camera coordinate
+         *
+         * before:
+         *
+         *
+         *       bx        bounds of vertices
+         *      -------V7---------------------V6------
+         *  by |     /                          \     |
+         *     |   /              |               \   |
+         *     | /    bitmap  sw  |                 \ |
+         *    V8          -----------------           V5
+         *     |      sh |        |        |          |
+         *     |         |        |        |          | bh
+         *     |---------|--------O--------|----------|------> (bitmap matrix in world coordinate)
+         *     |         |        |        |          |
+         *     |         |        |        |          |
+         *    V1          -----------------           V4
+         *     | \                |                 / |
+         *     |   \             \|/              /   |
+         *     |     \                          /     |
+         *      -------V2--------------------V3-------
+         *                       bw
+         *
+         * after:
+         *
+         *       bx        bounds of vertices
+         *      -------V7---------------------V6------
+         *  by |     /                          \     |
+         *     |   /              |               \   |
+         *     | /    camera  sw  |                 \ |
+         *    V8         O--------------------------- V5-----> (matrix in camera coordinate)
+         *     |      sh |||||||| | ||||||||          |
+         *     |         |||||||| | ||||||||          | bh
+         *     |    -----|--------.--------|------    |
+         *     |         |||||||| | ||||||||          |
+         *     |         |||||||| | ||||||||          |
+         *    V1         |-----------------           V4
+         *     | \      \|/       |                 / |
+         *     |   \              |               /   |
+         *     |     \                          /     |
+         *      -------V2--------------------V3-------
+         *                       bw
+         */
+        lx_float_t sw = (lx_float_t)lx_bitmap_width(bitmap);
+        lx_float_t sh = (lx_float_t)lx_bitmap_height(bitmap);
+        devdata->matrix = shader->base.matrix;
+        if (lx_matrix_invert(&devdata->matrix)) {
+            devdata->matrix.tx /= sw;
+            devdata->matrix.ty /= sh;
+        }
+
         ok = lx_true;
     } while (0);
 

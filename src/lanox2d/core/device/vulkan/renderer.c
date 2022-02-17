@@ -116,21 +116,125 @@ static lx_void_t lx_vk_renderer_apply_shader_bitmap(lx_vulkan_device_t* device, 
     lx_float_t color_data[] = {1.0f, 1.0f, 1.0f, (lx_float_t)alpha / 0xff};
     vkCmdPushConstants(cmdbuffer, lx_vk_pipeline_layout(pipeline), VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(color_data), color_data);
 
-#if 0
-    // get bitmap width and height
-    lx_size_t width = lx_bitmap_width(bitmap);
-    lx_size_t height = lx_bitmap_height(bitmap);
-
     // set model matrix
     lx_vk_matrix_t model;
     lx_vk_matrix_convert(&model, device->base.matrix);
     lx_vk_pipeline_matrix_set_model(pipeline, &model);
 
+    // get coordinate and size
+    lx_float_t bx = bounds->x;
+    lx_float_t by = bounds->y;
+    lx_float_t bw = bounds->w;
+    lx_float_t bh = bounds->h;
+    lx_float_t sw = (lx_float_t)lx_bitmap_width(bitmap);
+    lx_float_t sh = (lx_float_t)lx_bitmap_height(bitmap);
+
+    /* get matrix in camera coordinate
+     *
+     *       bx        bounds of vertices
+     *      -------V7---------------------V6------
+     *  by |     /                          \     |
+     *     |   /              |               \   |
+     *     | /    camera  sw  |                 \ |
+     *    V8         O--------------------------- V5-----> (matrix in camera coordinate)
+     *     |      sh |||||||| | ||||||||          |
+     *     |         |||||||| | ||||||||          | bh
+     *     |    -----|--------.--------|------    |
+     *     |         |||||||| | ||||||||          |
+     *     |         |||||||| | ||||||||          |
+     *    V1         |-----------------           V4
+     *     | \      \|/       |                 / |
+     *     |   \              |               /   |
+     *     |     \                          /     |
+     *      -------V2--------------------V3-------
+     *                       bw
+     */
+    lx_matrix_t matrix = devdata->matrix;
+
+    /* move bitmap to bounds of vertices in camera coordinate
+     *
+     * after scaling:
+     *
+     *       bx        bounds of vertices
+     *      -------V7---------------------V6------
+     *  by |     /                          \     |
+     *     |   /              |               \   |
+     *     | /    camera      |                 \ |
+     *    V8         O--------------------------- V5-----> (matrix in camera coordinate)
+     *     |         |||||||| | |||||||||||||||||||||||||||||
+     *     |         |||||||| | |||||||||||||||||||||||||||||
+     *     |    -----|--------.--------||||||||||||||||||||||
+     *     |         |||||||| | |||||||||||||||||||||||||||||
+     *     |         |||||||| | |||||||||||||||||||||||||||||
+     *    V1         ||||||||||||||||||||||||||||||||||||||||
+     *     | \       ||||||||||||||||||||||||||||||||||||||||
+     *     |   \     ||||||||||||||||||||||||||||||||||||||||
+     *     |     \   ||||||||||||||||||||||||||||||||||||||||
+     *      -------V2||||||||||||||||||||||||||||||||||||||||
+     *               ||||||||||||||||||||||||||||||||||||||||
+     *               ||||||||||||||||||||||||||||||||||||||||
+     *               ||||||||||||||||||||||||||||||||||||||||
+     *              \|/
+     *
+     * after translating:
+     *
+     *                    texture
+     *  --------------------------------------------->
+     * |
+     * |     bx        bounds of vertices
+     *      -------V7---------------------V6------
+     *  by ||||| / |||||||||||||||||||||||| \ |||||
+     *     ||| / |||||||||||| | ||||||||||||| \ |||
+     *     | /    camera      |                 \ |
+     *    V8         O--------------------------- V5-----> (matrix in camera coordinate)
+     *     ||||||||| |||||||| | |||||||||||||||||||
+     *     ||||||||| |||||||| | |||||||||||||||||||
+     *     |    -----|--------.--------||||||||||||
+     *     ||||||||| |||||||| | ||||||||||||||||||| bh
+     *     ||||||||| |||||||| | |||||||||||||||||||
+     *    V1 ||||||| |||||||||||||||||||||||||||| V4
+     *     | \ ||||| |||||||||||||||||||||||||| / |
+     *     ||| \ ||| |||||||||||||||||||||||| / |||
+     *     ||||| \|| |||||||||||||||||||||||/ |||||
+     *      -------V2--------------------V3-------
+     *               |       bw
+     *              \|/
+     */
+    lx_matrix_scale(&matrix, bw / sw, bh / sh);
+    lx_matrix_translate(&matrix, bx / bw, by / bh);
+
+    /* convert to texture coordinate (0,1), because our texture vertices is in world coordinate
+     *
+     * before:
+     *
+     *    bx
+     * by  ---------------------
+     *    |                     |
+     *    |                     |
+     *    |                     | bh
+     *    |                     |
+     *     ---------------------
+     *              bw
+     *
+     * after:
+     *
+     * 0,0 -------------------- 1,0
+     *    |                     |
+     *    |                     |
+     *    |                     |
+     *    |                     |
+     * 0,1 -------------------- 1,1
+     */
+    lx_vk_matrix_t texcoord;
+    lx_matrix_scale(&matrix, 1.0f / bw, 1.0f / bh);
+    lx_matrix_translate(&matrix, -bx, -by);
+    lx_vk_matrix_convert(&texcoord, &matrix);
+    lx_vk_pipeline_matrix_set_texcoord(pipeline, &texcoord);
+
     // bind descriptor set to pipeline (uniform buffer, ...)
     vkCmdBindDescriptorSets(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
         lx_vk_pipeline_layout(pipeline), 0, lx_vk_pipeline_descriptor_sets_count(pipeline),
         lx_vk_pipeline_descriptor_sets(pipeline), 0, lx_null);
-#endif
 }
 
 static lx_inline lx_void_t lx_vk_renderer_apply_paint_shader(lx_vulkan_device_t* device, lx_shader_ref_t shader, lx_rect_ref_t bounds) {
