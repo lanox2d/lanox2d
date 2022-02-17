@@ -147,7 +147,12 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_points(lx_vulkan_device_t* device) {
                 break;
             }
 
-            // init pipeline layout info
+            // init descriptor sets
+            if (!lx_vk_descriptor_sets_init_points(device, pipeline_points, descriptor_type, descriptor_count)) {
+                break;
+            }
+
+            // create pipeline
             VkPipelineLayoutCreateInfo pipeline_layout_info = {};
             pipeline_layout_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
             pipeline_layout_info.pNext = lx_null;
@@ -155,13 +160,6 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_points(lx_vulkan_device_t* device) {
             pipeline_layout_info.pSetLayouts = &pipeline_points->descriptor_set_layout;
             pipeline_layout_info.pushConstantRangeCount = 1;
             pipeline_layout_info.pPushConstantRanges = &push_constant_range;
-
-            // init descriptor sets
-            if (!lx_vk_descriptor_sets_init_points(device, pipeline_points, descriptor_type, descriptor_count)) {
-                break;
-            }
-
-            // create pipeline
             if (!lx_vk_pipeline_create(pipeline_points, VK_PRIMITIVE_TOPOLOGY_POINT_LIST,
                 vshader, sizeof(vshader), fshader, sizeof(fshader), &vertex_input_info, &pipeline_layout_info)) {
                 break;
