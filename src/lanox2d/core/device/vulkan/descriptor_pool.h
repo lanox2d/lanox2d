@@ -38,10 +38,12 @@ lx_extern_c_enter
 /* init descriptor pool
  *
  * @param device            the vulkan device
+ * @param type              the descriptor type
+ * @param count             the descriptor count
  *
  * @return                  the descriptor pool
  */
-lx_vk_descriptor_pool_ref_t lx_vk_descriptor_pool_init(lx_vulkan_device_t* device);
+lx_vk_descriptor_pool_ref_t lx_vk_descriptor_pool_init(lx_vulkan_device_t* device, VkDescriptorType type, lx_uint32_t count);
 
 /* exit descriptor pool
  *

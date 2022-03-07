@@ -30,13 +30,37 @@
 
 // the descriptor_pool type
 typedef struct lx_vk_descriptor_pool_t {
+    lx_vulkan_device_t*     device;
+    VkDescriptorType        type;
+    lx_uint32_t             count;
+    VkDescriptorPool        pool;
 }lx_vk_descriptor_pool_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_vk_descriptor_pool_ref_t lx_vk_descriptor_pool_init(lx_vulkan_device_t* device) {
-    return lx_null;
+lx_vk_descriptor_pool_ref_t lx_vk_descriptor_pool_init(lx_vulkan_device_t* device, VkDescriptorType type, lx_uint32_t count) {
+    lx_assert_and_check_return_val(device && type && count, lx_null);
+
+    lx_bool_t ok = lx_false;
+    lx_vk_descriptor_pool_t* descriptor_pool = lx_null;
+    do {
+        descriptor_pool = lx_malloc0_type(lx_vk_descriptor_pool_t);
+        lx_assert_and_check_break(descriptor_pool);
+
+        descriptor_pool->type  = type;
+        descriptor_pool->count = count;
+
+        // TODO
+
+        ok = lx_true;
+    } while (0);
+
+    if (!ok && descriptor_pool) {
+        lx_vk_descriptor_pool_exit((lx_vk_descriptor_pool_ref_t)descriptor_pool);
+        descriptor_pool = lx_null;
+    }
+    return (lx_vk_descriptor_pool_ref_t)descriptor_pool;
 }
 
 lx_void_t lx_vk_descriptor_pool_exit(lx_vk_descriptor_pool_ref_t self) {
