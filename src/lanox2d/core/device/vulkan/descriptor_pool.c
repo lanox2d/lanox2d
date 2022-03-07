@@ -15,49 +15,34 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        prefix.h
+ * @file        descriptor_pool.c
  *
  */
-#ifndef LX_CORE_DEVICE_VULKAN_PREFIX_H
-#define LX_CORE_DEVICE_VULKAN_PREFIX_H
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "../prefix.h"
-#include "../../path.h"
-#include "../../paint.h"
-#include "../../private/stroker.h"
-#include "../../../platform/window.h"
+#include "descriptor_pool.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * types
  */
 
-// the pipeline type enum
-typedef enum lx_vk_pipeline_type_e_ {
-    LX_VK_PIPELINE_TYPE_NONE    = 0
-,   LX_VK_PIPELINE_TYPE_POINTS  = 1
-,   LX_VK_PIPELINE_TYPE_LINES   = 2
-,   LX_VK_PIPELINE_TYPE_SOLID   = 3
-,   LX_VK_PIPELINE_TYPE_TEXTURE = 4
-,   LX_VK_PIPELINE_TYPE_MAXN    = 5
-}lx_vk_pipeline_type_e;
+// the descriptor_pool type
+typedef struct lx_vk_descriptor_pool_t {
+}lx_vk_descriptor_pool_t;
 
-// the pipeline ref type
-typedef lx_typeref(vk_pipeline);
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * implementation
+ */
+lx_vk_descriptor_pool_ref_t lx_vk_descriptor_pool_init(lx_vulkan_device_t* device) {
+    return lx_null;
+}
 
-// the allocator ref type
-typedef lx_typeref(vk_allocator);
+lx_void_t lx_vk_descriptor_pool_exit(lx_vk_descriptor_pool_ref_t self) {
+}
 
-// the descriptor pool ref type
-typedef lx_typeref(vk_descriptor_pool);
-
-// the matrix type
-typedef lx_float_t         lx_vk_matrix_t[16];
-typedef lx_vk_matrix_t*    lx_vk_matrix_ref_t;
-
-
-#endif
-
+VkDescriptorPool lx_vk_descriptor_pool(lx_vk_descriptor_pool_ref_t self) {
+    return lx_null;
+}
 
