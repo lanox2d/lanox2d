@@ -50,8 +50,21 @@ lx_vk_descriptor_pool_ref_t lx_vk_descriptor_pool_init(lx_vulkan_device_t* devic
 
         descriptor_pool->type  = type;
         descriptor_pool->count = count;
+        descriptor_pool->device = device;
 
-        // TODO
+        VkDescriptorPoolSize pool_size = {};
+        pool_size.type = type;
+        pool_size.descriptorCount = count;
+
+        VkDescriptorPoolCreateInfo descriptor_poolinfo = {};
+        descriptor_poolinfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+        descriptor_poolinfo.pNext = lx_null;
+        descriptor_poolinfo.maxSets = count; // just an estimate value
+        descriptor_poolinfo.poolSizeCount = 1;
+        descriptor_poolinfo.pPoolSizes = &pool_size;
+        if (vkCreateDescriptorPool(device->device, &descriptor_poolinfo, lx_null, &descriptor_pool->pool) != VK_SUCCESS) {
+            break;
+        }
 
         ok = lx_true;
     } while (0);
@@ -64,9 +77,19 @@ lx_vk_descriptor_pool_ref_t lx_vk_descriptor_pool_init(lx_vulkan_device_t* devic
 }
 
 lx_void_t lx_vk_descriptor_pool_exit(lx_vk_descriptor_pool_ref_t self) {
+    lx_vk_descriptor_pool_t* descriptor_pool = (lx_vk_descriptor_pool_t*)self;
+    if (descriptor_pool) {
+        lx_assert(descriptor_pool->device && descriptor_pool->device->device);
+        if (descriptor_pool->pool != VK_NULL_HANDLE) {
+            vkDestroyDescriptorPool(descriptor_pool->device->device, descriptor_pool->pool, lx_null);
+            descriptor_pool->pool = VK_NULL_HANDLE;
+        }
+        lx_free(descriptor_pool);
+    }
 }
 
 VkDescriptorPool lx_vk_descriptor_pool(lx_vk_descriptor_pool_ref_t self) {
-    return lx_null;
+    lx_vk_descriptor_pool_t* descriptor_pool = (lx_vk_descriptor_pool_t*)self;
+    return descriptor_pool? descriptor_pool->pool : VK_NULL_HANDLE;
 }
 
