@@ -15,14 +15,14 @@
  * Copyright (C) 2021-present, Lanox2D Open Source Group.
  *
  * @author      ruki
- * @file        allocator.cc
+ * @file        buffer_allocator.cc
  *
  */
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * includes
  */
-#include "allocator.h"
+#include "buffer_allocator.h"
 #define VMA_IMPLEMENTATION
 #define VMA_ASSERT lx_assert
 #include <vk_mem_alloc.h>
@@ -39,12 +39,12 @@
  * types
  */
 
-// the vulkan allocator type
-typedef struct lx_vk_allocator_t {
+// the vulkan buffer allocator type
+typedef struct lx_vk_buffer_allocator_t {
     lx_vulkan_device_t*     device;
     VkBufferUsageFlagBits   buffer_type;
     VmaAllocator            allocator;
-}lx_vk_allocator_t;
+}lx_vk_buffer_allocator_t;
 
 // the vulkan/vma buffer type
 typedef struct lx_vk_vma_buffer_t_ {
@@ -57,14 +57,14 @@ typedef struct lx_vk_vma_buffer_t_ {
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
-lx_vk_allocator_ref_t lx_vk_allocator_init(lx_vulkan_device_t* device, VkBufferUsageFlagBits buffer_type) {
+lx_vk_buffer_allocator_ref_t lx_vk_buffer_allocator_init(lx_vulkan_device_t* device, VkBufferUsageFlagBits buffer_type) {
     lx_assert_and_check_return_val(device, lx_null);
 
     lx_bool_t ok = lx_false;
-    lx_vk_allocator_t* allocator = lx_null;
+    lx_vk_buffer_allocator_t* allocator = lx_null;
     do {
         // init allocator
-        allocator = lx_malloc0_type(lx_vk_allocator_t);
+        allocator = lx_malloc0_type(lx_vk_buffer_allocator_t);
         lx_assert_and_check_break(allocator);
 
         allocator->device      = device;
@@ -90,22 +90,22 @@ lx_vk_allocator_ref_t lx_vk_allocator_init(lx_vulkan_device_t* device, VkBufferU
         ok = lx_true;
     } while (0);
     if (!ok && allocator) {
-        lx_vk_allocator_exit((lx_vk_allocator_ref_t)allocator);
+        lx_vk_buffer_allocator_exit((lx_vk_buffer_allocator_ref_t)allocator);
         allocator = lx_null;
     }
-    return (lx_vk_allocator_ref_t)allocator;
+    return (lx_vk_buffer_allocator_ref_t)allocator;
 }
 
-lx_void_t lx_vk_allocator_exit(lx_vk_allocator_ref_t self) {
-    lx_vk_allocator_t* allocator = (lx_vk_allocator_t*)self;
+lx_void_t lx_vk_buffer_allocator_exit(lx_vk_buffer_allocator_ref_t self) {
+    lx_vk_buffer_allocator_t* allocator = (lx_vk_buffer_allocator_t*)self;
     if (allocator) {
         vmaDestroyAllocator(allocator->allocator);
         lx_free(allocator);
     }
 }
 
-lx_bool_t lx_vk_allocator_alloc(lx_vk_allocator_ref_t self, lx_size_t size, lx_vk_buffer_t* buffer) {
-    lx_vk_allocator_t* allocator = (lx_vk_allocator_t*)self;
+lx_bool_t lx_vk_buffer_allocator_alloc(lx_vk_buffer_allocator_ref_t self, lx_size_t size, lx_vk_buffer_t* buffer) {
+    lx_vk_buffer_allocator_t* allocator = (lx_vk_buffer_allocator_t*)self;
     lx_vk_vma_buffer_t* vma_buffer = (lx_vk_vma_buffer_t*)buffer;
     lx_assert(allocator && size && vma_buffer);
 
@@ -119,16 +119,16 @@ lx_bool_t lx_vk_allocator_alloc(lx_vk_allocator_ref_t self, lx_size_t size, lx_v
     return vmaCreateBuffer(allocator->allocator, &buffer_info, &vma_alloc_createinfo, &vma_buffer->buffer, &vma_buffer->allocation, lx_null) == VK_SUCCESS;
 }
 
-lx_void_t lx_vk_allocator_free(lx_vk_allocator_ref_t self, lx_vk_buffer_t* buffer) {
-    lx_vk_allocator_t* allocator = (lx_vk_allocator_t*)self;
+lx_void_t lx_vk_buffer_allocator_free(lx_vk_buffer_allocator_ref_t self, lx_vk_buffer_t* buffer) {
+    lx_vk_buffer_allocator_t* allocator = (lx_vk_buffer_allocator_t*)self;
     lx_vk_vma_buffer_t* vma_buffer = (lx_vk_vma_buffer_t*)buffer;
     lx_assert(allocator && vma_buffer);
 
     vmaDestroyBuffer(allocator->allocator, vma_buffer->buffer, vma_buffer->allocation);
 }
 
-lx_void_t lx_vk_allocator_copy(lx_vk_allocator_ref_t self, lx_vk_buffer_t* buffer, lx_size_t pos, lx_pointer_t data, lx_size_t size) {
-    lx_vk_allocator_t* allocator = (lx_vk_allocator_t*)self;
+lx_void_t lx_vk_buffer_allocator_copy(lx_vk_buffer_allocator_ref_t self, lx_vk_buffer_t* buffer, lx_size_t pos, lx_pointer_t data, lx_size_t size) {
+    lx_vk_buffer_allocator_t* allocator = (lx_vk_buffer_allocator_t*)self;
     lx_vk_vma_buffer_t* vma_buffer = (lx_vk_vma_buffer_t*)buffer;
     lx_assert(allocator && vma_buffer && vma_buffer->allocation && data && size);
 

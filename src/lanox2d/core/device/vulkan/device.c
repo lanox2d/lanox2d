@@ -25,7 +25,7 @@
 #include "device.h"
 #include "pipeline.h"
 #include "renderer.h"
-#include "allocator.h"
+#include "buffer_allocator.h"
 #ifdef LX_CONFIG_WINDOW_HAVE_GLFW
 #   include <GLFW/glfw3.h>
 #endif
@@ -350,9 +350,9 @@ static lx_bool_t lx_device_vulkan_semaphore_init(lx_vulkan_device_t* device) {
 
 static lx_void_t lx_device_vulkan_vertex_buffer_exit(lx_pointer_t item, lx_pointer_t udata) {
     lx_vk_buffer_t* buffer = (lx_vk_buffer_t*)item;
-    lx_vk_allocator_ref_t allocator = (lx_vk_allocator_ref_t)udata;
+    lx_vk_buffer_allocator_ref_t allocator = (lx_vk_buffer_allocator_ref_t)udata;
     if (allocator && buffer) {
-        lx_vk_allocator_free(allocator, buffer);
+        lx_vk_buffer_allocator_free(allocator, buffer);
     }
 }
 
@@ -399,11 +399,11 @@ static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
 
         // destroy buffer allocator
         if (device->allocator_vertex) {
-            lx_vk_allocator_exit(device->allocator_vertex);
+            lx_vk_buffer_allocator_exit(device->allocator_vertex);
             device->allocator_vertex = lx_null;
         }
         if (device->allocator_uniform) {
-            lx_vk_allocator_exit(device->allocator_uniform);
+            lx_vk_buffer_allocator_exit(device->allocator_uniform);
             device->allocator_uniform = lx_null;
         }
 
@@ -553,8 +553,8 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
         }
 
         // init buffer allocator
-        device->allocator_vertex = lx_vk_allocator_init(device, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
-        device->allocator_uniform = lx_vk_allocator_init(device, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
+        device->allocator_vertex = lx_vk_buffer_allocator_init(device, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+        device->allocator_uniform = lx_vk_buffer_allocator_init(device, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
         lx_assert_and_check_break(device->allocator_vertex);
         lx_assert_and_check_break(device->allocator_uniform);
 

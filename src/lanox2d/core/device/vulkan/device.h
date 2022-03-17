@@ -70,8 +70,8 @@ typedef struct lx_vulkan_device_t_ {
     lx_uint32_t                 command_buffers_count;
 
     // buffer allocator
-    lx_vk_allocator_ref_t       allocator_vertex;
-    lx_vk_allocator_ref_t       allocator_uniform;
+    lx_vk_buffer_allocator_ref_t       allocator_vertex;
+    lx_vk_buffer_allocator_ref_t       allocator_uniform;
 
     // renderer
     lx_bool_t                   renderer_prepared;

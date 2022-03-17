@@ -23,7 +23,7 @@
  * includes
  */
 #include "pipeline.h"
-#include "allocator.h"
+#include "buffer_allocator.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * types
@@ -73,7 +73,7 @@ static lx_vk_pipeline_t* lx_vk_pipeline_init(lx_vulkan_device_t* device, lx_size
 
         pipeline->type   = type;
         pipeline->device = device;
-        if (!lx_vk_allocator_alloc(device->allocator_uniform, sizeof(lx_vk_ubo_matrix_t), &pipeline->ubo_matrix)) {
+        if (!lx_vk_buffer_allocator_alloc(device->allocator_uniform, sizeof(lx_vk_ubo_matrix_t), &pipeline->ubo_matrix)) {
             break;
         }
 
@@ -303,7 +303,7 @@ lx_void_t lx_vk_pipeline_exit(lx_vk_pipeline_ref_t self) {
         lx_assert(device && device->device);
 
         // free ubo buffer
-        lx_vk_allocator_free(device->allocator_uniform, &pipeline->ubo_matrix);
+        lx_vk_buffer_allocator_free(device->allocator_uniform, &pipeline->ubo_matrix);
 
         // free descriptor set
         if (pipeline->descriptor_pool) {
@@ -355,20 +355,20 @@ lx_uint32_t lx_vk_pipeline_descriptor_sets_count(lx_vk_pipeline_ref_t self) {
 lx_void_t lx_vk_pipeline_matrix_set_model(lx_vk_pipeline_ref_t self, lx_vk_matrix_ref_t matrix) {
     lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
     if (pipeline && pipeline->device) {
-        lx_vk_allocator_copy(pipeline->device->allocator_uniform, &pipeline->ubo_matrix, lx_offsetof(lx_vk_ubo_vertex_matrix_t, model), (lx_pointer_t)matrix, sizeof(lx_vk_matrix_t));
+        lx_vk_buffer_allocator_copy(pipeline->device->allocator_uniform, &pipeline->ubo_matrix, lx_offsetof(lx_vk_ubo_vertex_matrix_t, model), (lx_pointer_t)matrix, sizeof(lx_vk_matrix_t));
     }
 }
 
 lx_void_t lx_vk_pipeline_matrix_set_projection(lx_vk_pipeline_ref_t self, lx_vk_matrix_ref_t matrix) {
     lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
     if (pipeline && pipeline->device) {
-        lx_vk_allocator_copy(pipeline->device->allocator_uniform, &pipeline->ubo_matrix, lx_offsetof(lx_vk_ubo_vertex_matrix_t, projection), (lx_pointer_t)matrix, sizeof(lx_vk_matrix_t));
+        lx_vk_buffer_allocator_copy(pipeline->device->allocator_uniform, &pipeline->ubo_matrix, lx_offsetof(lx_vk_ubo_vertex_matrix_t, projection), (lx_pointer_t)matrix, sizeof(lx_vk_matrix_t));
     }
 }
 
 lx_void_t lx_vk_pipeline_matrix_set_texcoord(lx_vk_pipeline_ref_t self, lx_vk_matrix_ref_t matrix) {
     lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
     if (pipeline && pipeline->device) {
-        lx_vk_allocator_copy(pipeline->device->allocator_uniform, &pipeline->ubo_matrix, lx_offsetof(lx_vk_ubo_texture_matrix_t, texcoord), (lx_pointer_t)matrix, sizeof(lx_vk_matrix_t));
+        lx_vk_buffer_allocator_copy(pipeline->device->allocator_uniform, &pipeline->ubo_matrix, lx_offsetof(lx_vk_ubo_texture_matrix_t, texcoord), (lx_pointer_t)matrix, sizeof(lx_vk_matrix_t));
     }
 }
