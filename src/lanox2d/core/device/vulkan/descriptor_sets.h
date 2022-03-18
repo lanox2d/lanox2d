@@ -35,21 +35,27 @@ lx_extern_c_enter
  * interfaces
  */
 
-/* init descriptor sets
+/* init uniform descriptor sets
  *
  * @param device            the vulkan device
- * @param type              the descriptor type
- * @param count             the descriptor count
  *
  * @return                  the descriptor sets
  */
-lx_vk_descriptor_sets_ref_t lx_vk_descriptor_sets_init(lx_vulkan_device_t* device, VkDescriptorType type, lx_uint32_t count);
+lx_vk_descriptor_sets_ref_t lx_vk_descriptor_sets_init_uniform(lx_vulkan_device_t* device);
 
 /* exit descriptor sets
  *
  * @param descriptor_sets   the descriptor sets
  */
 lx_void_t                   lx_vk_descriptor_sets_exit(lx_vk_descriptor_sets_ref_t descriptor_sets);
+
+/* get the descriptor set layout
+ *
+ * @param descriptor_sets   the descriptor sets
+ *
+ * @return                  the descriptor set layout
+ */
+VkDescriptorSetLayout       lx_vk_descriptor_sets_layout(lx_vk_descriptor_sets_ref_t descriptor_sets);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
