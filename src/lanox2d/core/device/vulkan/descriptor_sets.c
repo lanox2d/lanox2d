@@ -23,14 +23,19 @@
  * includes
  */
 #include "descriptor_sets.h"
+#include "descriptor_pool.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * macros
  */
 #ifdef LX_CONFIG_SMALL
 #   define LX_VK_DESCRIPTOR_FREE_SETS_GROW      (16)
+#   define LX_VK_DESCRIPTOR_INIT                (16)
+#   define LX_VK_DESCRIPTOR_MAXN                (1024)
 #else
 #   define LX_VK_DESCRIPTOR_FREE_SETS_GROW      (64)
+#   define LX_VK_DESCRIPTOR_INIT                (32)
+#   define LX_VK_DESCRIPTOR_MAXN                (2048)
 #endif
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -39,16 +44,37 @@
 
 // the descriptor_sets type
 typedef struct lx_vk_descriptor_sets_t {
-    lx_vulkan_device_t*     device;
-    VkDescriptorType        descriptor_type;
-    VkDescriptorSetLayout   descriptor_set_layout;
-    lx_uint32_t             descriptor_count_per_set;
-    lx_array_ref_t          free_sets;
+    lx_vulkan_device_t*         device;
+    VkDescriptorType            descriptor_type;
+    VkDescriptorSetLayout       descriptor_set_layout;
+    lx_uint32_t                 descriptor_count_per_set;
+    lx_array_ref_t              free_sets;
+    lx_vk_descriptor_pool_ref_t descriptor_pool;
 }lx_vk_descriptor_sets_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
  */
+
+static VkDescriptorSet lx_vk_descriptor_sets_get_new_descriptor_set(lx_vk_descriptor_sets_t* descriptor_sets) {
+    lx_vulkan_device_t* device = descriptor_sets->device;
+    lx_assert(device);
+
+    // get the descriptor pool
+    VkDescriptorPool descriptor_pool = lx_vk_descriptor_pool(descriptor_sets->descriptor_pool);
+    lx_assert(descriptor_pool);
+
+    // create a descriptor set
+    VkDescriptorSet descriptor_set = VK_NULL_HANDLE;
+    VkDescriptorSetAllocateInfo allocinfo = {};
+    allocinfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    allocinfo.pNext = lx_null;
+    allocinfo.descriptorPool = descriptor_pool;
+    allocinfo.descriptorSetCount = 1;
+    allocinfo.pSetLayouts = &descriptor_sets->descriptor_set_layout;
+    return vkAllocateDescriptorSets(device->device, &allocinfo, &descriptor_set) == VK_SUCCESS? descriptor_set : VK_NULL_HANDLE;
+}
+
 static lx_uint32_t lx_vk_descriptor_sets_get_layout_and_set_count_for_uniform(lx_vulkan_device_t* device,
     lx_uint32_t const* stages, lx_size_t stages_size, VkDescriptorSetLayout* pdescriptor_set_layout) {
     lx_assert_and_check_return_val(stages_size == 1, 0);
@@ -104,6 +130,9 @@ static lx_vk_descriptor_sets_ref_t lx_vk_descriptor_sets_init(lx_vulkan_device_t
         descriptor_sets->free_sets = lx_array_init(LX_VK_DESCRIPTOR_FREE_SETS_GROW, lx_element_mem(sizeof(VkDescriptorSet), lx_null, lx_null));
         lx_assert_and_check_break(descriptor_sets->free_sets);
 
+        descriptor_sets->descriptor_pool = lx_vk_descriptor_pool_init(device, type, LX_VK_DESCRIPTOR_INIT);
+        lx_assert_and_check_break(descriptor_sets->descriptor_pool);
+
         ok = lx_true;
     } while (0);
 
@@ -138,6 +167,11 @@ lx_void_t lx_vk_descriptor_sets_exit(lx_vk_descriptor_sets_ref_t self) {
             vkDestroyDescriptorSetLayout(device->device, descriptor_sets->descriptor_set_layout, lx_null);
             descriptor_sets->descriptor_set_layout = VK_NULL_HANDLE;
         }
+
+        if (descriptor_sets->descriptor_pool) {
+            lx_vk_descriptor_pool_exit(descriptor_sets->descriptor_pool);
+            descriptor_sets->descriptor_pool = lx_null;
+        }
         lx_free(descriptor_sets);
     }
 }
@@ -159,6 +193,7 @@ VkDescriptorSet lx_vk_descriptor_sets_new_set(lx_vk_descriptor_sets_ref_t self) 
             lx_array_remove_last(descriptor_sets->free_sets);
         }
     } else {
+        descriptor_set = lx_vk_descriptor_sets_get_new_descriptor_set(descriptor_sets);
     }
     lx_assert(descriptor_set != VK_NULL_HANDLE);
     return descriptor_set;
