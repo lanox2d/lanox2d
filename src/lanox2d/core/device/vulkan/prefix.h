@@ -53,6 +53,9 @@ typedef lx_typeref(vk_buffer_allocator);
 // the descriptor pool ref type
 typedef lx_typeref(vk_descriptor_pool);
 
+// the descriptor sets ref type
+typedef lx_typeref(vk_descriptor_sets);
+
 // the matrix type
 typedef lx_float_t         lx_vk_matrix_t[16];
 typedef lx_vk_matrix_t*    lx_vk_matrix_ref_t;
