@@ -23,6 +23,7 @@
  * includes
  */
 #include "buffer_allocator.h"
+#include "descriptor_sets.h"
 #define VMA_IMPLEMENTATION
 #define VMA_ASSERT lx_assert
 #include <vk_mem_alloc.h>
@@ -52,7 +53,45 @@ typedef struct lx_vk_vma_buffer_t_ {
     lx_size_t       offset;
     lx_size_t       size;
     VmaAllocation   allocation;
+    VkDescriptorSet descriptor_set_uniform;
 }lx_vk_vma_buffer_t;
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * private implementation
+ */
+static VkDescriptorSet lx_vk_buffer_alloc_uniform_descriptor_set(lx_vulkan_device_t* device, VkBuffer buffer, lx_size_t size) {
+    lx_assert(device && device->descriptor_sets_uniform);
+
+    VkDescriptorSet descriptor_set = lx_vk_descriptor_sets_alloc(device->descriptor_sets_uniform);
+    if (descriptor_set != VK_NULL_HANDLE) {
+        VkDescriptorBufferInfo bufferinfo;
+        lx_memset(&bufferinfo, 0, sizeof(VkDescriptorBufferInfo));
+        bufferinfo.buffer = buffer;
+        bufferinfo.offset = 0;
+        bufferinfo.range = size;
+
+        VkWriteDescriptorSet write_descriptor_set = {};
+        write_descriptor_set.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        write_descriptor_set.pNext = lx_null;
+        write_descriptor_set.dstSet = descriptor_set;
+        write_descriptor_set.dstBinding = 0;
+        write_descriptor_set.dstArrayElement = 0;
+        write_descriptor_set.descriptorCount = 1;
+        write_descriptor_set.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        write_descriptor_set.pImageInfo = lx_null,
+        write_descriptor_set.pBufferInfo = &bufferinfo;
+        write_descriptor_set.pTexelBufferView = lx_null;
+        vkUpdateDescriptorSets(device->device, 1, &write_descriptor_set, 0, lx_null);
+    }
+    return descriptor_set;
+}
+
+static lx_void_t lx_vk_buffer_free_uniform_descriptor_set(lx_vulkan_device_t* device, VkDescriptorSet descriptor_set) {
+    lx_assert(device && device->descriptor_sets_uniform);
+    if (descriptor_set != VK_NULL_HANDLE) {
+        lx_vk_descriptor_sets_free(device->descriptor_sets_uniform, descriptor_set);
+    }
+}
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * implementation
@@ -116,7 +155,19 @@ lx_bool_t lx_vk_buffer_allocator_alloc(lx_vk_buffer_allocator_ref_t self, lx_siz
 
     VmaAllocationCreateInfo vma_alloc_createinfo = {};
     vma_alloc_createinfo.usage = VMA_MEMORY_USAGE_CPU_TO_GPU;
-    return vmaCreateBuffer(allocator->allocator, &buffer_info, &vma_alloc_createinfo, &vma_buffer->buffer, &vma_buffer->allocation, lx_null) == VK_SUCCESS;
+    if (vmaCreateBuffer(allocator->allocator, &buffer_info, &vma_alloc_createinfo, &vma_buffer->buffer, &vma_buffer->allocation, lx_null) != VK_SUCCESS) {
+        return lx_false;
+    }
+
+    // if this is a uniform buffer we must setup a descriptor set
+    if (allocator->buffer_type == VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT) {
+        vma_buffer->descriptor_set_uniform = lx_vk_buffer_alloc_uniform_descriptor_set(allocator->device, vma_buffer->buffer, size);
+        if (vma_buffer->descriptor_set_uniform == VK_NULL_HANDLE) {
+            vmaDestroyBuffer(allocator->allocator, vma_buffer->buffer, vma_buffer->allocation);
+            return lx_false;
+        }
+    }
+    return lx_true;
 }
 
 lx_void_t lx_vk_buffer_allocator_free(lx_vk_buffer_allocator_ref_t self, lx_vk_buffer_t* buffer) {
@@ -125,6 +176,10 @@ lx_void_t lx_vk_buffer_allocator_free(lx_vk_buffer_allocator_ref_t self, lx_vk_b
     lx_assert(allocator && vma_buffer);
 
     vmaDestroyBuffer(allocator->allocator, vma_buffer->buffer, vma_buffer->allocation);
+
+    if (allocator->buffer_type == VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT) {
+        lx_vk_buffer_free_uniform_descriptor_set(allocator->device, vma_buffer->descriptor_set_uniform);
+    }
 }
 
 lx_void_t lx_vk_buffer_allocator_copy(lx_vk_buffer_allocator_ref_t self, lx_vk_buffer_t* buffer, lx_size_t pos, lx_pointer_t data, lx_size_t size) {
