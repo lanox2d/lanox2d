@@ -25,6 +25,15 @@
 #include "descriptor_sets.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
+ * macros
+ */
+#ifdef LX_CONFIG_SMALL
+#   define LX_VK_DESCRIPTOR_FREE_SETS_GROW      (16)
+#else
+#   define LX_VK_DESCRIPTOR_FREE_SETS_GROW      (64)
+#endif
+
+/* //////////////////////////////////////////////////////////////////////////////////////
  * types
  */
 
@@ -34,6 +43,7 @@ typedef struct lx_vk_descriptor_sets_t {
     VkDescriptorType        descriptor_type;
     VkDescriptorSetLayout   descriptor_set_layout;
     lx_uint32_t             descriptor_count_per_set;
+    lx_array_ref_t          free_sets;
 }lx_vk_descriptor_sets_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -86,9 +96,13 @@ static lx_vk_descriptor_sets_ref_t lx_vk_descriptor_sets_init(lx_vulkan_device_t
 
         descriptor_sets->device = device;
         descriptor_sets->descriptor_type = type;
+
         descriptor_sets->descriptor_count_per_set = lx_vk_descriptor_sets_get_layout_and_set_count(device,
             type, stages, stages_size, &descriptor_sets->descriptor_set_layout);
         lx_assert_and_check_break(descriptor_sets->descriptor_count_per_set);
+
+        descriptor_sets->free_sets = lx_array_init(LX_VK_DESCRIPTOR_FREE_SETS_GROW, lx_element_mem(sizeof(VkDescriptorSet), lx_null, lx_null));
+        lx_assert_and_check_break(descriptor_sets->free_sets);
 
         ok = lx_true;
     } while (0);
@@ -112,6 +126,18 @@ lx_vk_descriptor_sets_ref_t lx_vk_descriptor_sets_init_uniform(lx_vulkan_device_
 lx_void_t lx_vk_descriptor_sets_exit(lx_vk_descriptor_sets_ref_t self) {
     lx_vk_descriptor_sets_t* descriptor_sets = (lx_vk_descriptor_sets_t*)self;
     if (descriptor_sets) {
+        lx_vulkan_device_t* device = descriptor_sets->device;
+        lx_assert(device);
+
+        if (descriptor_sets->free_sets) {
+            lx_array_exit(descriptor_sets->free_sets);
+            descriptor_sets->free_sets = lx_null;
+        }
+
+        if (descriptor_sets->descriptor_set_layout) {
+            vkDestroyDescriptorSetLayout(device->device, descriptor_sets->descriptor_set_layout, lx_null);
+            descriptor_sets->descriptor_set_layout = VK_NULL_HANDLE;
+        }
         lx_free(descriptor_sets);
     }
 }
@@ -120,3 +146,29 @@ VkDescriptorSetLayout lx_vk_descriptor_sets_layout(lx_vk_descriptor_sets_ref_t s
     lx_vk_descriptor_sets_t* descriptor_sets = (lx_vk_descriptor_sets_t*)self;
     return descriptor_sets? descriptor_sets->descriptor_set_layout : VK_NULL_HANDLE;
 }
+
+VkDescriptorSet lx_vk_descriptor_sets_new_set(lx_vk_descriptor_sets_ref_t self) {
+    lx_vk_descriptor_sets_t* descriptor_sets = (lx_vk_descriptor_sets_t*)self;
+    lx_assert_and_check_return_val(descriptor_sets && descriptor_sets->free_sets, VK_NULL_HANDLE);
+
+    VkDescriptorSet descriptor_set = VK_NULL_HANDLE;
+    if (lx_array_size(descriptor_sets->free_sets)) {
+        VkDescriptorSet* pdescriptor_set = (VkDescriptorSet*)lx_array_last(descriptor_sets->free_sets);
+        if (pdescriptor_set) {
+            descriptor_set = *pdescriptor_set;
+            lx_array_remove_last(descriptor_sets->free_sets);
+        }
+    } else {
+    }
+    lx_assert(descriptor_set != VK_NULL_HANDLE);
+    return descriptor_set;
+}
+
+lx_void_t lx_vk_descriptor_sets_free_set(lx_vk_descriptor_sets_ref_t self, VkDescriptorSet descriptor_set) {
+    lx_vk_descriptor_sets_t* descriptor_sets = (lx_vk_descriptor_sets_t*)self;
+    if (descriptor_sets && descriptor_sets->free_sets) {
+        lx_assert(descriptor_set != VK_NULL_HANDLE);
+        lx_array_insert_tail(descriptor_sets->free_sets, &descriptor_set);
+    }
+}
+
