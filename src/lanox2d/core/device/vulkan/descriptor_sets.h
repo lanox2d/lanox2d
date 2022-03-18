@@ -63,14 +63,14 @@ VkDescriptorSetLayout       lx_vk_descriptor_sets_layout(lx_vk_descriptor_sets_r
  *
  * @return                  the descriptor set
  */
-VkDescriptorSet             lx_vk_descriptor_sets_new_set(lx_vk_descriptor_sets_ref_t descriptor_sets);
+VkDescriptorSet             lx_vk_descriptor_sets_alloc(lx_vk_descriptor_sets_ref_t descriptor_sets);
 
 /* free the given descriptor set
  *
  * @param descriptor_sets   the descriptor sets
  * @param descriptor_set    the descriptor set
  */
-lx_void_t                   lx_vk_descriptor_sets_free_set(lx_vk_descriptor_sets_ref_t descriptor_sets, VkDescriptorSet descriptor_set);
+lx_void_t                   lx_vk_descriptor_sets_free(lx_vk_descriptor_sets_ref_t descriptor_sets, VkDescriptorSet descriptor_set);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

@@ -26,6 +26,7 @@
 #include "pipeline.h"
 #include "renderer.h"
 #include "buffer_allocator.h"
+#include "descriptor_sets.h"
 #ifdef LX_CONFIG_WINDOW_HAVE_GLFW
 #   include <GLFW/glfw3.h>
 #endif
@@ -391,6 +392,12 @@ static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
             }
         }
 
+        // destroy descriptor sets
+        if (device->descriptor_sets_uniform) {
+            lx_vk_descriptor_sets_exit(device->descriptor_sets_uniform);
+            device->descriptor_sets_uniform = lx_null;
+        }
+
         // destroy vertex buffers
         if (device->vertex_buffers) {
             lx_array_exit(device->vertex_buffers);
@@ -562,6 +569,10 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
         device->vertex_buffers = lx_array_init(LX_DEVICE_VERTEX_BUFFERS_GROW,
             lx_element_mem(sizeof(lx_vk_buffer_t), lx_device_vulkan_vertex_buffer_exit, (lx_pointer_t)device->allocator_vertex));
         lx_assert_and_check_break(device->vertex_buffers);
+
+        // init descriptor sets
+        device->descriptor_sets_uniform = lx_vk_descriptor_sets_init_uniform(device);
+        lx_assert_and_check_break(device->descriptor_sets_uniform);
 
         // init stroker
         device->stroker = lx_stroker_init();

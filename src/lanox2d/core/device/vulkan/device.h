@@ -34,52 +34,55 @@
 
 // the vulkan device type
 typedef struct lx_vulkan_device_t_ {
-    lx_device_t                 base;
-    lx_window_ref_t             window;
+    lx_device_t                         base;
+    lx_window_ref_t                     window;
 
     // vulkan instance
-    VkInstance                  instance;
-    VkQueue                     queue;
-    VkDevice                    device;
-    VkSurfaceKHR                surface;
-    VkRenderPass                renderpass;
-    VkSemaphore                 semaphore;
-    VkFence                     fence;
+    VkInstance                          instance;
+    VkQueue                             queue;
+    VkDevice                            device;
+    VkSurfaceKHR                        surface;
+    VkRenderPass                        renderpass;
+    VkSemaphore                         semaphore;
+    VkFence                             fence;
 
     // gpu device
-    VkPhysicalDevice            gpu_device;
-    lx_uint32_t                 gpu_familyidx;
-    VkPhysicalDeviceMemoryProperties gpu_memory_properties;
+    VkPhysicalDevice                    gpu_device;
+    lx_uint32_t                         gpu_familyidx;
+    VkPhysicalDeviceMemoryProperties    gpu_memory_properties;
 
     // swapchain
-    VkSwapchainKHR              swapchain;
-    VkExtent2D                  framesize;
-    VkFormat                    format;
-    VkImage*                    images;
-    VkImageView*                imageviews;
-    VkFramebuffer*              framebuffers;
-    lx_uint32_t                 images_count;
-    lx_uint32_t                 imageindex;
+    VkSwapchainKHR                      swapchain;
+    VkExtent2D                          framesize;
+    VkFormat                            format;
+    VkImage*                            images;
+    VkImageView*                        imageviews;
+    VkFramebuffer*                      framebuffers;
+    lx_uint32_t                         images_count;
+    lx_uint32_t                         imageindex;
 
     // graphics pipelines
-    lx_vk_pipeline_ref_t        pipelines[LX_VK_PIPELINE_TYPE_MAXN];
+    lx_vk_pipeline_ref_t                pipelines[LX_VK_PIPELINE_TYPE_MAXN];
 
     // command buffers
-    VkCommandPool               command_pool;
-    VkCommandBuffer*            command_buffers;
-    lx_uint32_t                 command_buffers_count;
+    VkCommandPool                       command_pool;
+    VkCommandBuffer*                    command_buffers;
+    lx_uint32_t                         command_buffers_count;
 
-    // buffer allocator
-    lx_vk_buffer_allocator_ref_t       allocator_vertex;
-    lx_vk_buffer_allocator_ref_t       allocator_uniform;
+    // buffer allocators
+    lx_vk_buffer_allocator_ref_t        allocator_vertex;
+    lx_vk_buffer_allocator_ref_t        allocator_uniform;
+
+    // descriptor sets
+    lx_vk_descriptor_sets_ref_t         descriptor_sets_uniform;
 
     // renderer
-    lx_bool_t                   renderer_prepared;
-    VkCommandBuffer             renderer_cmdbuffer;
-    VkClearColorValue           renderer_clear_color;
-    lx_array_ref_t              vertex_buffers;
-    lx_tessellator_ref_t        tessellator;
-    lx_stroker_ref_t            stroker;
+    lx_bool_t                           renderer_prepared;
+    VkCommandBuffer                     renderer_cmdbuffer;
+    VkClearColorValue                   renderer_clear_color;
+    lx_array_ref_t                      vertex_buffers;
+    lx_tessellator_ref_t                tessellator;
+    lx_stroker_ref_t                    stroker;
 
 }lx_vulkan_device_t;
 

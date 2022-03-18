@@ -232,7 +232,7 @@ VkDescriptorSetLayout lx_vk_descriptor_sets_layout(lx_vk_descriptor_sets_ref_t s
     return descriptor_sets? descriptor_sets->descriptor_set_layout : VK_NULL_HANDLE;
 }
 
-VkDescriptorSet lx_vk_descriptor_sets_new_set(lx_vk_descriptor_sets_ref_t self) {
+VkDescriptorSet lx_vk_descriptor_sets_alloc(lx_vk_descriptor_sets_ref_t self) {
     lx_vk_descriptor_sets_t* descriptor_sets = (lx_vk_descriptor_sets_t*)self;
     lx_assert_and_check_return_val(descriptor_sets && descriptor_sets->free_sets, VK_NULL_HANDLE);
 
@@ -250,7 +250,7 @@ VkDescriptorSet lx_vk_descriptor_sets_new_set(lx_vk_descriptor_sets_ref_t self) 
     return descriptor_set;
 }
 
-lx_void_t lx_vk_descriptor_sets_free_set(lx_vk_descriptor_sets_ref_t self, VkDescriptorSet descriptor_set) {
+lx_void_t lx_vk_descriptor_sets_free(lx_vk_descriptor_sets_ref_t self, VkDescriptorSet descriptor_set) {
     lx_vk_descriptor_sets_t* descriptor_sets = (lx_vk_descriptor_sets_t*)self;
     if (descriptor_sets && descriptor_sets->free_sets) {
         lx_assert(descriptor_set != VK_NULL_HANDLE);
