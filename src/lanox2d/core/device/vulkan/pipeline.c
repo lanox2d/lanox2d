@@ -328,6 +328,15 @@ VkPipelineLayout lx_vk_pipeline_layout(lx_vk_pipeline_ref_t self) {
     return pipeline? pipeline->pipeline_layout : 0;
 }
 
+VkDescriptorSet* lx_vk_pipeline_descriptor_sets(lx_vk_pipeline_ref_t self) {
+    lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
+    return pipeline? &pipeline->ubo_matrix.descriptor_set : lx_null;
+}
+
+lx_uint32_t lx_vk_pipeline_descriptor_sets_count(lx_vk_pipeline_ref_t self) {
+    return 1;
+}
+
 lx_void_t lx_vk_pipeline_matrix_set_model(lx_vk_pipeline_ref_t self, lx_vk_matrix_ref_t matrix) {
     lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
     if (pipeline && pipeline->device) {

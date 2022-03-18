@@ -90,6 +90,22 @@ VkPipeline              lx_vk_pipeline_native(lx_vk_pipeline_ref_t pipeline);
  */
 VkPipelineLayout        lx_vk_pipeline_layout(lx_vk_pipeline_ref_t pipeline);
 
+/* get pipeline descriptor sets
+ *
+ * @param pipeline      the pipeline
+ *
+ * @return              the descriptor sets of pipeline
+ */
+VkDescriptorSet*        lx_vk_pipeline_descriptor_sets(lx_vk_pipeline_ref_t pipeline);
+
+/* get count of pipeline descriptor sets
+ *
+ * @param pipeline      the pipeline
+ *
+ * @return              the descriptor sets count of pipeline
+ */
+lx_uint32_t             lx_vk_pipeline_descriptor_sets_count(lx_vk_pipeline_ref_t pipeline);
+
 /* set the model matrix
  *
  * @param pipeline      the pipeline

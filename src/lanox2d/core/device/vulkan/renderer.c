@@ -231,12 +231,10 @@ static lx_void_t lx_vk_renderer_apply_shader_bitmap(lx_vulkan_device_t* device, 
     lx_vk_matrix_convert(&texcoord, &matrix);
     lx_vk_pipeline_matrix_set_texcoord(pipeline, &texcoord);
 
-#if 0
     // bind descriptor set to pipeline (uniform buffer, ...)
     vkCmdBindDescriptorSets(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
         lx_vk_pipeline_layout(pipeline), 0, lx_vk_pipeline_descriptor_sets_count(pipeline),
         lx_vk_pipeline_descriptor_sets(pipeline), 0, lx_null);
-#endif
 }
 
 static lx_inline lx_void_t lx_vk_renderer_apply_paint_shader(lx_vulkan_device_t* device, lx_shader_ref_t shader, lx_rect_ref_t bounds) {
@@ -290,12 +288,10 @@ static lx_inline lx_void_t lx_vk_renderer_apply_paint_solid(lx_vulkan_device_t* 
     lx_vk_matrix_convert(&model, device->base.matrix);
     lx_vk_pipeline_matrix_set_model(pipeline, &model);
 
-#if 0
     // bind descriptor set to pipeline (uniform buffer, ...)
     vkCmdBindDescriptorSets(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
         lx_vk_pipeline_layout(pipeline), 0, lx_vk_pipeline_descriptor_sets_count(pipeline),
         lx_vk_pipeline_descriptor_sets(pipeline), 0, lx_null);
-#endif
 }
 
 static lx_inline lx_void_t lx_vk_renderer_apply_paint(lx_vulkan_device_t* device, lx_rect_ref_t bounds) {
