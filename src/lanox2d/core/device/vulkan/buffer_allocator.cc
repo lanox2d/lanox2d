@@ -50,10 +50,10 @@ typedef struct lx_vk_buffer_allocator_t {
 // the vulkan/vma buffer type
 typedef struct lx_vk_vma_buffer_t_ {
     VkBuffer        buffer;
+    VkDescriptorSet descriptor_set;
     lx_size_t       offset;
     lx_size_t       size;
     VmaAllocation   allocation;
-    VkDescriptorSet descriptor_set_uniform;
 }lx_vk_vma_buffer_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -74,7 +74,7 @@ static VkDescriptorSet lx_vk_buffer_alloc_uniform_descriptor_set(lx_vulkan_devic
         write_descriptor_set.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         write_descriptor_set.pNext = lx_null;
         write_descriptor_set.dstSet = descriptor_set;
-        write_descriptor_set.dstBinding = 0;
+        write_descriptor_set.dstBinding = LX_VK_UNIFORM_BINDING;
         write_descriptor_set.dstArrayElement = 0;
         write_descriptor_set.descriptorCount = 1;
         write_descriptor_set.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -161,8 +161,8 @@ lx_bool_t lx_vk_buffer_allocator_alloc(lx_vk_buffer_allocator_ref_t self, lx_siz
 
     // if this is a uniform buffer we must setup a descriptor set
     if (allocator->buffer_type == VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT) {
-        vma_buffer->descriptor_set_uniform = lx_vk_buffer_alloc_uniform_descriptor_set(allocator->device, vma_buffer->buffer, size);
-        if (vma_buffer->descriptor_set_uniform == VK_NULL_HANDLE) {
+        vma_buffer->descriptor_set = lx_vk_buffer_alloc_uniform_descriptor_set(allocator->device, vma_buffer->buffer, size);
+        if (vma_buffer->descriptor_set == VK_NULL_HANDLE) {
             vmaDestroyBuffer(allocator->allocator, vma_buffer->buffer, vma_buffer->allocation);
             return lx_false;
         }
@@ -178,7 +178,7 @@ lx_void_t lx_vk_buffer_allocator_free(lx_vk_buffer_allocator_ref_t self, lx_vk_b
     vmaDestroyBuffer(allocator->allocator, vma_buffer->buffer, vma_buffer->allocation);
 
     if (allocator->buffer_type == VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT) {
-        lx_vk_buffer_free_uniform_descriptor_set(allocator->device, vma_buffer->descriptor_set_uniform);
+        lx_vk_buffer_free_uniform_descriptor_set(allocator->device, vma_buffer->descriptor_set);
     }
 }
 

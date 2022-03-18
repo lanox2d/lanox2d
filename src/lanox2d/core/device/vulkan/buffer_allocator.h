@@ -38,6 +38,7 @@ lx_extern_c_enter
 // the vulkan buffer type
 typedef struct lx_vk_buffer_t_ {
     VkBuffer        buffer;
+    VkDescriptorSet descriptor_set;
     lx_size_t       offset;
     lx_size_t       size;
     lx_byte_t       privdata[16]; // reverse private storage space

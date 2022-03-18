@@ -35,10 +35,6 @@ typedef struct lx_vk_pipeline_t {
     VkPipeline              pipeline;
     VkPipelineCache         pipeline_cache;
     VkPipelineLayout        pipeline_layout;
-    VkDescriptorPool        descriptor_pool;
-    VkDescriptorSetLayout   descriptor_set_layout;
-    VkDescriptorSet         descriptor_sets[16];
-    lx_uint32_t             descriptor_sets_count;
     lx_vulkan_device_t*     device;
     lx_vk_buffer_t          ubo_matrix;
 }lx_vk_pipeline_t;
@@ -305,16 +301,6 @@ lx_void_t lx_vk_pipeline_exit(lx_vk_pipeline_ref_t self) {
         // free ubo buffer
         lx_vk_buffer_allocator_free(device->allocator_uniform, &pipeline->ubo_matrix);
 
-        // free descriptor set
-        if (pipeline->descriptor_pool) {
-            if (pipeline->descriptor_set_layout) {
-                vkDestroyDescriptorSetLayout(device->device, pipeline->descriptor_set_layout, lx_null);
-                pipeline->descriptor_set_layout = 0;
-            }
-            vkDestroyDescriptorPool(device->device, pipeline->descriptor_pool, lx_null);
-            pipeline->descriptor_pool = 0;
-        }
-
         // free pipeline
         if (pipeline->pipeline) {
             vkDestroyPipeline(device->device, pipeline->pipeline, lx_null);
@@ -340,16 +326,6 @@ VkPipeline lx_vk_pipeline_native(lx_vk_pipeline_ref_t self) {
 VkPipelineLayout lx_vk_pipeline_layout(lx_vk_pipeline_ref_t self) {
     lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
     return pipeline? pipeline->pipeline_layout : 0;
-}
-
-VkDescriptorSet* lx_vk_pipeline_descriptor_sets(lx_vk_pipeline_ref_t self) {
-    lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
-    return pipeline? pipeline->descriptor_sets : lx_null;
-}
-
-lx_uint32_t lx_vk_pipeline_descriptor_sets_count(lx_vk_pipeline_ref_t self) {
-    lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
-    return pipeline? pipeline->descriptor_sets_count : 0;
 }
 
 lx_void_t lx_vk_pipeline_matrix_set_model(lx_vk_pipeline_ref_t self, lx_vk_matrix_ref_t matrix) {
