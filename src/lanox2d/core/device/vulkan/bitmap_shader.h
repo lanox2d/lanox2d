@@ -42,7 +42,7 @@ typedef struct lx_bitmap_shader_devdata_t_ {
     VkImage             image;
     VkDeviceMemory      imagemem;
     VkImageView         imageview;
-    VkSampler           sampler;
+    lx_vk_sampler_ref_t sampler;
     lx_matrix_t         matrix;
 }lx_bitmap_shader_devdata_t;
 

@@ -23,7 +23,9 @@
  */
 #include "bitmap_shader.h"
 #include "vk.h"
+#include "sampler.h"
 #include "../../shader.h"
+#include "../../quality.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
@@ -41,7 +43,7 @@ static lx_void_t lx_bitmap_shader_devdata_free(lx_pointer_t devdata) {
             bitmap_devdata->imagemem = lx_null;
         }
         if (bitmap_devdata->sampler) {
-            vkDestroySampler(bitmap_devdata->device, bitmap_devdata->sampler, lx_null);
+            lx_vk_sampler_exit(bitmap_devdata->sampler);
             bitmap_devdata->sampler = lx_null;
         }
         if (bitmap_devdata->imageview) {
@@ -339,26 +341,22 @@ static lx_bitmap_shader_devdata_t* lx_bitmap_shader_init_devdata(lx_vulkan_devic
             break;
         }
 
-        // create sampler, TODO nearest, repeat, ..
-        VkSamplerCreateInfo sampler_info = {};
-        sampler_info.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-        sampler_info.pNext = lx_null;
-        sampler_info.magFilter = VK_FILTER_NEAREST;
-        sampler_info.minFilter = VK_FILTER_NEAREST;
-        sampler_info.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
-        sampler_info.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-        sampler_info.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-        sampler_info.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-        sampler_info.mipLodBias = 0.0f;
-        sampler_info.maxAnisotropy = 1;
-        sampler_info.compareOp = VK_COMPARE_OP_NEVER;
-        sampler_info.minLod = 0.0f;
-        sampler_info.maxLod = 0.0f;
-        sampler_info.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
-        sampler_info.unnormalizedCoordinates = VK_FALSE;
-        if (vkCreateSampler(device->device, &sampler_info, lx_null, &devdata->sampler) != VK_SUCCESS) {
-            break;
+        // create sampler
+        static VkSamplerAddressMode address_modes[] = {
+            VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER,
+            VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER,
+            VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
+            VK_SAMPLER_ADDRESS_MODE_REPEAT,
+            VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT
+        };
+        lx_size_t tile_mode = lx_shader_tile_mode((lx_shader_ref_t)shader);
+        lx_assert_and_check_break(tile_mode < lx_arrayn(address_modes));
+        VkFilter filter = lx_quality() > LX_QUALITY_LOW? VK_FILTER_LINEAR : VK_FILTER_NEAREST;
+        if (!(lx_paint_flags(device->base.paint) & LX_PAINT_FLAG_FILTER_BITMAP)) {
+            filter = VK_FILTER_NEAREST;
         }
+        devdata->sampler = lx_vk_sampler_init(device, filter, address_modes[tile_mode], address_modes[tile_mode]);
+        lx_assert_and_check_break(devdata->sampler);
 
         // create image view
         VkImageViewCreateInfo view_info = {};
