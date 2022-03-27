@@ -56,6 +56,9 @@ typedef lx_typeref(vk_pipeline);
 // the sampler ref type
 typedef lx_typeref(vk_sampler);
 
+// the image view ref type
+typedef lx_typeref(vk_image_view);
+
 // the buffer allocator ref type
 typedef lx_typeref(vk_buffer_allocator);
 
