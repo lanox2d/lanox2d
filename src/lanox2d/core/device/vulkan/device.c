@@ -399,6 +399,10 @@ static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
             lx_vk_descriptor_sets_exit(device->descriptor_sets_uniform);
             device->descriptor_sets_uniform = lx_null;
         }
+        if (device->descriptor_sets_sampler) {
+            lx_vk_descriptor_sets_exit(device->descriptor_sets_sampler);
+            device->descriptor_sets_sampler = lx_null;
+        }
 
         // destroy vertex buffers
         if (device->vertex_buffers) {
@@ -574,7 +578,9 @@ lx_device_ref_t lx_device_init_from_vulkan(lx_size_t width, lx_size_t height, lx
 
         // init descriptor sets
         device->descriptor_sets_uniform = lx_vk_descriptor_sets_init_uniform(device);
+        device->descriptor_sets_sampler = lx_vk_descriptor_sets_init_sampler(device);
         lx_assert_and_check_break(device->descriptor_sets_uniform);
+        lx_assert_and_check_break(device->descriptor_sets_sampler);
 
         // init stroker
         device->stroker = lx_stroker_init();

@@ -75,6 +75,7 @@ typedef struct lx_vulkan_device_t_ {
 
     // descriptor sets
     lx_vk_descriptor_sets_ref_t         descriptor_sets_uniform;
+    lx_vk_descriptor_sets_ref_t         descriptor_sets_sampler;
 
     // renderer
     lx_bool_t                           renderer_prepared;

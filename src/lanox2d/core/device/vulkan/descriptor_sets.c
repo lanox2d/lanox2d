@@ -132,7 +132,7 @@ static lx_uint32_t lx_vk_descriptor_sets_get_layout_and_set_count_for_uniform(lx
     const lx_uint32_t descriptor_count = 1;
     VkDescriptorSetLayoutBinding layout_binding = {};
     layout_binding.binding = LX_VK_UNIFORM_BINDING;
-    layout_binding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;//_DYNAMIC;
+    layout_binding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     layout_binding.descriptorCount = descriptor_count;
     layout_binding.stageFlags = stages[0];
     layout_binding.pImmutableSamplers = lx_null;
@@ -149,8 +149,21 @@ static lx_uint32_t lx_vk_descriptor_sets_get_layout_and_set_count_for_sampler(lx
     lx_uint32_t const* stages, lx_size_t stages_size, VkDescriptorSetLayout* pdescriptor_set_layout) {
     lx_assert_and_check_return_val(stages_size == 1, 0);
 
-    // TODO
-    return 0;
+    // init descriptor set layout (sampler)
+    const lx_uint32_t descriptor_count = 1;
+    VkDescriptorSetLayoutBinding layout_binding = {};
+    layout_binding.binding = LX_VK_SAMPLER_BINDING;
+    layout_binding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    layout_binding.descriptorCount = descriptor_count;
+    layout_binding.stageFlags = stages[0];
+    layout_binding.pImmutableSamplers = lx_null;
+
+    VkDescriptorSetLayoutCreateInfo layout_createinfo = {};
+    layout_createinfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    layout_createinfo.pNext = lx_null;
+    layout_createinfo.bindingCount = 1;
+    layout_createinfo.pBindings = &layout_binding;
+    return vkCreateDescriptorSetLayout(device->device, &layout_createinfo, lx_null, pdescriptor_set_layout) == VK_SUCCESS? descriptor_count : 0;
 }
 
 static lx_uint32_t lx_vk_descriptor_sets_get_layout_and_set_count(lx_vulkan_device_t* device, VkDescriptorType type,
