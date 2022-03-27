@@ -145,12 +145,24 @@ static lx_uint32_t lx_vk_descriptor_sets_get_layout_and_set_count_for_uniform(lx
     return vkCreateDescriptorSetLayout(device->device, &layout_createinfo, lx_null, pdescriptor_set_layout) == VK_SUCCESS? descriptor_count : 0;
 }
 
+static lx_uint32_t lx_vk_descriptor_sets_get_layout_and_set_count_for_sampler(lx_vulkan_device_t* device,
+    lx_uint32_t const* stages, lx_size_t stages_size, VkDescriptorSetLayout* pdescriptor_set_layout) {
+    lx_assert_and_check_return_val(stages_size == 1, 0);
+
+    // TODO
+    return 0;
+}
+
 static lx_uint32_t lx_vk_descriptor_sets_get_layout_and_set_count(lx_vulkan_device_t* device, VkDescriptorType type,
     lx_uint32_t const* stages, lx_size_t stages_size, VkDescriptorSetLayout* pdescriptor_set_layout) {
     lx_uint32_t descriptor_count = 0;
     switch (type) {
     case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER:
         descriptor_count = lx_vk_descriptor_sets_get_layout_and_set_count_for_uniform(device,
+            stages, stages_size, pdescriptor_set_layout);
+        break;
+    case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
+        descriptor_count = lx_vk_descriptor_sets_get_layout_and_set_count_for_sampler(device,
             stages, stages_size, pdescriptor_set_layout);
         break;
     default:
@@ -201,6 +213,11 @@ static lx_vk_descriptor_sets_ref_t lx_vk_descriptor_sets_init(lx_vulkan_device_t
 lx_vk_descriptor_sets_ref_t lx_vk_descriptor_sets_init_uniform(lx_vulkan_device_t* device) {
     const lx_uint32_t stages[] = {VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT};
     return lx_vk_descriptor_sets_init(device, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, stages, lx_arrayn(stages));
+}
+
+lx_vk_descriptor_sets_ref_t lx_vk_descriptor_sets_init_sampler(lx_vulkan_device_t* device) {
+    const lx_uint32_t stages[] = {VK_SHADER_STAGE_FRAGMENT_BIT};
+    return lx_vk_descriptor_sets_init(device, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, stages, lx_arrayn(stages));
 }
 
 lx_void_t lx_vk_descriptor_sets_exit(lx_vk_descriptor_sets_ref_t self) {

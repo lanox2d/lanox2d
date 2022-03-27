@@ -43,6 +43,14 @@ lx_extern_c_enter
  */
 lx_vk_descriptor_sets_ref_t lx_vk_descriptor_sets_init_uniform(lx_vulkan_device_t* device);
 
+/* init sampler descriptor sets
+ *
+ * @param device            the vulkan device
+ *
+ * @return                  the descriptor sets
+ */
+lx_vk_descriptor_sets_ref_t lx_vk_descriptor_sets_init_sampler(lx_vulkan_device_t* device);
+
 /* exit descriptor sets
  *
  * @param descriptor_sets   the descriptor sets

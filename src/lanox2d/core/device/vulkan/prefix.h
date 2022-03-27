@@ -52,6 +52,9 @@ typedef enum lx_vk_pipeline_type_e_ {
 // the pipeline ref type
 typedef lx_typeref(vk_pipeline);
 
+// the sampler ref type
+typedef lx_typeref(vk_sampler);
+
 // the buffer allocator ref type
 typedef lx_typeref(vk_buffer_allocator);
 
