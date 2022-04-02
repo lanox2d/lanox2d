@@ -92,7 +92,6 @@ static lx_bool_t lx_bitmap_shader_load_texture(lx_vulkan_device_t* device, lx_bi
         image_create_info.queueFamilyIndexCount = 1;
         image_create_info.pQueueFamilyIndices = &device->gpu_familyidx;
         image_create_info.initialLayout = VK_IMAGE_LAYOUT_PREINITIALIZED;
-
         if (vkCreateImage(device->device, &image_create_info, lx_null, &devdata->image) != VK_SUCCESS) {
             break;
         }
