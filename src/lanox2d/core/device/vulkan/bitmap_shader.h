@@ -38,12 +38,12 @@ lx_extern_c_enter
 
 // the bitmap shader devdata type
 typedef struct lx_bitmap_shader_devdata_t_ {
-    VkDevice            device;
-    VkImage             image;
-    VkDeviceMemory      imagemem;
-    VkImageView         imageview;
-    lx_vk_sampler_ref_t sampler;
-    lx_matrix_t         matrix;
+    VkDevice                device;
+    VkImage                 image;
+    VkDeviceMemory          imagemem;
+    lx_vk_image_view_ref_t  imageview;
+    lx_vk_sampler_ref_t     sampler;
+    lx_matrix_t             matrix;
 }lx_bitmap_shader_devdata_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////

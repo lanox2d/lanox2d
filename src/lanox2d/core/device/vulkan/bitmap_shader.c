@@ -24,6 +24,7 @@
 #include "bitmap_shader.h"
 #include "vk.h"
 #include "sampler.h"
+#include "image_view.h"
 #include "../../shader.h"
 #include "../../quality.h"
 
@@ -47,7 +48,7 @@ static lx_void_t lx_bitmap_shader_devdata_free(lx_pointer_t devdata) {
             bitmap_devdata->sampler = lx_null;
         }
         if (bitmap_devdata->imageview) {
-            vkDestroyImageView(bitmap_devdata->device, bitmap_devdata->imageview, lx_null);
+            lx_vk_image_view_exit(bitmap_devdata->imageview);
             bitmap_devdata->imageview = lx_null;
         }
         lx_free(bitmap_devdata);
@@ -358,26 +359,8 @@ static lx_bitmap_shader_devdata_t* lx_bitmap_shader_init_devdata(lx_vulkan_devic
         lx_assert_and_check_break(devdata->sampler);
 
         // create image view
-        VkImageViewCreateInfo view_info = {};
-        view_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-        view_info.pNext = lx_null;
-        view_info.flags = 0;
-        view_info.image = VK_NULL_HANDLE;
-        view_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
-        view_info.format = format;
-        view_info.components.r = VK_COMPONENT_SWIZZLE_R;
-        view_info.components.g = VK_COMPONENT_SWIZZLE_G;
-        view_info.components.b = VK_COMPONENT_SWIZZLE_B;
-        view_info.components.a = VK_COMPONENT_SWIZZLE_A;
-        view_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        view_info.subresourceRange.baseMipLevel = 0;
-        view_info.subresourceRange.levelCount = 1;
-        view_info.subresourceRange.baseArrayLayer = 0;
-        view_info.subresourceRange.layerCount = 1;
-        view_info.image = devdata->image;
-        if (vkCreateImageView(device->device, &view_info, lx_null, &devdata->imageview) != VK_SUCCESS) {
-            break;
-        }
+        devdata->imageview = lx_vk_image_view_init(device, devdata->image, format);
+        lx_assert_and_check_break(devdata->imageview);
 
         /* convert world coordinate to camera coordinate
          *
