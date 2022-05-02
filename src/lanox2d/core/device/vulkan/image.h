@@ -62,6 +62,14 @@ lx_void_t               lx_vk_image_exit(lx_vk_image_ref_t image);
  */
 VkImage                 lx_vk_image(lx_vk_image_ref_t image);
 
+/* get the texture view
+ *
+ * @param image         the image
+ *
+ * @return              the texture view
+ */
+lx_vk_image_view_ref_t  lx_vk_image_texture_view(lx_vk_image_ref_t image);
+
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
  */

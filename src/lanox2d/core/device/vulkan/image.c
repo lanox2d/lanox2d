@@ -137,3 +137,7 @@ VkImage lx_vk_image(lx_vk_image_ref_t self) {
     return image? image->image : VK_NULL_HANDLE;
 }
 
+lx_vk_image_view_ref_t lx_vk_image_texture_view(lx_vk_image_ref_t self) {
+    lx_vk_image_t* image = (lx_vk_image_t*)self;
+    return image? image->texture_view : VK_NULL_HANDLE;
+}
