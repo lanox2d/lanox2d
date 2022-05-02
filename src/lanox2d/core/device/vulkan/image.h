@@ -39,10 +39,14 @@ lx_extern_c_enter
  *
  * @param device        the vulkan device
  * @param format        the image format
+ * @param width         the image width
+ * @param height        the image height
+ * @param tiling        the image tiling
+ * @param usage_flags   the image usage flags
  *
  * @return              the image
  */
-lx_vk_image_ref_t       lx_vk_image_init(lx_vulkan_device_t* device, VkFormat format);
+lx_vk_image_ref_t       lx_vk_image_init(lx_vulkan_device_t* device, VkFormat format, lx_size_t width, lx_size_t height, VkImageTiling tiling, VkImageUsageFlags usage_flags);
 
 /* exit image
  *
