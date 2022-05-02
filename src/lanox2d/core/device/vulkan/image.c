@@ -35,13 +35,21 @@ typedef struct lx_vk_image_t {
     VkImage                 image;
     VkDeviceMemory          memory;
     lx_vk_image_view_ref_t  texture_view;
+    lx_vk_image_view_ref_t  framebuffer_view;
 }lx_vk_image_t;
 
+// the attachment usage flag
+typedef enum lx_vk_image_attachment_usage_flags_e_ {
+    LX_VK_IMAGE_ATTACHMENT_STENCIL = 0x1,
+    LX_VK_IMAGE_ATTACHMENT_COLOR   = 0x2,
+    LX_VK_IMAGE_ATTACHMENT_TEXTURE = 0x4
+}lx_vk_image_attachment_usage_flags_e;
+
 /* //////////////////////////////////////////////////////////////////////////////////////
- * implementation
+ * private implementation
  */
-lx_vk_image_ref_t lx_vk_image_init(lx_vulkan_device_t* device, VkFormat format,
-    lx_size_t width, lx_size_t height, VkImageTiling tiling, VkImageUsageFlags usage_flags) {
+static lx_vk_image_ref_t lx_vk_image_init(lx_vulkan_device_t* device, VkFormat format,
+    lx_size_t width, lx_size_t height, lx_size_t attachment_usages, VkImageTiling tiling, VkImageUsageFlags usage_flags) {
     lx_assert_and_check_return_val(device, lx_null);
 
     lx_bool_t ok = lx_false;
@@ -98,9 +106,17 @@ lx_vk_image_ref_t lx_vk_image_init(lx_vulkan_device_t* device, VkFormat format,
             break;
         }
 
+        // create framebuffer view
+        if (attachment_usages & LX_VK_IMAGE_ATTACHMENT_STENCIL || attachment_usages & LX_VK_IMAGE_ATTACHMENT_COLOR) {
+            image->framebuffer_view = lx_vk_image_view_init(device, image->image, format);
+            lx_assert_and_check_break(image->framebuffer_view);
+        }
+
         // create texture view
-        image->texture_view = lx_vk_image_view_init(device, image->image, format);
-        lx_assert_and_check_break(image->texture_view);
+        if (attachment_usages & LX_VK_IMAGE_ATTACHMENT_TEXTURE) {
+            image->texture_view = lx_vk_image_view_init(device, image->image, format);
+            lx_assert_and_check_break(image->texture_view);
+        }
 
         ok = lx_true;
     } while (0);
@@ -110,6 +126,29 @@ lx_vk_image_ref_t lx_vk_image_init(lx_vulkan_device_t* device, VkFormat format,
         image = lx_null;
     }
     return (lx_vk_image_ref_t)image;
+}
+
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * implementation
+ */
+lx_vk_image_ref_t lx_vk_image_init_msaa(lx_vulkan_device_t* device, VkFormat format, lx_size_t width, lx_size_t height) {
+    VkImageUsageFlags usage_flags = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT |
+                                    VK_IMAGE_USAGE_TRANSFER_SRC_BIT |
+                                    VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+    return lx_vk_image_init(device, format, width, height, LX_VK_IMAGE_ATTACHMENT_COLOR, VK_IMAGE_TILING_OPTIMAL, usage_flags);
+}
+
+lx_vk_image_ref_t lx_vk_image_init_stencil(lx_vulkan_device_t* device, VkFormat format, lx_size_t width, lx_size_t height) {
+    VkImageUsageFlags usage_flags = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT |
+                                    VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+    return lx_vk_image_init(device, format, width, height, LX_VK_IMAGE_ATTACHMENT_STENCIL, VK_IMAGE_TILING_OPTIMAL, usage_flags);
+}
+
+lx_vk_image_ref_t lx_vk_image_init_texture(lx_vulkan_device_t* device, VkFormat format, lx_size_t width, lx_size_t height) {
+    VkImageUsageFlags usage_flags = VK_IMAGE_USAGE_SAMPLED_BIT |
+                                    VK_IMAGE_USAGE_TRANSFER_SRC_BIT |
+                                    VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+    return lx_vk_image_init(device, format, width, height, LX_VK_IMAGE_ATTACHMENT_TEXTURE, VK_IMAGE_TILING_OPTIMAL, usage_flags);
 }
 
 lx_void_t lx_vk_image_exit(lx_vk_image_ref_t self) {
@@ -128,6 +167,10 @@ lx_void_t lx_vk_image_exit(lx_vk_image_ref_t self) {
             lx_vk_image_view_exit(image->texture_view);
             image->texture_view = lx_null;
         }
+        if (image->framebuffer_view) {
+            lx_vk_image_view_exit(image->framebuffer_view);
+            image->framebuffer_view = lx_null;
+        }
         lx_free(image);
     }
 }
@@ -140,4 +183,9 @@ VkImage lx_vk_image(lx_vk_image_ref_t self) {
 lx_vk_image_view_ref_t lx_vk_image_texture_view(lx_vk_image_ref_t self) {
     lx_vk_image_t* image = (lx_vk_image_t*)self;
     return image? image->texture_view : VK_NULL_HANDLE;
+}
+
+lx_vk_image_view_ref_t lx_vk_image_framebuffer_view(lx_vk_image_ref_t self) {
+    lx_vk_image_t* image = (lx_vk_image_t*)self;
+    return image? image->framebuffer_view : VK_NULL_HANDLE;
 }

@@ -35,18 +35,38 @@ lx_extern_c_enter
  * interfaces
  */
 
-/* init image
+/* init MSAA image
  *
  * @param device        the vulkan device
  * @param format        the image format
  * @param width         the image width
  * @param height        the image height
- * @param tiling        the image tiling
- * @param usage_flags   the image usage flags
  *
  * @return              the image
  */
-lx_vk_image_ref_t       lx_vk_image_init(lx_vulkan_device_t* device, VkFormat format, lx_size_t width, lx_size_t height, VkImageTiling tiling, VkImageUsageFlags usage_flags);
+lx_vk_image_ref_t       lx_vk_image_init_msaa(lx_vulkan_device_t* device, VkFormat format, lx_size_t width, lx_size_t height);
+
+/* init stencil image
+ *
+ * @param device        the vulkan device
+ * @param format        the image format
+ * @param width         the image width
+ * @param height        the image height
+ *
+ * @return              the image
+ */
+lx_vk_image_ref_t       lx_vk_image_init_stencil(lx_vulkan_device_t* device, VkFormat format, lx_size_t width, lx_size_t height);
+
+/* init texture image
+ *
+ * @param device        the vulkan device
+ * @param format        the image format
+ * @param width         the image width
+ * @param height        the image height
+ *
+ * @return              the image
+ */
+lx_vk_image_ref_t       lx_vk_image_init_texture(lx_vulkan_device_t* device, VkFormat format, lx_size_t width, lx_size_t height);
 
 /* exit image
  *
@@ -69,6 +89,14 @@ VkImage                 lx_vk_image(lx_vk_image_ref_t image);
  * @return              the texture view
  */
 lx_vk_image_view_ref_t  lx_vk_image_texture_view(lx_vk_image_ref_t image);
+
+/* get the framebuffer view
+ *
+ * @param image         the image
+ *
+ * @return              the framebuffer view
+ */
+lx_vk_image_view_ref_t  lx_vk_image_framebuffer_view(lx_vk_image_ref_t image);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

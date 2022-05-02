@@ -81,13 +81,12 @@ static lx_bitmap_shader_devdata_t* lx_bitmap_shader_init_devdata(lx_vulkan_devic
         devdata->sampler = lx_vk_sampler_init(device, filter, address_modes[tile_mode], address_modes[tile_mode]);
         lx_assert_and_check_break(devdata->sampler);
 
+        // TODO fill bitmap data
         // create image
         const VkFormat format = VK_FORMAT_R8G8B8A8_UNORM;
         lx_size_t width = lx_bitmap_width(bitmap);
         lx_size_t height = lx_bitmap_height(bitmap);
-        devdata->image = lx_vk_image_init(device, format, width, height,
-            VK_IMAGE_TILING_OPTIMAL,
-            VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT);
+        devdata->image = lx_vk_image_init_texture(device, format, width, height);
         lx_assert_and_check_break(devdata->image);
 
         /* convert world coordinate to camera coordinate
