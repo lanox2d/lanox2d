@@ -68,6 +68,16 @@ lx_vk_image_ref_t       lx_vk_image_init_stencil(lx_vulkan_device_t* device, VkF
  */
 lx_vk_image_ref_t       lx_vk_image_init_texture(lx_vulkan_device_t* device, VkFormat format, lx_size_t width, lx_size_t height);
 
+/* init texture image from bitmap
+ *
+ * @param device        the vulkan device
+ * @param format        the image format
+ * @param bitmap        the image bitmap
+ *
+ * @return              the image
+ */
+lx_vk_image_ref_t       lx_vk_image_init_texture_from_bitmap(lx_vulkan_device_t* device, VkFormat format, lx_bitmap_ref_t bitmap);
+
 /* exit image
  *
  * @param image         the image

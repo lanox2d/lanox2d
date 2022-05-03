@@ -34,6 +34,7 @@ typedef struct lx_vk_image_t {
     lx_vulkan_device_t*     device;
     VkImage                 image;
     VkDeviceMemory          memory;
+    lx_size_t               memory_size;
     lx_vk_image_view_ref_t  texture_view;
     lx_vk_image_view_ref_t  framebuffer_view;
 }lx_vk_image_t;
@@ -89,6 +90,7 @@ static lx_vk_image_ref_t lx_vk_image_init(lx_vulkan_device_t* device, VkFormat f
         // allocate image memory
         VkMemoryRequirements mem_reqs;
         vkGetImageMemoryRequirements(device->device, image->image, &mem_reqs);
+        image->memory_size = mem_reqs.size;
 
         VkMemoryAllocateInfo mem_alloc = {};
         mem_alloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -149,6 +151,66 @@ lx_vk_image_ref_t lx_vk_image_init_texture(lx_vulkan_device_t* device, VkFormat 
                                     VK_IMAGE_USAGE_TRANSFER_SRC_BIT |
                                     VK_IMAGE_USAGE_TRANSFER_DST_BIT;
     return lx_vk_image_init(device, format, width, height, LX_VK_IMAGE_ATTACHMENT_TEXTURE, VK_IMAGE_TILING_OPTIMAL, usage_flags);
+}
+
+lx_vk_image_ref_t lx_vk_image_init_texture_from_bitmap(lx_vulkan_device_t* device, VkFormat format, lx_bitmap_ref_t bitmap) {
+    lx_size_t width = lx_bitmap_width(bitmap);
+    lx_size_t height = lx_bitmap_height(bitmap);
+    lx_vk_image_t* image = (lx_vk_image_t*)lx_vk_image_init_texture(device, format, width, height);
+    if (image) {
+        lx_bool_t ok = lx_false;
+        do {
+            VkImageSubresource subres = {};
+            subres.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+            subres.mipLevel = 0;
+            subres.arrayLayer = 0;
+            VkSubresourceLayout layout;
+            vkGetImageSubresourceLayout(device->device, image->image, &subres, &layout);
+
+            lx_pointer_t data = lx_null;
+            if (vkMapMemory(device->device, image->memory, 0, image->memory_size, 0, &data) != VK_SUCCESS) {
+                break;
+            }
+
+            // get bitmap data
+            lx_size_t row_bytes = lx_bitmap_row_bytes(bitmap);
+            lx_byte_t const* bitmap_data = lx_bitmap_data(bitmap);
+            lx_assert_and_check_break(bitmap_data && width && height);
+
+            // get pixmap
+            lx_pixmap_ref_t sp = lx_pixmap(lx_bitmap_pixfmt(bitmap), 0xff);
+            lx_pixmap_ref_t dp = lx_pixmap(LX_PIXFMT_RGBA8888, 0xff);
+            lx_assert_and_check_break(sp && dp && format == VK_FORMAT_R8G8B8A8_UNORM);
+
+            lx_size_t  j;
+            lx_size_t  b = dp->btp;
+            lx_size_t  n = layout.rowPitch;
+            lx_byte_t* p = data;
+            for (j = 0; j < height; j++) {
+                lx_size_t  i = 0;
+                lx_byte_t* d = p;
+                lx_byte_t* e = p + n;
+                if (dp == sp) {
+                    for (i = 0; i < row_bytes && d < e; i += 4, d += b) {
+                        dp->pixel_copy(d, &bitmap_data[i], 0xff);
+                    }
+                } else {
+                    for (i = 0; i < row_bytes && d < e; i += 4, d += b) {
+                        dp->color_set(d, sp->color_get(&bitmap_data[i]));
+                    }
+                }
+                p += n;
+                bitmap_data += row_bytes;
+            }
+            vkUnmapMemory(device->device, image->memory);
+            ok = lx_true;
+        } while (0);
+        if (!ok) {
+            lx_vk_image_exit((lx_vk_image_ref_t)image);
+            image = lx_null;
+        }
+    }
+    return (lx_vk_image_ref_t)image;
 }
 
 lx_void_t lx_vk_image_exit(lx_vk_image_ref_t self) {
