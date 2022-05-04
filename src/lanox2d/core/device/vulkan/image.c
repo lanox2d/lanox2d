@@ -150,7 +150,7 @@ lx_vk_image_ref_t lx_vk_image_init_texture(lx_vulkan_device_t* device, VkFormat 
     VkImageUsageFlags usage_flags = VK_IMAGE_USAGE_SAMPLED_BIT |
                                     VK_IMAGE_USAGE_TRANSFER_SRC_BIT |
                                     VK_IMAGE_USAGE_TRANSFER_DST_BIT;
-    return lx_vk_image_init(device, format, width, height, LX_VK_IMAGE_ATTACHMENT_TEXTURE, VK_IMAGE_TILING_OPTIMAL, usage_flags);
+    return lx_vk_image_init(device, format, width, height, LX_VK_IMAGE_ATTACHMENT_TEXTURE, VK_IMAGE_TILING_LINEAR, usage_flags);
 }
 
 lx_vk_image_ref_t lx_vk_image_init_texture_from_bitmap(lx_vulkan_device_t* device, VkFormat format, lx_bitmap_ref_t bitmap) {
