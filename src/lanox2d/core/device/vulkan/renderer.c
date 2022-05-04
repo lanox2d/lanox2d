@@ -486,9 +486,10 @@ lx_void_t lx_vk_renderer_draw_commit(lx_vulkan_device_t* device) {
     lx_assert_and_check_return(device->renderer_prepared);
 
     // command end
-    VkCommandBuffer cmdbuffer = device->command_buffers[device->imageindex];
-    vkCmdEndRenderPass(cmdbuffer);
-    vkEndCommandBuffer(cmdbuffer);
+    lx_vk_command_buffer_ref_t cmdbuffer = device->renderer_cmdbuffer;
+    lx_assert_and_check_return(cmdbuffer);
+    lx_vk_command_buffer_end_render_pass(cmdbuffer);
+    lx_vk_command_buffer_end(cmdbuffer);
 
     // submit command buffers
     VkPipelineStageFlags wait_stage_mask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;

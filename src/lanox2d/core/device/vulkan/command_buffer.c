@@ -129,3 +129,26 @@ lx_void_t lx_vk_command_buffer_draw(lx_vk_command_buffer_ref_t self,
     vkCmdDraw(command_buffer->cmdbuffer, vertex_count, instance_count, first_vertex, first_instance);
 }
 
+lx_void_t lx_vk_command_buffer_draw_indirect(lx_vk_command_buffer_ref_t self,
+                                             VkBuffer buffer, VkDeviceSize offset,
+                                             lx_uint32_t draw_count, lx_uint32_t stride) {
+    lx_vk_command_buffer_t* command_buffer = (lx_vk_command_buffer_t*)self;
+    lx_assert_and_check_return(command_buffer && command_buffer->cmdbuffer);
+
+    vkCmdDrawIndirect(command_buffer->cmdbuffer, buffer, offset, draw_count, stride);
+}
+
+lx_void_t lx_vk_command_buffer_end_render_pass(lx_vk_command_buffer_ref_t self) {
+    lx_vk_command_buffer_t* command_buffer = (lx_vk_command_buffer_t*)self;
+    lx_assert_and_check_return(command_buffer && command_buffer->cmdbuffer);
+
+    vkCmdEndRenderPass(command_buffer->cmdbuffer);
+}
+
+lx_void_t lx_vk_command_buffer_end(lx_vk_command_buffer_ref_t self) {
+    lx_vk_command_buffer_t* command_buffer = (lx_vk_command_buffer_t*)self;
+    lx_assert_and_check_return(command_buffer && command_buffer->cmdbuffer);
+
+    vkEndCommandBuffer(command_buffer->cmdbuffer);
+}
+

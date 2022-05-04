@@ -116,7 +116,6 @@ lx_void_t                       lx_vk_command_buffer_push_constants(lx_vk_comman
 /* draw vertice
  *
  * @param command_buffer        the command buffer
- * @param pipeline              the pipeline
  * @param vertex_count          the vertex count
  * @param instance_count        the instance count
  * @param first_vertex          the first vertex
@@ -125,6 +124,31 @@ lx_void_t                       lx_vk_command_buffer_push_constants(lx_vk_comman
 lx_void_t                       lx_vk_command_buffer_draw(lx_vk_command_buffer_ref_t command_buffer,
                                                           lx_uint32_t vertex_count, lx_uint32_t instance_count,
                                                           lx_uint32_t first_vertex, lx_uint32_t first_instance);
+
+/* draw vertice with indirect mode
+ *
+ * @param command_buffer        the command buffer
+ * @param buffer                the vertex buffer
+ * @param offset                the vertex offset
+ * @param draw_count            the draw count
+ * @param stride                the buffer stride
+ */
+lx_void_t                       lx_vk_command_buffer_draw_indirect(lx_vk_command_buffer_ref_t command_buffer,
+                                                                   VkBuffer buffer, VkDeviceSize offset,
+                                                                   lx_uint32_t draw_count, lx_uint32_t stride);
+
+
+/* end render pass
+ *
+ * @param command_buffer        the command buffer
+ */
+lx_void_t                       lx_vk_command_buffer_end_render_pass(lx_vk_command_buffer_ref_t command_buffer);
+
+/* end command buffer
+ *
+ * @param command_buffer        the command buffer
+ */
+lx_void_t                       lx_vk_command_buffer_end(lx_vk_command_buffer_ref_t command_buffer);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern
