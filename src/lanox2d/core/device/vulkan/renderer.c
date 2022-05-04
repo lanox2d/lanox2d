@@ -232,6 +232,7 @@ static lx_void_t lx_vk_renderer_apply_shader_bitmap(lx_vulkan_device_t* device, 
     lx_vk_matrix_convert(&texcoord, &matrix);
     lx_vk_pipeline_matrix_set_texcoord(pipeline, &texcoord);
 
+    // TODO bind sampler descriptor sets
     // bind descriptor set to pipeline (uniform buffer, ...)
     lx_vk_command_buffer_bind_descriptor_sets(cmdbuffer, pipeline,
         0, lx_vk_pipeline_descriptor_sets_count(pipeline),
