@@ -70,18 +70,18 @@ static VkDescriptorSet lx_vk_buffer_alloc_uniform_descriptor_set(lx_vulkan_devic
         bufferinfo.offset = 0;
         bufferinfo.range = size;
 
-        VkWriteDescriptorSet write_descriptor_set = {};
-        write_descriptor_set.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        write_descriptor_set.pNext = lx_null;
-        write_descriptor_set.dstSet = descriptor_set;
-        write_descriptor_set.dstBinding = LX_VK_UNIFORM_BINDING;
-        write_descriptor_set.dstArrayElement = 0;
-        write_descriptor_set.descriptorCount = 1;
-        write_descriptor_set.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        write_descriptor_set.pImageInfo = lx_null,
-        write_descriptor_set.pBufferInfo = &bufferinfo;
-        write_descriptor_set.pTexelBufferView = lx_null;
-        vkUpdateDescriptorSets(device->device, 1, &write_descriptor_set, 0, lx_null);
+        VkWriteDescriptorSet writeinfo = {};
+        writeinfo.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        writeinfo.pNext = lx_null;
+        writeinfo.dstSet = descriptor_set;
+        writeinfo.dstBinding = LX_VK_UNIFORM_BINDING;
+        writeinfo.dstArrayElement = 0;
+        writeinfo.descriptorCount = 1;
+        writeinfo.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        writeinfo.pImageInfo = lx_null,
+        writeinfo.pBufferInfo = &bufferinfo;
+        writeinfo.pTexelBufferView = lx_null;
+        vkUpdateDescriptorSets(device->device, 1, &writeinfo, 0, lx_null);
     }
     return descriptor_set;
 }

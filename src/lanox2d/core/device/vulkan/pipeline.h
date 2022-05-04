@@ -90,21 +90,21 @@ VkPipeline              lx_vk_pipeline_native(lx_vk_pipeline_ref_t pipeline);
  */
 VkPipelineLayout        lx_vk_pipeline_layout(lx_vk_pipeline_ref_t pipeline);
 
-/* get pipeline descriptor sets
+/* get uniform descriptor set
  *
  * @param pipeline      the pipeline
  *
- * @return              the descriptor sets of pipeline
+ * @return              the descriptor set
  */
-VkDescriptorSet*        lx_vk_pipeline_descriptor_sets(lx_vk_pipeline_ref_t pipeline);
+VkDescriptorSet         lx_vk_pipeline_descriptor_set_uniform(lx_vk_pipeline_ref_t pipeline);
 
-/* get count of pipeline descriptor sets
+/* get sampler descriptor set
  *
  * @param pipeline      the pipeline
  *
- * @return              the descriptor sets count of pipeline
+ * @return              the descriptor set
  */
-lx_uint32_t             lx_vk_pipeline_descriptor_sets_count(lx_vk_pipeline_ref_t pipeline);
+VkDescriptorSet         lx_vk_pipeline_descriptor_set_sampler(lx_vk_pipeline_ref_t pipeline);
 
 /* set the model matrix
  *
@@ -126,6 +126,14 @@ lx_void_t               lx_vk_pipeline_matrix_set_projection(lx_vk_pipeline_ref_
  * @param matrix        the matrix
  */
 lx_void_t               lx_vk_pipeline_matrix_set_texcoord(lx_vk_pipeline_ref_t pipeline, lx_vk_matrix_ref_t matrix);
+
+/* set the texture
+ *
+ * @param pipeline      the pipeline
+ * @param sampler       the sampler
+ * @param image         the image
+ */
+lx_void_t               lx_vk_pipeline_set_texture(lx_vk_pipeline_ref_t pipeline, lx_vk_sampler_ref_t sampler, lx_vk_image_ref_t image);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

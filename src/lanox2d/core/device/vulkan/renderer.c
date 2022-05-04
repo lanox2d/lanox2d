@@ -232,11 +232,14 @@ static lx_void_t lx_vk_renderer_apply_shader_bitmap(lx_vulkan_device_t* device, 
     lx_vk_matrix_convert(&texcoord, &matrix);
     lx_vk_pipeline_matrix_set_texcoord(pipeline, &texcoord);
 
-    // TODO bind sampler descriptor sets
-    // bind descriptor set to pipeline (uniform buffer, ...)
-    lx_vk_command_buffer_bind_descriptor_sets(cmdbuffer, pipeline,
-        0, lx_vk_pipeline_descriptor_sets_count(pipeline),
-        lx_vk_pipeline_descriptor_sets(pipeline), 0, lx_null);
+    // set texture
+    lx_vk_pipeline_set_texture(pipeline, devdata->sampler, devdata->image);
+
+    // bind descriptor sets
+    VkDescriptorSet descriptor_sets[2];
+    descriptor_sets[0] = lx_vk_pipeline_descriptor_set_uniform(pipeline);
+    descriptor_sets[1] = lx_vk_pipeline_descriptor_set_sampler(pipeline);
+    lx_vk_command_buffer_bind_descriptor_sets(cmdbuffer, pipeline, 0, 2, descriptor_sets, 0, lx_null);
 }
 
 static lx_inline lx_void_t lx_vk_renderer_apply_paint_shader(lx_vulkan_device_t* device, lx_shader_ref_t shader, lx_rect_ref_t bounds) {
@@ -290,10 +293,9 @@ static lx_inline lx_void_t lx_vk_renderer_apply_paint_solid(lx_vulkan_device_t* 
     lx_vk_matrix_convert(&model, device->base.matrix);
     lx_vk_pipeline_matrix_set_model(pipeline, &model);
 
-    // bind descriptor set to pipeline (uniform buffer, ...)
-    lx_vk_command_buffer_bind_descriptor_sets(cmdbuffer, pipeline,
-        0, lx_vk_pipeline_descriptor_sets_count(pipeline),
-        lx_vk_pipeline_descriptor_sets(pipeline), 0, lx_null);
+    // bind descriptor sets
+    VkDescriptorSet descriptor_sets = lx_vk_pipeline_descriptor_set_uniform(pipeline);
+    lx_vk_command_buffer_bind_descriptor_sets(cmdbuffer, pipeline, 0, 1, &descriptor_sets, 0, lx_null);
 }
 
 static lx_inline lx_void_t lx_vk_renderer_apply_paint(lx_vulkan_device_t* device, lx_rect_ref_t bounds) {

@@ -23,6 +23,9 @@
  * includes
  */
 #include "pipeline.h"
+#include "image.h"
+#include "sampler.h"
+#include "image_view.h"
 #include "buffer_allocator.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
@@ -36,7 +39,8 @@ typedef struct lx_vk_pipeline_t {
     VkPipelineCache         pipeline_cache;
     VkPipelineLayout        pipeline_layout;
     lx_vulkan_device_t*     device;
-    lx_vk_buffer_t          ubo_matrix;
+    lx_vk_buffer_t          uniform_buffer;
+    VkDescriptorSet         descriptor_set_sampler;
 }lx_vk_pipeline_t;
 
 // the vertex matrix type for uniform buffer object
@@ -52,10 +56,10 @@ typedef struct lx_vk_ubo_texture_matrix_t_ {
 }lx_vk_ubo_texture_matrix_t;
 
 // the matrix type for uniform buffer object
-typedef union lx_vk_ubo_matrix_t_ {
+typedef union lx_vk_uniform_t_ {
     lx_vk_ubo_vertex_matrix_t  vertex;
     lx_vk_ubo_texture_matrix_t texture;
-}lx_vk_ubo_matrix_t;
+}lx_vk_uniform_t;
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * private implementation
@@ -69,7 +73,7 @@ static lx_vk_pipeline_t* lx_vk_pipeline_init(lx_vulkan_device_t* device, lx_size
 
         pipeline->type   = type;
         pipeline->device = device;
-        if (!lx_vk_buffer_allocator_alloc(device->allocator_uniform, sizeof(lx_vk_ubo_matrix_t), &pipeline->ubo_matrix)) {
+        if (!lx_vk_buffer_allocator_alloc(device->allocator_uniform, sizeof(lx_vk_uniform_t), &pipeline->uniform_buffer)) {
             break;
         }
 
@@ -298,8 +302,14 @@ lx_void_t lx_vk_pipeline_exit(lx_vk_pipeline_ref_t self) {
         lx_vulkan_device_t* device = pipeline->device;
         lx_assert(device && device->device);
 
-        // free ubo buffer
-        lx_vk_buffer_allocator_free(device->allocator_uniform, &pipeline->ubo_matrix);
+        // free uniform buffer
+        lx_vk_buffer_allocator_free(device->allocator_uniform, &pipeline->uniform_buffer);
+
+        // free sampler descriptor set
+        if (pipeline->descriptor_set_sampler) {
+            lx_vk_descriptor_sets_free(device->descriptor_sets_sampler, pipeline->descriptor_set_sampler);
+            pipeline->descriptor_set_sampler = lx_null;
+        }
 
         // free pipeline
         if (pipeline->pipeline) {
@@ -328,32 +338,69 @@ VkPipelineLayout lx_vk_pipeline_layout(lx_vk_pipeline_ref_t self) {
     return pipeline? pipeline->pipeline_layout : 0;
 }
 
-VkDescriptorSet* lx_vk_pipeline_descriptor_sets(lx_vk_pipeline_ref_t self) {
+VkDescriptorSet lx_vk_pipeline_descriptor_set_uniform(lx_vk_pipeline_ref_t self) {
     lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
-    return pipeline? &pipeline->ubo_matrix.descriptor_set : lx_null;
+    return pipeline? pipeline->uniform_buffer.descriptor_set : VK_NULL_HANDLE;
 }
 
-lx_uint32_t lx_vk_pipeline_descriptor_sets_count(lx_vk_pipeline_ref_t self) {
-    return 1;
+VkDescriptorSet lx_vk_pipeline_descriptor_set_sampler(lx_vk_pipeline_ref_t self) {
+    lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
+    return pipeline? pipeline->descriptor_set_sampler : VK_NULL_HANDLE;
 }
 
 lx_void_t lx_vk_pipeline_matrix_set_model(lx_vk_pipeline_ref_t self, lx_vk_matrix_ref_t matrix) {
     lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
     if (pipeline && pipeline->device) {
-        lx_vk_buffer_allocator_copy(pipeline->device->allocator_uniform, &pipeline->ubo_matrix, lx_offsetof(lx_vk_ubo_vertex_matrix_t, model), (lx_pointer_t)matrix, sizeof(lx_vk_matrix_t));
+        lx_vk_buffer_allocator_copy(pipeline->device->allocator_uniform, &pipeline->uniform_buffer, lx_offsetof(lx_vk_ubo_vertex_matrix_t, model), (lx_pointer_t)matrix, sizeof(lx_vk_matrix_t));
     }
 }
 
 lx_void_t lx_vk_pipeline_matrix_set_projection(lx_vk_pipeline_ref_t self, lx_vk_matrix_ref_t matrix) {
     lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
     if (pipeline && pipeline->device) {
-        lx_vk_buffer_allocator_copy(pipeline->device->allocator_uniform, &pipeline->ubo_matrix, lx_offsetof(lx_vk_ubo_vertex_matrix_t, projection), (lx_pointer_t)matrix, sizeof(lx_vk_matrix_t));
+        lx_vk_buffer_allocator_copy(pipeline->device->allocator_uniform, &pipeline->uniform_buffer, lx_offsetof(lx_vk_ubo_vertex_matrix_t, projection), (lx_pointer_t)matrix, sizeof(lx_vk_matrix_t));
     }
 }
 
 lx_void_t lx_vk_pipeline_matrix_set_texcoord(lx_vk_pipeline_ref_t self, lx_vk_matrix_ref_t matrix) {
     lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
     if (pipeline && pipeline->device) {
-        lx_vk_buffer_allocator_copy(pipeline->device->allocator_uniform, &pipeline->ubo_matrix, lx_offsetof(lx_vk_ubo_texture_matrix_t, texcoord), (lx_pointer_t)matrix, sizeof(lx_vk_matrix_t));
+        lx_vk_buffer_allocator_copy(pipeline->device->allocator_uniform, &pipeline->uniform_buffer, lx_offsetof(lx_vk_ubo_texture_matrix_t, texcoord), (lx_pointer_t)matrix, sizeof(lx_vk_matrix_t));
     }
+}
+
+lx_void_t lx_vk_pipeline_set_texture(lx_vk_pipeline_ref_t self, lx_vk_sampler_ref_t sampler, lx_vk_image_ref_t image) {
+    lx_vk_pipeline_t* pipeline = (lx_vk_pipeline_t*)self;
+    lx_assert_and_check_return(pipeline && pipeline->device && sampler && image);
+
+    // allocate descriptor set first
+    lx_vulkan_device_t* device = pipeline->device;
+    if (!pipeline->descriptor_set_sampler) {
+        pipeline->descriptor_set_sampler = lx_vk_descriptor_sets_alloc(device->descriptor_sets_sampler);
+    }
+
+    // get texture view
+    lx_vk_image_view_ref_t texture_view = lx_vk_image_texture_view(image);
+    lx_assert_and_check_return(texture_view);
+
+    // update sampler to the descriptor set
+    VkDescriptorImageInfo imageinfo;
+    lx_memset(&imageinfo, 0, sizeof(VkDescriptorImageInfo));
+    imageinfo.sampler = lx_vk_sampler(sampler);
+    imageinfo.imageView = lx_vk_image_view(texture_view);
+    imageinfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+
+    VkWriteDescriptorSet writeinfo;
+    lx_memset(&writeinfo, 0, sizeof(VkWriteDescriptorSet));
+    writeinfo.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    writeinfo.pNext = lx_null;
+    writeinfo.dstSet = pipeline->descriptor_set_sampler;
+    writeinfo.dstBinding = 0;
+    writeinfo.dstArrayElement = 0;
+    writeinfo.descriptorCount = 1;
+    writeinfo.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    writeinfo.pImageInfo = &imageinfo;
+    writeinfo.pBufferInfo = lx_null;
+    writeinfo.pTexelBufferView = lx_null;
+    vkUpdateDescriptorSets(device->device, 1, &writeinfo, 0, lx_null);
 }

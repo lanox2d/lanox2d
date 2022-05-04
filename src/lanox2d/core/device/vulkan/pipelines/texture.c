@@ -82,11 +82,13 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_texture(lx_vulkan_device_t* device) {
 
             // create pipeline
             VkPipelineLayoutCreateInfo pipeline_layout_info = {};
-            VkDescriptorSetLayout descriptor_set_layout = lx_vk_descriptor_sets_layout(device->descriptor_sets_uniform);
+            VkDescriptorSetLayout descriptor_set_layouts[2];
+            descriptor_set_layouts[0] = lx_vk_descriptor_sets_layout(device->descriptor_sets_uniform);
+            descriptor_set_layouts[1] = lx_vk_descriptor_sets_layout(device->descriptor_sets_sampler);
             pipeline_layout_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
             pipeline_layout_info.pNext = lx_null;
-            pipeline_layout_info.setLayoutCount = 1;
-            pipeline_layout_info.pSetLayouts = &descriptor_set_layout; // TODO + sampler
+            pipeline_layout_info.setLayoutCount = lx_arrayn(descriptor_set_layouts);
+            pipeline_layout_info.pSetLayouts = descriptor_set_layouts;
             pipeline_layout_info.pushConstantRangeCount = 1;
             pipeline_layout_info.pPushConstantRanges = &push_constant_range;
             if (!lx_vk_pipeline_create(pipeline_texture, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,
