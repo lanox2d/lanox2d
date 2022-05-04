@@ -37,33 +37,94 @@ lx_extern_c_enter
 
 /* init command buffer
  *
- * @param device            the vulkan device
- * @param cmdbuffer         the native command buffer
+ * @param device                the vulkan device
+ * @param cmdbuffer             the native command buffer
  *
- * @return                  the command buffer
+ * @return                      the command buffer
  */
-lx_vk_command_buffer_ref_t  lx_vk_command_buffer_init(lx_vulkan_device_t* device, VkCommandBuffer cmdbuffer);
+lx_vk_command_buffer_ref_t      lx_vk_command_buffer_init(lx_vulkan_device_t* device, VkCommandBuffer cmdbuffer);
 
 /* exit command buffer
  *
- * @param command_buffer    the command buffer
+ * @param command_buffer        the command buffer
  */
-lx_void_t                   lx_vk_command_buffer_exit(lx_vk_command_buffer_ref_t command_buffer);
+lx_void_t                       lx_vk_command_buffer_exit(lx_vk_command_buffer_ref_t command_buffer);
 
 /* get the vulkan command buffer
  *
- * @param command_buffer    the command buffer
+ * @param command_buffer        the command buffer
  *
- * @return                  the native command buffer
+ * @return                      the native command buffer
  */
-VkCommandBuffer             lx_vk_command_buffer(lx_vk_command_buffer_ref_t command_buffer);
+VkCommandBuffer                 lx_vk_command_buffer(lx_vk_command_buffer_ref_t command_buffer);
 
 /* set the vulkan command buffer
  *
- * @param command_buffer    the command buffer
- * @param cmdbuffer         the native command buffer
+ * @param command_buffer        the command buffer
+ * @param cmdbuffer             the native command buffer
  */
-lx_void_t                   lx_vk_command_buffer_set(lx_vk_command_buffer_ref_t command_buffer, VkCommandBuffer cmdbuffer);
+lx_void_t                       lx_vk_command_buffer_set(lx_vk_command_buffer_ref_t command_buffer, VkCommandBuffer cmdbuffer);
+
+/* bind pipeline
+ *
+ * @param command_buffer        the command buffer
+ * @param pipeline              the pipeline
+ */
+lx_void_t                       lx_vk_command_buffer_bind_pipeline(lx_vk_command_buffer_ref_t command_buffer, lx_vk_pipeline_ref_t pipeline);
+
+/* bind descriptor sets
+ *
+ * @param command_buffer        the command buffer
+ * @param pipeline              the pipeline
+ * @param first_set             the first set
+ * @param set_count             the set count
+ * @param descriptor_sets       the descriptor sets
+ * @param dynamic_offset_count  the dynamic offset count
+ * @param dynamic_offsets       the dynamic offsets
+ */
+lx_void_t                       lx_vk_command_buffer_bind_descriptor_sets(lx_vk_command_buffer_ref_t command_buffer,
+                                                                          lx_vk_pipeline_ref_t pipeline,
+                                                                          lx_uint32_t first_set,
+                                                                          lx_uint32_t set_count,
+                                                                          VkDescriptorSet const* descriptor_sets,
+                                                                          lx_uint32_t dynamic_offset_count,
+                                                                          lx_uint32_t const* dynamic_offsets);
+/* bind vertex buffers
+ *
+ * @param command_buffer        the command buffer
+ * @param first_binding         the first binding
+ * @param binding_count         the binding count
+ * @param pbuffers              the buffers pointer
+ * @param poffsets              the offsets pointer
+ */
+lx_void_t                       lx_vk_command_buffer_bind_vertex_buffers(lx_vk_command_buffer_ref_t command_buffer,
+                                                                         lx_uint32_t first_binding, lx_uint32_t binding_count,
+                                                                         VkBuffer const* pbuffers, VkDeviceSize const* poffsets);
+/* push constants
+ *
+ * @param command_buffer        the command buffer
+ * @param pipeline              the pipeline
+ * @param stage                 the stage flags
+ * @param offset                the values offset
+ * @param size                  the values size
+ * @param values                the values
+ */
+lx_void_t                       lx_vk_command_buffer_push_constants(lx_vk_command_buffer_ref_t command_buffer,
+                                                                    lx_vk_pipeline_ref_t pipeline, VkShaderStageFlags stage_flags,
+                                                                    lx_uint32_t offset, lx_uint32_t size, lx_cpointer_t values);
+
+/* draw vertice
+ *
+ * @param command_buffer        the command buffer
+ * @param pipeline              the pipeline
+ * @param vertex_count          the vertex count
+ * @param instance_count        the instance count
+ * @param first_vertex          the first vertex
+ * @param first_instance        the first instance
+ */
+lx_void_t                       lx_vk_command_buffer_draw(lx_vk_command_buffer_ref_t command_buffer,
+                                                          lx_uint32_t vertex_count, lx_uint32_t instance_count,
+                                                          lx_uint32_t first_vertex, lx_uint32_t first_instance);
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * extern

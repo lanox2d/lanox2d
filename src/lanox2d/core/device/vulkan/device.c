@@ -25,6 +25,7 @@
 #include "device.h"
 #include "pipeline.h"
 #include "renderer.h"
+#include "command_buffer.h"
 #include "buffer_allocator.h"
 #include "descriptor_sets.h"
 #ifdef LX_CONFIG_WINDOW_HAVE_GLFW
@@ -427,6 +428,12 @@ static lx_void_t lx_device_vulkan_exit(lx_device_ref_t self) {
             }
             lx_free(device->framebuffers);
             device->framebuffers = lx_null;
+        }
+
+        // destroy renderer command buffer
+        if (device->renderer_cmdbuffer) {
+            lx_vk_command_buffer_exit(device->renderer_cmdbuffer);
+            device->renderer_cmdbuffer = lx_null;
         }
 
         // destroy command buffers

@@ -26,6 +26,7 @@
 #include "pipeline.h"
 #include "buffer_allocator.h"
 #include "bitmap_shader.h"
+#include "command_buffer.h"
 #include "../../quality.h"
 #include "../../tess/tess.h"
 #include "../../shader.h"
@@ -94,7 +95,7 @@ static lx_void_t lx_vk_renderer_set_imagelayout(VkCommandBuffer cmdbuffer, VkIma
 }
 
 static lx_void_t lx_vk_renderer_apply_shader_bitmap(lx_vulkan_device_t* device, lx_shader_ref_t shader, lx_rect_ref_t bounds) {
-    VkCommandBuffer cmdbuffer = device->renderer_cmdbuffer;
+    lx_vk_command_buffer_ref_t cmdbuffer = device->renderer_cmdbuffer;
     lx_paint_ref_t paint = device->base.paint;
     lx_assert(cmdbuffer && paint);
 
@@ -109,12 +110,12 @@ static lx_void_t lx_vk_renderer_apply_shader_bitmap(lx_vulkan_device_t* device, 
     // enable texture pipeline
     lx_vk_pipeline_ref_t pipeline = lx_vk_pipeline_texture(device);
     lx_assert_and_check_return(pipeline);
-    vkCmdBindPipeline(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, lx_vk_pipeline_native(pipeline));
+    lx_vk_command_buffer_bind_pipeline(cmdbuffer, pipeline);
 
     // apply color (only for alpha blend)
     lx_byte_t alpha = lx_paint_alpha(paint);
     lx_float_t color_data[] = {1.0f, 1.0f, 1.0f, (lx_float_t)alpha / 0xff};
-    vkCmdPushConstants(cmdbuffer, lx_vk_pipeline_layout(pipeline), VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(color_data), color_data);
+    lx_vk_command_buffer_push_constants(cmdbuffer, pipeline, VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(color_data), color_data);
 
     // set model matrix
     lx_vk_matrix_t model;
@@ -232,8 +233,8 @@ static lx_void_t lx_vk_renderer_apply_shader_bitmap(lx_vulkan_device_t* device, 
     lx_vk_pipeline_matrix_set_texcoord(pipeline, &texcoord);
 
     // bind descriptor set to pipeline (uniform buffer, ...)
-    vkCmdBindDescriptorSets(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-        lx_vk_pipeline_layout(pipeline), 0, lx_vk_pipeline_descriptor_sets_count(pipeline),
+    lx_vk_command_buffer_bind_descriptor_sets(cmdbuffer, pipeline,
+        0, lx_vk_pipeline_descriptor_sets_count(pipeline),
         lx_vk_pipeline_descriptor_sets(pipeline), 0, lx_null);
 }
 
@@ -250,7 +251,7 @@ static lx_inline lx_void_t lx_vk_renderer_apply_paint_shader(lx_vulkan_device_t*
 }
 
 static lx_inline lx_void_t lx_vk_renderer_apply_paint_solid(lx_vulkan_device_t* device, lx_size_t pipeline_type) {
-    VkCommandBuffer cmdbuffer = device->renderer_cmdbuffer;
+    lx_vk_command_buffer_ref_t cmdbuffer = device->renderer_cmdbuffer;
     lx_paint_ref_t paint = device->base.paint;
     lx_assert(cmdbuffer && paint);
 
@@ -277,11 +278,11 @@ static lx_inline lx_void_t lx_vk_renderer_apply_paint_solid(lx_vulkan_device_t* 
         break;
     }
     lx_assert_and_check_return(pipeline);
-    vkCmdBindPipeline(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, lx_vk_pipeline_native(pipeline));
+    lx_vk_command_buffer_bind_pipeline(cmdbuffer, pipeline);
 
     // apply color
     lx_float_t color_data[] = {(lx_float_t)color.r / 0xff, (lx_float_t)color.g / 0xff, (lx_float_t)color.b / 0xff, (lx_float_t)color.a / 0xff};
-    vkCmdPushConstants(cmdbuffer, lx_vk_pipeline_layout(pipeline), VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(color_data), color_data);
+    lx_vk_command_buffer_push_constants(cmdbuffer, pipeline, VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(color_data), color_data);
 
     // set model matrix
     lx_vk_matrix_t model;
@@ -289,8 +290,8 @@ static lx_inline lx_void_t lx_vk_renderer_apply_paint_solid(lx_vulkan_device_t* 
     lx_vk_pipeline_matrix_set_model(pipeline, &model);
 
     // bind descriptor set to pipeline (uniform buffer, ...)
-    vkCmdBindDescriptorSets(cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-        lx_vk_pipeline_layout(pipeline), 0, lx_vk_pipeline_descriptor_sets_count(pipeline),
+    lx_vk_command_buffer_bind_descriptor_sets(cmdbuffer, pipeline,
+        0, lx_vk_pipeline_descriptor_sets_count(pipeline),
         lx_vk_pipeline_descriptor_sets(pipeline), 0, lx_null);
 }
 
@@ -314,9 +315,9 @@ static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* devic
             lx_array_insert_tail(device->vertex_buffers, &vertex_buffer);
 
             VkDeviceSize offset = 0;
-            VkCommandBuffer cmdbuffer = device->renderer_cmdbuffer;
-            vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &vertex_buffer.buffer, &offset);
-            vkCmdDraw(cmdbuffer, result->total, 1, 0, 0);
+            lx_vk_command_buffer_ref_t cmdbuffer = device->renderer_cmdbuffer;
+            lx_vk_command_buffer_bind_vertex_buffers(cmdbuffer, 0, 1, &vertex_buffer.buffer, &offset);
+            lx_vk_command_buffer_draw(cmdbuffer, result->total, 1, 0, 0);
         }
     }
 }
@@ -329,9 +330,9 @@ static lx_inline lx_void_t lx_vk_renderer_stroke_lines(lx_vulkan_device_t* devic
 		lx_array_insert_tail(device->vertex_buffers, &vertex_buffer);
 
 		VkDeviceSize offset = 0;
-        VkCommandBuffer cmdbuffer = device->renderer_cmdbuffer;
-		vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &vertex_buffer.buffer, &offset);
-		vkCmdDraw(cmdbuffer, count, 1, 0, 0);
+        lx_vk_command_buffer_ref_t cmdbuffer = device->renderer_cmdbuffer;
+		lx_vk_command_buffer_bind_vertex_buffers(cmdbuffer, 0, 1, &vertex_buffer.buffer, &offset);
+		lx_vk_command_buffer_draw(cmdbuffer, count, 1, 0, 0);
 	}
 }
 
@@ -343,9 +344,9 @@ static lx_inline lx_void_t lx_vk_renderer_stroke_points(lx_vulkan_device_t* devi
 		lx_array_insert_tail(device->vertex_buffers, &vertex_buffer);
 
 		VkDeviceSize offset = 0;
-        VkCommandBuffer cmdbuffer = device->renderer_cmdbuffer;
-		vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &vertex_buffer.buffer, &offset);
-		vkCmdDraw(cmdbuffer, count, 1, 0, 0);
+        lx_vk_command_buffer_ref_t cmdbuffer = device->renderer_cmdbuffer;
+		lx_vk_command_buffer_bind_vertex_buffers(cmdbuffer, 0, 1, &vertex_buffer.buffer, &offset);
+		lx_vk_command_buffer_draw(cmdbuffer, count, 1, 0, 0);
 	}
 }
 
@@ -358,14 +359,14 @@ static lx_inline lx_void_t lx_vk_renderer_stroke_polygon(lx_vulkan_device_t* dev
 		lx_vk_buffer_allocator_copy(device->allocator_vertex, &vertex_buffer, 0, (lx_pointer_t)polygon->points, size);
 		lx_array_insert_tail(device->vertex_buffers, &vertex_buffer);
 
-        lx_uint16_t     count;
-        lx_size_t       index = 0;
-        lx_uint16_t*    counts = polygon->counts;
-        VkCommandBuffer cmdbuffer = device->renderer_cmdbuffer;
+        lx_uint16_t  count;
+        lx_size_t    index = 0;
+        lx_uint16_t* counts = polygon->counts;
+        lx_vk_command_buffer_ref_t cmdbuffer = device->renderer_cmdbuffer;
         while ((count = *counts++)) {
             VkDeviceSize offset = index * sizeof(lx_point_t);
-            vkCmdBindVertexBuffers(cmdbuffer, 0, 1, &vertex_buffer.buffer, &offset);
-            vkCmdDraw(cmdbuffer, count, 1, 0, 0);
+            lx_vk_command_buffer_bind_vertex_buffers(cmdbuffer, 0, 1, &vertex_buffer.buffer, &offset);
+            lx_vk_command_buffer_draw(cmdbuffer, count, 1, 0, 0);
             index += count;
         }
     }
@@ -450,7 +451,11 @@ static lx_bool_t lx_vk_renderer_draw_prepare(lx_vulkan_device_t* device) {
 
     // prepare ok
     device->renderer_prepared = lx_true;
-    device->renderer_cmdbuffer = cmdbuffer;
+    if (!device->renderer_cmdbuffer) {
+        device->renderer_cmdbuffer = lx_vk_command_buffer_init(device, cmdbuffer);
+    } else {
+        lx_vk_command_buffer_set(device->renderer_cmdbuffer, cmdbuffer);
+    }
     return lx_true;
 }
 

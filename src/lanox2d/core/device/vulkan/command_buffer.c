@@ -23,6 +23,7 @@
  * includes
  */
 #include "command_buffer.h"
+#include "pipeline.h"
 
 /* //////////////////////////////////////////////////////////////////////////////////////
  * types
@@ -77,5 +78,54 @@ lx_void_t lx_vk_command_buffer_set(lx_vk_command_buffer_ref_t self, VkCommandBuf
     if (command_buffer) {
         command_buffer->cmdbuffer = cmdbuffer;
     }
+}
+
+lx_void_t lx_vk_command_buffer_bind_pipeline(lx_vk_command_buffer_ref_t self, lx_vk_pipeline_ref_t pipeline) {
+    lx_vk_command_buffer_t* command_buffer = (lx_vk_command_buffer_t*)self;
+    lx_assert_and_check_return(command_buffer && command_buffer->cmdbuffer && pipeline);
+
+    vkCmdBindPipeline(command_buffer->cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, lx_vk_pipeline_native(pipeline));
+}
+
+lx_void_t lx_vk_command_buffer_bind_descriptor_sets(lx_vk_command_buffer_ref_t self,
+                                                    lx_vk_pipeline_ref_t pipeline,
+                                                    lx_uint32_t first_set,
+                                                    lx_uint32_t set_count,
+                                                    VkDescriptorSet const* descriptor_sets,
+                                                    lx_uint32_t dynamic_offset_count,
+                                                    lx_uint32_t const* dynamic_offsets) {
+    lx_vk_command_buffer_t* command_buffer = (lx_vk_command_buffer_t*)self;
+    lx_assert_and_check_return(command_buffer && command_buffer->cmdbuffer && pipeline);
+
+    vkCmdBindDescriptorSets(command_buffer->cmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+        lx_vk_pipeline_layout(pipeline), first_set, set_count,
+        descriptor_sets, dynamic_offset_count, dynamic_offsets);
+}
+
+lx_void_t lx_vk_command_buffer_bind_vertex_buffers(lx_vk_command_buffer_ref_t self,
+                                                   lx_uint32_t first_binding, lx_uint32_t binding_count,
+                                                   VkBuffer const* pbuffers, VkDeviceSize const* poffsets) {
+    lx_vk_command_buffer_t* command_buffer = (lx_vk_command_buffer_t*)self;
+    lx_assert_and_check_return(command_buffer && command_buffer->cmdbuffer && pbuffers);
+
+    vkCmdBindVertexBuffers(command_buffer->cmdbuffer, first_binding, binding_count, pbuffers, poffsets);
+}
+
+lx_void_t lx_vk_command_buffer_push_constants(lx_vk_command_buffer_ref_t self,
+                                              lx_vk_pipeline_ref_t pipeline, VkShaderStageFlags stage_flags,
+                                              lx_uint32_t offset, lx_uint32_t size, lx_cpointer_t values) {
+    lx_vk_command_buffer_t* command_buffer = (lx_vk_command_buffer_t*)self;
+    lx_assert_and_check_return(command_buffer && command_buffer->cmdbuffer && pipeline);
+
+    vkCmdPushConstants(command_buffer->cmdbuffer, lx_vk_pipeline_layout(pipeline), stage_flags, offset, size, values);
+}
+
+lx_void_t lx_vk_command_buffer_draw(lx_vk_command_buffer_ref_t self,
+                                    lx_uint32_t vertex_count, lx_uint32_t instance_count,
+                                    lx_uint32_t first_vertex, lx_uint32_t first_instance) {
+    lx_vk_command_buffer_t* command_buffer = (lx_vk_command_buffer_t*)self;
+    lx_assert_and_check_return(command_buffer && command_buffer->cmdbuffer);
+
+    vkCmdDraw(command_buffer->cmdbuffer, vertex_count, instance_count, first_vertex, first_instance);
 }
 
