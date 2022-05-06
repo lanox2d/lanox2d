@@ -80,7 +80,7 @@ lx_vk_pipeline_ref_t lx_vk_pipeline_texture(lx_vulkan_device_t* device) {
             push_constant_range.offset = 0;
             push_constant_range.size = 4 * sizeof(lx_float_t);
 
-            // create pipeline, TODO
+            // create pipeline
             VkPipelineLayoutCreateInfo pipeline_layout_info = {};
             VkDescriptorSetLayout descriptor_set_layouts[2];
             descriptor_set_layouts[0] = lx_vk_descriptor_sets_layout(device->descriptor_sets_uniform);

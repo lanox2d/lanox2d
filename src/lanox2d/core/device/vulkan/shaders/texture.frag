@@ -9,7 +9,7 @@ layout(push_constant) uniform PushConsts {
 } pushConsts;
 
 layout(location = 0) in vec4 vTexcoords;
-layout(binding = 0) uniform sampler2D uSampler;
+layout(set = 1, binding = 0) uniform sampler2D uSampler;
 
 layout(location = 0) out vec4 finalColor;
 
