@@ -319,6 +319,7 @@ static lx_inline lx_void_t lx_vk_renderer_fill_polygon(lx_vulkan_device_t* devic
 
             VkDeviceSize offset = 0;
             lx_vk_command_buffer_ref_t cmdbuffer = device->renderer_cmdbuffer;
+            // TODO bind texture vertex
             lx_vk_command_buffer_bind_vertex_buffers(cmdbuffer, 0, 1, &vertex_buffer.buffer, &offset);
             lx_vk_command_buffer_draw(cmdbuffer, result->total, 1, 0, 0);
         }
