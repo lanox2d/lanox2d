@@ -14,7 +14,7 @@ layout(binding = 0) uniform uMatrix
     mat4 texcoord;
 }matrix;
 
-layout(location = 1) out vec4 vTexcoords;
+layout(location = 0) out vec4 vTexcoords;
 
 void main() {
    vTexcoords = matrix.texcoord * aTexcoords;
