@@ -13,7 +13,7 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     concurrency:
-        group: ${{ github.ref }}-${{ github.base_ref }}-${{ github.head_ref }}-macOS
+        group: ${{ github.ref }}-${{ github.base_ref }}-${{ github.head_ref }}-${{ matrix.kind }}-macOS
         cancel-in-progress: true
     steps:
       - uses: actions/checkout@v1
