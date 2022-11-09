@@ -3,25 +3,28 @@ name: FreeBSD
 on:
   pull_request:
   push:
+  release:
+    types: [published]
 
 jobs:
   build:
 
-    strategy:
-      matrix:
-        os: [macOS-latest]
-        kind: [static, shared]
+    runs-on: macos-12
 
-    runs-on: ${{ matrix.os }}
-
+    concurrency:
+        group: ${{ github.ref }}-${{ github.base_ref }}-${{ github.head_ref }}-FreeBSD
+        cancel-in-progress: true
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
 
       - name: Tests
-        uses: vmactions/freebsd-vm@v0.1.4
+        uses: vmactions/freebsd-vm@v0
         with:
           usesh: true
           mem: 4096
+          copyback: false
           prepare: pkg install -y git curl unzip gmake llvm gsed bash perl5 openssl
           run: |
             git clone --recurse-submodules https://github.com/xmake-io/xmake.git /tmp/xmake -b dev
@@ -32,5 +35,4 @@ jobs:
             cd -
             xmake f -k ${{ matrix.kind }} -y -vD
             xmake -vD
-
 
