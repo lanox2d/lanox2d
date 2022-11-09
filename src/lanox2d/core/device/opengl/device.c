@@ -133,8 +133,8 @@ lx_device_ref_t lx_device_init_from_opengl(lx_size_t width, lx_size_t height, lx
         device->base.draw_polygon = lx_device_opengl_draw_polygon;
         device->base.draw_path    = lx_device_opengl_draw_path;
         device->base.exit         = lx_device_opengl_exit;
-        device->base.width        = width;
-        device->base.height       = height;
+        device->base.width        = (lx_uint16_t)width;
+        device->base.height       = (lx_uint16_t)height;
 
         // init stroker
         device->stroker = lx_stroker_init();
