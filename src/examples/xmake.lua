@@ -7,4 +7,5 @@ for _, filepath in ipairs(os.files(path.join(os.scriptdir(), "*.c"))) do
         set_kind("binary")
         add_deps("lanox2d")
         add_files(name .. ".c")
+        set_rundir("$(projectdir)")
 end
