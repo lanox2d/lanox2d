@@ -9,7 +9,7 @@ jobs:
     runs-on: windows-latest
 
     concurrency:
-        group: ${{ github.ref }}-${{ github.base_ref }}-${{ github.head_ref }}-MingW_Msys2-${{ matrix.arch }}
+        group: ${{ github.ref }}-${{ github.base_ref }}-${{ github.head_ref }}-MingW_Msys2-${{ matrix.msystem }}-${{ matrix.kind }}-${{ matrix.arch }}
         cancel-in-progress: true
 
     strategy:

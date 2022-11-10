@@ -31,6 +31,6 @@ jobs:
             gmake install
             export XMAKE_ROOT=y
             cd -
-            xmake f -k ${{ matrix.kind }} -y -vD
+            xmake f -y -vD
             xmake -vD
 

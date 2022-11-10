@@ -1,6 +1,6 @@
 -- project settings
 set_project("lanox2d")
-set_xmakever("2.5.6")
+set_xmakever("2.7.3")
 set_version("1.0.1", {build = "%Y%m%d%H%M"})
 set_warnings("all", "error")
 set_languages("c99")
@@ -12,10 +12,8 @@ if is_mode("debug", "asan") then
     add_defines("LX_DEBUG")
 end
 if is_mode("releasedbg", "release", "minsizerel") then
-    if is_plat("windows", "mingw") then
-        add_cxflags("-flto")
-        add_shflags("-flto")
-        add_ldflags("-flto")
+    if not is_plat("mingw") then
+        set_policy("build.optimization.lto", true)
     end
 end
 
