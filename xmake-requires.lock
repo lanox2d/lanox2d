@@ -327,5 +327,42 @@
             },
             version = "v1.2.12"
         }
+    },
+    ["windows|x64"] = {
+        ["cmake#31fecfc4"] = {
+            repo = {
+                commit = "8902cb93b4a0bbecd08518ef59d6c67865bfd416",
+                url = [[z:\personal\xmake-repo]]
+            },
+            version = "3.24.2"
+        },
+        ["glfw#31fecfc4"] = {
+            repo = {
+                commit = "5f50bb971c7fc4882f752df7e4bdb5e6bac3ccb3",
+                url = [[z:\personal\xmake-repo]]
+            },
+            version = "3.3.8"
+        },
+        ["libpng#31fecfc4"] = {
+            repo = {
+                commit = "5f50bb971c7fc4882f752df7e4bdb5e6bac3ccb3",
+                url = [[z:\personal\xmake-repo]]
+            },
+            version = "v1.6.37"
+        },
+        ["opengl#31fecfc4"] = {
+            repo = {
+                commit = "8902cb93b4a0bbecd08518ef59d6c67865bfd416",
+                url = [[z:\personal\xmake-repo]]
+            },
+            version = "latest"
+        },
+        ["zlib#31fecfc4"] = {
+            repo = {
+                commit = "5f50bb971c7fc4882f752df7e4bdb5e6bac3ccb3",
+                url = [[z:\personal\xmake-repo]]
+            },
+            version = "v1.2.12"
+        }
     }
 }

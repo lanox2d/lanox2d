@@ -12,7 +12,7 @@ if is_mode("debug", "asan") then
     add_defines("LX_DEBUG")
 end
 if is_mode("releasedbg", "release", "minsizerel") then
-    if not is_plat("mingw") then
+    if not is_plat("windows", "mingw") then
         set_policy("build.optimization.lto", true)
     end
 end
