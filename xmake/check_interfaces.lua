@@ -1,4 +1,4 @@
-includes("check_cfuncs.lua")
+includes("@builtin/check")
 
 -- get function name
 --

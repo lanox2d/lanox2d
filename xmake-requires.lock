@@ -216,26 +216,18 @@
         ["cmake#31fecfc4"] = {
             repo = {
                 branch = "master",
-                commit = "84283fa86228c7e1cd20dc5e5d9a1b3bdfd9d374",
+                commit = "60dc45280ffdc5fdfa2d3cc92ec52dc62ef6e71a",
                 url = "https://gitee.com/tboox/xmake-repo.git"
             },
             version = "3.25.3"
         },
-        ["glfw#31fecfc4"] = {
+        ["libsdl 2.x#31fecfc4"] = {
             repo = {
                 branch = "master",
-                commit = "84283fa86228c7e1cd20dc5e5d9a1b3bdfd9d374",
+                commit = "60dc45280ffdc5fdfa2d3cc92ec52dc62ef6e71a",
                 url = "https://gitee.com/tboox/xmake-repo.git"
             },
-            version = "3.3.8"
-        },
-        ["opengl#31fecfc4"] = {
-            repo = {
-                branch = "master",
-                commit = "84283fa86228c7e1cd20dc5e5d9a1b3bdfd9d374",
-                url = "https://gitee.com/tboox/xmake-repo.git"
-            },
-            version = "latest"
+            version = "2.28.2"
         }
     },
     ["mingw|x86_64"] = {

@@ -1,6 +1,6 @@
 -- project settings
 set_project("lanox2d")
-set_xmakever("2.7.3")
+set_xmakever("2.8.3")
 set_version("1.0.1", {build = "%Y%m%d%H%M"})
 set_warnings("all", "error")
 set_languages("c99")
