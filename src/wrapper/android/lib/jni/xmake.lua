@@ -6,7 +6,7 @@ target("lanox2d_jni")
         add_syslinks("android")
     end
     after_build("android", function (target)
-        local symsdir = path.join("$(buildir)", "$(plat)", "syms", "$(mode)", "$(arch)")
+        local symsdir = path.join("$(builddir)", "$(plat)", "syms", "$(mode)", "$(arch)")
         os.trycp(target:symbolfile(), path.join(symsdir, "liblanox2d_jni.so"))
     end)
 

@@ -47,7 +47,7 @@ task("pod_build")
         import("core.base.option")
         import("core.project.config")
         local plat = option.get("plat")
-        local outputdir = path.join(config.buildir(), plat, "install")
+        local outputdir = path.join(config.builddir(), plat, "install")
         local mode = option.get("mode") or "releasedbg"
         local archs = plat == "iphoneos" and {"armv7", "arm64", "x86_64"} or {"x86_64"}
         os.tryrm(outputdir)

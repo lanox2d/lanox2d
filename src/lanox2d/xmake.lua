@@ -9,12 +9,12 @@ target("lanox2d")
     end
 
     -- set the auto-generated config.h
-    set_configdir("$(buildir)/$(plat)/$(arch)/$(mode)")
+    set_configdir("$(builddir)/$(plat)/$(arch)/$(mode)")
     add_configfiles("lanox2d.config.h.in")
 
     -- add include directories
     add_includedirs("..", {public = true})
-    add_includedirs("$(buildir)/$(plat)/$(arch)/$(mode)", {public = true})
+    add_includedirs("$(builddir)/$(plat)/$(arch)/$(mode)", {public = true})
 
     -- add the header files for installing
     add_headerfiles("../(lanox2d/*.h)")
@@ -22,7 +22,7 @@ target("lanox2d")
     add_headerfiles("../(lanox2d/prefix/**.h)")
     add_headerfiles("../(lanox2d/core/**.h)|private/**.h|pixmap/*.h|device/**.h|bitmap/*.h")
     add_headerfiles("../(lanox2d/platform/**.h)|windows/*.h")
-    add_headerfiles("$(buildir)/$(plat)/$(arch)/$(mode)/lanox2d.config.h", {prefixdir = "lanox2d"})
+    add_headerfiles("$(builddir)/$(plat)/$(arch)/$(mode)/lanox2d.config.h", {prefixdir = "lanox2d"})
 
     -- add source files
     add_files("*.c")

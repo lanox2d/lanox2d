@@ -8,7 +8,7 @@ target("test_jni")
     end
     add_packages("vulkan-validationlayers")
     after_build("android", function (target)
-        local symsdir = path.join("$(buildir)", "$(plat)", "syms", "$(mode)", "$(arch)")
+        local symsdir = path.join("$(builddir)", "$(plat)", "syms", "$(mode)", "$(arch)")
         os.trycp(target:symbolfile(), path.join(symsdir, "libtest_jni.so"))
         local validationlayers = target:pkg("vulkan-validationlayers")
         if validationlayers then
