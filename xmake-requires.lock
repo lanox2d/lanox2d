@@ -221,26 +221,34 @@
         }
     },
     ["macosx|x86_64"] = {
-        ["cmake#31fecfc4"] = {
+        ["cmake#f56260b5"] = {
             repo = {
                 branch = "master",
-                commit = "f2b7778fbf7564beb1db0ff7473ffa38d9f66aad",
+                commit = "de0ced6a54566244ad2e505722dbf049ced7f256",
                 url = "https://gitee.com/tboox/xmake-repo.git"
             },
             version = "3.25.3"
         },
-        ["glfw#31fecfc4"] = {
+        ["glfw#f56260b5"] = {
             repo = {
                 branch = "master",
-                commit = "f2b7778fbf7564beb1db0ff7473ffa38d9f66aad",
+                commit = "de0ced6a54566244ad2e505722dbf049ced7f256",
                 url = "https://gitee.com/tboox/xmake-repo.git"
             },
-            version = "3.3.8"
+            version = "3.4"
         },
-        ["opengl#31fecfc4"] = {
+        ["ninja#f56260b5"] = {
             repo = {
                 branch = "master",
-                commit = "f2b7778fbf7564beb1db0ff7473ffa38d9f66aad",
+                commit = "de0ced6a54566244ad2e505722dbf049ced7f256",
+                url = "https://gitee.com/tboox/xmake-repo.git"
+            },
+            version = "1.11.1"
+        },
+        ["opengl#f56260b5"] = {
+            repo = {
+                branch = "master",
+                commit = "de0ced6a54566244ad2e505722dbf049ced7f256",
                 url = "https://gitee.com/tboox/xmake-repo.git"
             },
             version = "latest"

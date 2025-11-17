@@ -38,6 +38,10 @@
     lx_stroker_ref_t            _stroker;
     lx_tessellator_ref_t        _tessellator;
     lx_metal_matrix_t           _matrixProject;
+    id<MTLBuffer>               _reusableVertexBuffer;
+    lx_size_t                   _reusableVertexBufferSize;
+    id<MTLBuffer>               _reusableTexcoordBuffer;
+    lx_size_t                   _reusableTexcoordBufferSize;
 }
 
 - (nonnull instancetype)initWithView:(nonnull MTKView*)mtkView baseDevice:(nonnull lx_device_t*)baseDevice {
@@ -86,6 +90,8 @@
         lx_tessellator_exit(_tessellator);
         _tessellator = lx_null;
     }
+    _reusableVertexBuffer = nil;
+    _reusableTexcoordBuffer = nil;
 }
 
 - (lx_void_t)updateMatrixProjection {
@@ -421,22 +427,67 @@
     }
 }
 
+- (id<MTLBuffer>)getOrCreateReusableBuffer:(id<MTLBuffer> __strong *)buffer size:(lx_size_t*)bufferSize requiredSize:(lx_size_t)requiredSize {
+    if (!*buffer || *bufferSize < requiredSize) {
+        // Recreate buffer if it doesn't exist or is too small
+        *buffer = [_device newBufferWithLength:requiredSize options:MTLResourceStorageModeShared];
+        *bufferSize = requiredSize;
+    }
+    return *buffer;
+}
+
 - (lx_void_t)fillPolygon:(nonnull lx_polygon_ref_t)polygon bounds:(nullable lx_rect_ref_t)bounds rule:(lx_size_t)rule {
     lx_assert(_tessellator);
     lx_tessellator_rule_set(_tessellator, rule);
     lx_polygon_ref_t result = lx_tessellator_make(_tessellator, polygon, bounds);
     if (result) {
 
-        // apply vertices
         lx_assert(result && result->points);
-        [_renderEncoder setVertexBytes:result->points length:(result->total * sizeof(lx_point_t)) atIndex:kVerticesIndex];
-
-        // apply texture coordinate
+        const lx_size_t kMaxSetVertexBytesSize = 4096;
+        lx_size_t verticesSize = result->total * sizeof(lx_point_t);
         lx_shader_ref_t shader = lx_paint_shader(_baseDevice->paint);
-        if (shader && lx_shader_type(shader) == LX_SHADER_TYPE_BITMAP) {
-            [_renderEncoder setVertexBytes:result->points length:(result->total * sizeof(lx_point_t)) atIndex:kTexcoordsIndex];
+
+        // Set vertices with buffer size check
+        if (verticesSize <= kMaxSetVertexBytesSize) {
+            [_renderEncoder setVertexBytes:result->points length:verticesSize atIndex:kVerticesIndex];
+        } else {
+            id<MTLBuffer> vertexBuffer = [self getOrCreateReusableBuffer:&_reusableVertexBuffer
+                                                                     size:&_reusableVertexBufferSize
+                                                            requiredSize:verticesSize];
+            memcpy(vertexBuffer.contents, result->points, verticesSize);
+            [_renderEncoder setVertexBuffer:vertexBuffer offset:0 atIndex:kVerticesIndex];
         }
-        [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:result->total];
+
+        if (shader && lx_shader_type(shader) == LX_SHADER_TYPE_BITMAP) {
+            if (verticesSize <= kMaxSetVertexBytesSize) {
+                [_renderEncoder setVertexBytes:result->points length:verticesSize atIndex:kTexcoordsIndex];
+            } else {
+                id<MTLBuffer> texcoordBuffer = [self getOrCreateReusableBuffer:&_reusableTexcoordBuffer
+                                                                           size:&_reusableTexcoordBufferSize
+                                                                  requiredSize:verticesSize];
+                memcpy(texcoordBuffer.contents, result->points, verticesSize);
+                [_renderEncoder setVertexBuffer:texcoordBuffer offset:0 atIndex:kTexcoordsIndex];
+            }
+        }
+
+        // Draw vertices
+        lx_size_t mode = lx_tessellator_mode(_tessellator);
+        if (mode == LX_TESSELLATOR_MODE_TRIANGULATION) {
+            lx_size_t index = 0;
+            lx_size_t total = result->total;
+            while (index + 4 <= total) {
+                [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:index vertexCount:3];
+                index += 4;
+            }
+        } else {
+            lx_uint16_t  count;
+            lx_size_t    index = 0;
+            lx_uint16_t* counts = result->counts;
+            while ((count = *counts++)) {
+                [_renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:index vertexCount:count];
+                index += count;
+            }
+        }
     }
 }
 
@@ -451,12 +502,38 @@
 }
 
 - (lx_void_t)strokePoints:(nonnull lx_point_ref_t)points count:(lx_uint16_t)count {
-    [_renderEncoder setVertexBytes:points length:(count * sizeof(lx_point_t)) atIndex:kVerticesIndex];
+    lx_size_t verticesSize = count * sizeof(lx_point_t);
+    const lx_size_t kMaxSetVertexBytesSize = 4096;
+
+    if (verticesSize <= kMaxSetVertexBytesSize) {
+        [_renderEncoder setVertexBytes:points length:verticesSize atIndex:kVerticesIndex];
+    } else {
+        // Use reusable MTLBuffer for large data (> 4096 bytes)
+        id<MTLBuffer> vertexBuffer = [self getOrCreateReusableBuffer:&_reusableVertexBuffer
+                                                                 size:&_reusableVertexBufferSize
+                                                        requiredSize:verticesSize];
+        // Copy data to buffer
+        memcpy(vertexBuffer.contents, points, verticesSize);
+        [_renderEncoder setVertexBuffer:vertexBuffer offset:0 atIndex:kVerticesIndex];
+    }
     [_renderEncoder drawPrimitives:MTLPrimitiveTypePoint vertexStart:0 vertexCount:count];
 }
 
 - (lx_void_t)strokeLines:(nonnull lx_point_ref_t)points count:(lx_uint16_t)count {
-    [_renderEncoder setVertexBytes:points length:(count * sizeof(lx_point_t)) atIndex:kVerticesIndex];
+    lx_size_t verticesSize = count * sizeof(lx_point_t);
+    const lx_size_t kMaxSetVertexBytesSize = 4096;
+
+    if (verticesSize <= kMaxSetVertexBytesSize) {
+        [_renderEncoder setVertexBytes:points length:verticesSize atIndex:kVerticesIndex];
+    } else {
+        // Use reusable MTLBuffer for large data (> 4096 bytes)
+        id<MTLBuffer> vertexBuffer = [self getOrCreateReusableBuffer:&_reusableVertexBuffer
+                                                                 size:&_reusableVertexBufferSize
+                                                        requiredSize:verticesSize];
+        // Copy data to buffer
+        memcpy(vertexBuffer.contents, points, verticesSize);
+        [_renderEncoder setVertexBuffer:vertexBuffer offset:0 atIndex:kVerticesIndex];
+    }
     [_renderEncoder drawPrimitives:MTLPrimitiveTypeLineStrip vertexStart:0 vertexCount:count];
 }
 
@@ -464,7 +541,21 @@
     lx_assert(polygon && polygon->points && polygon->counts);
 
     // apply vertices
-    [_renderEncoder setVertexBytes:polygon->points length:(polygon->total * sizeof(lx_point_t)) atIndex:kVerticesIndex];
+    lx_size_t verticesSize = polygon->total * sizeof(lx_point_t);
+    const lx_size_t kMaxSetVertexBytesSize = 4096;
+
+    if (verticesSize <= kMaxSetVertexBytesSize) {
+        // Use setVertexBytes for small data (<= 4096 bytes)
+        [_renderEncoder setVertexBytes:polygon->points length:verticesSize atIndex:kVerticesIndex];
+    } else {
+        // Use reusable MTLBuffer for large data (> 4096 bytes)
+        id<MTLBuffer> vertexBuffer = [self getOrCreateReusableBuffer:&_reusableVertexBuffer
+                                                                 size:&_reusableVertexBufferSize
+                                                        requiredSize:verticesSize];
+        // Copy data to buffer
+        memcpy(vertexBuffer.contents, polygon->points, verticesSize);
+        [_renderEncoder setVertexBuffer:vertexBuffer offset:0 atIndex:kVerticesIndex];
+    }
 
     // draw vertices
     lx_uint16_t  count;

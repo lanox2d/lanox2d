@@ -51,8 +51,8 @@
 #endif
 
 #ifdef TEST_SHAPE_WINDOW
-//    [self initShapeWindow:@"path" image:nil];
-    [self initShapeWindow:@"path" image:@"test"];
+    [self initShapeWindow:@"tiger" image:nil];
+//    [self initShapeWindow:@"path" image:@"test"];
 #endif
 }
 

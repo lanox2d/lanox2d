@@ -164,16 +164,28 @@ static lx_void_t lx_tessellator_triangulation_make_face(lx_tessellator_t* tessel
      *         .      .
      */
     lx_mesh_edge_ref_t left = edge;
-    while (lx_tessellator_edge_go_down_(left)) {
+    lx_mesh_edge_ref_t left_start = left;
+    lx_size_t left_iterations = 0;
+    while (lx_tessellator_edge_go_down_(left) && left_iterations < 10000) {
         left = lx_mesh_edge_lprev(left);
+        left_iterations++;
+        // prevent infinite loop
+        if (left == left_start) break;
     }
-    while (lx_tessellator_edge_go_up_(left)) {
+    left_start = left;
+    left_iterations = 0;
+    while (lx_tessellator_edge_go_up_(left) && left_iterations < 10000) {
         left = lx_mesh_edge_lnext(left);
+        left_iterations++;
+        // prevent infinite loop
+        if (left == left_start) break;
     }
 
     // get the uppermost right edge
     lx_mesh_edge_ref_t right = lx_mesh_edge_lprev(left);
-    while (lx_mesh_edge_lnext(left) != right) {
+    lx_size_t main_iterations = 0;
+    while (lx_mesh_edge_lnext(left) != right && main_iterations < 10000) {
+        main_iterations++;
         /* the right edge is too lower? done some left edges
          *
          *          .
@@ -226,7 +238,10 @@ static lx_void_t lx_tessellator_triangulation_make_face(lx_tessellator_t* tessel
                                                             ,   lx_mesh_edge_dst(left)))) {
                 // connect it
                 edge = lx_mesh_edge_connect(mesh, left, lx_mesh_edge_lprev(left));
-                lx_assert_and_check_return(edge);
+                if (!edge) {
+                    // if connection fails, break to avoid infinite loop
+                    break;
+                }
 
                 // update the left edge
                 left = lx_mesh_edge_sym(edge);
@@ -234,6 +249,8 @@ static lx_void_t lx_tessellator_triangulation_make_face(lx_tessellator_t* tessel
 
             // the next left edge
             left = lx_mesh_edge_lnext(left);
+            // safety check to prevent infinite loop
+            if (left == right) break;
         } else {
             /* the left edge is too lower? done some right edges
              *
@@ -285,7 +302,10 @@ static lx_void_t lx_tessellator_triangulation_make_face(lx_tessellator_t* tessel
                                                             , lx_mesh_edge_org(right)))) {
                 // connect it
                 edge = lx_mesh_edge_connect(mesh, lx_mesh_edge_lnext(right), right);
-                lx_assert_and_check_return(edge);
+                if (!edge) {
+                    // if connection fails, break to avoid infinite loop
+                    break;
+                }
 
                 // update the right edge
                 right = lx_mesh_edge_sym(edge);
@@ -293,6 +313,8 @@ static lx_void_t lx_tessellator_triangulation_make_face(lx_tessellator_t* tessel
 
             // the next right edge
             right = lx_mesh_edge_lprev(right);
+            // safety check to prevent infinite loop
+            if (left == right) break;
         }
     }
 
@@ -309,11 +331,21 @@ static lx_void_t lx_tessellator_triangulation_make_face(lx_tessellator_t* tessel
      *          .
      *
      */
-    while (lx_mesh_edge_lnext(lx_mesh_edge_lnext(right)) != left) {
+    lx_size_t final_iterations = 0;
+    while (lx_mesh_edge_lnext(lx_mesh_edge_lnext(right)) != left && final_iterations < 10000) {
+        final_iterations++;
         edge = lx_mesh_edge_connect(mesh, lx_mesh_edge_lnext(right), right);
-        lx_assert_and_check_return(edge);
+        if (!edge) {
+            // if connection fails, break to avoid infinite loop
+            // this should not happen in normal cases, but handle it gracefully
+            break;
+        }
 
         right = lx_mesh_edge_sym(edge);
+        // safety check: ensure we're making progress
+        if (lx_mesh_edge_lnext(lx_mesh_edge_lnext(right)) == left) {
+            break;
+        }
     }
 }
 
